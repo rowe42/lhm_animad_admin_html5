@@ -17,7 +17,12 @@
     "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0",
     "iron-icon": "PolymerElements/iron-icon#^2.0.1",
     "paper-item": "PolymerElements/paper-item#^2.0.0",
-    "iron-image": "PolymerElements/iron-image#^2.1.2"
+    "iron-image": "PolymerElements/iron-image#^2.1.2",
+    "paper-search": "Collaborne/paper-search#^2.0.9",
+    "iron-form": "PolymerElements/iron-form#^2.0.1",
+    "paper-input": "PolymerElements/paper-input#^2.0.3",
+    "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#^2.0.0",
+    "paper-listbox": "PolymerElements/paper-listbox#^2.0.0"
   },
   "resolutions": {
     "polymer": "^2.0.0"
