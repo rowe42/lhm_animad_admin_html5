@@ -65,39 +65,36 @@
       }
     </style>
 
-    <app-location
-        route="{{route}}"
-        url-space-regex="^[[rootPath]]">
+    <app-location route="{{route}}" url-space-regex="^[[rootPath]]">
     </app-location>
 
-    <app-route
-        route="{{route}}"
-        pattern="[[rootPath]]:page"
-        data="{{routeData}}"
-        tail="{{subroute}}">
+    <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}">
     </app-route>
     <!-- <app-drawer-layout fullbleed narrow="{{narrow}}"> -->
     <app-drawer-layout fullbleed narrow="{{narrow}}">
       <!-- Drawer content -->
       <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]">
-        <app-toolbar> </app-toolbar>
+        <app-header>
+          <app-toolbar><div main-title><b>Animad</b> App</div> </app-toolbar>
+        </app-header>
+
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
           <!-- GENERATOR pattern: ...[ENTITYNAME]-view">[ENTITYNAME]</a> -->
           <!-- GENERATOR TODO - der Name und Icon sollte aus einer i18n Liste kommen -->
           <paper-item>
-              <iron-icon icon="animad-icons:people"></iron-icon>
-              <a name="keepers-view" href="[[rootPath]]keepers-view">Keepers</a>
+            <iron-icon icon="animad-icons:people"></iron-icon>
+            <a name="keepers-view" href="[[rootPath]]keepers-view">Keepers</a>
           </paper-item>
           <paper-item>
-              <iron-icon icon="animad-icons:pets"></iron-icon>
-              <a name="animals-view" href="[[rootPath]]animals-view">Animals</a>
+            <iron-icon icon="animad-icons:pets"></iron-icon>
+            <a name="animals-view" href="[[rootPath]]animals-view">Animals</a>
           </paper-item>
           <paper-item>
-              <iron-icon icon="animad-icons:terrain"></iron-icon>
-              <a name="enclosures-view" href="[[rootPath]]enclosures-view">Enclosures</a>
+            <iron-icon icon="animad-icons:terrain"></iron-icon>
+            <a name="enclosures-view" href="[[rootPath]]enclosures-view">Enclosures</a>
           </paper-item>
-          
-          
+
+
         </iron-selector>
       </app-drawer>
 
@@ -109,17 +106,14 @@
             <!-- GENERATOR pattern: [DOMAINNAME]-icons:menu -->
             <paper-icon-button icon="animad-icons:menu" drawer-toggle></paper-icon-button>
             <!-- GENERATOR pattern (erster Buchstabe groß): [DOMAINNAME] App -->
-            <div main-title><b>Animad</b> App</div>
+            <div main-title>
+              </div>
             <paper-icon-button icon="animad-icons:settings"></paper-icon-button>
             <paper-icon-button icon="animad-icons:power-settings-new"></paper-icon-button>
           </app-toolbar>
         </app-header>
 
-        <iron-pages
-            selected="[[page]]"
-            attr-for-selected="name"
-            fallback-selection="view404"
-            role="main">
+        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
           <!-- GENERATOR pattern: <[DOMAINNAME][ENTITYNAME]-view name="[ENTITYNAME]-view"></[DOMAINNAME][ENTITYNAME]-view> -->
           <animad-keepers-view name="keepers-view"></animad-keepers-view>
           <animad-animals-view name="animals-view"></animad-animals-view>
@@ -177,10 +171,10 @@
         // GENERATOR pattern (camel case): [DOMAINNAME]
         var resolvedPageUrl = this.resolveUrl('animad-' + page + '.html');
         Polymer.importHref(
-            resolvedPageUrl,
-            null,
-            this._showPage404.bind(this),
-            true);
+          resolvedPageUrl,
+          null,
+          this._showPage404.bind(this),
+          true);
       }
 
       _showPage404() {
