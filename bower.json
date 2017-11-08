@@ -22,7 +22,8 @@
     "iron-form": "PolymerElements/iron-form#^2.0.1",
     "paper-input": "PolymerElements/paper-input#^2.0.3",
     "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#^2.0.0",
-    "paper-listbox": "PolymerElements/paper-listbox#^2.0.0"
+    "paper-listbox": "PolymerElements/paper-listbox#^2.0.0",
+    "paper-collapse-item": "Collaborne/paper-collapse-item#^2.0.3"
   },
   "resolutions": {
     "polymer": "^2.0.0"

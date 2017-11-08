@@ -4,9 +4,15 @@
 <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item-body.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
 <link rel="import" href="../../bower_components/neon-animation/neon-animation-runner-behavior.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../animad-icons.html">
 
 <dom-module id="animad-animal-create-form">
     <template>
@@ -14,8 +20,8 @@
         </style>
         <iron-form id="create-form">
             <form method="get">
-                <paper-input label="Name*" minlength="2" maxlength="35" type="string" required></paper-input>
-                <paper-dropdown-menu label="Species*" required>
+                <paper-input id="animal-name" label="Name*" minlength="2" maxlength="35" type="string" value="{{_animal.name}}" required></paper-input>
+                <paper-dropdown-menu id="animal-species" label="Species*" value="{{_animal.species}}" required>
                     <paper-listbox slot="dropdown-content">
                         <!-- 
                             TODO hier die Werte über die URL (siehe properties) holen und dann 
@@ -27,10 +33,10 @@
                     </paper-listbox>
                 </paper-dropdown-menu>
                 <!-- GENERATOR pastdate -->
-                <paper-input label="Birthday*" type="date" max="[[today]]" error-message="Bitte geben Sie ein Datum in der Vergangenheit ein!"
+                <paper-input id="animal-birthday" label="Birthday*" value="_animal.birthday" type="date" max="[[_today]]" error-message="Bitte geben Sie ein Datum in der Vergangenheit ein!"
                     required></paper-input>
-                <paper-input label="Next Vaccination" type="date" min="[[today]]" error-message="Bitte geben Sie ein Datum in der Zukunft ein!"></paper-input>
-                <paper-dropdown-menu label="Gender*" required>
+                <paper-input id="animal-next-vaccination"  label="NextVaccination" value="_animal.nextVaccination" type="date" min="[[_today]]" error-message="Bitte geben Sie ein Datum in der Zukunft ein!"></paper-input>
+                <paper-dropdown-menu id="animal-gender" label="Gender*" value="_animal.gender" required>
                     <paper-listbox slot="dropdown-content">
                         <!-- 
                             TODO hier die Werte über die URL (siehe properties) holen und dann 
@@ -40,12 +46,25 @@
                         <paper-item>male</paper-item>
                     </paper-listbox>
                 </paper-dropdown-menu>
-                <paper-input label="Weight*" type="number" minlength="1" maxlength="5" error-message="Bitte geben Sie eine positive Zahl zwischen 1 und 5 Stellen ein!"
+                <paper-input id="animal-weight" label="Weight*" value="_animal.weight" type="number" minlength="1" maxlength="5" error-message="Bitte geben Sie eine positive Zahl zwischen 1 und 5 Stellen ein!"
                     required>
                     <div slot="suffix">KG</div>
                 </paper-input>
                 <paper-checkbox>Alive</paper-checkbox>
-
+                <!-- 
+                    Referenz zum 'Keepers' Objekt
+                -->
+                <paper-input id="keepers" label="Keepers" type="string" on-keydown="addKeeperOnEnter" required>
+                        <paper-icon-button slot="suffix" icon="animad-icons:link" on-tap="addKeeper"></paper-icon-button>
+                </paper-input>
+                <paper-listbox>
+                    <template is="dom-repeat" items="{{_animal.keepers}}">
+                        <paper-item>
+                            <paper-item-body>[[item.name]]</paper-item-body>
+                            <paper-icon-button icon="animad-icons:link-off" data-item$="[[index]]" on-tap="removeKeeper"></paper-icon-button>
+                        </paper-item>
+                    </template>
+                </paper-listbox>
                 <br>
                 <br>
                 <paper-button raised>Submit</paper-button>
@@ -62,6 +81,14 @@
             // properties
             static get properties() {
                 return {
+                    // GENERATOR in einem 'create-form' wird immer das leere Objekt benötigt
+                    // GENERATOR wenn es Referenzen zu anderen Objekten gibt, dann sind diese als leeres Array zu initialisieren
+                    _animal: {
+                        type: Object,
+                        value() {
+                            return {keepers: []};
+                        }
+                    },
                     // GENERATOR für jede Liste wird hier eine REST Ressource benötigt
                     speciesUrl: {
                         type: String
@@ -70,7 +97,7 @@
                         type: String
                     },
                     // GENERATOR für 'past' und 'future' Datumseingaben wird der heutige Tag als String benötigt
-                    today: {
+                    _today: {
                         type: String,
                         computed: 'calculateToday()'
                     }
@@ -103,6 +130,23 @@
 
                 today = yyyy + '-' + mm + '-' + dd;
                 return today;
+            }
+
+            addKeeper() {
+                this.push('_animal.keepers', {name: this.$.keepers.value});
+                this.$.keepers.value = '';
+            }
+
+            removeKeeper(e) {
+                var index = e.target.dataset.item;
+                this.splice('_animal.keepers', index, 1);
+            }
+
+            addKeeperOnEnter(e) {
+                // check if 'enter' was pressed
+                if(e.which === 13) {
+                    this.addKeeper();
+                }
             }
         }
 
