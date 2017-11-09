@@ -19,7 +19,7 @@
         <style>
         </style>
         <iron-form id="create-form">
-            <form method="get">
+            <form action="http://httpbin.org/get" method="get">
                 <paper-input id="animal-name" label="Name*" minlength="2" maxlength="35" type="string" value="{{_animal.name}}" required></paper-input>
                 <paper-dropdown-menu id="animal-species" label="Species*" value="{{_animal.species}}" required>
                     <paper-listbox slot="dropdown-content">
@@ -72,6 +72,20 @@
         </iron-form>
     </template>
     <script>
+        /**
+         * # Formular zum Erstellen von einem 'Animal'
+         * `<animad-animal-create-form>` stellt ein Formular zur Verfügung, über das man ein
+         * neues 'Animal' mit all seinen Attributen erstellen kann.
+         * ## Anwendung in der Applikation
+         * <link rel="import" href="[Pfad zu meinen Abhängigkeiten]/animad-animal/animad-animal-create-form.html">
+         * ...
+         * <animad-animal-create-form></animad-animal-create-form>
+         * ...
+         * 
+         * @customElement
+         * @polymer
+         *
+         */
         // GENERATOR patter (camel case): [DOMAINNAME][ENTITY]CreateForm
         class AnimadAnimalCreateForm extends Polymer.Element {
 
@@ -83,6 +97,11 @@
                 return {
                     // GENERATOR in einem 'create-form' wird immer das leere Objekt benötigt
                     // GENERATOR wenn es Referenzen zu anderen Objekten gibt, dann sind diese als leeres Array zu initialisieren
+                    /**
+                     * Das leere 'Animal' Objekt mit allen Beziehungsarrays.
+                     *   
+                     * @type{{keepers: []}}
+                     */
                     _animal: {
                         type: Object,
                         value() {
@@ -90,13 +109,22 @@
                         }
                     },
                     // GENERATOR für jede Liste wird hier eine REST Ressource benötigt
+                    /**
+                     * Url um die 'Species' abzurufen.
+                     */
                     speciesUrl: {
                         type: String
                     },
-                    genderUrl: {
+                    /**
+                     * Url um die 'Genders' abzurufen.
+                     */
+                    gendersUrl: {
                         type: String
                     },
                     // GENERATOR für 'past' und 'future' Datumseingaben wird der heutige Tag als String benötigt
+                    /**
+                     * Das heutige Datum. Wird verwendet für 'past' und 'future' Datumsangaben.
+                     */
                     _today: {
                         type: String,
                         computed: 'calculateToday()'
@@ -114,6 +142,12 @@
             }
 
             // methods
+            
+            /**
+             * berechnet das aktuelle Tagesdatum in der Form 'yyyy-mm-dd'
+             *
+             * @return {string} das aktuelle Tagesdatum als String
+             */
             calculateToday() {
                 var today = new Date();
                 var dd = today.getDate();
@@ -132,16 +166,25 @@
                 return today;
             }
 
+            /**
+             * Fügt einen 'Keeper' dem 'Keepers' Array im 'Animal' Objekt zu.
+             */
             addKeeper() {
                 this.push('_animal.keepers', {name: this.$.keepers.value});
                 this.$.keepers.value = '';
             }
 
+            /**
+             * Löscht den ausgewählten 'Keeper' aus dem 'Keepers' Array im 'Animal' Objekt.
+             */
             removeKeeper(e) {
                 var index = e.target.dataset.item;
                 this.splice('_animal.keepers', index, 1);
             }
 
+            /**
+             * Löst die Methode 'addKeeper()' aus, wenn der Nutzer im Feld 'Enter' drückt.
+             */
             addKeeperOnEnter(e) {
                 // check if 'enter' was pressed
                 if(e.which === 13) {
