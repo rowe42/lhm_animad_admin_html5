@@ -4,7 +4,7 @@
   "fragments": [
     "src/animad-keepers-view.html",
     "src/animad-animals-view.html",
-    "src/animad-view3.html",
+    "src/animad-enclosures-view.html",
     "src/animad-view404.html"
   ],
   "sources": [
