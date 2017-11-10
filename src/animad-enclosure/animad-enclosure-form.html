@@ -1,0 +1,28 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+
+<dom-module id="animad-enclosure-form">
+    <template>
+        <style></style>
+        <paper-input type="text" name="vorname" required label="Vorname" value="{{data.vorname}}"></paper-input>
+        <paper-input type="text" name="nachname" required label="Nachname" value="{{data.nachname}}"></paper-input>
+    </template>
+    <script>
+        class AnimadEnclosureForm extends Polymer.Element {
+            static get is() { return 'animad-enclosure-form'; }
+
+            static get properties() {
+                return {
+                    data: {
+                        type: Object,
+                        value() {
+                            return {}
+                        }
+                    }
+                }
+            }
+        }
+
+        customElements.define(AnimadEnclosureForm.is, AnimadEnclosureForm);
+    </script>
+</dom-module>

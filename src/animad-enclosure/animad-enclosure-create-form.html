@@ -1,0 +1,45 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="animad-enclosure-form.html">
+
+<dom-module id="animad-enclosure-create-form">
+    <template>
+        <style></style>
+        <iron-ajax id="httpbin" url="https://httpbin.org/get" body="{{foo}}" handle-as="json" on-response="handleResponse" debounce-duration="300"></iron-ajax>
+
+        <animad-enclosure-form data="{{foo}}"></animad-enclosure-form>
+        <paper-button on-tap="sendForm" raised>Submit</paper-button>
+    </template>
+    <script>
+        class AnimadEnclosureCreateForm extends Polymer.Element {
+            static get is() { return 'animad-enclosure-create-form'; }
+
+            static get properties() {
+                return {
+                    foo: {
+                        type: Object,
+                        value() {
+                            return {}
+                        }
+                    }
+                }
+            }
+
+            constructor() {
+                super();
+            }
+
+            sendForm() {
+                console.log(JSON.stringify(this.foo));
+                this.$.httpbin.generateRequest();
+            }
+
+            handleResponse(e) {
+                console.log(e.detail.response)
+            }
+        }
+
+        customElements.define(AnimadEnclosureCreateForm.is, AnimadEnclosureCreateForm);
+    </script>
+</dom-module>

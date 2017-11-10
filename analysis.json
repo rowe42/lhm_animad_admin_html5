@@ -1,0 +1,247 @@
+{
+    "schema_version": "1.0.0",
+    "elements": [
+      {
+        "description": "GENERATOR patter (camel case): [DOMAINNAME][ENTITY]CreateForm",
+        "summary": "",
+        "path": "animad-animal-create-form.html",
+        "properties": [
+          {
+            "name": "_animal",
+            "type": "{keepers: []}",
+            "description": "Das leere 'Animal' Objekt mit allen Beziehungsarrays.",
+            "privacy": "protected",
+            "sourceRange": {
+              "start": {
+                "line": 104,
+                "column": 20
+              },
+              "end": {
+                "line": 109,
+                "column": 21
+              }
+            },
+            "metadata": {
+              "polymer": {}
+            }
+          },
+          {
+            "name": "speciesUrl",
+            "type": "string",
+            "description": "Url um die 'Species' abzurufen.",
+            "privacy": "public",
+            "sourceRange": {
+              "start": {
+                "line": 114,
+                "column": 20
+              },
+              "end": {
+                "line": 116,
+                "column": 21
+              }
+            },
+            "metadata": {
+              "polymer": {}
+            }
+          },
+          {
+            "name": "gendersUrl",
+            "type": "string",
+            "description": "Url um die 'Genders' abzurufen.",
+            "privacy": "public",
+            "sourceRange": {
+              "start": {
+                "line": 120,
+                "column": 20
+              },
+              "end": {
+                "line": 122,
+                "column": 21
+              }
+            },
+            "metadata": {
+              "polymer": {}
+            }
+          },
+          {
+            "name": "_today",
+            "type": "string",
+            "description": "Das heutige Datum. Wird verwendet für 'past' und 'future' Datumsangaben.",
+            "privacy": "protected",
+            "sourceRange": {
+              "start": {
+                "line": 127,
+                "column": 20
+              },
+              "end": {
+                "line": 130,
+                "column": 21
+              }
+            },
+            "metadata": {
+              "polymer": {
+                "readOnly": true
+              }
+            }
+          }
+        ],
+        "methods": [
+          {
+            "name": "connectedCallback",
+            "description": "",
+            "privacy": "public",
+            "sourceRange": {
+              "start": {
+                "line": 138,
+                "column": 12
+              },
+              "end": {
+                "line": 141,
+                "column": 13
+              }
+            },
+            "metadata": {},
+            "params": []
+          },
+          {
+            "name": "calculateToday",
+            "description": "berechnet das aktuelle Tagesdatum in der Form 'yyyy-mm-dd'",
+            "privacy": "public",
+            "sourceRange": {
+              "start": {
+                "line": 150,
+                "column": 12
+              },
+              "end": {
+                "line": 166,
+                "column": 13
+              }
+            },
+            "metadata": {},
+            "params": [],
+            "return": {
+              "type": "string",
+              "desc": "das aktuelle Tagesdatum als String"
+            }
+          },
+          {
+            "name": "addKeeper",
+            "description": "Fügt einen 'Keeper' dem 'Keepers' Array im 'Animal' Objekt zu.",
+            "privacy": "public",
+            "sourceRange": {
+              "start": {
+                "line": 171,
+                "column": 12
+              },
+              "end": {
+                "line": 174,
+                "column": 13
+              }
+            },
+            "metadata": {},
+            "params": []
+          },
+          {
+            "name": "removeKeeper",
+            "description": "Löscht den ausgewählten 'Keeper' aus dem 'Keepers' Array im 'Animal' Objekt.",
+            "privacy": "public",
+            "sourceRange": {
+              "start": {
+                "line": 179,
+                "column": 12
+              },
+              "end": {
+                "line": 182,
+                "column": 13
+              }
+            },
+            "metadata": {},
+            "params": [
+              {
+                "name": "e"
+              }
+            ]
+          },
+          {
+            "name": "addKeeperOnEnter",
+            "description": "Löst die Methode 'addKeeper()' aus, wenn der Nutzer im Feld 'Enter' drückt.",
+            "privacy": "public",
+            "sourceRange": {
+              "start": {
+                "line": 187,
+                "column": 12
+              },
+              "end": {
+                "line": 192,
+                "column": 13
+              }
+            },
+            "metadata": {},
+            "params": [
+              {
+                "name": "e"
+              }
+            ]
+          }
+        ],
+        "staticMethods": [],
+        "demos": [],
+        "metadata": {},
+        "sourceRange": {
+          "start": {
+            "line": 89,
+            "column": 8
+          },
+          "end": {
+            "line": 193,
+            "column": 9
+          }
+        },
+        "privacy": "public",
+        "superclass": "HTMLElement",
+        "name": "AnimadAnimalCreateForm",
+        "attributes": [
+          {
+            "name": "species-url",
+            "description": "Url um die 'Species' abzurufen.",
+            "sourceRange": {
+              "start": {
+                "line": 114,
+                "column": 20
+              },
+              "end": {
+                "line": 116,
+                "column": 21
+              }
+            },
+            "metadata": {},
+            "type": "string"
+          },
+          {
+            "name": "genders-url",
+            "description": "Url um die 'Genders' abzurufen.",
+            "sourceRange": {
+              "start": {
+                "line": 120,
+                "column": 20
+              },
+              "end": {
+                "line": 122,
+                "column": 21
+              }
+            },
+            "metadata": {},
+            "type": "string"
+          }
+        ],
+        "events": [],
+        "styling": {
+          "cssVariables": [],
+          "selectors": []
+        },
+        "slots": [],
+        "tagname": "animad-animal-create-form"
+      }
+    ]
+  }
+  
