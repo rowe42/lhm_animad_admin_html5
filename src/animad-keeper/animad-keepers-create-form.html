@@ -1,0 +1,114 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-animation-runner-behavior.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../animad-icons.html">
+
+<dom-module id="animad-keepers-list">
+    <template>
+        <style>
+        </style>
+        <iron-form id="create-form">
+            <form action="http://httpbin.org/get" method="get">
+                <paper-input id="animal-name" label="Name*" minlength="2" maxlength="35" type="string" value="{{_animal.name}}" required></paper-input>
+                <paper-button raised>Submit</paper-button>
+            </form>
+        </iron-form>
+    </template>
+    <script>
+        /**
+         * # Formular zur Anzeige der 'Keeper' in einer Liste
+         * `<animad-keepers-list>` stellt eine Liste zur Verfügung, die alle 'Keepers' anzeigt.
+         * ## Anwendung in der Applikation
+         * <link rel="import" href="[Pfad zu meinen Abhängigkeiten]/animad-keeper/animad-keepers-list.html">
+         * ...
+         * <animad-keepers-list></animad-keepers-list>
+         * ...
+         *
+         * @customElement
+         * @polymer
+         *
+         */
+        // GENERATOR patter (camel case): [DOMAINNAME][ENTITY]CreateForm
+        class AnimadKeepersList extends Polymer.Element {
+
+            // GENERATOR pattern: [DOMAINNAME]-[ENTITY]-create-form
+            static get is() { return 'animad-keepers-list'; }
+
+            // properties
+            static get properties() {
+                return {
+                    // GENERATOR in einem 'create-form' wird immer das leere Objekt benötigt
+                    // GENERATOR wenn es Referenzen zu anderen Objekten gibt, dann sind diese als leeres Array zu initialisieren
+                    /**
+                     * Das leere 'Animal' Objekt mit allen Beziehungsarrays.
+                     *
+                     * @type{{keepers: []}}
+                     */
+                    _animal: {
+                        type: Object,
+                        value() {
+                            return {keepers: []};
+                        }
+                    },
+                    // GENERATOR für jede Liste wird hier eine REST Ressource benötigt
+                    /**
+                     * Url um die 'Species' abzurufen.
+                     */
+                    speciesUrl: {
+                        type: String
+                    },
+                    /**
+                     * Url um die 'Genders' abzurufen.
+                     */
+                    gendersUrl: {
+                        type: String
+                    },
+                    // GENERATOR für 'past' und 'future' Datumseingaben wird der heutige Tag als String benötigt
+                    /**
+                     * Das heutige Datum. Wird verwendet für 'past' und 'future' Datumsangaben.
+                     */
+                    _today: {
+                        type: String,
+                        computed: 'calculateToday()'
+                    }
+                }
+            }
+
+            constructor() {
+                super();
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+
+            }
+
+            // methods
+
+            /**
+             * Löst die Methode 'addKeeper()' aus, wenn der Nutzer im Feld 'Enter' drückt.
+             */
+            addKeeperOnEnter(e) {
+                // check if 'enter' was pressed
+                if(e.which === 13) {
+                    this.addKeeper();
+                }
+            }
+        }
+
+        // register custom element
+        // GENERATOR patter (camel case): [DOMAINNAME][ENTITY]CreateForm
+        customElements.define(AnimadKeepersList.is, AnimadKeepersList);
+    </script>
+</dom-module>

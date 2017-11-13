@@ -1,0 +1,63 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../bower_components/paper-search/paper-search-panel.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../animad-icons.html">
+
+<dom-module id="animad-keepers-list">
+  <dom-module id="x-custom">
+    <template>
+        <style>
+          :host {
+            @apply(--layout-fullbleed); /* height: 100vh; margin: 0 */
+            @apply(--layout-vertical); /* display: flex; flex-direction: column; */
+          }
+
+          iron-list {
+            @apply(--layout-flex-auto); /* flex: 1 1 auto; */
+          }
+
+        </style>
+        <form>
+          <paper-search-panel>
+          </paper-search-panel>
+          <paper-button raised>New</paper-button>
+          <paper-button raised>Delete Selected</paper-button>
+        </form>
+
+        <iron-list items="[[items]]" scrolloffset="1">
+          <template>
+            <paper-item >[[index]]<paper-item>
+              <paper-item>
+                <paper-checkbox></paper-checkbox>
+              </paper-item>
+              <a href="https://www.polymer-project.org/" tabindex="-1">
+                <paper-item >Vorname [[index]]<paper-item>
+              </a>
+              <paper-item>Nachname [[index]]<paper-item>
+              <paper-item>
+                <paper-icon-button icon="animad-icons:delete"></paper-icon-button>
+              </paper-item>
+          </template>
+        </iron-list>
+    </template>
+    <script>
+      HTMLImports.whenReady(function() {
+        Polymer({
+          is: 'animad-keepers-list',
+          properties: {
+            items: {
+              type: Array,
+              value: function() {
+                return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
+              }
+            }
+          }
+        });
+      });
+    </script>
+</dom-module>
