@@ -6,58 +6,131 @@
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/array-selector.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../animad-icons.html">
 
+<!-- GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-list -->
 <dom-module id="animad-keepers-list">
-  <dom-module id="x-custom">
     <template>
-        <style>
-          :host {
-            @apply(--layout-fullbleed); /* height: 100vh; margin: 0 */
-            @apply(--layout-vertical); /* display: flex; flex-direction: column; */
-          }
+      <style>
+      </style>
 
-          iron-list {
-            @apply(--layout-flex-auto); /* flex: 1 1 auto; */
-          }
+      <paper-item>
+        <paper-item-body>
+          <paper-search-panel></paper-search-panel>
+        </paper-item-body>
+        <paper-button raised on-click="handleNew">New</paper-button>
+        <paper-button raised onclick="dialogDeleteSelected.open()">Delete</paper-button>
+      </paper-item>
 
-        </style>
-        <form>
-          <paper-search-panel>
-          </paper-search-panel>
-          <paper-button raised>New</paper-button>
-          <paper-button raised>Delete Selected</paper-button>
-        </form>
+      <paper-dialog id="dialogDeleteSelected">
+        <h2>Delete</h2>
+        <p>Do you really want delete all selected items?</p>
+        <paper-item>
+          <paper-button raised dialog-confirm on-click="handleDeleteSelected">Yes</paper-button>
+          <paper-button raised dialog-dismiss autofocus>No</paper-button>
+        </paper-item>
+      </paper-dialog>
 
-        <iron-list items="[[items]]" scrolloffset="1">
-          <template>
-            <paper-item >[[index]]<paper-item>
-              <paper-item>
-                <paper-checkbox></paper-checkbox>
-              </paper-item>
-              <a href="https://www.polymer-project.org/" tabindex="-1">
-                <paper-item >Vorname [[index]]<paper-item>
-              </a>
-              <paper-item>Nachname [[index]]<paper-item>
-              <paper-item>
-                <paper-icon-button icon="animad-icons:delete"></paper-icon-button>
-              </paper-item>
-          </template>
-        </iron-list>
+      <paper-item>
+        <paper-item-body>#</paper-item-body>
+        <paper-item-body>First</paper-item-body>
+        <paper-item-body>Last</paper-item-body>
+        <paper-checkbox></paper-checkbox>
+        <paper-icon-button icon="animad-icons:sort"></paper-icon-button>
+      </paper-item>
+
+      <!--
+      // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]List - id
+      // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME] - items
+      -->
+      <template is="dom-repeat" id="animadKeepersList" items="{{animadKeepers}}" >
+        <paper-item>
+          <paper-item-body>{{index}}</paper-item-body>
+          <paper-item-body>{{item.first}}</paper-item-body>
+          <paper-item-body>{{item.last}}</paper-item-body>
+          <paper-checkbox  on-click="toggleSelection"></paper-checkbox>
+          <paper-icon-button icon="animad-icons:delete" on-click="handleDeleteRow"></paper-icon-button>
+        </paper-item>
+      </template>
+
+      <array-selector id="selector" items="{{animadKeepers}}" selected="{{selected}}" multi toggle></array-selector>
+
+// TBD: nur zum Debuggen, muss wieder weg
+      <div> Selected keepers: </div>
+      <template is="dom-repeat" items="{{selected}}">
+          <div>First name: <span>{{item.first}}</span></div>
+          <div>Last name: <span>{{item.last}}</span></div>
+      </template>
     </template>
+
     <script>
-      HTMLImports.whenReady(function() {
-        Polymer({
-          is: 'animad-keepers-list',
-          properties: {
-            items: {
+    // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]List
+      class AnimadKeepersList extends Polymer.Element {
+
+        static get is() { return 'animad-keepers-list'; }
+
+        static get properties() {
+          return {
+            animadKeepers: {
               type: Array,
-              value: function() {
-                return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
+              value() {
+                return [
+                  {first: 'Patti', last: 'Smith'},
+                  {first: 'Polly Jean', last: 'Harvey'},
+                  {first: 'Joan', last: 'Jett'},
+                  {first: 'Beth', last: 'Ditto'},
+                  {first: 'Siouxsie', last: 'Sioux'},
+                  {first: 'Lydia', last: 'Lunch'},
+                  {first: 'Debbie', last: 'Harry'},
+                  {first: 'Sadie', last: 'May'},
+                  {first: 'Kim', last: 'Deal'},
+                  {first: 'Kelly', last: 'Deal'},
+                  {first: 'Courtney', last: 'Love'},
+                  {first: 'Kathleen', last: 'Hanna'},
+                  {first: 'Tobi', last: 'Vail'},
+                  {first: 'Kathi', last: 'Wilcox'},
+                  {first: 'Tanya', last: 'Donelly'},
+                  {first: 'Laura Jane', last: 'Grace'},
+                  {first: 'Donita', last: 'Sparks'},
+                  {first: 'Suzi', last: 'Gardner'},
+                  {first: 'Jennifer', last: 'Finch  '},
+                  {first: 'Demetra', last: 'Plakas'},
+                ];
               }
             }
           }
-        });
-      });
+        }
+
+        toggleSelection(e) {
+          console.log("toggleSelection");
+          var item = this.$.animadKeepersList.itemForElement(e.target);
+          this.$.selector.select(item);
+        }
+
+        handleNew() {
+          console.log("handleNew");
+        }
+
+        handleDeleteSelected(e) {
+          console.log("handleDeleteSelected");
+          // TBD: selektierte Datensätze löschen
+          console.log(this.$.selector);
+        }
+
+        handleDeleteRow(e) {
+          console.log("handleDeleteRow")
+          this.$.selector.clearSelection();
+//          this.$.animadKeepersList.clearSelection();
+          // TBD: selektierte Checkboxen in der Liste leeren
+
+          this.toggleSelection(e);
+          dialogDeleteSelected.open();
+        }
+      }
+
+      customElements.define(AnimadKeepersList.is, AnimadKeepersList);
     </script>
-</dom-module>
+
+  </dom-module>
