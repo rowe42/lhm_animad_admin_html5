@@ -1,15 +1,19 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
 <link rel="import" href="animad-enclosure-form.html">
 
 <dom-module id="animad-enclosure-create-form">
     <template>
         <style></style>
-        <iron-ajax id="httpbin" url="https://httpbin.org/get" body="{{foo}}" handle-as="json" on-response="handleResponse" debounce-duration="300"></iron-ajax>
-
-        <animad-enclosure-form data="{{foo}}"></animad-enclosure-form>
-        <paper-button on-tap="sendForm" raised>Submit</paper-button>
+        <iron-ajax id="httpbin" url="https://httpbin.org/post" method="POST" body="{{foo}}" handle-as="json" on-response="_handleResponse" debounce-duration="300"></iron-ajax>
+        <iron-form id="iform">
+            <form>
+                <animad-enclosure-form data="{{foo}}"></animad-enclosure-form>
+                <paper-button on-tap="_sendForm" raised>Submit</paper-button>
+            </form>
+        </iron-form>        
     </template>
     <script>
         class AnimadEnclosureCreateForm extends Polymer.Element {
@@ -30,13 +34,16 @@
                 super();
             }
 
-            sendForm() {
-                console.log(JSON.stringify(this.foo));
+            _sendForm() {
+                console.log(this.$.iform.validate());
+                this.foo = JSON.stringify(this.foo);
+                console.log(this.foo);
                 this.$.httpbin.generateRequest();
+                this.$.iform.reset();
             }
 
-            handleResponse(e) {
-                console.log(e.detail.response)
+            _handleResponse(e) {
+                console.log(JSON.stringify(e.detail.response))
             }
         }
 

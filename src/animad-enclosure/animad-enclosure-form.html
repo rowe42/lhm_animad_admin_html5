@@ -4,8 +4,8 @@
 <dom-module id="animad-enclosure-form">
     <template>
         <style></style>
-        <paper-input type="text" name="vorname" required label="Vorname" value="{{data.vorname}}"></paper-input>
-        <paper-input type="text" name="nachname" required label="Nachname" value="{{data.nachname}}"></paper-input>
+        <paper-input type="text" name="vorname" required label="Vorname" value="{{data.vorname}}" minlength="3" maxlength="30"></paper-input>
+        <paper-input type="text" name="nachname" required label="Nachname" value="{{data.nachname}}" minlength="3" maxlength="30"></paper-input>
     </template>
     <script>
         class AnimadEnclosureForm extends Polymer.Element {
