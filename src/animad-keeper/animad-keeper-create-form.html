@@ -1,0 +1,55 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
+
+<link rel="import" href="animad-keeper-form.html">
+
+<dom-module id="animad-keeper-create-form">
+    <template>
+        <style></style>
+        <iron-ajax id="httpbin" url="https://httpbin.org/post" method="POST" body="{{foo}}" handle-as="json" on-response="_handleResponse" debounce-duration="300"></iron-ajax>
+        <iron-form id="iform">
+            <form>
+                <animad-keeper-form data="{{foo}}"></animad-keeper-form>
+                <br>
+                <br>
+                <paper-button on-tap="_sendForm" raised>Submit</paper-button>
+            </form>
+        </iron-form>        
+    </template>
+    <script>
+        class AnimadKeeperCreateForm extends Polymer.Element {
+            static get is() { return 'animad-keeper-create-form'; }
+
+            static get properties() {
+                return {
+                    foo: {
+                        type: Object,
+                        value() {
+                            return {}
+                        }
+                    }
+                }
+            }
+
+            constructor() {
+                super();
+            }
+
+            _sendForm() {
+                console.log(this.$.iform.validate());
+                this.foo = JSON.stringify(this.foo);
+                console.log(this.foo);
+                this.$.httpbin.generateRequest();
+                this.$.iform.reset();
+            }
+
+            _handleResponse(e) {
+                console.log(JSON.stringify(e.detail.response))
+            }
+        }
+
+        customElements.define(AnimadKeeperCreateForm.is, AnimadKeeperCreateForm);
+    </script>
+</dom-module>
