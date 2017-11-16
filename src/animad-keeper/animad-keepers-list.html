@@ -45,17 +45,17 @@
       // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]List - id
       // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME] - items
       -->
-      <template is="dom-repeat" id="animadKeepersList" items="{{animadKeepers}}" >
+      <template is="dom-repeat" id="animadKeepersList" items="{{_animadKeepers}}" >
         <paper-item>
           <paper-item-body>{{index}}</paper-item-body>
           <paper-item-body>{{item.first}}</paper-item-body>
           <paper-item-body>{{item.last}}</paper-item-body>
           <paper-checkbox  on-click="toggleSelection"></paper-checkbox>
-          <paper-icon-button icon="animad-icons:delete" on-click="handleDeleteRow"></paper-icon-button>
+          <paper-icon-button icon="animad-icons:delete" data-item$="[[index]]" on-click="handleDeleteRow"></paper-icon-button>
         </paper-item>
       </template>
 
-      <array-selector id="selector" items="{{animadKeepers}}" selected="{{selected}}" multi toggle></array-selector>
+      <array-selector id="selector" items="{{_animadKeepers}}" selected="{{selected}}" multi toggle></array-selector>
 
 // TBD: nur zum Debuggen, muss wieder weg
       <div> Selected keepers: </div>
@@ -73,7 +73,7 @@
 
         static get properties() {
           return {
-            animadKeepers: {
+            _animadKeepers: {
               type: Array,
               value() {
                 return [
@@ -115,18 +115,22 @@
 
         handleDeleteSelected(e) {
           console.log("handleDeleteSelected");
-          // TBD: selektierte Datensätze löschen
-          console.log(this.$.selector);
+          var _deleteitem = this.$.selector.selected;
+          var index = this.$.animadKeepersList.items.indexOf(_deleteitem[0]);
+          this.splice("$.animadKeepersList.items", index, 1);
+          console.log(this.$.animadKeepersList.items );
+          // TBD: Datensatz gelöscht, aber warum ändert sich die Anzeige nicht??
+
         }
 
         handleDeleteRow(e) {
           console.log("handleDeleteRow")
           this.$.selector.clearSelection();
-//          this.$.animadKeepersList.clearSelection();
           // TBD: selektierte Checkboxen in der Liste leeren
 
           this.toggleSelection(e);
           dialogDeleteSelected.open();
+
         }
       }
 
