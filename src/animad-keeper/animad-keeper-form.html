@@ -1,0 +1,45 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+
+<dom-module id="animad-keeper-form">
+    <template>
+        <style></style>
+        <paper-input type="text" name="firstname" required label="Vorname" value="{{data.firstname}}" minlength="3" maxlength="30"></paper-input>
+        <paper-input type="text" name="lastname" required label="Nachname" value="{{data.lastname}}" minlength="3" maxlength="30"></paper-input>
+        <paper-input type="date" name="birthdate" required label="Geburtsdatum (yyyy-mm-dd)" value="{{data.birthdate}}" auto-validate required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"></paper-input>
+        <paper-input type="date" name="employmentdate" required label="Einstellungsdatum (yyyy-mm-dd)" value="{{data.employmentdate}}" auto-validate required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"></paper-input>
+        <br>
+        <paper-dropdown-menu id="keeper-skills" label="Skills*" value="{{data.skill}}" required>
+                    <paper-listbox slot="dropdown-content">
+                        <!-- 
+                            TODO hier die Werte über die URL (siehe properties) holen und dann 
+                            per dom repeat hier anzeigen.
+                        -->
+                        <paper-item>Putzen</paper-item>
+                        <paper-item>Füttern</paper-item>
+                        <paper-item>Verwaltung</paper-item>
+                    </paper-listbox>
+        </paper-dropdown-menu>
+    </template>
+    <script>
+        class AnimadKeeperForm extends Polymer.Element {
+            static get is() { return 'animad-keeper-form'; }
+
+            static get properties() {
+                return {
+                    data: {
+                        type: Object,
+                        value() {
+                            return {}
+                        }
+                    }
+                }
+            }
+        }
+
+        customElements.define(AnimadKeeperForm.is, AnimadKeeperForm);
+    </script>
+</dom-module>
