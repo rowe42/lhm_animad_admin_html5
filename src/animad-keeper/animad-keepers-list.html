@@ -28,7 +28,7 @@
         <h2>Delete</h2>
         <p>Do you really want delete all selected items?</p>
         <paper-item>
-          <paper-button raised dialog-confirm on-click="handleDeleteSelected">Yes</paper-button>
+          <paper-button raised dialog-confirm on-click="deleteSelectedRows">Yes</paper-button>
           <paper-button raised dialog-dismiss autofocus>No</paper-button>
         </paper-item>
       </paper-dialog>
@@ -45,35 +45,30 @@
       // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]List - id
       // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME] - items
       -->
-      <template is="dom-repeat" id="animadKeepersList" items="{{_animadKeepers}}" >
+      <template is="dom-repeat" id="animadKeepersList" items="{{_keepers}}" >
         <paper-item>
           <paper-item-body>{{index}}</paper-item-body>
           <paper-item-body>{{item.first}}</paper-item-body>
           <paper-item-body>{{item.last}}</paper-item-body>
           <paper-checkbox  on-click="toggleSelection"></paper-checkbox>
-          <paper-icon-button icon="animad-icons:delete" data-item$="[[index]]" on-click="handleDeleteRow"></paper-icon-button>
+          <paper-icon-button icon="animad-icons:delete" on-click="deleteRow"></paper-icon-button>
         </paper-item>
       </template>
 
-      <array-selector id="selector" items="{{_animadKeepers}}" selected="{{selected}}" multi toggle></array-selector>
+      <array-selector id="selector" items="{{_keepers}}" selected="{{selected}}" multi toggle></array-selector>
 
-// TBD: nur zum Debuggen, muss wieder weg
-      <div> Selected keepers: </div>
-      <template is="dom-repeat" items="{{selected}}">
-          <div>First name: <span>{{item.first}}</span></div>
-          <div>Last name: <span>{{item.last}}</span></div>
-      </template>
+      <template is="dom-repeat" items="{{selected}}"></template>
     </template>
 
     <script>
-    // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]List
+      // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]List
       class AnimadKeepersList extends Polymer.Element {
 
         static get is() { return 'animad-keepers-list'; }
 
         static get properties() {
           return {
-            _animadKeepers: {
+            _keepers: {
               type: Array,
               value() {
                 return [
@@ -113,21 +108,21 @@
           console.log("handleNew");
         }
 
-        handleDeleteSelected(e) {
-          console.log("handleDeleteSelected");
-          var _deleteitem = this.$.selector.selected;
-          var index = this.$.animadKeepersList.items.indexOf(_deleteitem[0]);
-          this.splice("$.animadKeepersList.items", index, 1);
-          console.log(this.$.animadKeepersList.items );
-          // TBD: Datensatz gelöscht, aber warum ändert sich die Anzeige nicht??
-
+        deleteSelectedRows(e) {
+          console.log("deleteSelectedRows");
+          var _deleteitems = this.$.selector.selected;
+          for (var i in _deleteitems) {
+            var index = this.$.animadKeepersList.items.indexOf(_deleteitems[i]);
+            this.splice("$.animadKeepersList.items", index, 1);
+          }
+          // TBD: Liste wird nicht aktualisiert
+          // TBD: Daten im Backend löschen
         }
 
-        handleDeleteRow(e) {
-          console.log("handleDeleteRow")
+        deleteRow(e) {
+          console.log("deleteRow")
           this.$.selector.clearSelection();
-          // TBD: selektierte Checkboxen in der Liste leeren
-
+          // TBD: selektierte Checkboxen werden nicht aktualisierts
           this.toggleSelection(e);
           dialogDeleteSelected.open();
 
