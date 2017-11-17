@@ -1,4 +1,6 @@
 bower_components/
 build/
 node_modules/
+target/
+nbproject/
 .metadata/
