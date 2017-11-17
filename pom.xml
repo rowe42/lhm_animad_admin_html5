@@ -4,8 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.muenchen.referenzarchitektur</groupId>
-    <artifactId>lhm_polymer</artifactId>
-    <name>lhm_polymer</name>
+    <artifactId>lhm_animad_admin_html5</artifactId>
+    <name>lhm_animad_admin_html5</name>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <organization>
