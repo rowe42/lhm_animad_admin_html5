@@ -18,8 +18,7 @@
     <template>
         <style>
         </style>
-        <iron-form id="create-form">
-            <form action="http://httpbin.org/get" method="get">
+            <form is="iron-form" action="http://httpbin.org/get" method="get">
                 <paper-input id="animal-name" label="Name*" minlength="2" maxlength="35" type="string" value="{{_animal.name}}" required></paper-input>
                 <paper-dropdown-menu id="animal-species" label="Species*" value="{{_animal.species}}" required>
                     <paper-listbox slot="dropdown-content">
@@ -69,7 +68,6 @@
                 <br>
                 <paper-button raised>Submit</paper-button>
             </form>
-        </iron-form>
     </template>
     <script>
         /**
