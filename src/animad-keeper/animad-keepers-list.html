@@ -37,7 +37,7 @@
         <paper-item-body>#</paper-item-body>
         <paper-item-body>First</paper-item-body>
         <paper-item-body>Last</paper-item-body>
-        <paper-checkbox></paper-checkbox>
+        <paper-checkbox on-click="toggleAll" checked="{{_checkedAll}}"></paper-checkbox>
         <paper-icon-button icon="animad-icons:sort"></paper-icon-button>
       </paper-item>
 
@@ -50,7 +50,7 @@
           <paper-item-body>{{index}}</paper-item-body>
           <paper-item-body>{{item.first}}</paper-item-body>
           <paper-item-body>{{item.last}}</paper-item-body>
-          <paper-checkbox  on-click="toggleSelection"></paper-checkbox>
+          <paper-checkbox  on-click="toggleSelection" checked="{{item.checked}}"></paper-checkbox>
           <paper-icon-button icon="animad-icons:delete" on-click="deleteRow"></paper-icon-button>
         </paper-item>
       </template>
@@ -58,6 +58,15 @@
       <array-selector id="selector" items="{{_keepers}}" selected="{{selected}}" multi toggle></array-selector>
 
       <template is="dom-repeat" items="{{selected}}"></template>
+<!--// TBD: Dummy, muss wieder raus -->
+
+      <template is="dom-repeat" id="selected" items="{{selected}}" >
+        <paper-item>
+          <paper-item-body>{{item.first}}</paper-item-body>
+          <paper-item-body>{{item.last}}</paper-item-body>
+        </paper-item>
+      </template>
+
     </template>
 
     <script>
@@ -67,34 +76,41 @@
         static get is() { return 'animad-keepers-list'; }
 
         static get properties() {
+          // TBD: Im Moment ist checked im Array, aber in den Daten aus dem Backend wird das nicht so übertragen
+          // Entweder: Array kopieren und im neuen Array das checked - Feld einführen
+          // Oder: Beim Löschen über Button die Checkboxen durch-loopen und auf checked = false setzen...
           return {
             _keepers: {
               type: Array,
               value() {
                 return [
-                  {first: 'Patti', last: 'Smith'},
-                  {first: 'Polly Jean', last: 'Harvey'},
-                  {first: 'Joan', last: 'Jett'},
-                  {first: 'Beth', last: 'Ditto'},
-                  {first: 'Siouxsie', last: 'Sioux'},
-                  {first: 'Lydia', last: 'Lunch'},
-                  {first: 'Debbie', last: 'Harry'},
-                  {first: 'Sadie', last: 'May'},
-                  {first: 'Kim', last: 'Deal'},
-                  {first: 'Kelly', last: 'Deal'},
-                  {first: 'Courtney', last: 'Love'},
-                  {first: 'Kathleen', last: 'Hanna'},
-                  {first: 'Tobi', last: 'Vail'},
-                  {first: 'Kathi', last: 'Wilcox'},
-                  {first: 'Tanya', last: 'Donelly'},
-                  {first: 'Laura Jane', last: 'Grace'},
-                  {first: 'Donita', last: 'Sparks'},
-                  {first: 'Suzi', last: 'Gardner'},
-                  {first: 'Jennifer', last: 'Finch  '},
-                  {first: 'Demetra', last: 'Plakas'},
+                  {first: 'Patti', last: 'Smith', checked: false},
+                  {first: 'Polly Jean', last: 'Harvey', checked: false},
+                  {first: 'Joan', last: 'Jett', checked: false},
+                  {first: 'Beth', last: 'Ditto', checked: false},
+                  {first: 'Siouxsie', last: 'Sioux', checked: false},
+                  {first: 'Lydia', last: 'Lunch', checked: false},
+                  {first: 'Debbie', last: 'Harry', checked: false},
+                  {first: 'Sadie', last: 'May', checked: false},
+                  {first: 'Kim', last: 'Deal', checked: false},
+                  {first: 'Kelly', last: 'Deal', checked: false},
+                  {first: 'Courtney', last: 'Love', checked: false},
+                  {first: 'Kathleen', last: 'Hanna', checked: false},
+                  {first: 'Tobi', last: 'Vail', checked: false},
+                  {first: 'Kathi', last: 'Wilcox', checked: false},
+                  {first: 'Tanya', last: 'Donelly', checked: false},
+                  {first: 'Laura Jane', last: 'Grace', checked: false},
+                  {first: 'Donita', last: 'Sparks', checked: false},
+                  {first: 'Suzi', last: 'Gardner', checked: false},
+                  {first: 'Jennifer', last: 'Finch  ', checked: false},
+                  {first: 'Demetra', last: 'Plakas', checked: false},
                 ];
               }
-            }
+            },
+          _checkedAll: {
+               type: Boolean,
+               value: false
+           }
           }
         }
 
@@ -104,18 +120,43 @@
           this.$.selector.select(item);
         }
 
+        toggleAll(e) {
+          console.log("toggleAll");
+          this.$._checkedAll = !this.$._checkedAll;
+
+          this.splice("$.selector.selected", 0, this.$.selector.selected.length);
+
+          var _items = this.$.animadKeepersList.items;
+          for (var i in _items) {
+            // TBD: Wird nur checked geändert gehen die Werte in den anderen Feldern verloren...
+            this.set(['$.animadKeepersList.items', i ], {
+                first: this.$.animadKeepersList.items[i].first,
+                last: this.$.animadKeepersList.items[i].last,
+                checked: this.$._checkedAll
+              });
+
+              if (this.$._checkedAll) {
+                this.$.selector.select(this.$.animadKeepersList.items[i]);
+              }
+          }
+          this.$.animadKeepersList.render();
+
+        }
+
         handleNew() {
           console.log("handleNew");
         }
 
         deleteSelectedRows(e) {
-          console.log("deleteSelectedRows");
+          console.log(this.$.animadKeepersList);
           var _deleteitems = this.$.selector.selected;
           for (var i in _deleteitems) {
             var index = this.$.animadKeepersList.items.indexOf(_deleteitems[i]);
             this.splice("$.animadKeepersList.items", index, 1);
           }
-          // TBD: Liste wird nicht aktualisiert
+
+          this.splice("$.selector.selected", 0, this.$.selector.selected.length);
+          this.$.animadKeepersList.render();
           // TBD: Daten im Backend löschen
         }
 
