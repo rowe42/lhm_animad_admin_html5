@@ -13,6 +13,7 @@
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
+
 <!-- GENERATOR pattern: [DOMAINNAME]-icons.html -->
 <link rel="import" href="animad-icons.html">
 
@@ -31,11 +32,7 @@
         --app-primary-color: #aa00ff;
         --app-secondary-color: #263238;
 
-        display: block;
-      }
 
-      app-drawer-layout:not([narrow]) [drawer-toggle] {
-        display: none;
       }
 
       app-header {
@@ -47,8 +44,18 @@
         --paper-icon-button-ink-color: white;
       }
 
+      .drawer-content {
+        margin-top: 80px;
+        height: calc(100% - 80px);
+        overflow: auto;
+      }
+
+      .main-content {
+        margin-top: 80px;
+      }
+
       .drawer-list {
-        margin: 0 20px;
+        margin-top: 80px;
       }
 
       .drawer-list a {
@@ -70,48 +77,39 @@
 
     <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}">
     </app-route>
-    <!-- <app-drawer-layout fullbleed narrow="{{narrow}}"> -->
-    <app-drawer-layout fullbleed narrow="{{narrow}}">
-      <!-- Drawer content -->
-      <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]">
-        <app-header>
-          <app-toolbar><div main-title><b>Animad</b> App</div> </app-toolbar>
-        </app-header>
 
-        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-          <!-- GENERATOR pattern: ...[ENTITYNAME]-view">[ENTITYNAME]</a> -->
-          <!-- GENERATOR TODO - der Name und Icon sollte aus einer i18n Liste kommen -->
-          <paper-item>
-            <iron-icon icon="animad-icons:face"></iron-icon>
-            <a name="keepers-view" href="[[rootPath]]keepers-view">Keepers</a>
-          </paper-item>
-          <paper-item>
-            <iron-icon icon="animad-icons:panda"></iron-icon>
-            <a name="animals-view" href="[[rootPath]]animals-view">Animals</a>
-          </paper-item>
-          <paper-item>
-            <iron-icon icon="animad-icons:basecamp"></iron-icon>
-            <a name="enclosures-view" href="[[rootPath]]enclosures-view">Enclosures</a>
-          </paper-item>
+    <app-header-layout>
 
+      <app-header fixed effects="waterfall" slot="header">
+        <app-toolbar>
+          <paper-icon-button id="toggle" icon="animad-icons:menu"></paper-icon-button>
+          <div main-title>
+            <b>Animad</b> App</div>
+        </app-toolbar>
+      </app-header>
 
-        </iron-selector>
-      </app-drawer>
+      <app-drawer-layout id="drawerLayout">
 
-      <!-- Main content -->
-      <app-header-layout has-scrolling-region>
-
-        <app-header slot="header" fixed effects="waterfall">
-          <app-toolbar>
-            <!-- GENERATOR pattern: [DOMAINNAME]-icons:menu -->
-            <paper-icon-button icon="animad-icons:menu" drawer-toggle></paper-icon-button>
-            <!-- GENERATOR pattern (erster Buchstabe groß): [DOMAINNAME] App -->
-            <div main-title>
-              </div>
-            <paper-icon-button icon="animad-icons:settings"></paper-icon-button>
-            <paper-icon-button icon="animad-icons:power-settings-new"></paper-icon-button>
-          </app-toolbar>
-        </app-header>
+        <app-drawer slot="drawer">
+          <div class="drawer-content">
+            <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+              <!-- GENERATOR pattern: ...[ENTITYNAME]-view">[ENTITYNAME]</a> -->
+              <!-- GENERATOR TODO - der Name und Icon sollte aus einer i18n Liste kommen -->
+              <paper-item>
+                <iron-icon icon="animad-icons:face"></iron-icon>
+                <a name="keepers-view" href="[[rootPath]]keepers-view">Keepers</a>
+              </paper-item>
+              <paper-item>
+                <iron-icon icon="animad-icons:panda"></iron-icon>
+                <a name="animals-view" href="[[rootPath]]animals-view">Animals</a>
+              </paper-item>
+              <paper-item>
+                <iron-icon icon="animad-icons:basecamp"></iron-icon>
+                <a name="enclosures-view" href="[[rootPath]]enclosures-view">Enclosures</a>
+              </paper-item>
+            </iron-selector>
+          </div>
+        </app-drawer>
 
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
           <!-- GENERATOR pattern: <[DOMAINNAME][ENTITYNAME]-view name="[ENTITYNAME]-view"></[DOMAINNAME][ENTITYNAME]-view> -->
@@ -120,8 +118,11 @@
           <animad-enclosures-view name="enclosures-view"></animad-enclosures-view>
           <animad-view404 name="view404"></animad-view404>
         </iron-pages>
-      </app-header-layout>
-    </app-drawer-layout>
+
+      </app-drawer-layout>
+
+    </app-header-layout>
+
   </template>
 
   <script>
