@@ -87,6 +87,7 @@
     <!-- Load your application shell -->
     <!-- GENERATOR pattern: src/[DOMAINNAME]-app.html -->
     <link rel="import" href="src/animad-app.html">
+    <link rel="import" href="bower_components/paper-toast/paper-toast.html">
 
     <!-- Add any global styles for body, document, etc. -->
     <style>
@@ -100,6 +101,11 @@
     </style>
   </head>
   <body>
+    <!-- TODO add toasts for error, warning, success -->
+    <paper-toast 
+        id="global_toast" 
+        always-on-top>
+    </paper-toast>
     <!-- GENERATOR pattern: <[DOMAINNAME]-app> -->
     <animad-app></animad-app>
     <noscript>
