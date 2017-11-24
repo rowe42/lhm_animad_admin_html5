@@ -4,6 +4,7 @@
 <link rel="import" href="../../bower_components/iron-form/iron-form.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="animad-enclosure-form.html">
 <link rel="import" href="../animad-icons.html">
 
@@ -20,32 +21,8 @@
             on-error="_handleError"
             debounce-duration="300">
         </iron-ajax>
-        <!-- saved notification -->
-        <paper-toast 
-            id="toast_saved" 
-            class="fit-bottom" 
-            text="Das Formular wurde erfolgreich gespeichert.">
-        </paper-toast>
-        <!-- validation error notification -->
-        <paper-toast 
-            id="toast_error" 
-            class="fit-bottom" 
-            text="Das Formular konnte wegen Validierungs-Fehlern nicht gespeichert werden.">
-        </paper-toast>
-        <!-- request error notification -->
-        <paper-toast 
-            id="toast_request_error" 
-            class="fit-bottom" 
-            duration="0"
-            text="Das Formular konnte wegen Verbindungsfehlern (Fehlercode [[_error]]) nicht gespeichert werden. Bitte wenden Sie sich an Ihren Service-Desk.">
-            <paper-icon-button icon="animad-icons:close" on-tap="_closeErrorToast"></paper-icon-button>
-        </paper-toast>
-        <iron-form id="iform">
-            <form>
-                <animad-enclosure-form data="{{_data}}"></animad-enclosure-form>
-                <paper-button on-tap="_sendForm" raised>Submit</paper-button>
-            </form>
-        </iron-form>        
+        <animad-enclosure-form id="form" data="{{_data}}" auto-validate></animad-enclosure-form>
+        <paper-button on-tap="_sendForm" raised>Submit</paper-button>      
     </template>
     <script>
         class AnimadEnclosureCreateForm extends Polymer.Element {
@@ -64,6 +41,12 @@
                     },
                     _error: {
                         type: String
+                    },
+                    _toast: {
+                        type: Object,
+                        value() {
+                            return document.querySelector('#global_toast');
+                        }
                     }
                 }
             }
@@ -74,27 +57,28 @@
 
             _sendForm() {
                 // check if the formcontent is valid against the defined rules
-                var valid = this.$.iform.validate();
+                var valid = this.shadowRoot.querySelector('#form').validate();
 
                 if(valid) {
-                    this.foo = JSON.stringify(this.foo);
+                    this.foo = JSON.stringify(this._data);
                     console.log("form is valid: " + this.foo);
-                    this.$.httpbin.generateRequest();
+                    this.shadowRoot.querySelector('#httpbin').generateRequest();
                 } else {
                     console.log("form is not valid...");
-                    this.$.toast_error.fitInto = view;
-                    this.$.toast_error.open();
+                    this._toast.text = 'Scheiße - streng dich an!';
+                    this._toast.open();
                 }
                 
             }
 
             _handleResponse(e) {
                 console.log("response -> " + JSON.stringify(e.detail.response));
-                this.$.iform.reset();
-                this.foo = {};
+                this.shadowRoot.querySelector('#form').reset();
+                // this.set('_data', {});
                 // open notification toast
-                this.$.toast_saved.fitInto = view;
-                this.$.toast_saved.open();
+                //var toast = document.querySelector('#global_toast');
+                this._toast.text = 'Super! Alles gespeichert :)';
+                this._toast.open();
             }
 
             _handleError(event) {
@@ -105,12 +89,8 @@
                 // get it! (always the first value)
                 this._error = findings[0];
                 // open notification toast
-                this.$.toast_request_error.fitInto = view;
-                this.$.toast_request_error.open();
-            }
-
-            _closeErrorToast() {
-                this.$.toast_request_error.close();
+                this._toast.text = 'Hat nicht funktioniert...';
+                this._toast.open();
             }
         }
 

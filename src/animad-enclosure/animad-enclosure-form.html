@@ -1,31 +1,38 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
 
 <dom-module id="animad-enclosure-form">
     <template>
         <style></style>
-        <paper-input 
-            id="enclosure-vorname"
-            type="text" 
-            name="vorname" 
-            label="Vorname" 
-            value="{{data.vorname}}" 
-            required
-            minlength="3" 
-            maxlength="30"
-            error-message="Geben Sie einen Vornamen an, der mindestens 3 Buchstaben hat!">
-        </paper-input>
-        <paper-input 
-            id="enclosure-nachname"
-            type="text" 
-            name="nachname" 
-            label="Nachname" 
-            value="{{data.nachname}}" 
-            required 
-            minlength="3" 
-            maxlength="30"
-            error-message="Geben Sie einen Nachnamen an, der mindestens 3 Buchstaben hat!">
-        </paper-input>
+        <iron-form id="iform">
+            <form>
+                <paper-input 
+                id="enclosure-vorname"
+                type="text" 
+                name="vorname" 
+                label="Vorname" 
+                value="{{data.vorname}}" 
+                required
+                auto-validate="{{autoValidate}}"
+                minlength="3" 
+                maxlength="30"
+                error-message="Geben Sie einen Vornamen an, der mindestens 3 Buchstaben hat!">
+            </paper-input>
+            <paper-input 
+                id="enclosure-nachname"
+                type="text" 
+                name="nachname" 
+                label="Nachname" 
+                value="{{data.nachname}}" 
+                required 
+                auto-validate="{{autoValidate}}"
+                minlength="3" 
+                maxlength="30"
+                error-message="Geben Sie einen Nachnamen an, der mindestens 3 Buchstaben hat!">
+            </paper-input>
+            </form>
+        </iron-form> 
     </template>
     <script>
         class AnimadEnclosureForm extends Polymer.Element {
@@ -38,8 +45,17 @@
                         value() {
                             return {}
                         }
-                    }
+                    },
+                    autoValidate: Boolean
                 }
+            }
+
+            validate() {
+                return this.shadowRoot.querySelector('#iform').validate();
+            }
+
+            reset() {
+                return this.shadowRoot.querySelector('#iform').reset();
             }
         }
 
