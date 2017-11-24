@@ -162,7 +162,7 @@
           // clear selection and ui status
           this._checkedAll = false;
           this.$._checkedAll = false; // TBD: sonst ist Status des angezeigten Elemetns falsch
-          for (var i in this.$.selector.selected) {
+          for (var i in this._keepers) {
             this.set(['_keepers', i ], {
               first: this._keepers[i].first,
               last: this._keepers[i].last,
