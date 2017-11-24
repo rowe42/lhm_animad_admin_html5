@@ -79,6 +79,7 @@
           // TBD: Im Moment ist checked im Array, aber in den Daten aus dem Backend wird das nicht so übertragen
           // Entweder: Array kopieren und im neuen Array das checked - Feld einführen
           // Oder: Beim Löschen über Button die Checkboxen durch-loopen und auf checked = false setzen...
+          // Oder: Lösung über Data binding möglich??
           return {
             _keepers: {
               type: Array,
@@ -115,32 +116,29 @@
         }
 
         toggleSelection(e) {
-          console.log("toggleSelection");
           var item = this.$.animadKeepersList.itemForElement(e.target);
           this.$.selector.select(item);
         }
 
         toggleAll(e) {
-          console.log("toggleAll");
+          // toggle value of _checkedAll
           this.$._checkedAll = !this.$._checkedAll;
 
+          // deselect all selected items
           this.splice("$.selector.selected", 0, this.$.selector.selected.length);
 
-          var _items = this.$.animadKeepersList.items;
-          for (var i in _items) {
+          for (var i in this._keepers) {
             // TBD: Wird nur checked geändert gehen die Werte in den anderen Feldern verloren...
-            this.set(['$.animadKeepersList.items', i ], {
-                first: this.$.animadKeepersList.items[i].first,
-                last: this.$.animadKeepersList.items[i].last,
-                checked: this.$._checkedAll
-              });
+            this.set(['_keepers', i ], {
+              first: this._keepers[i].first,
+              last: this._keepers[i].last,
+              checked: this.$._checkedAll
+            });
 
-              if (this.$._checkedAll) {
-                this.$.selector.select(this.$.animadKeepersList.items[i]);
-              }
+            if (this.$._checkedAll) {
+              this.$.selector.select(this._keepers[i]);
+            }
           }
-          this.$.animadKeepersList.render();
-
         }
 
         handleNew() {
@@ -148,25 +146,36 @@
         }
 
         deleteSelectedRows(e) {
-          console.log(this.$.animadKeepersList);
+          // Get all selected items
           var _deleteitems = this.$.selector.selected;
-          for (var i in _deleteitems) {
-            var index = this.$.animadKeepersList.items.indexOf(_deleteitems[i]);
-            this.splice("$.animadKeepersList.items", index, 1);
-          }
 
-          this.splice("$.selector.selected", 0, this.$.selector.selected.length);
-          this.$.animadKeepersList.render();
-          // TBD: Daten im Backend löschen
+          // delete all selected items
+          for (var i = _deleteitems.length - 1; i >= 0; i--) {
+            var index = this._keepers.indexOf(_deleteitems[i]);
+
+            // TBD: Daten im Backend löschen
+            this.splice("_keepers", index, 1);
+          }
         }
 
         deleteRow(e) {
-          console.log("deleteRow")
+          // clear selection and ui status
+          this._checkedAll = false;
+          this.$._checkedAll = false; // TBD: sonst ist Status des angezeigten Elemetns falsch
+          for (var i in this.$.selector.selected) {
+            this.set(['_keepers', i ], {
+              first: this._keepers[i].first,
+              last: this._keepers[i].last,
+              checked: this._checkedAll
+            });
+          }
           this.$.selector.clearSelection();
-          // TBD: selektierte Checkboxen werden nicht aktualisierts
-          this.toggleSelection(e);
-          dialogDeleteSelected.open();
 
+          // selected item in row
+          this.toggleSelection(e);
+
+          // ask if item should be deleted
+          dialogDeleteSelected.open();
         }
       }
 
