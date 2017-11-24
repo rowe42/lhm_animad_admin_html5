@@ -18,7 +18,10 @@
 
       <paper-item>
         <paper-item-body>
-          <paper-search-panel></paper-search-panel>
+          <paper-search-panel
+            search = "{{_search}}"
+            on-change-request-params="filterData">
+          </paper-search-panel>
         </paper-item-body>
         <paper-button raised on-click="handleNew">New</paper-button>
         <paper-button raised onclick="dialogDeleteSelected.open()">Delete</paper-button>
@@ -45,7 +48,7 @@
       // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]List - id
       // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME] - items
       -->
-      <template is="dom-repeat" id="animadKeepersList" items="{{_keepers}}" >
+      <template is="dom-repeat" id="animadKeepersList" items="{{_keepers}}"  >
         <paper-item>
           <paper-item-body>{{index}}</paper-item-body>
           <paper-item-body>{{item.first}}</paper-item-body>
@@ -111,6 +114,10 @@
           _checkedAll: {
                type: Boolean,
                value: false
+           },
+           _search: {
+             type: String,
+             value:""
            }
           }
         }
@@ -176,6 +183,19 @@
 
           // ask if item should be deleted
           dialogDeleteSelected.open();
+        }
+
+        checkFilter() {
+          console.log(this._keepers[0].first);
+          console.log(this._search);
+          // TBD: liefert immer false??
+          return this._keepers[0].first.includes("this._search");
+        }
+
+        filterData(e) {
+           var matches = this.checkFilter();
+           console.log(matches);
+           return matches;
         }
       }
 
