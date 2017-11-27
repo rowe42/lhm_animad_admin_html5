@@ -2,17 +2,29 @@
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/nebula-i18n/nebula-i18n.html">
 <link rel="import" href="animad-enclosure-form.html">
 <link rel="import" href="../animad-icons.html">
 
 <dom-module id="animad-enclosure-create-form">
     <template>
         <style></style>
+        <nebula-language
+            supported='["en", "de"]'
+            lang="{{lang}}">
+        </nebula-language>
+        <nebula-resources
+                id="locales"
+                file="animad_enclosure_locales"
+                path="/locales"
+                resources="{{resources}}">
+        </nebula-resources>
         <iron-ajax 
-            id="httpbin" 
+            id="ajax_create_enclosure" 
             url="[[url]]" 
             method="POST" 
             body="{{_data}}" 
@@ -21,11 +33,18 @@
             on-error="_handleError"
             debounce-duration="300">
         </iron-ajax>
-        <animad-enclosure-form id="form" data="{{_data}}" auto-validate></animad-enclosure-form>
-        <paper-button on-tap="_sendForm" raised>Submit</paper-button>      
+        <animad-enclosure-form id="form" data="{{_data}}" resources="[[resources]]" lang="[[lang]]" auto-validate></animad-enclosure-form>
+        <paper-button class="send" on-tap="_sendForm" raised>
+            <iron-icon icon="animad-icons:send"></iron-icon>
+             [[$t('animad_enclosure_create_button_save')]]
+        </paper-button>
+        <paper-button class="reset" on-tap="_resetForm" raised>
+            <iron-icon icon="animad-icons:erase"></iron-icon>
+             [[$t('animad_enclosure_create_button_reset')]]
+        </paper-button>      
     </template>
     <script>
-        class AnimadEnclosureCreateForm extends Polymer.Element {
+        class AnimadEnclosureCreateForm extends Nebula.PolyglotBehavior(Polymer.Element) {
             static get is() { return 'animad-enclosure-create-form'; }
 
             static get properties() {
@@ -42,10 +61,16 @@
                     _error: {
                         type: String
                     },
-                    _toast: {
+                    _errorToast: {
                         type: Object,
                         value() {
-                            return document.querySelector('#global_toast');
+                            return document.querySelector('#global_error_toast');
+                        }
+                    },
+                    _successToast: {
+                        type: Object,
+                        value() {
+                            return document.querySelector('#global_success_toast');
                         }
                     }
                 }
@@ -62,23 +87,24 @@
                 if(valid) {
                     this.foo = JSON.stringify(this._data);
                     console.log("form is valid: " + this.foo);
-                    this.shadowRoot.querySelector('#httpbin').generateRequest();
+                    this.shadowRoot.querySelector('#ajax_create_enclosure').generateRequest();
                 } else {
                     console.log("form is not valid...");
-                    this._toast.text = 'Scheiße - streng dich an!';
-                    this._toast.open();
+                    this._errorToast.text = this.resources[this.lang].animad_enclosure_create_validation;
+                    this._errorToast.open();
                 }
                 
             }
 
-            _handleResponse(e) {
-                console.log("response -> " + JSON.stringify(e.detail.response));
+            _resetForm() {
                 this.shadowRoot.querySelector('#form').reset();
-                // this.set('_data', {});
-                // open notification toast
-                //var toast = document.querySelector('#global_toast');
-                this._toast.text = 'Super! Alles gespeichert :)';
-                this._toast.open();
+            }
+
+            _handleResponse(event) {
+                console.log("response -> " + JSON.stringify(event.detail.response));
+                this._resetForm();
+                this._successToast.text = this.resources[this.lang].animad_enclosure_create_success;
+                this._successToast.open();
             }
 
             _handleError(event) {
@@ -89,8 +115,8 @@
                 // get it! (always the first value)
                 this._error = findings[0];
                 // open notification toast
-                this._toast.text = 'Hat nicht funktioniert...';
-                this._toast.open();
+                this._successToast.text = this.resources[this.lang].animad_enclosure_create_error;
+                this._successToast.open();
             }
         }
 

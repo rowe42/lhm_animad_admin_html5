@@ -18,7 +18,9 @@
 
       <paper-item>
         <paper-item-body>
-          <paper-search-panel></paper-search-panel>
+          <paper-search-panel
+            search = "{{_search}}"
+          </paper-search-panel>
         </paper-item-body>
         <paper-button raised on-click="handleNew">New</paper-button>
         <paper-button raised onclick="dialogDeleteSelected.open()">Delete</paper-button>
@@ -37,7 +39,7 @@
         <paper-item-body>#</paper-item-body>
         <paper-item-body>First</paper-item-body>
         <paper-item-body>Last</paper-item-body>
-        <paper-checkbox></paper-checkbox>
+        <paper-checkbox on-click="toggleAll" checked="{{_checkedAll}}"></paper-checkbox>
         <paper-icon-button icon="animad-icons:sort"></paper-icon-button>
       </paper-item>
 
@@ -45,12 +47,12 @@
       // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]List - id
       // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME] - items
       -->
-      <template is="dom-repeat" id="animadKeepersList" items="{{_keepers}}" >
+      <template is="dom-repeat" id="animadKeepersList" items="{{_keepers}}"  filter="{{filterKeepers(_search)}}">
         <paper-item>
           <paper-item-body>{{index}}</paper-item-body>
           <paper-item-body>{{item.first}}</paper-item-body>
           <paper-item-body>{{item.last}}</paper-item-body>
-          <paper-checkbox  on-click="toggleSelection"></paper-checkbox>
+          <paper-checkbox  on-click="toggleSelection" checked="{{item.checked}}"></paper-checkbox>
           <paper-icon-button icon="animad-icons:delete" on-click="deleteRow"></paper-icon-button>
         </paper-item>
       </template>
@@ -58,6 +60,15 @@
       <array-selector id="selector" items="{{_keepers}}" selected="{{selected}}" multi toggle></array-selector>
 
       <template is="dom-repeat" items="{{selected}}"></template>
+<!--// TBD: Dummy, muss wieder raus -->
+
+      <template is="dom-repeat" id="selected" items="{{selected}}" >
+        <paper-item>
+          <paper-item-body>{{item.first}}</paper-item-body>
+          <paper-item-body>{{item.last}}</paper-item-body>
+        </paper-item>
+      </template>
+
     </template>
 
     <script>
@@ -67,41 +78,73 @@
         static get is() { return 'animad-keepers-list'; }
 
         static get properties() {
+          // TBD: Im Moment ist checked im Array, aber in den Daten aus dem Backend wird das nicht so übertragen
+          // Entweder: Array kopieren und im neuen Array das checked - Feld einführen
+          // Oder: Beim Löschen über Button die Checkboxen durch-loopen und auf checked = false setzen...
+          // Oder: Lösung über Data binding möglich??
           return {
             _keepers: {
               type: Array,
               value() {
                 return [
-                  {first: 'Patti', last: 'Smith'},
-                  {first: 'Polly Jean', last: 'Harvey'},
-                  {first: 'Joan', last: 'Jett'},
-                  {first: 'Beth', last: 'Ditto'},
-                  {first: 'Siouxsie', last: 'Sioux'},
-                  {first: 'Lydia', last: 'Lunch'},
-                  {first: 'Debbie', last: 'Harry'},
-                  {first: 'Sadie', last: 'May'},
-                  {first: 'Kim', last: 'Deal'},
-                  {first: 'Kelly', last: 'Deal'},
-                  {first: 'Courtney', last: 'Love'},
-                  {first: 'Kathleen', last: 'Hanna'},
-                  {first: 'Tobi', last: 'Vail'},
-                  {first: 'Kathi', last: 'Wilcox'},
-                  {first: 'Tanya', last: 'Donelly'},
-                  {first: 'Laura Jane', last: 'Grace'},
-                  {first: 'Donita', last: 'Sparks'},
-                  {first: 'Suzi', last: 'Gardner'},
-                  {first: 'Jennifer', last: 'Finch  '},
-                  {first: 'Demetra', last: 'Plakas'},
+                  {first: 'Patti', last: 'Smith', checked: false},
+                  {first: 'Polly Jean', last: 'Harvey', checked: false},
+                  {first: 'Joan', last: 'Jett', checked: false},
+                  {first: 'Beth', last: 'Ditto', checked: false},
+                  {first: 'Siouxsie', last: 'Sioux', checked: false},
+                  {first: 'Lydia', last: 'Lunch', checked: false},
+                  {first: 'Debbie', last: 'Harry', checked: false},
+                  {first: 'Sadie', last: 'May', checked: false},
+                  {first: 'Kim', last: 'Deal', checked: false},
+                  {first: 'Kelly', last: 'Deal', checked: false},
+                  {first: 'Courtney', last: 'Love', checked: false},
+                  {first: 'Kathleen', last: 'Hanna', checked: false},
+                  {first: 'Tobi', last: 'Vail', checked: false},
+                  {first: 'Kathi', last: 'Wilcox', checked: false},
+                  {first: 'Tanya', last: 'Donelly', checked: false},
+                  {first: 'Laura Jane', last: 'Grace', checked: false},
+                  {first: 'Donita', last: 'Sparks', checked: false},
+                  {first: 'Suzi', last: 'Gardner', checked: false},
+                  {first: 'Jennifer', last: 'Finch  ', checked: false},
+                  {first: 'Demetra', last: 'Plakas', checked: false},
                 ];
               }
-            }
+            },
+          _checkedAll: {
+               type: Boolean,
+               value: false
+           },
+           _search: {
+             type: String,
+             value: ""
+           }
           }
         }
 
         toggleSelection(e) {
-          console.log("toggleSelection");
           var item = this.$.animadKeepersList.itemForElement(e.target);
           this.$.selector.select(item);
+        }
+
+        toggleAll(e) {
+          // toggle value of _checkedAll
+          this.$._checkedAll = !this.$._checkedAll;
+
+          // deselect all selected items
+          this.splice("$.selector.selected", 0, this.$.selector.selected.length);
+
+          for (var i in this._keepers) {
+            // TBD: Wird nur checked geändert gehen die Werte in den anderen Feldern verloren...
+            this.set(['_keepers', i ], {
+              first: this._keepers[i].first,
+              last: this._keepers[i].last,
+              checked: this.$._checkedAll
+            });
+
+            if (this.$._checkedAll) {
+              this.$.selector.select(this._keepers[i]);
+            }
+          }
         }
 
         handleNew() {
@@ -109,23 +152,45 @@
         }
 
         deleteSelectedRows(e) {
-          console.log("deleteSelectedRows");
+          // Get all selected items
           var _deleteitems = this.$.selector.selected;
-          for (var i in _deleteitems) {
-            var index = this.$.animadKeepersList.items.indexOf(_deleteitems[i]);
-            this.splice("$.animadKeepersList.items", index, 1);
+
+          // delete all selected items
+          for (var i = _deleteitems.length - 1; i >= 0; i--) {
+            var index = this._keepers.indexOf(_deleteitems[i]);
+
+            // TBD: Daten im Backend löschen
+            this.splice("_keepers", index, 1);
           }
-          // TBD: Liste wird nicht aktualisiert
-          // TBD: Daten im Backend löschen
         }
 
         deleteRow(e) {
-          console.log("deleteRow")
+          // clear selection and ui status
+          this._checkedAll = false;
+          this.$._checkedAll = false; // TBD: sonst ist Status des angezeigten Elemetns falsch
+          for (var i in this._keepers) {
+            this.set(['_keepers', i ], {
+              first: this._keepers[i].first,
+              last: this._keepers[i].last,
+              checked: this._checkedAll
+            });
+          }
           this.$.selector.clearSelection();
-          // TBD: selektierte Checkboxen werden nicht aktualisierts
-          this.toggleSelection(e);
-          dialogDeleteSelected.open();
 
+          // selected item in row
+          this.toggleSelection(e);
+
+          // ask if item should be deleted
+          dialogDeleteSelected.open();
+        }
+
+        filterKeepers(val) {
+          console.log(val);
+          return function(item) {
+            if (!item) return false;
+            if (!val) return true;
+            return (item.first.includes(val) || item.last.includes(val));
+          }
         }
       }
 

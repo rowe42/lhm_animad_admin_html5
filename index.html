@@ -83,6 +83,7 @@
 
     <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
     <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="bower_components/fetch/fetch.js"></script>
 
     <!-- Load your application shell -->
     <!-- GENERATOR pattern: src/[DOMAINNAME]-app.html -->
@@ -98,12 +99,30 @@
         min-height: 100vh;
         background-color: #eeeeee;
       }
+
+      #global_error_toast {
+        --paper-toast-background-color: red;
+      }
+
+      paper-button.send {
+        background-color: var(--paper-green-500);
+        color: white;
+      }
     </style>
   </head>
   <body>
     <!-- TODO add toasts for error, warning, success -->
     <paper-toast 
-        id="global_toast" 
+        id="global_success_toast" 
+        always-on-top>
+    </paper-toast>
+    <paper-toast 
+        id="global_warning_toast" 
+        always-on-top>
+    </paper-toast>
+    <paper-toast 
+        id="global_error_toast"
+        duration=10000 
         always-on-top>
     </paper-toast>
     <!-- GENERATOR pattern: <[DOMAINNAME]-app> -->
