@@ -33,7 +33,8 @@
             debounce-duration="300">
         </iron-ajax>
         <animad-enclosure-form id="form" data="{{_data}}" resources="[[resources]]" lang="[[lang]]" auto-validate></animad-enclosure-form>
-        <paper-button on-tap="_sendForm" raised>[[$t('animad_enclosure_create_button_save')]]</paper-button>      
+        <paper-button on-tap="_sendForm" raised>[[$t('animad_enclosure_create_button_save')]]</paper-button>
+        <paper-button on-tap="_resetForm" raised>[[$t('animad_enclosure_create_button_reset')]]</paper-button>      
     </template>
     <script>
         class AnimadEnclosureCreateForm extends Nebula.PolyglotBehavior(Polymer.Element) {
@@ -88,9 +89,13 @@
                 
             }
 
+            _resetForm() {
+                this.shadowRoot.querySelector('#form').reset();
+            }
+
             _handleResponse(event) {
                 console.log("response -> " + JSON.stringify(event.detail.response));
-                this.shadowRoot.querySelector('#form').reset();
+                this._resetForm();
                 this._successToast.text = this.resources[this.lang].animad_enclosure_create_success;
                 this._successToast.open();
             }
