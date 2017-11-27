@@ -42,10 +42,16 @@
                     _error: {
                         type: String
                     },
-                    _toast: {
+                    _errorToast: {
                         type: Object,
                         value() {
-                            return document.querySelector('#global_toast');
+                            return document.querySelector('#global_error_toast');
+                        }
+                    },
+                    _successToast: {
+                        type: Object,
+                        value() {
+                            return document.querySelector('#global_success_toast');
                         }
                     }
                 }
@@ -65,20 +71,17 @@
                     this.shadowRoot.querySelector('#httpbin').generateRequest();
                 } else {
                     console.log("form is not valid...");
-                    this._toast.text = 'Scheiße - streng dich an!';
-                    this._toast.open();
+                    this._errorToast.text = 'Scheiße - streng dich an!';
+                    this._errorToast.open();
                 }
                 
             }
 
-            _handleResponse(e) {
-                console.log("response -> " + JSON.stringify(e.detail.response));
+            _handleResponse(event) {
+                console.log("response -> " + JSON.stringify(event.detail.response));
                 this.shadowRoot.querySelector('#form').reset();
-                // this.set('_data', {});
-                // open notification toast
-                //var toast = document.querySelector('#global_toast');
-                this._toast.text = 'Super! Alles gespeichert :)';
-                this._toast.open();
+                this._successToast.text = 'Super! Alles gespeichert :)';
+                this._successToast.open();
             }
 
             _handleError(event) {
@@ -89,8 +92,8 @@
                 // get it! (always the first value)
                 this._error = findings[0];
                 // open notification toast
-                this._toast.text = 'Hat nicht funktioniert...';
-                this._toast.open();
+                this._successToast.text = 'Hat nicht funktioniert...';
+                this._successToast.open();
             }
         }
 
