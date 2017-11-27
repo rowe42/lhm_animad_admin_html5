@@ -20,7 +20,6 @@
         <paper-item-body>
           <paper-search-panel
             search = "{{_search}}"
-            on-change-request-params="filterData">
           </paper-search-panel>
         </paper-item-body>
         <paper-button raised on-click="handleNew">New</paper-button>
@@ -48,7 +47,7 @@
       // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]List - id
       // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME] - items
       -->
-      <template is="dom-repeat" id="animadKeepersList" items="{{_keepers}}"  >
+      <template is="dom-repeat" id="animadKeepersList" items="{{_keepers}}"  filter="{{filterKeepers(_search)}}">
         <paper-item>
           <paper-item-body>{{index}}</paper-item-body>
           <paper-item-body>{{item.first}}</paper-item-body>
@@ -117,7 +116,7 @@
            },
            _search: {
              type: String,
-             value:""
+             value: ""
            }
           }
         }
@@ -185,17 +184,13 @@
           dialogDeleteSelected.open();
         }
 
-        checkFilter() {
-          console.log(this._keepers[0].first);
-          console.log(this._search);
-          // TBD: liefert immer false??
-          return this._keepers[0].first.includes("this._search");
-        }
-
-        filterData(e) {
-           var matches = this.checkFilter();
-           console.log(matches);
-           return matches;
+        filterKeepers(val) {
+          console.log(val);
+          return function(item) {
+            if (!item) return false;
+            if (!val) return true;
+            return (item.first.includes(val) || item.last.includes(val));
+          }
         }
       }
 
