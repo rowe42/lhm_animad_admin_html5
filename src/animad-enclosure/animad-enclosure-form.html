@@ -1,6 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../bower_components/nebula-i18n/nebula-i18n.html">
 <link rel="import" href="../../bower_components/polymer/lib/elements/custom-style.html">
 <link rel="import" href="../../bower_components/shadycss/apply-shim.html">
 
@@ -18,31 +19,31 @@
                 id="enclosure-vorname"
                 type="text" 
                 name="vorname" 
-                label="Vorname" 
+                label="[[$t('animad_enclosure_vorname')]]" 
                 value="{{data.vorname}}" 
                 required
                 auto-validate="{{autoValidate}}"
                 minlength="3" 
                 maxlength="30"
-                error-message="Geben Sie einen Vornamen an, der mindestens 3 Buchstaben hat!">
+                error-message="[[$t('animad_enclosure_vorname_error')]]">
             </paper-input>
             <paper-input 
                 id="enclosure-nachname"
                 type="text" 
-                name="nachname" 
-                label="Nachname" 
+                name=nachname 
+                label="[[$t('animad_enclosure_nachname')]]" 
                 value="{{data.nachname}}" 
                 required 
                 auto-validate="{{autoValidate}}"
                 minlength="3" 
                 maxlength="30"
-                error-message="Geben Sie einen Nachnamen an, der mindestens 3 Buchstaben hat!">
+                error-message="[[$t('animad_enclosure_nachname_error')]]">
             </paper-input>
             </form>
         </iron-form> 
     </template>
     <script>
-        class AnimadEnclosureForm extends Polymer.Element {
+        class AnimadEnclosureForm extends Nebula.PolyglotBehavior(Polymer.Element) {
             static get is() { return 'animad-enclosure-form'; }
 
             static get properties() {

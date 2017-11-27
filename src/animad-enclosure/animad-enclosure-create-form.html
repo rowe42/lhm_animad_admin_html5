@@ -5,12 +5,23 @@
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/nebula-i18n/nebula-i18n.html">
 <link rel="import" href="animad-enclosure-form.html">
 <link rel="import" href="../animad-icons.html">
 
 <dom-module id="animad-enclosure-create-form">
     <template>
         <style></style>
+        <nebula-language
+            supported='["en", "de"]'
+            lang="{{lang}}">
+        </nebula-language>
+        <nebula-resources
+                id="locales"
+                file="animad_enclosure_locales"
+                path="/locales"
+                resources="{{resources}}">
+        </nebula-resources>
         <iron-ajax 
             id="httpbin" 
             url="[[url]]" 
@@ -21,11 +32,11 @@
             on-error="_handleError"
             debounce-duration="300">
         </iron-ajax>
-        <animad-enclosure-form id="form" data="{{_data}}" auto-validate></animad-enclosure-form>
-        <paper-button on-tap="_sendForm" raised>Submit</paper-button>      
+        <animad-enclosure-form id="form" data="{{_data}}" resources="[[resources]]" lang="[[lang]]" auto-validate></animad-enclosure-form>
+        <paper-button on-tap="_sendForm" raised>[[$t('animad_enclosure_create_button_save')]]</paper-button>      
     </template>
     <script>
-        class AnimadEnclosureCreateForm extends Polymer.Element {
+        class AnimadEnclosureCreateForm extends Nebula.PolyglotBehavior(Polymer.Element) {
             static get is() { return 'animad-enclosure-create-form'; }
 
             static get properties() {
@@ -71,7 +82,7 @@
                     this.shadowRoot.querySelector('#httpbin').generateRequest();
                 } else {
                     console.log("form is not valid...");
-                    this._errorToast.text = 'Scheiße - streng dich an!';
+                    this._errorToast.text = this.resources[this.lang].animad_enclosure_create_validation;
                     this._errorToast.open();
                 }
                 
@@ -80,7 +91,7 @@
             _handleResponse(event) {
                 console.log("response -> " + JSON.stringify(event.detail.response));
                 this.shadowRoot.querySelector('#form').reset();
-                this._successToast.text = 'Super! Alles gespeichert :)';
+                this._successToast.text = this.resources[this.lang].animad_enclosure_create_success;
                 this._successToast.open();
             }
 
@@ -92,7 +103,7 @@
                 // get it! (always the first value)
                 this._error = findings[0];
                 // open notification toast
-                this._successToast.text = 'Hat nicht funktioniert...';
+                this._successToast.text = this.resources[this.lang].animad_enclosure_create_error;
                 this._successToast.open();
             }
         }
