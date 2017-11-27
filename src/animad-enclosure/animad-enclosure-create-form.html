@@ -23,7 +23,7 @@
                 resources="{{resources}}">
         </nebula-resources>
         <iron-ajax 
-            id="httpbin" 
+            id="ajax_create_enclosure" 
             url="[[url]]" 
             method="POST" 
             body="{{_data}}" 
@@ -79,7 +79,7 @@
                 if(valid) {
                     this.foo = JSON.stringify(this._data);
                     console.log("form is valid: " + this.foo);
-                    this.shadowRoot.querySelector('#httpbin').generateRequest();
+                    this.shadowRoot.querySelector('#ajax_create_enclosure').generateRequest();
                 } else {
                     console.log("form is not valid...");
                     this._errorToast.text = this.resources[this.lang].animad_enclosure_create_validation;
