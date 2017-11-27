@@ -20,6 +20,9 @@
         <paper-item-body>
           <paper-search-panel
             search = "{{_search}}"
+            items = "{{_filteredKeepers}}"
+            on-change-request-params="setFilteredKeepers"
+            hide-filter-button = "true">
           </paper-search-panel>
         </paper-item-body>
         <paper-button raised on-click="handleNew">New</paper-button>
@@ -110,6 +113,12 @@
                 ];
               }
             },
+            _filteredKeepers: {
+              type: Array,
+              value() {
+                return this._keepers;
+              }
+            },
           _checkedAll: {
                type: Boolean,
                value: false
@@ -118,7 +127,7 @@
              type: String,
              value: ""
            }
-          }
+         }
         }
 
         toggleSelection(e) {
@@ -133,16 +142,18 @@
           // deselect all selected items
           this.splice("$.selector.selected", 0, this.$.selector.selected.length);
 
-          for (var i in this._keepers) {
+          // select only items that are shown in list
+          for (var i in this._filteredKeepers) {
             // TBD: Wird nur checked geändert gehen die Werte in den anderen Feldern verloren...
-            this.set(['_keepers', i ], {
-              first: this._keepers[i].first,
-              last: this._keepers[i].last,
+            var index = this._keepers.indexOf(this._filteredKeepers[i]);
+            this.set(['_keepers', index ], {
+              first: this._keepers[index].first,
+              last: this._keepers[index].last,
               checked: this.$._checkedAll
             });
 
             if (this.$._checkedAll) {
-              this.$.selector.select(this._keepers[i]);
+              this.$.selector.select(this._keepers[index]);
             }
           }
         }
@@ -185,12 +196,18 @@
         }
 
         filterKeepers(val) {
-          console.log(val);
           return function(item) {
             if (!item) return false;
             if (!val) return true;
+
+            // GENERATOR über alle Felder des Objekts filtern
             return (item.first.includes(val) || item.last.includes(val));
           }
+        }
+
+        setFilteredKeepers(e) {
+          this._filteredKeepers = this._keepers.filter(this.filterKeepers(e.target.search));
+          //TBD: Selektierte Datensätze wegnehmen, wenn Filter geaendert wird??
         }
       }
 
