@@ -50,9 +50,31 @@
       -->
       <paper-item>
         <paper-item-body>#</paper-item-body>
-        <paper-item-body on-click="sortFirst">First{{_sort.0.sign}}</paper-item-body>
-        <paper-item-body on-click="sortLast">Last{{_sort.1.sign}}</paper-item-body>
-        <paper-item-body on-click="sortAge">Age{{_sort.2.sign}}</paper-item-body>
+
+        <paper-item-body>
+          <paper-icon-item on-click="sortFirst">
+            First
+            <iron-icon style="display:{{_sort.0.upward}}" icon="animad-icons:arrow-upward" slot="item-icon"></iron-icon>
+            <iron-icon style="display:{{_sort.0.downward}}" icon="animad-icons:arrow-downward" slot="item-icon"></iron-icon>
+          </paper-icon-item>
+        </paper-item-body>
+        <paper-item-body>
+          <paper-icon-item on-click="sortLast">
+            Last
+            <iron-icon style="display:{{_sort.1.upward}}" icon="animad-icons:arrow-upward" slot="item-icon"></iron-icon>
+            <iron-icon style="display:{{_sort.1.downward}}" icon="animad-icons:arrow-downward" slot="item-icon"></iron-icon>
+          </paper-icon-item>
+        </paper-item-body>
+        <paper-item-body>
+          <paper-icon-item on-click="sortAge">
+            Age
+            <iron-icon style="display:{{_sort.2.upward}}" icon="animad-icons:arrow-upward" slot="item-icon"></iron-icon>
+            <iron-icon style="display:{{_sort.2.downward}}" icon="animad-icons:arrow-downward" slot="item-icon"></iron-icon>
+          </paper-icon-item>
+        </paper-item-body>
+        <!--paper-item-body on-click="sortFirst">First{{_sort.0.sign}}</paper-item-body-->
+        <!--paper-item-body on-click="sortLast">Last{{_sort.1.sign}}</paper-item-body-->
+        <!--paper-item-body on-click="sortAge">Age{{_sort.2.sign}}</paper-item-body-->
         <paper-checkbox on-click="toggleAll" checked="{{_checkedAll}}"></paper-checkbox>
         <paper-icon-button icon="animad-icons:sort"></paper-icon-button>
       </paper-item>
@@ -99,7 +121,7 @@
 
           // GENERATOR pattern _[ENTITYNAME]
           // GENERATOR pattern _filtered[ENTITNAME] (initially set to _[ENTITYNAME])
-          // GENERATOR _sort Array contains an entry for each field of the ENTITY: {by: '[fieldname]', descending: true, sign: ''}
+          // GENERATOR _sort Array contains an entry for each field of the ENTITY: {by: '[fieldname]', descending: true, upward: 'none', downward: 'none'}
           return {
             _keepers: {
               type: Array,
@@ -145,16 +167,16 @@
            _currentSort: {
              type: Object,
              value() {
-               return {by: '', descending: true, sign: ''}
+               return {by: '', descending: true, upward: 'none', downward: 'none'}
              }
            },
            _sort: {
              type: Array,
              value() {
                return [
-                 {by: 'first', descending: true, sign: ''},
-                 {by: 'last', descending: true, sign:''},
-                 {by: 'age', descending: true, sign:''},
+                 {by: 'first', descending: true, upward: 'none', downward: 'none'},
+                 {by: 'last', descending: true, upward: 'none', downward: 'none'},
+                 {by: 'age', descending: true, upward: 'none', downward: 'none'},
                ];
              }
            },
@@ -292,26 +314,32 @@
           if (this._currentSort.by != this._sort[index].by) {
             // loop thru all rows in _sort to delete any signs that were set for another sort
             for (var i in this._sort) {
-              this._sort[i].sign='';
-              this.notifyPath('_sort.'+i+'.sign');
+              this._sort[i].upward='none';
+              this._sort[i].downward='none';
+              this.notifyPath('_sort.'+i+'.upward');
+              this.notifyPath('_sort.'+i+'.downward');
             }
             // first sort is always descending
-            this._sort[index].sign = ' d';
+            this._sort[index].downward = 'show';
+            this._sort[index].descending = true;
           }
           else {
             // toggle order and sign
             this._sort[index].descending = !this._sort[index].descending;
             if (this._sort[index].descending) {
-              this._sort[index].sign = ' d';
+              this._sort[index].upward = 'none';
+              this._sort[index].downward = 'show';
             }
             else {
-              this._sort[index].sign = ' a';
+              this._sort[index].upward = 'show';
+              this._sort[index].downward = 'none';
             }
             // needs a notify to call sort method
             this.notifyPath('_currentSort.descending');
           }
           this._currentSort = this._sort[index];
-          this.notifyPath('_sort.'+index+'.sign');
+          this.notifyPath('_sort.'+index+'.upward');
+          this.notifyPath('_sort.'+index+'.downward');
         }
 
         // GENERATOR one Method for every entity field. pattern (camel case): sort[FIELDNAME]
