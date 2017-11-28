@@ -8,6 +8,7 @@
   "sources": [
     "src/**/*",
     "images/**/*",
+    "locales/**/*",
     "bower.json"
    ],
   "lint": {
