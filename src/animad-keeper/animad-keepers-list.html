@@ -40,8 +40,8 @@
 
       <paper-item>
         <paper-item-body>#</paper-item-body>
-        <paper-item-body>First</paper-item-body>
-        <paper-item-body>Last</paper-item-body>
+        <paper-item-body on-click="sortFirst">First{{_sort.first}}</paper-item-body>
+        <paper-item-body on-click="sortLast">Last{{_sort.last}}</paper-item-body>
         <paper-checkbox on-click="toggleAll" checked="{{_checkedAll}}"></paper-checkbox>
         <paper-icon-button icon="animad-icons:sort"></paper-icon-button>
       </paper-item>
@@ -50,7 +50,7 @@
       // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]List - id
       // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME] - items
       -->
-      <template is="dom-repeat" id="animadKeepersList" items="{{_keepers}}"  filter="{{filterKeepers(_search)}}">
+      <template is="dom-repeat" id="animadKeepersList" items="{{_keepers}}"  filter="{{filterKeepers(_search)}}" sort="{{sortKeepers(_sort.by)}}">
         <paper-item>
           <paper-item-body>{{index}}</paper-item-body>
           <paper-item-body>{{item.first}}</paper-item-body>
@@ -126,6 +126,16 @@
            _search: {
              type: String,
              value: ""
+           },
+           _test: {
+             type: String,
+             value: "test"
+           },
+           _sort: {
+             type: Object,
+             value() {
+               return {by: "", descending: true, first: "", last: ""}
+             }
            }
          }
         }
@@ -208,6 +218,100 @@
         setFilteredKeepers(e) {
           this._filteredKeepers = this._keepers.filter(this.filterKeepers(e.target.search));
           //TBD: Selektierte Datensätze wegnehmen, wenn Filter geaendert wird??
+        }
+
+        sortKeepers(val) {
+          switch(val) {
+            case 'first':
+              if (this._sort.descending) {
+                return function(a, b) {
+                  if (a.first === b.first) return 0;
+
+                  return a.first < b.first ? -1 : 1;
+                };
+              }
+              else {
+                return function(a, b) {
+                  if (a.first === b.first) return 0;
+
+                  return a.first < b.first ? 1 : -1;
+                };
+              }
+            case 'last':
+              if (this._sort.descending) {
+                return function(a, b) {
+                  if (a.last === b.last) return 0;
+                  return a.last < b.last ? -1 : 1;
+                };
+              }
+              else {
+                return function(a, b) {
+                  if (a.last === b.last) return 0;
+
+                  return a.last < b.last ? 1 : -1;
+                };
+              }
+            default:
+              return 0;
+          }
+        }
+
+        toggleSort(sortby) {
+          this._sort.descending = !this._sort.descending;
+          switch (sortby) {
+            case 'first':
+              this._sort.descending ? this._sort.first = " d" : this._sort.first = " a";
+              break;
+            case 'last':
+              this._sort.descending ? this._sort.last = " d" : this._sort.last = " a";
+              break;
+            default:
+              break;
+          }
+        }
+
+        switchSort(sortby){
+          this._sort.descending=true;
+          this._sort.by=sortby;
+
+          switch (sortby) {
+            case 'first':
+              this._sort.first=" d";
+              this._sort.last="";
+              break;
+            case 'last':
+              this._sort.last=" d";
+              this._sort.first="";
+              break;
+            default:
+              this._sort.first=" d";
+              this._sort.last="";
+              break;
+          }
+        }
+
+        sortFirst(val) {
+          if (this._sort.by != 'first') {
+            this.switchSort('first');
+            this.notifyPath('_sort.last');
+          }
+          else {
+            this.toggleSort('first');
+          }
+          this.notifyPath('_sort.by');
+          this.notifyPath('_sort.first');
+        }
+
+        sortLast() {
+          if (this._sort.by != 'last') {
+            this.switchSort('last');
+            this.notifyPath('_sort.first');
+          }
+          else {
+            this.toggleSort('last');
+          }
+          this.notifyPath('_sort.by');
+          this.notifyPath('_sort.last');
         }
       }
 
