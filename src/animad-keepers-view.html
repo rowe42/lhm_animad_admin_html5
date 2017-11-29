@@ -16,13 +16,20 @@
 
         padding: 10px;
       }
+
+      .animad-keeper-view-content {
+        display: grid;
+        grid-row-gap: 3em;
+      }
     </style>
 
     <div class="card">
       <div class="circle"><iron-icon icon="animad-icons:basecamp"></iron-icon></div>
       <h1>Keepers view</h1>
-      <animad-keeper-create-form></animad-keeper-create-form>
-      <!--<animad-keepers-list></animad-keepers-list>-->
+      <div class="animad-keeper-view-content">
+        <animad-keeper-create-form></animad-keeper-create-form>
+        <animad-keepers-list></animad-keepers-list>
+      </div>
 
       </div>
   </template>

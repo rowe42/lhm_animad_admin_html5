@@ -7,12 +7,23 @@
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/nebula-i18n/nebula-i18n.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/custom-style.html">
+<link rel="import" href="../../bower_components/shadycss/apply-shim.html">
+
+<!-- animad elements -->
 <link rel="import" href="animad-enclosure-form.html">
 <link rel="import" href="../animad-icons.html">
 
 <dom-module id="animad-enclosure-create-form">
     <template>
-        <style></style>
+        <style is="custom-style">
+            paper-button.send {
+                background-color: var(--paper-green-500);
+                color: white;
+                @apply --animad-enclosure-create-form-button-send;
+            }
+        </style>
+        <!-- i18n -->
         <nebula-language
             supported='["en", "de"]'
             lang="{{lang}}">
@@ -23,6 +34,7 @@
                 path="/locales"
                 resources="{{resources}}">
         </nebula-resources>
+        <!-- ajax calls -->
         <iron-ajax 
             id="ajax_create_enclosure" 
             url="[[url]]" 
@@ -33,7 +45,13 @@
             on-error="_handleError"
             debounce-duration="300">
         </iron-ajax>
+        <!--
+            the form itself.
+        -->
         <animad-enclosure-form id="form" data="{{_data}}" resources="[[resources]]" lang="[[lang]]" auto-validate></animad-enclosure-form>
+        <!-- 
+            buttons
+        -->
         <paper-button class="send" on-tap="_sendForm" raised>
             <iron-icon icon="animad-icons:send"></iron-icon>
              [[$t('animad_enclosure_create_button_save')]]
