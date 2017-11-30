@@ -15,30 +15,28 @@
         </style>
         <iron-form id="iform">
             <form class="animad-enclosure-form">
+               <paper-input 
+                    id="enclosure-name"
+                    type="text" 
+                    name="name" 
+                    label="[[$t('animad_enclosure_name')]]" 
+                    value="{{data.name}}" 
+                    required
+                    auto-validate="{{autoValidate}}"
+                    minlength="3" 
+                    maxlength="30"
+                    error-message="[[$t('animad_enclosure_name_error')]]">
+                </paper-input>
                 <paper-input 
-                id="enclosure-vorname"
-                type="text" 
-                name="vorname" 
-                label="[[$t('animad_enclosure_vorname')]]" 
-                value="{{data.vorname}}" 
-                required
-                auto-validate="{{autoValidate}}"
-                minlength="3" 
-                maxlength="30"
-                error-message="[[$t('animad_enclosure_vorname_error')]]">
-            </paper-input>
-            <paper-input 
-                id="enclosure-nachname"
-                type="text" 
-                name=nachname 
-                label="[[$t('animad_enclosure_nachname')]]" 
-                value="{{data.nachname}}" 
-                required 
-                auto-validate="{{autoValidate}}"
-                minlength="3" 
-                maxlength="30"
-                error-message="[[$t('animad_enclosure_nachname_error')]]">
-            </paper-input>
+                    id="enclosure-cleaningTime"
+                    type="time" 
+                    name=cleaningTime 
+                    label="[[$t('animad_enclosure_cleaningTime')]]" 
+                    value="{{data.cleaningTime}}" 
+                    required 
+                    auto-validate="{{autoValidate}}"
+                    error-message="[[$t('animad_enclosure_cleaningTime_error')]]">
+                </paper-input>   
             </form>
         </iron-form> 
     </template>

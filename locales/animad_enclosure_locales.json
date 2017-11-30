@@ -9,7 +9,11 @@
       "animad_enclosure_create_validation": "",
       "animad_enclosure_create_success": "",
       "animad_enclosure_create_button_save": "save",
-      "animad_enclosure_create_button_reset": "reset"
+      "animad_enclosure_create_button_reset": "reset",
+      "animad_enclosure_name": "Name",
+      "animad_enclosure_name_error": "Name with 3 letters required!",
+      "animad_enclosure_cleaningTime": "Cleaning Time",
+      "animad_enclosure_cleaningTime_error": "Cleaning Time"
     },
     "de": {
       "foo": "my-foo",
@@ -21,6 +25,10 @@
       "animad_enclosure_create_validation": "Bitte die angezeigten Fehler beheben!",
       "animad_enclosure_create_success": "Das Formular wurde gespeichert!",
       "animad_enclosure_create_button_save": "speichern",
-      "animad_enclosure_create_button_reset": "zurücksetzen"
+      "animad_enclosure_create_button_reset": "zurücksetzen",
+      "animad_enclosure_name": "Name des Geheges",
+      "animad_enclosure_name_error": "Geben Sie bitte einen Namen für das Gehege an, der mindestens 3 Buchstaben hat!",
+      "animad_enclosure_cleaningTime": "Tägliche Putzzeit",
+      "animad_enclosure_cleaningTime_error": "Tägliche Putzzeit muss im Format <HH:mm> eingegeben werden!"
     }
 }
