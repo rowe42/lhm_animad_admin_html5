@@ -1,0 +1,125 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/nebula-i18n/nebula-i18n.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/custom-style.html">
+<link rel="import" href="../../bower_components/shadycss/apply-shim.html">
+
+<!-- animad elements -->
+<link rel="import" href="animad-enclosure-form.html">
+<link rel="import" href="../animad-icons.html">
+
+<dom-module id="animad-enclosure-update-form">
+    <style></style>
+    <template>
+        <nebula-language
+            supported='["en", "de"]'
+            lang="{{lang}}">
+        </nebula-language>
+        <nebula-resources
+                id="locales"
+                file="animad_enclosure_locales"
+                path="/locales"
+                resources="{{resources}}">
+        </nebula-resources>
+        <!-- ajax calls -->
+        <iron-ajax 
+            id="ajax_create_enclosure" 
+            url="[[url]]" 
+            method="POST" 
+            body="{{_data}}" 
+            handle-as="json" 
+            on-response="_handleResponse" 
+            on-error="_handleError"
+            debounce-duration="300">
+        </iron-ajax>
+        <!--
+            the form itself.
+        -->
+        <animad-enclosure-form id="form" data="{{_data}}" resources="[[resources]]" lang="[[lang]]" auto-validate></animad-enclosure-form>
+    </template>
+    <script>
+        class AnimadEnclosureUpdateForm extends Nebula.PolyglotBehavior(Polymer.Element) {
+            static get is() { return 'animad-enclosure-update-form'; }
+
+            static get properties() {
+                return {
+                    url: {
+                        type: String
+                    },
+                    _data: {
+                        type: Object,
+                        value() {
+                            return {}
+                        }
+                    },
+                    _error: {
+                        type: String
+                    },
+                    _errorToast: {
+                        type: Object,
+                        value() {
+                            return document.querySelector('#global_error_toast');
+                        }
+                    },
+                    _successToast: {
+                        type: Object,
+                        value() {
+                            return document.querySelector('#global_success_toast');
+                        }
+                    }
+                }
+            }
+
+            constructor() {
+                super();
+            }
+
+            _sendForm() {
+                // check if the formcontent is valid against the defined rules
+                var valid = this.shadowRoot.querySelector('#form').validate();
+
+                if(valid) {
+                    this.foo = JSON.stringify(this._data);
+                    console.log("form is valid: " + this.foo);
+                    this.shadowRoot.querySelector('#ajax_create_enclosure').generateRequest();
+                } else {
+                    console.log("form is not valid...");
+                    this._errorToast.text = this.resources[this.lang].animad_enclosure_create_validation;
+                    this._errorToast.open();
+                }
+                
+            }
+
+            _resetForm() {
+                this.shadowRoot.querySelector('#form').reset();
+            }
+
+            _handleResponse(event) {
+                console.log("response -> " + JSON.stringify(event.detail.response));
+                this._resetForm();
+                this._successToast.text = this.resources[this.lang].animad_enclosure_create_success;
+                this._successToast.open();
+            }
+
+            _handleError(event) {
+                // regex for HTML status code
+                var rx = /[0-9]{3}/;
+                // find the code
+                var findings = rx.exec(event.detail.error.message);
+                // get it! (always the first value)
+                this._error = findings[0];
+                // open notification toast
+                this._successToast.text = this.resources[this.lang].animad_enclosure_create_error;
+                this._successToast.open();
+            }
+        }
+
+        customElements.define(AnimadEnclosureUpdateForm.is, AnimadEnclosureUpdateForm);
+    </script>
+</dom-module>
