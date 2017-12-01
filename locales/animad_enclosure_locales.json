@@ -15,7 +15,7 @@
       "animad_enclosure_name_error": "Geben Sie bitte einen Namen für das Gehege an, der mindestens 3 Buchstaben hat!",
       "animad_enclosure_cleaningTime": "Tägliche Putzzeit",
       "animad_enclosure_cleaningTime_error": "Tägliche Putzzeit muss im Format <HH:mm> eingegeben werden!",
-      "animad_enclosure_create_error": "Es ist ein technischer Fehler aufgetreten_",
+      "animad_enclosure_create_error": "Es ist ein technischer Fehler aufgetreten. Status code: ",
       "animad_enclosure_create_validation": "Bitte die angezeigten Fehler beheben!",
       "animad_enclosure_create_success": "Das Formular wurde gespeichert!",
       "animad_enclosure_create_button_save": "speichern",
