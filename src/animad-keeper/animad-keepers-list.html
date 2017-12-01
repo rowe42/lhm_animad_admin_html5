@@ -8,6 +8,11 @@
 <link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../bower_components/polymer/lib/elements/array-selector.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-column.html">
+<link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-selection-column.html">
+<link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-filter.html">
 <link rel="import" href="../animad-icons.html">
 
 <!-- GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-list -->
@@ -25,7 +30,7 @@
             search = "{{_search}}"
             items = "{{_filteredKeepers}}"
             on-change-request-params="setFilteredKeepers"
-            hide-filter-button = "true">
+            >
           </paper-search-panel>
         </paper-item-body>
         <paper-button raised on-click="handleNew">New</paper-button>
@@ -45,39 +50,16 @@
       </paper-dialog>
 
       <!--
-        Title for the table. Sorting over all fields is by default possible
-        GENERATOR pattern sort[FIELDNAME] for sort Methods
+        Modal dialog to ask before deleting all selected items
       -->
-      <paper-item>
-        <paper-item-body>#</paper-item-body>
-
-        <paper-item-body>
-          <paper-icon-item on-click="sortFirst">
-            First
-            <iron-icon style="display:{{_sort.0.upward}}" icon="animad-icons:arrow-upward" slot="item-icon"></iron-icon>
-            <iron-icon style="display:{{_sort.0.downward}}" icon="animad-icons:arrow-downward" slot="item-icon"></iron-icon>
-          </paper-icon-item>
-        </paper-item-body>
-        <paper-item-body>
-          <paper-icon-item on-click="sortLast">
-            Last
-            <iron-icon style="display:{{_sort.1.upward}}" icon="animad-icons:arrow-upward" slot="item-icon"></iron-icon>
-            <iron-icon style="display:{{_sort.1.downward}}" icon="animad-icons:arrow-downward" slot="item-icon"></iron-icon>
-          </paper-icon-item>
-        </paper-item-body>
-        <paper-item-body>
-          <paper-icon-item on-click="sortAge">
-            Age
-            <iron-icon style="display:{{_sort.2.upward}}" icon="animad-icons:arrow-upward" slot="item-icon"></iron-icon>
-            <iron-icon style="display:{{_sort.2.downward}}" icon="animad-icons:arrow-downward" slot="item-icon"></iron-icon>
-          </paper-icon-item>
-        </paper-item-body>
-        <!--paper-item-body on-click="sortFirst">First{{_sort.0.sign}}</paper-item-body-->
-        <!--paper-item-body on-click="sortLast">Last{{_sort.1.sign}}</paper-item-body-->
-        <!--paper-item-body on-click="sortAge">Age{{_sort.2.sign}}</paper-item-body-->
-        <paper-checkbox on-click="toggleAll" checked="{{_checkedAll}}"></paper-checkbox>
-        <paper-icon-button icon="animad-icons:sort"></paper-icon-button>
-      </paper-item>
+      <paper-dialog id="dialogDeleteItem">
+        <h2>Delete</h2>
+        <p>Do you really want delete [[_deleteInfo]]?</p>
+        <paper-item>
+          <paper-button raised dialog-confirm on-click="deleteSelectedRows">Yes</paper-button>
+          <paper-button raised dialog-dismiss on-click="unsetTemporaryDeleteInfo" autofocus>No</paper-button>
+        </paper-item>
+      </paper-dialog>
 
       <!--
       // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]List - id
@@ -85,26 +67,42 @@
       // GENERATOR pattern (camel case): filter[ENTITYNAME](_search) - filter
       // GENERATOR pattern (camel case): sort[ENTITYNAME](_currentSort.descending) - sort
       -->
-      <template is="dom-repeat" id="animadKeepersList"
-                items="{{_keepers}}"
-                filter="{{filterKeepers(_search)}}"
-                sort="{{sortKeepers(_currentSort.descending)}}">
-        <paper-item>
-          <paper-item-body>{{index}}</paper-item-body>
-          <paper-item-body>{{item.first}}</paper-item-body>
-          <paper-item-body>{{item.last}}</paper-item-body>
-          <paper-item-body>{{item.age}}</paper-item-body>
-          <paper-checkbox  on-click="toggleSelection" checked="{{item.checked}}"></paper-checkbox>
-          <paper-icon-button icon="animad-icons:delete" on-click="deleteRow"></paper-icon-button>
-        </paper-item>
-      </template>
+      <vaadin-grid id="animadKeepersList" aria-label="Multi-Selection Example" items="[[_filteredKeepers]]" multi-sort="[[multiSort]]" class="style-scope grid-selection-demos">
+        <vaadin-grid-selection-column auto-select class="style-scope grid-selection-demos">
+        </vaadin-grid-selection-column>
 
-      <array-selector id="selector" items="{{_keepers}}" selected="{{selected}}" multi toggle></array-selector>
+        <vaadin-grid-column width="50px" flex-grow="0" class="style-scope grid-selection-demos">
+          <template class="header style-scope grid-selection-demos">#</template>
+          <template class="style-scope grid-selection-demos">[[index]]</template>
+        </vaadin-grid-column>
 
+        <vaadin-grid-column class="style-scope grid-selection-demos">
+          <template class="header style-scope grid-sorting-filtering-demos">
+            <vaadin-grid-sorter path="first" class="style-scope grid-sorting-filtering-demos">First</vaadin-grid-sorter>
+          </template>
+          <template class="style-scope grid-selection-demos">[[item.first]]</template>
+        </vaadin-grid-column>
 
-      <template is="dom-repeat" id="selected" items="{{selected}}" >
-      </template>
+        <vaadin-grid-column class="style-scope grid-selection-demos">
+          <template class="header style-scope grid-sorting-filtering-demos">
+            <vaadin-grid-sorter path="last" class="style-scope grid-sorting-filtering-demos">Last</vaadin-grid-sorter>
+          </template>
+          <template class="style-scope grid-selection-demos">[[item.last]]</template>
+        </vaadin-grid-column>
 
+        <vaadin-grid-column class="style-scope grid-selection-demos">
+          <template class="header style-scope grid-sorting-filtering-demos">
+            <vaadin-grid-sorter path="age" class="style-scope grid-sorting-filtering-demos">Age</vaadin-grid-sorter>
+          </template>
+          <template class="style-scope grid-selection-demos">[[item.age]]</template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column class="style-scope grid-selection-demos">
+          <template>
+            <paper-icon-button icon="animad-icons:delete" id="[[index]]" on-click="deleteRow"></paper-icon-button>
+          </template>
+        </vaadin-grid-column>
+      </vaadin-grid>
     </template>
 
     <script>
@@ -114,11 +112,6 @@
         static get is() { return 'animad-keepers-list'; }
 
         static get properties() {
-          // TBD: Im Moment ist checked im Array, aber in den Daten aus dem Backend wird das nicht so übertragen
-          // Entweder: Array kopieren und im neuen Array das checked - Feld einführen
-          // Oder: Beim Löschen über Button die Checkboxen durch-loopen und auf checked = false setzen...
-          // Oder: Lösung über Data binding möglich??
-
           // GENERATOR pattern _[ENTITYNAME]
           // GENERATOR pattern _filtered[ENTITNAME] (initially set to _[ENTITYNAME])
           // GENERATOR _sort Array contains an entry for each field of the ENTITY: {by: '[fieldname]', descending: true, upward: 'none', downward: 'none'}
@@ -127,28 +120,32 @@
               type: Array,
               value() {
                 return [
-                  {first: 'Patti', last: 'Smith', age: 32, checked: false},
-                  {first: 'Polly Jean', last: 'Harvey', age: 38, checked: false},
-                  {first: 'Joan', last: 'Jett', age: 62, checked: false},
-                  {first: 'Beth', last: 'Ditto', age: 27, checked: false},
-                  {first: 'Siouxsie', last: 'Sioux', age: 53, checked: false},
-                  {first: 'Lydia', last: 'Lunch', age: 32, checked: false},
-                  {first: 'Debbie', last: 'Harry', age: 57, checked: false},
-                  {first: 'Sadie', last: 'May', age: 22, checked: false},
-                  {first: 'Kim', last: 'Deal', age: 44, checked: false},
-                  {first: 'Kelly', last: 'Deal', age: 44, checked: false},
-                  {first: 'Courtney', last: 'Love', age: 56, checked: false},
-                  {first: 'Kathleen', last: 'Hanna', age: 34, checked: false},
-                  {first: 'Tobi', last: 'Vail', age: 28, checked: false},
-                  {first: 'Kathi', last: 'Wilcox', age: 32, checked: false},
-                  {first: 'Tanya', last: 'Donelly', age: 45, checked: false},
-                  {first: 'Laura Jane', last: 'Grace', age: 47, checked: false},
-                  {first: 'Donita', last: 'Sparks', age: 51, checked: false},
-                  {first: 'Suzi', last: 'Gardner', age: 20, checked: false},
-                  {first: 'Jennifer', last: 'Finch  ', age: 33, checked: false},
-                  {first: 'Demetra', last: 'Plakas', age: 47, checked: false},
+                  {first: 'Patti', last: 'Smith', age: 32},
+                  {first: 'Polly Jean', last: 'Harvey', age: 38},
+                  {first: 'Joan', last: 'Jett', age: 62},
+                  {first: 'Beth', last: 'Ditto', age: 27},
+                  {first: 'Siouxsie', last: 'Sioux', age: 53},
+                  {first: 'Lydia', last: 'Lunch', age: 32},
+                  {first: 'Debbie', last: 'Harry', age: 57},
+                  {first: 'Sadie', last: 'May', age: 22},
+                  {first: 'Kim', last: 'Deal', age: 44},
+                  {first: 'Kelly', last: 'Deal', age: 44},
+                  {first: 'Courtney', last: 'Love', age: 56},
+                  {first: 'Kathleen', last: 'Hanna', age: 34},
+                  {first: 'Tobi', last: 'Vail', age: 28},
+                  {first: 'Kathi', last: 'Wilcox', age: 32},
+                  {first: 'Tanya', last: 'Donelly', age: 45},
+                  {first: 'Laura Jane', last: 'Grace', age: 47},
+                  {first: 'Donita', last: 'Sparks', age: 51},
+                  {first: 'Suzi', last: 'Gardner', age: 20},
+                  {first: 'Jennifer', last: 'Finch  ', age: 33},
+                  {first: 'Demetra', last: 'Plakas', age: 47},
                 ];
               }
+            },
+            multiSort: {
+              type: Boolean,
+              value: false
             },
             _filteredKeepers: {
               type: Array,
@@ -156,59 +153,19 @@
                 return this._keepers;
               }
             },
-          _checkedAll: {
-               type: Boolean,
-               value: false
-           },
            _search: {
              type: String,
              value: ""
            },
-           _currentSort: {
-             type: Object,
-             value() {
-               return {by: '', descending: true, upward: 'none', downward: 'none'}
-             }
+           _deleteInfo: {
+             type: String,
+             value: ""
            },
-           _sort: {
+           _deleteItem: {
              type: Array,
-             value() {
-               return [
-                 {by: 'first', descending: true, upward: 'none', downward: 'none'},
-                 {by: 'last', descending: true, upward: 'none', downward: 'none'},
-                 {by: 'age', descending: true, upward: 'none', downward: 'none'},
-               ];
-             }
-           },
+             value: []
+           }
          }
-        }
-
-        toggleSelection(e) {
-          var item = this.$.animadKeepersList.itemForElement(e.target);
-          this.$.selector.select(item);
-        }
-
-        toggleAll(e) {
-          // toggle value of _checkedAll
-          this.$._checkedAll = !this.$._checkedAll;
-
-          // deselect all selected items
-          this.splice('$.selector.selected', 0, this.$.selector.selected.length);
-
-          // select only items that are shown in list
-          for (var i in this._filteredKeepers) {
-            // TBD: Wird nur checked geändert gehen die Werte in den anderen Feldern verloren...
-            var index = this._keepers.indexOf(this._filteredKeepers[i]);
-            this.set(['_keepers', index ], {
-              first: this._keepers[index].first,
-              last: this._keepers[index].last,
-              checked: this.$._checkedAll
-            });
-
-            if (this.$._checkedAll) {
-              this.$.selector.select(this._keepers[index]);
-            }
-          }
         }
 
         handleNew() {
@@ -217,36 +174,47 @@
         }
 
         deleteSelectedRows(e) {
-          // Get all selected items
-          var _deleteitems = this.$.selector.selected;
+          var _selectedItems = [];
+          var _tmpSelectedItems = [];
 
-          // delete all selected items
-          for (var i = _deleteitems.length - 1; i >= 0; i--) {
-            var index = this._keepers.indexOf(_deleteitems[i]);
-
-            // TBD: Daten im Backend löschen
-            this.splice('_keepers', index, 1);
+          if (this._deleteItem.length > 0) {
+            _selectedItems = this._deleteItem;
+            _tmpSelectedItems = _selectedItems;
           }
+          else {
+            _selectedItems = this.$.animadKeepersList.selectedItems;
+          }
+          // loop over all items to delete
+          for (var i in _selectedItems) {
+            // check if _filteredKeepers contains _selectedItems[i]
+            var index = this._filteredKeepers.indexOf(_selectedItems[i]);
+
+              // TBD: Daten im Backend löschen -> _keepers
+            if (index >= 0) {
+              this.splice('_filteredKeepers', index, 1);
+            }
+          }
+
+          // unset temporary delete information
+          this.unsetTemporaryDeleteInfo();
+
         }
 
         deleteRow(e) {
-          // clear selection and ui status
-          this._checkedAll = false;
-          this.$._checkedAll = false; // TBD: sonst ist Status des angezeigten Elements falsch
-          for (var i in this._keepers) {
-            this.set(['_keepers', i ], {
-              first: this._keepers[i].first,
-              last: this._keepers[i].last,
-              checked: this._checkedAll
-            });
-          }
-          this.$.selector.clearSelection();
+          // get item of row where delete button was clicked
+          var item = this._filteredKeepers[e.target.id];
 
-          // selected item in row
-          this.toggleSelection(e);
+          // set temporary delete information
+          this._deleteInfo = item.first+", "+item.last+", "+item.age;
+          this._deleteItem = [item];
 
-          // ask if item should be deleted
-          dialogDeleteSelected.open();
+          // check if selected item should be deleted
+          dialogDeleteItem.open();
+        }
+
+        unsetTemporaryDeleteInfo() {
+          this._deleteItem = [];
+          this._deleteInfo = "";
         }
 
         // GENERATOR pattern filter[ENTITYNAME]
@@ -263,96 +231,6 @@
         // GENERATOR pattern (camel case): setFiltered[ENTITYNAME]
         setFilteredKeepers(e) {
           this._filteredKeepers = this._keepers.filter(this.filterKeepers(e.target.search));
-          //TBD: Selektierte Datensätze: Selektion wegnehmen, wenn Filter geaendert wird??
-        }
-
-        // GENERATOR pattern (camel case): sort[ENTITYNAME]
-        sortKeepers(desc) {
-          var sort = this._currentSort;
-
-          // GENERATOR: Switch for every field in entity
-          switch(sort.by) {
-            case 'first':
-              if (sort.descending) {
-                return function(a, b) {
-                  return a.first.toLowerCase().localeCompare(b.first.toLowerCase());
-                }
-              }
-              else {
-                return function(a, b) {
-                  return b.first.toLowerCase().localeCompare(a.first.toLowerCase());
-                }
-              }
-            case 'last':
-              if (sort.descending) {
-                return function(a, b) {
-                  return a.last.toLowerCase().localeCompare(b.last.toLowerCase());
-                }
-              }
-              else {
-                return function(a, b) {
-                  return b.last.toLowerCase().localeCompare(a.last.toLowerCase());
-                }
-              }
-            case 'age':
-              if (sort.descending) {
-                return function(a, b) {
-                  return a.age - b.age;
-                }
-              }
-              else {
-                return function(a, b) {
-                  return b.age - a.age;
-                }
-              }
-            default:
-              return 0;
-          }
-        }
-
-        setSortAttributes(index){
-          if (this._currentSort.by != this._sort[index].by) {
-            // loop thru all rows in _sort to delete any signs that were set for another sort
-            for (var i in this._sort) {
-              this._sort[i].upward='none';
-              this._sort[i].downward='none';
-              this.notifyPath('_sort.'+i+'.upward');
-              this.notifyPath('_sort.'+i+'.downward');
-            }
-            // first sort is always descending
-            this._sort[index].downward = 'show';
-            this._sort[index].descending = true;
-          }
-          else {
-            // toggle order and sign
-            this._sort[index].descending = !this._sort[index].descending;
-            if (this._sort[index].descending) {
-              this._sort[index].upward = 'none';
-              this._sort[index].downward = 'show';
-            }
-            else {
-              this._sort[index].upward = 'show';
-              this._sort[index].downward = 'none';
-            }
-            // needs a notify to call sort method
-            this.notifyPath('_currentSort.descending');
-          }
-          this._currentSort = this._sort[index];
-          this.notifyPath('_sort.'+index+'.upward');
-          this.notifyPath('_sort.'+index+'.downward');
-        }
-
-        // GENERATOR one Method for every entity field. pattern (camel case): sort[FIELDNAME]
-        sortFirst() {
-          this.setSortAttributes(0);
-        }
-
-        sortLast() {
-          this.setSortAttributes(1);
-        }
-
-        sortAge() {
-          this.setSortAttributes(2);
         }
       }
 
