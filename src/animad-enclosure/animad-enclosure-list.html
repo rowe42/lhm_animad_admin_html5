@@ -1,0 +1,75 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../bower_components/paper-search/paper-search-panel.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/array-selector.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="../animad-icons.html">
+
+<!-- GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-list -->
+<animad-enclosure-list></animad-enclosure-list>
+<dom-module id="animad-enclosure-list">
+    <template preserve-content>
+        <style>
+            paper-button {
+                margin-bottom: 20px;
+                margin-top: 20px;
+            }
+        </style>
+        
+        <vaadin-grid items="[[items]]">
+
+            <vaadin-grid-column width="50px" flex-grow="0">
+                <template class="header">#</template>
+                <template>[[index]]</template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column>
+                <template class="header">Gehegename</template>
+                <template>[[item.gehegeName]]</template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column>
+                <template class="header">Tägliche Putzzeit</template>
+                <template>[[item.cleaningTime]]</template>
+            </vaadin-grid-column>
+
+        </vaadin-grid>
+        <paper-button raised on-tap="_add">Hinzufügen</paper-button>
+        <paper-button raised on-tap="_remove">Löschen</paper-button>
+
+    </template>
+    <script>
+        class AnimadEnclosureList extends Polymer.Element {
+            static get is() {
+                return 'animad-enclosure-list';
+            }
+            ready() {
+            super.ready();
+            const items = [];
+            for (var i = 0; i < 10; i++) {
+                items.push({gehegeName: 'Gehege ' + i, cleaningTime: 'Putzzeit ' + i});
+            }
+
+            this.items = items;
+            }
+
+            _add() {
+                this.push('items', {gehegeName: 'Gehege ' + this.items.length, cleaningTime: 'Putzzeit ' + this.items.length});
+            }
+
+            _remove() {
+                this.pop('items');
+            }
+        }
+
+        window.customElements.define(AnimadEnclosureList.is, AnimadEnclosureList);
+
+    </script>
+</dom-module>
+
