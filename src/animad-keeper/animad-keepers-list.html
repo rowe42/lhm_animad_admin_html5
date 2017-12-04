@@ -8,6 +8,7 @@
 <link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../bower_components/polymer/lib/elements/array-selector.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/vaadin-material-theme/vaadin-grid.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-column.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-selection-column.html">
@@ -67,37 +68,37 @@
       // GENERATOR pattern (camel case): filter[ENTITYNAME](_search) - filter
       // GENERATOR pattern (camel case): sort[ENTITYNAME](_currentSort.descending) - sort
       -->
-      <vaadin-grid id="animadKeepersList" aria-label="Multi-Selection Example" items="[[_filteredKeepers]]" multi-sort="[[multiSort]]" class="style-scope grid-selection-demos">
-        <vaadin-grid-selection-column auto-select class="style-scope grid-selection-demos">
+      <vaadin-grid id="animadKeepersList" aria-label="Multi-Selection Example" items="[[_filteredKeepers]]" multi-sort="[[multiSort]]">
+        <vaadin-grid-selection-column auto-select>
         </vaadin-grid-selection-column>
 
-        <vaadin-grid-column width="50px" flex-grow="0" class="style-scope grid-selection-demos">
-          <template class="header style-scope grid-selection-demos">#</template>
-          <template class="style-scope grid-selection-demos">[[index]]</template>
+        <vaadin-grid-column width="50px" flex-grow="0" >
+          <template class="header">#</template>
+          <template>[[index]]</template>
         </vaadin-grid-column>
 
-        <vaadin-grid-column class="style-scope grid-selection-demos">
-          <template class="header style-scope grid-sorting-filtering-demos">
-            <vaadin-grid-sorter path="first" class="style-scope grid-sorting-filtering-demos">First</vaadin-grid-sorter>
+        <vaadin-grid-column>
+          <template class="header">
+            <vaadin-grid-sorter path="first">First</vaadin-grid-sorter>
           </template>
-          <template class="style-scope grid-selection-demos">[[item.first]]</template>
+          <template>[[item.first]]</template>
         </vaadin-grid-column>
 
-        <vaadin-grid-column class="style-scope grid-selection-demos">
-          <template class="header style-scope grid-sorting-filtering-demos">
-            <vaadin-grid-sorter path="last" class="style-scope grid-sorting-filtering-demos">Last</vaadin-grid-sorter>
+        <vaadin-grid-column >
+          <template class="header">
+            <vaadin-grid-sorter path="last">Last</vaadin-grid-sorter>
           </template>
-          <template class="style-scope grid-selection-demos">[[item.last]]</template>
+          <template>[[item.last]]</template>
         </vaadin-grid-column>
 
-        <vaadin-grid-column class="style-scope grid-selection-demos">
-          <template class="header style-scope grid-sorting-filtering-demos">
-            <vaadin-grid-sorter path="age" class="style-scope grid-sorting-filtering-demos">Age</vaadin-grid-sorter>
+        <vaadin-grid-column>
+          <template class="header">
+            <vaadin-grid-sorter path="age">Age</vaadin-grid-sorter>
           </template>
-          <template class="style-scope grid-selection-demos">[[item.age]]</template>
+          <template>[[item.age]]</template>
         </vaadin-grid-column>
 
-        <vaadin-grid-column class="style-scope grid-selection-demos">
+        <vaadin-grid-column>
           <template>
             <paper-icon-button icon="animad-icons:delete" id="[[index]]" on-click="deleteRow"></paper-icon-button>
           </template>
