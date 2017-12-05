@@ -36,6 +36,17 @@
               resources="{{resources}}">
       </nebula-resources>
 
+    <template>
+      <nebula-language
+          supported='["en", "de"]'
+          lang="{{lang}}">
+      </nebula-language>
+      <nebula-resources
+              id="locales"
+              file="animad_keepers_locales"
+              path="/locales"
+              resources="{{resources}}">
+      </nebula-resources>
       <!--
         Search panel, NEW and DELETE functionality
       -->
@@ -101,8 +112,8 @@
           </paper-search-panel>
 
         </paper-item-body>
-        <paper-button raised on-click="handleNew">New</paper-button>
-        <paper-button raised onclick="dialogDeleteSelected.open()">Delete</paper-button>
+        <paper-button raised on-click="handleNew">[[$t('animad_keepers_button_new')]]</paper-button>
+        <paper-button raised onclick="dialogDeleteSelected.open()">[[$t('animad_keepers_button_delete')]]</paper-button>
       </paper-item>
 
       <!--
