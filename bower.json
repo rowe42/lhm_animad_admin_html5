@@ -28,7 +28,8 @@
     "paper-toast": "PolymerElements/paper-toast#^2.0.0",
     "nebula-i18n": "arsnebula/nebula-i18n#^2.0.1",
     "fetch": "^2.0.3",
-    "vaadin-grid": "vaadin/vaadin-grid#^4.0.0"
+    "vaadin-grid": "vaadin/vaadin-grid#^4.0.0",
+    "vaadin-material-theme": "vaadin/vaadin-material-theme#^0.3.0"
   },
   "resolutions": {
     "polymer": "^2.0.0"
