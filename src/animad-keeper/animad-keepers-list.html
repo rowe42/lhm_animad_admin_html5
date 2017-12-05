@@ -2,37 +2,104 @@
 <link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
 <link rel="import" href="../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../../bower_components/paper-search/paper-search-panel.html">
+<link rel="import" href="../../bower_components/paper-search/paper-search-bar.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../bower_components/polymer/lib/elements/array-selector.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/nebula-i18n/nebula-i18n.html">
 <link rel="import" href="../../bower_components/vaadin-material-theme/vaadin-grid.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-column.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-selection-column.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-sorter.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-filter.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="../animad-icons.html">
 
 <!-- GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-list -->
 <dom-module id="animad-keepers-list">
+    <style>
+    </style>
+
     <template>
-      <style>
-      </style>
+      <nebula-language
+          supported='["en", "de"]'
+          lang="{{lang}}">
+      </nebula-language>
+      <nebula-resources
+              id="locales"
+              file="animad_keepers_locales"
+              path="/locales"
+              resources="{{resources}}">
+      </nebula-resources>
 
       <!--
-        Search, NEW and DELETE functionality
+        Search panel, NEW and DELETE functionality
       -->
-      <paper-item>
+      <paper-item id="list-panel-1">
+        <paper-item-body>
+
+          <paper-search-bar
+            placeholder = "[[$t('animad_keepers_filter_placeholder')]] (paper-search-bar)"
+            hide-filter-button = "[[_hideFilterButton]]"
+
+            items = "{{_filteredKeepers}}"
+            on-query-changed="setFilteredKeepersBar"
+            on-paper-search-filter = "setSearchFilter"
+            >
+          </paper-search-bar>
+
+          <iron-collapse id="filterSelection" opened={{_openedFilterSelection}}>
+            <div>
+              <div>
+                <paper-checkbox checked>Filter by Last</paper-checkbox>
+              </div>
+              <div>
+                <paper-checkbox checked>Filter by First</paper-checkbox>
+              </div>
+              <div>
+                <div>
+                  Alter
+                  <div>
+                    <paper-checkbox >jünger als 30 Jahre</paper-checkbox>
+                  </div>
+                  <div>
+                    <paper-checkbox >30-49 Jahre</paper-checkbox>
+                  </div>
+                  <div>
+                    <paper-checkbox >älter als 50 Jahre</paper-checkbox>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </iron-collapse>
+        </paper-item-body>
+
+        <paper-button raised on-click="handleNew">New</paper-button>
+        <paper-button raised onclick="dialogDeleteSelected.open()">Delete</paper-button>
+      </paper-item>
+
+      <paper-item id="list-panel-2">
         <paper-item-body>
           <paper-search-panel
             search = "{{_search}}"
             items = "{{_filteredKeepers}}"
-            on-change-request-params="setFilteredKeepers"
+            on-change-request-params="setFilteredKeepersPanel"
+            hide-filter-button = "[[_hideFilterButton]]"
+            placeholder = "[[$t('animad_keepers_filter_placeholder')]] (paper-search-panel)"
+            no-results-text = "[[$t('animad_keepers_filter_no_results_text')]]"
+            filters = "[[_allFilters]]"
+            reset-button = "[[$t('animad_keepers_filter_button_reset')]]"
+            save-button = "[[$t('animad_keepers_filter_button_save')]]"
+            no-values-label = "[[$t('animad_keepers_filter_label_no_values')]]"
+            more-button = "[[$t('animad_keepers_filter_button_more')]]"
+            paper-search-filter = "setSearchFilter"
             >
           </paper-search-panel>
+
         </paper-item-body>
         <paper-button raised on-click="handleNew">New</paper-button>
         <paper-button raised onclick="dialogDeleteSelected.open()">Delete</paper-button>
@@ -42,11 +109,11 @@
         Modal dialog to ask before deleting all selected items
       -->
       <paper-dialog id="dialogDeleteSelected">
-        <h2>Delete</h2>
-        <p>Do you really want delete all selected items?</p>
+        <h2>[[$t('animad_keepers_modal_delete_header')]]</h2>
+        <p>[[$t('animad_keepers_modal_delete_text_multi')]]</p>
         <paper-item>
-          <paper-button raised dialog-confirm on-click="deleteSelectedRows">Yes</paper-button>
-          <paper-button raised dialog-dismiss autofocus>No</paper-button>
+          <paper-button raised dialog-confirm on-click="deleteSelectedRows">[[$t('animad_keepers_modal_delete_button_yes')]]</paper-button>
+          <paper-button raised dialog-dismiss autofocus>[[$t('animad_keepers_modal_delete_button_no')]]</paper-button>
         </paper-item>
       </paper-dialog>
 
@@ -54,11 +121,11 @@
         Modal dialog to ask before deleting all selected items
       -->
       <paper-dialog id="dialogDeleteItem">
-        <h2>Delete</h2>
-        <p>Do you really want delete [[_deleteInfo]]?</p>
+        <h2>[[$t('animad_keepers_modal_delete_header')]]</h2>
+        <p>[[$t('animad_keepers_modal_delete_text_single')]] ([[_deleteInfo]])?</p>
         <paper-item>
-          <paper-button raised dialog-confirm on-click="deleteSelectedRows">Yes</paper-button>
-          <paper-button raised dialog-dismiss on-click="unsetTemporaryDeleteInfo" autofocus>No</paper-button>
+          <paper-button raised dialog-confirm on-click="deleteSelectedRows">[[$t('animad_keepers_modal_delete_button_yes')]]</paper-button>
+          <paper-button raised dialog-dismiss on-click="unsetTemporaryDeleteInfo" autofocus>[[$t('animad_keepers_modal_delete_button_no')]]</paper-button>
         </paper-item>
       </paper-dialog>
 
@@ -68,7 +135,7 @@
       // GENERATOR pattern (camel case): filter[ENTITYNAME](_search) - filter
       // GENERATOR pattern (camel case): sort[ENTITYNAME](_currentSort.descending) - sort
       -->
-      <vaadin-grid id="animadKeepersList" aria-label="Multi-Selection Example" items="[[_filteredKeepers]]" multi-sort="[[multiSort]]">
+      <vaadin-grid id="animadKeepersList" items="[[_filteredKeepers]]" multi-sort="[[multiSort]]">
         <vaadin-grid-selection-column auto-select>
         </vaadin-grid-selection-column>
 
@@ -79,21 +146,21 @@
 
         <vaadin-grid-column>
           <template class="header">
-            <vaadin-grid-sorter path="first">First</vaadin-grid-sorter>
+            <vaadin-grid-sorter path="first">[[$t('animad_keepers_first')]]</vaadin-grid-sorter>
           </template>
           <template>[[item.first]]</template>
         </vaadin-grid-column>
 
         <vaadin-grid-column >
           <template class="header">
-            <vaadin-grid-sorter path="last">Last</vaadin-grid-sorter>
+            <vaadin-grid-sorter path="last">[[$t('animad_keepers_last')]]</vaadin-grid-sorter>
           </template>
           <template>[[item.last]]</template>
         </vaadin-grid-column>
 
         <vaadin-grid-column>
           <template class="header">
-            <vaadin-grid-sorter path="age">Age</vaadin-grid-sorter>
+            <vaadin-grid-sorter path="age">[[$t('animad_keepers_age')]]</vaadin-grid-sorter>
           </template>
           <template>[[item.age]]</template>
         </vaadin-grid-column>
@@ -108,7 +175,7 @@
 
     <script>
       // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]List
-      class AnimadKeepersList extends Polymer.Element {
+      class AnimadKeepersList extends Nebula.PolyglotBehavior(Polymer.Element) {
 
         static get is() { return 'animad-keepers-list'; }
 
@@ -144,9 +211,26 @@
                 ];
               }
             },
-            multiSort: {
+            _hideFilterButton: {
               type: Boolean,
               value: false
+            },
+            _allFilters: {
+              type: Array,
+              value() {
+                return [
+                  {id: "age", name: "Alter", values: [
+                      {id: "age_1",name: "jünger als 30 Jahre"},
+                      {id: "age_2", name: "30 - 49 Jahre"},
+                      {id: "age_3",name: "älter als 50 Jahre"}
+                    ]
+                  }
+                ]
+              }
+            },
+            _search: {
+              type: String,
+              value: ""
             },
             _filteredKeepers: {
               type: Array,
@@ -154,9 +238,13 @@
                 return this._keepers;
               }
             },
-           _search: {
-             type: String,
-             value: ""
+            _openedFilterSelection: {
+              type: Boolean,
+              value: false
+            },
+           multiSort: {
+             type: Boolean,
+             value: false
            },
            _deleteInfo: {
              type: String,
@@ -225,13 +313,22 @@
             if (!val) return true;
 
             // GENERATOR über alle Felder des Objekts filtern: item.<feldname1>.includes || item.<feldname2>.includes || ...
-            return (item.first.includes(val) || item.last.includes(val));
+            return (item.first.includes(val) || item.last.includes(val)) || item.age.toString().includes(val);
           }
         }
 
         // GENERATOR pattern (camel case): setFiltered[ENTITYNAME]
-        setFilteredKeepers(e) {
+        setFilteredKeepersPanel(e) {
           this._filteredKeepers = this._keepers.filter(this.filterKeepers(e.target.search));
+        }
+
+        setFilteredKeepersBar(e) {
+          this._filteredKeepers = this._keepers.filter(this.filterKeepers(e.target.query));
+        }
+
+        setSearchFilter(e) {
+          console.log(this.$.collapse);
+          this._openedFilterSelection = !this._openedFilterSelection;
         }
       }
 
