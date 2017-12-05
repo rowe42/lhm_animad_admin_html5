@@ -1,0 +1,16 @@
+<script>
+    let AnimadI18nBehavior = (superclass) => class extends superclass {
+        static get properties() {
+            return {
+                lang: {
+                    type: String,
+                    value() {
+                        var lang = navigator.language || navigator.userLanguage;
+                        console.log('used lang -> ' + lang);
+                        return lang;
+                    }
+                }
+            }
+        }
+    }
+</script>
