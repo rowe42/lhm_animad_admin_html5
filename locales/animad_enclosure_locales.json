@@ -8,7 +8,8 @@
       "animad_enclosure_form_validation": "",
       "animad_enclosure_form_success": "",
       "animad_enclosure_create_button_save": "save",
-      "animad_enclosure_create_button_reset": "reset"
+      "animad_enclosure_create_button_reset": "reset",
+      "animad_enclosure_create_button_reload": "reload"
     },
     "de": {
       "animad_enclosure_name": "Name des Geheges",
@@ -19,6 +20,7 @@
       "animad_enclosure_form_validation": "Bitte die angezeigten Fehler beheben!",
       "animad_enclosure_form_success": "Das Formular wurde gespeichert!",
       "animad_enclosure_create_button_save": "speichern",
-      "animad_enclosure_create_button_reset": "zurücksetzen"
+      "animad_enclosure_create_button_reset": "zurücksetzen",
+      "animad_enclosure_create_button_reload": "neu laden"
     }
 }
