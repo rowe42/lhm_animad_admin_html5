@@ -2,6 +2,7 @@
 <link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
 <link rel="import" href="../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../../bower_components/paper-search/paper-search-panel.html">
+<link rel="import" href="../../bower_components/paper-search/paper-search-bar.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
@@ -9,14 +10,13 @@
 <link rel="import" href="../../bower_components/polymer/lib/elements/array-selector.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/nebula-i18n/nebula-i18n.html">
-
 <link rel="import" href="../../bower_components/vaadin-material-theme/vaadin-grid.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-column.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-selection-column.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-sorter.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-filter.html">
-
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="../animad-icons.html">
 
 <!-- GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-list -->
@@ -35,28 +35,74 @@
               path="/locales"
               resources="{{resources}}">
       </nebula-resources>
+
       <!--
         Search panel, NEW and DELETE functionality
       -->
-      <paper-item id="list-panel">
+      <paper-item id="list-panel-1">
+        <paper-item-body>
+
+          <paper-search-bar
+            placeholder = "[[$t('animad_keepers_filter_placeholder')]] (paper-search-bar)"
+            hide-filter-button = "[[_hideFilterButton]]"
+
+            items = "{{_filteredKeepers}}"
+            on-query-changed="setFilteredKeepersBar"
+            on-paper-search-filter = "setSearchFilter"
+            >
+          </paper-search-bar>
+
+          <iron-collapse id="filterSelection" opened={{_openedFilterSelection}}>
+            <div>
+              <div>
+                <paper-checkbox checked>Filter by Last</paper-checkbox>
+              </div>
+              <div>
+                <paper-checkbox checked>Filter by First</paper-checkbox>
+              </div>
+              <div>
+                <div>
+                  Alter
+                  <div>
+                    <paper-checkbox >jünger als 30 Jahre</paper-checkbox>
+                  </div>
+                  <div>
+                    <paper-checkbox >30-49 Jahre</paper-checkbox>
+                  </div>
+                  <div>
+                    <paper-checkbox >älter als 50 Jahre</paper-checkbox>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </iron-collapse>
+        </paper-item-body>
+
+        <paper-button raised on-click="handleNew">New</paper-button>
+        <paper-button raised onclick="dialogDeleteSelected.open()">Delete</paper-button>
+      </paper-item>
+
+      <paper-item id="list-panel-2">
         <paper-item-body>
           <paper-search-panel
             search = "{{_search}}"
             items = "{{_filteredKeepers}}"
-            on-change-request-params="setFilteredKeepers"
-            hide-filter-button = "[[_filter.hideFilterButton]]"
-            placeholder = "[[$t('animad_keepers_filter_placeholder')]]"
+            on-change-request-params="setFilteredKeepersPanel"
+            hide-filter-button = "[[_hideFilterButton]]"
+            placeholder = "[[$t('animad_keepers_filter_placeholder')]] (paper-search-panel)"
             no-results-text = "[[$t('animad_keepers_filter_no_results_text')]]"
-            filters = "[[_filter.filters]]"
+            filters = "[[_allFilters]]"
             reset-button = "[[$t('animad_keepers_filter_button_reset')]]"
             save-button = "[[$t('animad_keepers_filter_button_save')]]"
             no-values-label = "[[$t('animad_keepers_filter_label_no_values')]]"
             more-button = "[[$t('animad_keepers_filter_button_more')]]"
+            paper-search-filter = "setSearchFilter"
             >
           </paper-search-panel>
+
         </paper-item-body>
-        <paper-button raised on-click="handleNew">[[$t('animad_keepers_button_new')]]</paper-button>
-        <paper-button raised onclick="dialogDeleteSelected.open()">[[$t('animad_keepers_button_delete')]]</paper-button>
+        <paper-button raised on-click="handleNew">New</paper-button>
+        <paper-button raised onclick="dialogDeleteSelected.open()">Delete</paper-button>
       </paper-item>
 
       <!--
@@ -165,32 +211,21 @@
                 ];
               }
             },
-            _filter: {
-              type: Object,
+            _hideFilterButton: {
+              type: Boolean,
+              value: false
+            },
+            _allFilters: {
+              type: Array,
               value() {
-                return {
-                  hideFilterButton: false,
-                  filters: [
-                    {
-                      id: "age",
-                      name: "Alter",
-                      values: [
-                        {
-                          id: "age_1",
-                          name: "jünger als 30 Jahre",
-                        },
-                        {
-                          id: "age_2",
-                          name: "30 - 49 Jahre",
-                        },
-                        {
-                          id: "age_3",
-                          name: "älter als 50 Jahre"
-                        }
-                      ]
-                    }
-                  ]
-                }
+                return [
+                  {id: "age", name: "Alter", values: [
+                      {id: "age_1",name: "jünger als 30 Jahre"},
+                      {id: "age_2", name: "30 - 49 Jahre"},
+                      {id: "age_3",name: "älter als 50 Jahre"}
+                    ]
+                  }
+                ]
               }
             },
             _search: {
@@ -202,6 +237,10 @@
               value() {
                 return this._keepers;
               }
+            },
+            _openedFilterSelection: {
+              type: Boolean,
+              value: false
             },
            multiSort: {
              type: Boolean,
@@ -274,13 +313,22 @@
             if (!val) return true;
 
             // GENERATOR über alle Felder des Objekts filtern: item.<feldname1>.includes || item.<feldname2>.includes || ...
-            return (item.first.includes(val) || item.last.includes(val));
+            return (item.first.includes(val) || item.last.includes(val)) || item.age.toString().includes(val);
           }
         }
 
         // GENERATOR pattern (camel case): setFiltered[ENTITYNAME]
-        setFilteredKeepers(e) {
+        setFilteredKeepersPanel(e) {
           this._filteredKeepers = this._keepers.filter(this.filterKeepers(e.target.search));
+        }
+
+        setFilteredKeepersBar(e) {
+          this._filteredKeepers = this._keepers.filter(this.filterKeepers(e.target.query));
+        }
+
+        setSearchFilter(e) {
+          console.log(this.$.collapse);
+          this._openedFilterSelection = !this._openedFilterSelection;
         }
       }
 
