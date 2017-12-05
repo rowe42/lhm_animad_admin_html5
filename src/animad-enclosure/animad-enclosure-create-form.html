@@ -24,6 +24,11 @@
                 margin-top: 50px;
                 @apply --animad-enclosure-create-form-button-send;
             }
+
+            .animad-enclosure-form {
+                display: grid;
+                @apply --animad-enclosure-form-styles;
+            }
         </style>
         <!-- i18n -->
         <nebula-language
@@ -37,9 +42,19 @@
                 resources="{{resources}}">
         </nebula-resources>
         <!--
-            the form itself.
+            Das vorgefertigte Formular.
         -->
-        <animad-enclosure-form id="form" data="{{_data}}" resources="[[resources]]" lang="[[lang]]" auto-validate></animad-enclosure-form>
+        <iron-form id="iform">
+            <form class="animad-enclosure-form">
+                <animad-enclosure-form id="form" data="{{data}}" resources="[[resources]]" lang="[[lang]]" auto-validate></animad-enclosure-form>
+                <!--
+                    Slot um weitere Elemente aufzunehmen.
+
+                    TODO - wie kommt man hier ans Databinding?
+                -->
+                <slot></slot>
+            </form>
+        </iron-form>
         <!-- 
             buttons
         -->
@@ -88,7 +103,7 @@
             }
 
             connectedCallback() {
-                
+
                 // Über den i18n Kontext wird der 
                 // FormBehavior der Prefix übergeben,
                 // um die richtigen Toast Meldungen 

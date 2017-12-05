@@ -8,39 +8,31 @@
 <dom-module id="animad-enclosure-form">
     <template>
         <style is="custom-style">
-            .animad-enclosure-form {
-                display: grid;
-                @apply --animad-enclosure-form-styles;
-            }
+            
         </style>
-        <iron-form id="iform">
-            <form class="animad-enclosure-form">
-               <paper-input 
-                    id="enclosure-name"
-                    type="text" 
-                    name="name" 
-                    label="[[$t('animad_enclosure_name')]]" 
-                    value="{{data.name}}" 
-                    disabled="{{disabled}}"
-                    required
-                    auto-validate="{{autoValidate}}"
-                    minlength="3" 
-                    maxlength="30"
-                    error-message="[[$t('animad_enclosure_name_error')]]">
-                </paper-input>
-                <paper-input 
-                    id="enclosure-cleaningTime"
-                    type="time" 
-                    name=cleaningTime 
-                    label="[[$t('animad_enclosure_cleaningTime')]]" 
-                    value="{{data.cleaningTime}}"
-                    disabled="{{disabled}}" 
-                    required 
-                    auto-validate="{{autoValidate}}"
-                    error-message="[[$t('animad_enclosure_cleaningTime_error')]]">
-                </paper-input>   
-            </form>
-        </iron-form> 
+        <paper-input 
+            id="enclosure-name" 
+            type="text" 
+            name="name" 
+            label="[[$t('animad_enclosure_name')]]" 
+            value="{{data.name}}" 
+            disabled="[[disabled]]"
+            required 
+            auto-validate="[[autoValidate]]" 
+            minlength="3" 
+            maxlength="30" 
+            error-message="[[$t('animad_enclosure_name_error')]]">
+        </paper-input>
+        <paper-input 
+            id="enclosure-cleaningTime" 
+            type="time" 
+            name=cleaningTime 
+            label="[[$t('animad_enclosure_cleaningTime')]]" 
+            value="{{data.cleaningTime}}"
+            disabled="[[disabled]]" 
+            required auto-validate="[[autoValidate]]" 
+            error-message="[[$t('animad_enclosure_cleaningTime_error')]]">
+        </paper-input>
     </template>
     <script>
         class AnimadEnclosureForm extends Nebula.PolyglotBehavior(Polymer.Element) {
@@ -60,14 +52,6 @@
                         value: false
                     }
                 }
-            }
-
-            validate() {
-                return this.shadowRoot.querySelector('#iform').validate();
-            }
-
-            reset() {
-                return this.shadowRoot.querySelector('#iform').reset();
             }
         }
 

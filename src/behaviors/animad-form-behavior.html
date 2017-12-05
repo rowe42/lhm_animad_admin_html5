@@ -30,7 +30,7 @@
                  *   
                  * @type{}
                  */
-                _data: {
+                data: {
                     type: Object,
                     value() {
                         return {}
@@ -78,18 +78,18 @@
          */
         _sendForm() {
             // check if the formcontent is valid against the defined rules
-            var valid = this.shadowRoot.querySelector(this._formid).validate();
+            var valid = this.shadowRoot.querySelector('#iform').validate();
 
             if (valid) {
                 // console print TODO delete this
-                this.foo = JSON.stringify(this._data);
+                this.foo = JSON.stringify(this.data);
                 console.log("form is valid: " + this.foo);
 
                 // prepare request
                 var init = {
                     method: 'POST',
                     mode: 'cors',
-                    body: JSON.stringify(this._data)
+                    body: JSON.stringify(this.data)
                 }
 
                 var request = new Request(this.postUrl, init);
@@ -114,7 +114,7 @@
 
         /*
          * Lädt die Daten über die definierte URL. Die Daten
-         * werden im Property '_data' gespeichert.
+         * werden im Property 'data' gespeichert.
          */
         _loadFormData() {
             var init = {
@@ -134,8 +134,8 @@
                     //console.log(response);
                     response.json().then(body => {
                         // Bei Erfolg werden die Daten, die vom Server kommen 
-                        // im '_data' Property gespeichert.
-                        this.set('_data', body);
+                        // im 'data' Property gespeichert.
+                        this.set('data', body);
                     }) 
                 } else {
                     this._error(response.status);
@@ -147,7 +147,7 @@
          * Setzt das Formular zurück.
          */
         _resetForm() {
-            this.shadowRoot.querySelector(this._formid).reset();
+            this.shadowRoot.querySelector('#iform').reset();
         }
 
         /**
