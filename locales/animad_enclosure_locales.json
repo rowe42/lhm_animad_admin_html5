@@ -4,9 +4,9 @@
       "animad_enclosure_name_error": "Name with 3 letters required!",
       "animad_enclosure_cleaningTime": "Cleaning Time",
       "animad_enclosure_cleaningTime_error": "Cleaning Time",
-      "animad_enclosure_create_error": "",
-      "animad_enclosure_create_validation": "",
-      "animad_enclosure_create_success": "",
+      "animad_enclosure_form_error": "",
+      "animad_enclosure_form_validation": "",
+      "animad_enclosure_form_success": "",
       "animad_enclosure_create_button_save": "save",
       "animad_enclosure_create_button_reset": "reset"
     },
@@ -15,9 +15,9 @@
       "animad_enclosure_name_error": "Geben Sie bitte einen Namen für das Gehege an, der mindestens 3 Buchstaben hat!",
       "animad_enclosure_cleaningTime": "Tägliche Putzzeit",
       "animad_enclosure_cleaningTime_error": "Tägliche Putzzeit muss im Format <HH:mm> eingegeben werden!",
-      "animad_enclosure_create_error": "Es ist ein Netzwerk-Fehler aufgetreten.",
-      "animad_enclosure_create_validation": "Bitte die angezeigten Fehler beheben!",
-      "animad_enclosure_create_success": "Das Formular wurde gespeichert!",
+      "animad_enclosure_form_error": "Es ist ein Fehler beim Speichern aufgetreten. Fehlercode:",
+      "animad_enclosure_form_validation": "Bitte die angezeigten Fehler beheben!",
+      "animad_enclosure_form_success": "Das Formular wurde gespeichert!",
       "animad_enclosure_create_button_save": "speichern",
       "animad_enclosure_create_button_reset": "zurücksetzen"
     }

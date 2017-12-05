@@ -14,13 +14,16 @@
                  * Url um die Formulardaten zu laden.
                  */
                 getUrl: {
-                        type: String
+                    type: String
                 },
                 /**
                  * Url an die die Formulardaten gesendet werden.
                  */
                 postUrl: {
-                        type: String
+                    type: String
+                },
+                i18nContext: {
+                    type: String
                 },
                 /**
                  * Das leere Objekt.
@@ -55,6 +58,15 @@
                     type: Object,
                     value() {
                         return document.querySelector('#global_success_toast');
+                    }
+                },
+                /**
+                 *
+                 */
+                 _warningToast: {
+                    type: Object,
+                    value() {
+                        return document.querySelector('#global_warning_toast');
                     }
                 }
             }
@@ -93,8 +105,9 @@
                     })
             } else {
                 console.log("form is not valid...");
-                this._errorToast.text = this.resources[this.lang].animad_enclosure_create_validation;
-                this._errorToast.open();
+                var i18nCreateValidation = this.i18nContext + '_form_validation';
+                this._warningToast.text = this.resources[this.lang][i18nCreateValidation];
+                this._warningToast.open();
             }
 
         }
@@ -121,7 +134,7 @@
                     //console.log(response);
                     response.json().then(body => {
                         // Bei Erfolg werden die Daten, die vom Server kommen 
-                        // im '_data_ Property gespeichert.
+                        // im '_data' Property gespeichert.
                         this.set('_data', body);
                     }) 
                 } else {
@@ -141,7 +154,8 @@
          * Der 'Toast', der bei Erfolg angezeigt wird.
          */
         _success(result) {
-            this._successToast.text = this.resources[this.lang].animad_enclosure_create_success;
+            var i18nCreateSuccess = this.i18nContext + '_form_success';
+            this._successToast.text = this.resources[this.lang][i18nCreateSuccess];
             this._successToast.open();
         }
 
@@ -149,8 +163,8 @@
          * Der 'Toast', der bei Fehlern angezeigt wird.
          */
         _error(status) {
-            // open notification toast
-            this._errorToast.text = this.resources[this.lang].animad_enclosure_create_error + ' ' + status;
+            var i18nCreateError = this.i18nContext + '_form_error';
+            this._errorToast.text = this.resources[this.lang][i18nCreateError] + ' ' + status;
             this._errorToast.open();
         }
     };
