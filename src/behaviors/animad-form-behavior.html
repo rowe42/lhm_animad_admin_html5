@@ -1,23 +1,56 @@
 <script>
+    /**
+     * Behavior, um einem beliebigen Formular (Update, Create, Read) alle Eigenschaften
+     * wie Properties und Methoden zu geben, die es benötigt um mit dem Server zu 
+     * kommunizieren.
+     * 
+     * @polymerMixinClass
+     */
     let AnimadFormBehavior = (superclass) => class extends superclass {
 
         static get properties() {
             return {
+                /**
+                 * Url um die Formulardaten zu laden.
+                 */
+                getUrl: {
+                        type: String
+                },
+                /**
+                 * Url an die die Formulardaten gesendet werden.
+                 */
+                postUrl: {
+                        type: String
+                },
+                /**
+                 * Das leere Objekt.
+                 *   
+                 * @type{}
+                 */
                 _data: {
                     type: Object,
                     value() {
                         return {}
                     }
                 },
+                /**
+                 *
+                 */
                 _error: {
                     type: String
                 },
+                /**
+                 *
+                 */
                 _errorToast: {
                     type: Object,
                     value() {
                         return document.querySelector('#global_error_toast');
                     }
                 },
+                /**
+                 *
+                 */
                 _successToast: {
                     type: Object,
                     value() {
@@ -27,15 +60,37 @@
             }
         }
 
-
+        /**
+         * Validiert die Formulardaten. Danach werden sie an die angegebene
+         * URL als JSON Objekt gesendet.
+         */
         _sendForm() {
             // check if the formcontent is valid against the defined rules
             var valid = this.shadowRoot.querySelector(this._formid).validate();
 
             if (valid) {
+                // console print TODO delete this
                 this.foo = JSON.stringify(this._data);
                 console.log("form is valid: " + this.foo);
-                this.shadowRoot.querySelector(this._ajaxid).generateRequest();
+
+                // prepare request
+                var init = {
+                    method: 'POST',
+                    mode: 'cors',
+                    body: JSON.stringify(this._data)
+                }
+
+                var request = new Request(this.postUrl, init);
+
+                fetch(request)
+                    .then(response => {
+                        if (response.ok) {
+                            this._resetForm();
+                            this._success(response.json());
+                        } else {
+                            this._error(response.status);
+                        }
+                    })
             } else {
                 console.log("form is not valid...");
                 this._errorToast.text = this.resources[this.lang].animad_enclosure_create_validation;
@@ -44,29 +99,59 @@
 
         }
 
+        /*
+         * Lädt die Daten über die definierte URL. Die Daten
+         * werden im Property '_data' gespeichert.
+         */
+        _loadFormData() {
+            var init = {
+                method: 'GET',
+                // headers
+                mode: 'cors',
+                cache: 'default'
+            };
+
+            // create request object
+            var request = new Request(this.getUrl, init);
+
+            // call the server
+            fetch(request)
+            .then(response => {
+                if(response.ok) {
+                    //console.log(response);
+                    response.json().then(body => {
+                        // Bei Erfolg werden die Daten, die vom Server kommen 
+                        // im '_data_ Property gespeichert.
+                        this.set('_data', body);
+                    }) 
+                } else {
+                    this._error(response.status);
+                }
+            })
+        }
+
+        /**
+         * Setzt das Formular zurück.
+         */
         _resetForm() {
             this.shadowRoot.querySelector(this._formid).reset();
         }
 
-        _handleResponse(event) {
-            console.log("response -> " + JSON.stringify(event.detail.response));
-            this._resetForm();
+        /**
+         * Der 'Toast', der bei Erfolg angezeigt wird.
+         */
+        _success(result) {
             this._successToast.text = this.resources[this.lang].animad_enclosure_create_success;
             this._successToast.open();
         }
 
-        _handleError(event) {
-            // regex for HTML status code
-            var rx = /[0-9]{3}/;
-            // find the code
-            var findings = rx.exec(event.detail.error.message);
-            // get it! (always the first value)
-            this._error = findings[0];
-            console.log(this._error);
+        /**
+         * Der 'Toast', der bei Fehlern angezeigt wird.
+         */
+        _error(status) {
             // open notification toast
-            this._errorToast.text = this.resources[this.lang].animad_enclosure_create_error + this._error;
+            this._errorToast.text = this.resources[this.lang].animad_enclosure_create_error + ' ' + status;
             this._errorToast.open();
         }
-
     };
 </script>

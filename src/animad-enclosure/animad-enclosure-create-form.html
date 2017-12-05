@@ -36,17 +36,6 @@
                 path="/locales"
                 resources="{{resources}}">
         </nebula-resources>
-        <!-- ajax calls -->
-        <iron-ajax 
-            id="ajax_create_enclosure" 
-            url="[[url]]" 
-            method="POST" 
-            body="{{_data}}" 
-            handle-as="json" 
-            on-response="_handleResponse" 
-            on-error="_handleError"
-            debounce-duration="300">
-        </iron-ajax>
         <!--
             the form itself.
         -->
@@ -64,18 +53,29 @@
         </paper-button>      
     </template>
     <script>
+        /**
+         * # Formular zum Erstellen von einem 'Enclosure'
+         * `<animad-anclosure-create-form>` stellt ein Formular zur Verfügung, über das man ein
+         * neues 'Enclosure' mit all seinen Attributen erstellen kann.
+         * ## Anwendung in der Applikation
+         * <link rel="import" href="[Pfad zu meinen Abhängigkeiten]/animad-enclosure/animad-enclosure-create-form.html">
+         * ...
+         * <animad-enclosure-create-form post-url="[URL an die die Daten geschickt werden]"></animad-enclosure-create-form>
+         * ...
+         * 
+         * @customElement
+         * @polymer
+         *
+         */
         class AnimadEnclosureCreateForm extends AnimadFormBehavior(Nebula.PolyglotBehavior(Polymer.Element)) {
             static get is() { return 'animad-enclosure-create-form'; }
 
             static get properties() {
                 return {
-                    url: {
-                        type: String
-                    },
-                    _ajaxid: {
-                        type: String,
-                        value: '#ajax_create_enclosure'
-                    },
+                    // ID des Form Elements. Diese Info wird
+                    // in der *FormBehavior benötigt, um das
+                    // Formular vor dem Versand validieren zu
+                    // können.
                     _formid: {
                         type: Object,
                         value: '#form'

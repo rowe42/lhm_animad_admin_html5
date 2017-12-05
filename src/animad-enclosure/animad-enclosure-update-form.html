@@ -27,51 +27,38 @@
                 path="/locales"
                 resources="{{resources}}">
         </nebula-resources>
-        <!-- ajax calls -->
-        <iron-ajax 
-            id="ajax_create_enclosure" 
-            url="[[url]]" 
-            method="POST" 
-            body="{{_data}}" 
-            handle-as="json" 
-            on-response="_handleResponse" 
-            on-error="_handleError"
-            debounce-duration="300">
-        </iron-ajax>
         <!--
-            the form itself.
+            Das Formular.
         -->
         <animad-enclosure-form id="form" data="{{_data}}" resources="[[resources]]" lang="[[lang]]" auto-validate></animad-enclosure-form>
     </template>
     <script>
-        class AnimadEnclosureUpdateForm extends Nebula.PolyglotBehavior(Polymer.Element) {
+        /**
+         * # Formular zum Bearbeiten von einem 'Enclosure'
+         * `<animad-anclosure-update-form>` stellt ein Formular zur Verfügung, über das man ein
+         * vorhandenes 'Enclosure' mit all seinen Attributen bearbeitet werden kann.
+         * ## Anwendung in der Applikation
+         * <link rel="import" href="[Pfad zu meinen Abhängigkeiten]/animad-enclosure/animad-enclosure-update-form.html">
+         * ...
+         * <animad-enclosure-update-form get-url="[zu ladende Ressource]" post-url="[URL an die die Daten geschickt werden]"></animad-enclosure-update-form>
+         * ...
+         * 
+         * @customElement
+         * @polymer
+         *
+         */
+        class AnimadEnclosureUpdateForm extends AnimadFormBehavior(Nebula.PolyglotBehavior(Polymer.Element)) {
             static get is() { return 'animad-enclosure-update-form'; }
 
             static get properties() {
                 return {
-                    url: {
-                        type: String
-                    },
-                    _data: {
+                    // ID des Form Elements. Diese Info wird
+                    // in der *FormBehavior benötigt, um das
+                    // Formular vor dem Versand validieren zu
+                    // können.
+                    _formid: {
                         type: Object,
-                        value() {
-                            return {}
-                        }
-                    },
-                    _error: {
-                        type: String
-                    },
-                    _errorToast: {
-                        type: Object,
-                        value() {
-                            return document.querySelector('#global_error_toast');
-                        }
-                    },
-                    _successToast: {
-                        type: Object,
-                        value() {
-                            return document.querySelector('#global_success_toast');
-                        }
+                        value: '#form'
                     }
                 }
             }
@@ -80,44 +67,14 @@
                 super();
             }
 
-            _sendForm() {
-                // check if the formcontent is valid against the defined rules
-                var valid = this.shadowRoot.querySelector('#form').validate();
-
-                if(valid) {
-                    this.foo = JSON.stringify(this._data);
-                    console.log("form is valid: " + this.foo);
-                    this.shadowRoot.querySelector('#ajax_create_enclosure').generateRequest();
-                } else {
-                    console.log("form is not valid...");
-                    this._errorToast.text = this.resources[this.lang].animad_enclosure_create_validation;
-                    this._errorToast.open();
-                }
-                
+            connectedCallback() {
+                super.connectedCallback();
+                // Daten ins Formular laden 
+                // (Methode wird über *FormBehavior 
+                // zur Verfügung gestellt)
+                this._loadFormData();
             }
 
-            _resetForm() {
-                this.shadowRoot.querySelector('#form').reset();
-            }
-
-            _handleResponse(event) {
-                console.log("response -> " + JSON.stringify(event.detail.response));
-                this._resetForm();
-                this._successToast.text = this.resources[this.lang].animad_enclosure_create_success;
-                this._successToast.open();
-            }
-
-            _handleError(event) {
-                // regex for HTML status code
-                var rx = /[0-9]{3}/;
-                // find the code
-                var findings = rx.exec(event.detail.error.message);
-                // get it! (always the first value)
-                this._error = findings[0];
-                // open notification toast
-                this._successToast.text = this.resources[this.lang].animad_enclosure_create_error;
-                this._successToast.open();
-            }
         }
 
         customElements.define(AnimadEnclosureUpdateForm.is, AnimadEnclosureUpdateForm);
