@@ -41,10 +41,10 @@
 
             <vaadin-grid-column>
                 <template class="header">
-                    <vaadin-grid-sorter path="gehegeName" direction="desc">Gehegename</vaadin-grid-sorter>
                     <vaadin-grid-filter aria-label="Gehegename" path="gehegeName" value="[[_filterGehegeName]]">
                         <input placeholder="Gehegename" value="{{_filterGehegeName::input}}" focus-target>
                     </vaadin-grid-filter>
+                    <vaadin-grid-sorter path="gehegeName" direction="desc">Gehegename</vaadin-grid-sorter>
                 </template>
                 <template>[[item.gehegeName]]</template>
             </vaadin-grid-column>
