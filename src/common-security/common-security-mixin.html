@@ -1,0 +1,45 @@
+<script>
+
+
+    CommonReadonlyMixin = function (superClass) {
+        return class extends superClass {
+
+            // properties
+            static get properties() {
+                return {
+                    permissionToUse: {
+                        type: String
+                    },
+                    _security: {
+                        type: Object,
+                        value() {
+                            return document.querySelector('#animad_security');
+                        },
+                        notify: true
+                    }
+                }
+            }
+
+            constructor() {
+                super();
+                this._boundListener = this._customeventlistener.bind(this);
+
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+                window.addEventListener('permissionsReceived', this._boundListener);
+            }
+
+            // methods
+
+
+            _customeventlistener() {
+                console.log('Custom Event Listener in Security-Mixin called.');
+                this.notifyPath('_security.permissions');
+                this.readonly = !this._security.checkPermissions(this.permissionToUse);
+            }
+        }
+    }
+
+</script>
