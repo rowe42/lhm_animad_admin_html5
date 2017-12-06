@@ -38,6 +38,22 @@
         </paper-input>
     </template>
     <script>
+        /**
+         * # Formular für die Entinität 'Enclosure'
+         * `<animad-anclosure-form>` stellt alle einfachen Attribute zur Verfügung, die man für das Bearbeiten  eines
+         * 'Enclosure' benötigt.
+         * ## Anwendung in der Applikation
+         * ```html
+         * <link rel="import" href="[Pfad zu meinen Abhängigkeiten]/animad-enclosure/animad-enclosure-form.html">
+         * ...
+         * <animad-enclosure-form id="updateform" data="{{data}}" auto-validate></animad-enclosure-form>
+         * ...
+         * ```
+         * 
+         * @customElement
+         * @polymer
+         *
+         */
         class AnimadEnclosureForm extends mix(Polymer.Element).with(AnimadI18nBehavior) {
             static get is() { return 'animad-enclosure-form'; }
 
