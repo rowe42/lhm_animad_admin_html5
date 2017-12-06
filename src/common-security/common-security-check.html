@@ -3,6 +3,7 @@
 <link rel="import" href="../../bower_components/iron-meta/iron-meta.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../animad-icons.html">
+<link rel="import" href="common-security-mixin.html">
 
 <dom-module id="common-security-check">
     <template>
@@ -20,53 +21,11 @@
          * @polymer
          *
          */
-        class CommonSecurityCheck extends Polymer.Element {
+        class CommonSecurityCheck extends CommonSecurityMixin(Polymer.Element) {
 
             static get is() {
                 return 'common-security-check';
             }
-
-            // properties
-            static get properties() {
-                return {
-                    permission: {
-                        type: String
-                    },
-                    allowed: {
-                        type: Boolean,
-                        value: false,
-                        notify: true
-                    },
-                    _security: {
-                        type: Object,
-                        value() {
-                            return document.querySelector('#animad_security');
-                        },
-                        notify: true
-                    }
-                }
-            }
-
-            constructor() {
-                super();
-                this._boundListener = this._customeventlistener.bind(this);
-
-            }
-
-            connectedCallback() {
-                super.connectedCallback();
-                window.addEventListener('permissionsReceived', this._boundListener);
-            }
-
-            // methods
-
-
-            _customeventlistener() {
-                console.log('Custom Event Listener in check called.');
-                this.notifyPath('_security.permissions');
-                this.allowed = this._security.checkPermissions(this.permission);
-            }
-
 
         }
 

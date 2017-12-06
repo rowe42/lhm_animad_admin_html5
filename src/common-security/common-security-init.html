@@ -10,11 +10,11 @@
 
         <iron-ajax
             auto
-            url="http://localhost:8870/getPermissionsDummy"
+            url="[[permissionsUrl]]"
             id="perms"
             handle-as="json"
-            last-response="{{permissions}}"
-            on-response="setPermissions"
+            last-response="{{_permissions}}"
+            on-response="_setPermissions"
             >
         </iron-ajax>    
 
@@ -42,9 +42,10 @@
                      * Url um die Permissions abzurufen.
                      */
                     permissionsUrl: {
-                        type: String
+                        type: String,
+                        value: "http://localhost:8870/getPermissionsDummy"
                     },
-                    permissions: {
+                    _permissions: {
                         type: Object,
                         value: [],
                         notify: true
@@ -58,41 +59,41 @@
 
             connectedCallback() {
                 super.connectedCallback();
-//                this.fetchPermissionsSynchronously();
+//                this._fetchPermissionsSynchronously();
 
             }
 
 
             // methods
 
-            setPermissions() {
-                console.log('setPermissions called');
-                window.dispatchEvent(new CustomEvent('permissionsReceived', {detail: {kicked: true}}));
-            }
-
             checkPermissions(permissionToCheck) {
                 console.log('checkPermissions called');
-                if (this.permissions.filter(e => e === permissionToCheck).length > 0) {
+                if (this._permissions.filter(e => e === permissionToCheck).length > 0) {
                     console.log('Permission ' + permissionToCheck + ' found in list');
                     return true;
                 }
-                console.log('Permission ' + permissionToCheck + ' NOT found in list. Found: ' + this.permissions);
+                console.log('Permission ' + permissionToCheck + ' NOT found in list. Found: ' + this._permissions);
                 return false;
             }
 
             getPermissions() {
-                return this.permissions;
+                return this._permissions;
             }
 
-            fetchPermissionsSynchronously() {
-                var url = "http://localhost:8870/getPermissionsDummy";
+            _setPermissions() {
+                console.log('setPermissions called');
+                window.dispatchEvent(new CustomEvent('permissionsReceived', {detail: {kicked: true}}));
+            }
+
+            _fetchPermissionsSynchronously() {
+                var url = permissionsUrl;
                 var request = new XMLHttpRequest();
                 request.open('GET', url, false);  // `false` makes the request synchronous
                 request.send(null);
 
                 if (request.status === 200) {
                     console.log(request.responseText);
-                    this.permissions = JSON.parse(request.responseText);
+                    this._permissions = JSON.parse(request.responseText);
                 }
             }
 

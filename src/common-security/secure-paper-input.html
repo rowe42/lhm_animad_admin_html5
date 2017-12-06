@@ -2,7 +2,7 @@
 
 <dom-module id="secure-paper-input">
     <script>
-        class SecurePaperInput extends CommonReadonlyMixin(customElements.get('paper-input')) {
+        class SecurePaperInput extends CommonSecurityMixin(customElements.get('paper-input')) {
 
             static get is() {
                 return 'secure-paper-input';
@@ -10,7 +10,11 @@
 
             constructor() {
                 super();
-                this.readonly=true;
+                this.readonly = true;
+            }
+
+            _allowedChanged(newValue, oldValue) {
+                this.readonly=!this.allowed;
             }
         }
 
