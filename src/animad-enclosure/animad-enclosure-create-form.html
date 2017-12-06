@@ -15,6 +15,7 @@
 <link rel="import" href="../animad-icons.html">
 <link rel="import" href="../behaviors/animad-form-behavior.html">
 <link rel="import" href="../behaviors/animad-i18n-behavior.html">
+<link rel="import" href="../behaviors/mixin.html">
 
 <dom-module id="animad-enclosure-create-form">
     <template>
@@ -72,7 +73,7 @@
          * @polymer
          *
          */
-        class AnimadEnclosureCreateForm extends AnimadFormBehavior(AnimadI18nBehavior(Polymer.Element)) {
+        class AnimadEnclosureCreateForm extends mix(Polymer.Element).with(AnimadFormBehavior, AnimadI18nBehavior) {
             static get is() { return 'animad-enclosure-create-form'; }
 
             static get properties() {

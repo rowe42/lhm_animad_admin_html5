@@ -6,6 +6,7 @@
 <link rel="import" href="../../bower_components/shadycss/apply-shim.html">
 
 <link rel="import" href="../behaviors/animad-i18n-behavior.html">
+<link rel="import" href="../behaviors/mixin.html">
 
 <dom-module id="animad-enclosure-form">
     <template>
@@ -37,7 +38,7 @@
         </paper-input>
     </template>
     <script>
-        class AnimadEnclosureForm extends AnimadI18nBehavior(Polymer.Element) {
+        class AnimadEnclosureForm extends mix(Polymer.Element).with(AnimadI18nBehavior) {
             static get is() { return 'animad-enclosure-form'; }
 
             static get properties() {
@@ -63,7 +64,9 @@
                         value: 'animad'
                     },
                     /*
-                     *
+                     * Das 'entity' property wird benötigt, um den richtigen Pfad 
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * benötigt, in dem die I18nBehavior verwendet wird.
                      */
                     _entity: {
                         type: String,
