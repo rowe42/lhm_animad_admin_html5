@@ -1,9 +1,41 @@
 <link rel="import" href="../../bower_components/nebula-i18n/polyglot.html">
 
 <script>
+    /**
+     * Behavior, um einem beliebigen Element i18n Eigenschaften zu geben. Dafür
+     * muss das Element die Properties 'domain' und 'entity' setzen:
+     *
+     * ```javascript
+     *  _domain: {
+     *    type: String,
+     *    value: 'animad'
+     *  },
+     *  _entity: {
+     *    type: String,
+     *    value: 'enclosure'
+     *  }
+     * ```
+     * 
+     * Über die Methode 't(KEY)' können die Übersetzungen aufgelöst werden:
+     * ```html
+     *   <paper-input 
+     *       id="enclosure-cleaningTime" 
+     *       label="[[t('cleaningTime')]]" 
+     *       value="{{data.cleaningTime}}"
+     *       error-message="[[t('cleaningTime_error')]]">
+     *   </paper-input>
+     * ```
+     * 
+     * @polymerMixinClass
+     */
     let AnimadI18nBehavior = (superclass) => class extends superclass {
         static get properties() {
             return {
+                /*
+                 * Das Language Objekt zum Ermitteln des aktuell verwendeten Locales. 
+                 * Dieses Element muss zentral (am besten im *-app Element) vorhanden sein. 
+                 * Es wird nur einmal benötigt.  
+                 */
                 lang: {
                     type: String,
                     value() {
@@ -14,6 +46,13 @@
                         return l.lang;
                     }
                 },
+                /*
+                 * Das Recource Objekt mit den key/value Paaren. Dieses Element muss
+                 * zentral (am besten im *-app Element) vorhanden sein. es wird nur 
+                 * einmal benötigt. Damit wird verhindert, dass die Resourcen Datei
+                 * mehrfach eingelesen (und auch im Speicher verwaltet) wird, wenn sie
+                 * von unterschiedlichen Elementen verwendet wird.  
+                 */
                 resources: {
                     type: Object,
                     value() {
@@ -24,12 +63,21 @@
                         return r.resources;
                     }
                 },
+                /*
+                 * Die Instanz von polyglot.js (eine i18n lib von airnb)
+                 */
                 _polyglot: {
                     type: Object
                 },
             }
         }
 
+        /*
+         * Löst einen i18n Schlüssel in den Wert (in der entsprechenden Sprache) auf. 
+         *
+         * @param key Der Schlüssel als String
+         * @return Der Wert des Schlüssels in der aktiven Sprache 
+         */
         t(key) {
             if(!this._polyglot) {
                 this._init();
@@ -38,6 +86,11 @@
             return value;
         }
 
+        /*
+         * Initialisiert bei Gebrauch das Polyglot Objekt einmal. Das Objekt
+         * wird dann im '_polyglot' Property gespeichert und steht somit über
+         * gesamten Lebenscyklus der Elements zur Verfügung.
+         */
         _init() {
             if (this.lang && this.resources && this._domain && this._entity) {
                 var subtree = this.resources[this.lang][this._domain][this._entity];
