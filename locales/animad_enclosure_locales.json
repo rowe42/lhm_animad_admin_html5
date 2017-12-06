@@ -9,9 +9,10 @@
           "form_error": "An error occured. Code:",
           "form_validation": "Please fix the form errors.",
           "form_success": "The form has been saved.",
-          "create_button_save": "save",
-          "create_button_reset": "reset",
-          "create_button_reload": "reload"
+          "button_save": "save",
+          "button_reset": "reset",
+          "button_reload": "reload",
+          "button_edit": "edit"
         }
       }
     },
@@ -25,9 +26,10 @@
           "form_error": "Es ist ein Fehler beim Speichern aufgetreten. Fehlercode ist '%{code}'.",
           "form_validation": "Bitte die angezeigten Fehler im Formular beheben!",
           "form_success": "Das Formular wurde gespeichert!",
-          "create_button_save": "speichern",
-          "create_button_reset": "zurücksetzen",
-          "create_button_reload": "neu laden"
+          "button_save": "speichern",
+          "button_reset": "zurücksetzen",
+          "button_reload": "neu laden",
+          "button_edit": "bearbeiten"
         }
       }
     }

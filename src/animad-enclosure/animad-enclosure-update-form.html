@@ -9,6 +9,7 @@
 <link rel="import" href="../../bower_components/nebula-i18n/nebula-i18n.html">
 <link rel="import" href="../../bower_components/polymer/lib/elements/custom-style.html">
 <link rel="import" href="../../bower_components/shadycss/apply-shim.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-if.html">
 
 <!-- animad elements -->
 <link rel="import" href="animad-enclosure-form.html">
@@ -45,21 +46,28 @@
         -->
         <iron-form id="iform">
             <form class="animad-enclosure-form">
-                <animad-enclosure-form data="{{data}}" auto-validate></animad-enclosure-form>
+                <animad-enclosure-form data="{{data}}" readonly="{{readform}}" auto-validate></animad-enclosure-form>
             </form>
         </iron-form>
         <!-- 
             buttons
         -->
-        <paper-button class="send" on-tap="_sendForm" raised>
-            <iron-icon icon="animad-icons:send"></iron-icon>
-            [[t('create_button_save')]]
-        </paper-button>
-        <paper-button slot="buttons" class="reset" on-tap="_loadFormData" raised>
-                <iron-icon icon="animad-icons:loop"></iron-icon>
-                [[t('create_button_reload')]]
+        <template is="dom-if" if="{{readform}}">
+            <paper-button class="edit" on-tap="_editForm" raised>
+                <iron-icon icon="animad-icons:pencil"></iron-icon>
+                [[t('button_edit')]]
             </paper-button>
-        <slot name="buttons"></slot>
+        </template>
+        <template is="dom-if" if="{{!readform}}">
+            <paper-button class="send" on-tap="_sendForm" raised>
+                <iron-icon icon="animad-icons:send"></iron-icon>
+                [[t('button_save')]]
+            </paper-button>
+            <paper-button slot="buttons" class="reset" on-tap="_loadFormData" raised>
+                <iron-icon icon="animad-icons:loop"></iron-icon>
+                [[t('button_reload')]]
+            </paper-button>
+        </template>
     </template>
     <script>
         /**
@@ -83,6 +91,10 @@
 
             static get properties() {
                 return {
+                    readform: {
+                        type: Boolean,
+                        value: false
+                    },
                     /*
                      * Das 'domain' property wird benötigt, um den richtigen Pfad 
                      * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
@@ -114,6 +126,12 @@
                 // (Methode wird über *FormBehavior 
                 // zur Verfügung gestellt)
                 this._loadFormData();
+            }
+
+            _editForm() {
+                if(this.readform) {
+                    this.set('readform', false);
+                }
             }
 
         }
