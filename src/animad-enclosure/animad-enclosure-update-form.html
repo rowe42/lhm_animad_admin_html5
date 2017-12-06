@@ -91,12 +91,22 @@
 
             static get properties() {
                 return {
+                    /*
+                     * Das *UpdateForm kann auch lesend benutzt werden. Dazu muss
+                     * das Property 'readform' auf true gesetzt werden. Der 
+                     * Default Wert ist immer 'false'. 
+                     * 
+                     * Wird dieser Wert auf 'true' gesetzt, so sind die Felder des 
+                     * Formulars nicht mehr editierbar. Die Schaltflächen zum Editieren
+                     * werden ausgeblendet. Je nach Berechtigung wird eine Schaltfläche
+                     * hinzugefügt, die das Formular wieder editierbar macht.
+                     */
                     readform: {
                         type: Boolean,
                         value: false
                     },
                     /*
-                     * Das 'domain' property wird benötigt, um den richtigen Pfad 
+                     * Das '_domain' property wird benötigt, um den richtigen Pfad 
                      * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
                      * benötigt, in dem die I18nBehavior verwendet wird.
                      */
@@ -105,7 +115,7 @@
                         value: 'animad'
                     },
                     /*
-                     * Das 'entity' property wird benötigt, um den richtigen Pfad 
+                     * Das '_entity' property wird benötigt, um den richtigen Pfad 
                      * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
                      * benötigt, in dem die I18nBehavior verwendet wird.
                      */
