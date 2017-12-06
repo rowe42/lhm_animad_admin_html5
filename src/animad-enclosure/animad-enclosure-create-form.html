@@ -15,6 +15,7 @@
 <link rel="import" href="../animad-icons.html">
 <link rel="import" href="../behaviors/animad-form-behavior.html">
 <link rel="import" href="../behaviors/animad-i18n-behavior.html">
+<link rel="import" href="../behaviors/mixin.html">
 
 <dom-module id="animad-enclosure-create-form">
     <template>
@@ -36,7 +37,7 @@
         -->
         <iron-form id="iform">
             <form class="animad-enclosure-form">
-                <animad-enclosure-form id="createform" data="{{data}}" i18nContext="[[i18nContext]]"  auto-validate></animad-enclosure-form>
+                <animad-enclosure-form data="{{data}}"  auto-validate></animad-enclosure-form>
                 <!--
                     Slot um weitere Elemente aufzunehmen.
 
@@ -63,28 +64,22 @@
          * `<animad-anclosure-create-form>` stellt ein Formular zur Verfügung, über das man ein
          * neues 'Enclosure' mit all seinen Attributen erstellen kann.
          * ## Anwendung in der Applikation
+         * ```html
          * <link rel="import" href="[Pfad zu meinen Abhängigkeiten]/animad-enclosure/animad-enclosure-create-form.html">
          * ...
          * <animad-enclosure-create-form post-url="[URL an die die Daten geschickt werden]"></animad-enclosure-create-form>
          * ...
+         * ```
          * 
          * @customElement
          * @polymer
          *
          */
-        class AnimadEnclosureCreateForm extends AnimadFormBehavior(AnimadI18nBehavior(Polymer.Element)) {
+        class AnimadEnclosureCreateForm extends mix(Polymer.Element).with(AnimadFormBehavior, AnimadI18nBehavior) {
             static get is() { return 'animad-enclosure-create-form'; }
 
             static get properties() {
                 return {
-                    // ID des Form Elements. Diese Info wird
-                    // in der *FormBehavior benötigt, um das
-                    // Formular vor dem Versand validieren zu
-                    // können.
-                    _formid: {
-                        type: Object,
-                        value: '#createform'
-                    },
                     /*
                      * Das 'domain' property wird benötigt, um den richtigen Pfad 
                      * zu den i18n Werten zu erzeugen. Es wird in jedem Element 

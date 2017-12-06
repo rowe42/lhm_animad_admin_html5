@@ -12,8 +12,10 @@
 
 <!-- animad elements -->
 <link rel="import" href="animad-enclosure-form.html">
-<link rel="import" href="../behaviors/animad-form-behavior.html">
 <link rel="import" href="../animad-icons.html">
+<link rel="import" href="../behaviors/animad-form-behavior.html">
+<link rel="import" href="../behaviors/animad-i18n-behavior.html">
+<link rel="import" href="../behaviors/mixin.html">
 
 <dom-module id="animad-enclosure-update-form">
     <template>
@@ -43,7 +45,7 @@
         -->
         <iron-form id="iform">
             <form class="animad-enclosure-form">
-                <animad-enclosure-form id="updateform" data="{{data}}" resources="[[resources]]" lang="[[lang]]" auto-validate></animad-enclosure-form>
+                <animad-enclosure-form data="{{data}}" auto-validate></animad-enclosure-form>
             </form>
         </iron-form>
         <!-- 
@@ -65,30 +67,22 @@
          * `<animad-anclosure-update-form>` stellt ein Formular zur Verfügung, über das man ein
          * vorhandenes 'Enclosure' mit all seinen Attributen bearbeitet werden kann.
          * ## Anwendung in der Applikation
+         * ```html
          * <link rel="import" href="[Pfad zu meinen Abhängigkeiten]/animad-enclosure/animad-enclosure-update-form.html">
          * ...
          * <animad-enclosure-update-form get-url="[zu ladende Ressource]" post-url="[URL an die die Daten geschickt werden]"></animad-enclosure-update-form>
          * ...
+         * ```
          * 
          * @customElement
          * @polymer
          *
          */
-        class AnimadEnclosureUpdateForm extends AnimadFormBehavior(AnimadI18nBehavior(Polymer.Element)) {
+        class AnimadEnclosureUpdateForm extends mix(Polymer.Element).with(AnimadFormBehavior, AnimadI18nBehavior) {
             static get is() { return 'animad-enclosure-update-form'; }
 
             static get properties() {
                 return {
-                    /*
-                     * ID des Form Elements. Diese Info wird
-                     * in der *FormBehavior benötigt, um das
-                     * Formular vor dem Versand validieren zu
-                     * können.
-                     */
-                    _formid: {
-                        type: Object,
-                        value: '#updateform'
-                    },
                     /*
                      * Das 'domain' property wird benötigt, um den richtigen Pfad 
                      * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
