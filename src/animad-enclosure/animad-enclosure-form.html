@@ -19,7 +19,7 @@
             name="name" 
             label="[[t('name')]]" 
             value="{{data.name}}" 
-            disabled="[[disabled]]"
+            readonly="[[readonly]]"
             required 
             auto-validate="[[autoValidate]]" 
             minlength="3" 
@@ -32,7 +32,7 @@
             name=cleaningTime 
             label="[[t('cleaningTime')]]" 
             value="{{data.cleaningTime}}"
-            disabled="[[disabled]]" 
+            readonly="[[readonly]]" 
             required auto-validate="[[autoValidate]]" 
             error-message="[[t('cleaningTime_error')]]">
         </paper-input>
@@ -66,7 +66,7 @@
                         }
                     },
                     autoValidate: Boolean,
-                    disabled: {
+                    readonly: {
                         type: Boolean,
                         value: false
                     },
