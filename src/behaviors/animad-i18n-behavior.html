@@ -31,12 +31,10 @@
         }
 
         t(key) {
-            console.log('key -> ' + key);
             if(!this._polyglot) {
                 this._init();
             }
             var value = this._polyglot.t(key);
-            console.log('value -> ' + value);
             return value;
         }
 
@@ -46,9 +44,9 @@
                 this._polyglot = new Polyglot({
                     phrases: subtree
                 });
-                if(this._polyglot) {
-                    console.log('initialized i18n');
-                }
+                //if(this._polyglot) {
+                //    console.log('initialized i18n');
+                //}
             } else {
                 throw "Illegal Argument exception: cannot read lang and resources properties."
             }
