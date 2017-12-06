@@ -1,0 +1,57 @@
+<link rel="import" href="../../bower_components/nebula-i18n/polyglot.html">
+
+<script>
+    let AnimadI18nBehavior = (superclass) => class extends superclass {
+        static get properties() {
+            return {
+                lang: {
+                    type: String,
+                    value() {
+                        var l = document.querySelector('animad-app').shadowRoot.querySelector('#language');
+                        if(!l) {
+                            throw "Couldn't find element 'nebula-language' with id 'language' in your animad-app element! Please fix this to use i18n.";
+                        }
+                        return l.lang;
+                    }
+                },
+                resources: {
+                    type: Object,
+                    value() {
+                        var r = document.querySelector('animad-app').shadowRoot.querySelector('#locales');
+                        if(!r) {
+                            throw "Couldn't find element 'nebula-resources' with id 'locales' in your animad-app element! Please fix this to use i18n.";
+                        }
+                        return r.resources;
+                    }
+                },
+                _polyglot: {
+                    type: Object
+                },
+            }
+        }
+
+        t(key) {
+            console.log('key -> ' + key);
+            if(!this._polyglot) {
+                this._init();
+            }
+            var value = this._polyglot.t(key);
+            console.log('value -> ' + value);
+            return value;
+        }
+
+        _init() {
+            if (this.lang && this.resources && this._domain && this._entity) {
+                var subtree = this.resources[this.lang][this._domain][this._entity];
+                this._polyglot = new Polyglot({
+                    phrases: subtree
+                });
+                if(this._polyglot) {
+                    console.log('initialized i18n');
+                }
+            } else {
+                throw "Illegal Argument exception: cannot read lang and resources properties."
+            }
+        }
+    }
+</script>

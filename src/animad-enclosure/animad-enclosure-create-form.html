@@ -14,6 +14,7 @@
 <link rel="import" href="animad-enclosure-form.html">
 <link rel="import" href="../animad-icons.html">
 <link rel="import" href="../behaviors/animad-form-behavior.html">
+<link rel="import" href="../behaviors/animad-i18n-behavior.html">
 
 <dom-module id="animad-enclosure-create-form">
     <template>
@@ -30,23 +31,12 @@
                 @apply --animad-enclosure-form-styles;
             }
         </style>
-        <!-- i18n -->
-        <nebula-language
-            supported='["en", "de"]'
-            lang="{{lang}}">
-        </nebula-language>
-        <nebula-resources
-                id="locales"
-                file="animad_enclosure_locales"
-                path="/locales"
-                resources="{{resources}}">
-        </nebula-resources>
         <!--
             Das vorgefertigte Formular.
         -->
         <iron-form id="iform">
             <form class="animad-enclosure-form">
-                <animad-enclosure-form id="form" data="{{data}}" resources="[[resources]]" lang="[[lang]]" auto-validate></animad-enclosure-form>
+                <animad-enclosure-form id="createform" data="{{data}}" i18nContext="[[i18nContext]]"  auto-validate></animad-enclosure-form>
                 <!--
                     Slot um weitere Elemente aufzunehmen.
 
@@ -60,11 +50,11 @@
         -->
         <paper-button class="send" on-tap="_sendForm" raised>
             <iron-icon icon="animad-icons:send"></iron-icon>
-             [[$t('animad_enclosure_create_button_save')]]
+             [[t('create_button_save')]]
         </paper-button>
         <paper-button class="reset" on-tap="_resetForm" raised>
             <iron-icon icon="animad-icons:erase"></iron-icon>
-             [[$t('animad_enclosure_create_button_reset')]]
+             [[t('create_button_reset')]]
         </paper-button>      
     </template>
     <script>
@@ -82,7 +72,7 @@
          * @polymer
          *
          */
-        class AnimadEnclosureCreateForm extends AnimadFormBehavior(Nebula.PolyglotBehavior(Polymer.Element)) {
+        class AnimadEnclosureCreateForm extends AnimadFormBehavior(AnimadI18nBehavior(Polymer.Element)) {
             static get is() { return 'animad-enclosure-create-form'; }
 
             static get properties() {
@@ -93,7 +83,25 @@
                     // können.
                     _formid: {
                         type: Object,
-                        value: '#form'
+                        value: '#createform'
+                    },
+                    /*
+                     * Das 'domain' property wird benötigt, um den richtigen Pfad 
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * benötigt, in dem die I18nBehavior verwendet wird.
+                     */
+                     _domain: {
+                        type: String,
+                        value: 'animad'
+                    },
+                    /*
+                     * Das 'entity' property wird benötigt, um den richtigen Pfad 
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * benötigt, in dem die I18nBehavior verwendet wird.
+                     */
+                    _entity: {
+                        type: String,
+                        value: 'enclosure'
                     }
                 }
             }
@@ -108,7 +116,7 @@
                 // FormBehavior der Prefix übergeben,
                 // um die richtigen Toast Meldungen 
                 // zu erzeugen.
-                this.set('i18nContext', 'animad_enclosure');
+                this.set('i18nContext', 'animad.enclosure');
             }
 
         }

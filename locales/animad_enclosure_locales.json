@@ -1,26 +1,34 @@
 {
     "en": {
-      "animad_enclosure_name": "Name",
-      "animad_enclosure_name_error": "Name with 3 letters required!",
-      "animad_enclosure_cleaningTime": "Cleaning Time",
-      "animad_enclosure_cleaningTime_error": "Cleaning Time",
-      "animad_enclosure_form_error": "",
-      "animad_enclosure_form_validation": "",
-      "animad_enclosure_form_success": "",
-      "animad_enclosure_create_button_save": "save",
-      "animad_enclosure_create_button_reset": "reset",
-      "animad_enclosure_create_button_reload": "reload"
+      "animad": {
+        "enclosure": {
+          "name": "Name",
+          "name_error": "Name with 3 letters required!",
+          "cleaningTime": "Cleaning Time",
+          "cleaningTime_error": "Cleaning Time",
+          "form_error": "An error occured. Code:",
+          "form_validation": "Please fix the form errors.",
+          "form_success": "The form has been saved.",
+          "create_button_save": "save",
+          "create_button_reset": "reset",
+          "create_button_reload": "reload"
+        }
+      }
     },
     "de": {
-      "animad_enclosure_name": "Name des Geheges",
-      "animad_enclosure_name_error": "Geben Sie bitte einen Namen für das Gehege an, der mindestens 3 Buchstaben hat!",
-      "animad_enclosure_cleaningTime": "Tägliche Putzzeit",
-      "animad_enclosure_cleaningTime_error": "Tägliche Putzzeit muss im Format <HH:mm> eingegeben werden!",
-      "animad_enclosure_form_error": "Es ist ein Fehler beim Speichern aufgetreten. Fehlercode:",
-      "animad_enclosure_form_validation": "Bitte die angezeigten Fehler beheben!",
-      "animad_enclosure_form_success": "Das Formular wurde gespeichert!",
-      "animad_enclosure_create_button_save": "speichern",
-      "animad_enclosure_create_button_reset": "zurücksetzen",
-      "animad_enclosure_create_button_reload": "neu laden"
+      "animad": {
+        "enclosure": {
+          "name": "Name des Geheges",
+          "name_error": "Geben Sie bitte einen Namen für das Gehege an, der mindestens 3 Buchstaben hat!",
+          "cleaningTime": "Tägliche Putzzeit",
+          "cleaningTime_error": "Tägliche Putzzeit muss im Format <HH:mm> eingegeben werden!",
+          "form_error": "Es ist ein Fehler beim Speichern aufgetreten. Fehlercode:",
+          "form_validation": "Bitte die angezeigten Fehler im Formular beheben!",
+          "form_success": "Das Formular wurde gespeichert!",
+          "create_button_save": "speichern",
+          "create_button_reset": "zurücksetzen",
+          "create_button_reload": "neu laden"
+        }
+      }
     }
 }
