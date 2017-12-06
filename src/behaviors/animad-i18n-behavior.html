@@ -87,6 +87,28 @@
         }
 
         /*
+         * Löst einen i18n Schlüssel in den Wert (in der entsprechenden Sprache) auf. Dabei
+         * kann er Werte in der Übersetzung ersetzen. Beispiel:
+         * ...
+         * "error": "Es ist ein Fehler aufgetreten (code '%{code}')!"
+         * ...
+         * 
+         * Verwendet wird das so:
+         * t("error", {code: "404"});
+         * 
+         * @param key Der Schlüssel als String
+         * @param extension Ein Objekt an werten, die in die Nachricht eingesetzt werden sollen.
+         * @return Der Wert des Schlüssels in der aktiven Sprache
+         */
+        t(key, extension) {
+            if(!this._polyglot) {
+                this._init();
+            }
+            var value = this._polyglot.t(key, extension);
+            return value;
+        }
+
+        /*
          * Initialisiert bei Gebrauch das Polyglot Objekt einmal. Das Objekt
          * wird dann im '_polyglot' Property gespeichert und steht somit über
          * gesamten Lebenscyklus der Elements zur Verfügung.

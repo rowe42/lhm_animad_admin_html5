@@ -161,7 +161,7 @@
          * Der 'Toast', der bei Fehlern angezeigt wird.
          */
         _error(status) {
-            this._errorToast.text = this.t('form_error') + ' ' + status;
+            this._errorToast.text = this.t('form_error', {code: status});
             this._errorToast.open();
         }
     };

@@ -22,7 +22,7 @@
           "name_error": "Geben Sie bitte einen Namen für das Gehege an, der mindestens 3 Buchstaben hat!",
           "cleaningTime": "Tägliche Putzzeit",
           "cleaningTime_error": "Tägliche Putzzeit muss im Format <HH:mm> eingegeben werden!",
-          "form_error": "Es ist ein Fehler beim Speichern aufgetreten. Fehlercode:",
+          "form_error": "Es ist ein Fehler beim Speichern aufgetreten. Fehlercode ist '%{code}'.",
           "form_validation": "Bitte die angezeigten Fehler im Formular beheben!",
           "form_success": "Das Formular wurde gespeichert!",
           "create_button_save": "speichern",
