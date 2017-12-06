@@ -105,8 +105,7 @@
                     })
             } else {
                 console.log("form is not valid...");
-                var i18nCreateValidation = this.i18nContext + '_form_validation';
-                this._warningToast.text = this.resources[this.lang][i18nCreateValidation];
+                this._warningToast.text = this.t('form_validation');
                 this._warningToast.open();
             }
 
@@ -154,8 +153,7 @@
          * Der 'Toast', der bei Erfolg angezeigt wird.
          */
         _success(result) {
-            var i18nCreateSuccess = this.i18nContext + '_form_success';
-            this._successToast.text = this.resources[this.lang][i18nCreateSuccess];
+            this._successToast.text = this.t('form_success');
             this._successToast.open();
         }
 
@@ -163,8 +161,7 @@
          * Der 'Toast', der bei Fehlern angezeigt wird.
          */
         _error(status) {
-            var i18nCreateError = this.i18nContext + '_form_error';
-            this._errorToast.text = this.resources[this.lang][i18nCreateError] + ' ' + status;
+            this._errorToast.text = this.t('form_error') + ' ' + status;
             this._errorToast.open();
         }
     };

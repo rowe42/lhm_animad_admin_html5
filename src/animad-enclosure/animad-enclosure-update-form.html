@@ -43,7 +43,7 @@
         -->
         <iron-form id="iform">
             <form class="animad-enclosure-form">
-                <animad-enclosure-form id="form" data="{{data}}" resources="[[resources]]" lang="[[lang]]" auto-validate></animad-enclosure-form>
+                <animad-enclosure-form id="updateform" data="{{data}}" resources="[[resources]]" lang="[[lang]]" auto-validate></animad-enclosure-form>
             </form>
         </iron-form>
         <!-- 
@@ -51,11 +51,11 @@
         -->
         <paper-button class="send" on-tap="_sendForm" raised>
             <iron-icon icon="animad-icons:send"></iron-icon>
-            [[$t('animad_enclosure_create_button_save')]]
+            [[t('create_button_save')]]
         </paper-button>
         <paper-button slot="buttons" class="reset" on-tap="_loadFormData" raised>
                 <iron-icon icon="animad-icons:loop"></iron-icon>
-                [[$t('animad_enclosure_create_button_reload')]]
+                [[t('create_button_reload')]]
             </paper-button>
         <slot name="buttons"></slot>
     </template>
@@ -74,18 +74,38 @@
          * @polymer
          *
          */
-        class AnimadEnclosureUpdateForm extends AnimadFormBehavior(Nebula.PolyglotBehavior(Polymer.Element)) {
+        class AnimadEnclosureUpdateForm extends AnimadFormBehavior(AnimadI18nBehavior(Polymer.Element)) {
             static get is() { return 'animad-enclosure-update-form'; }
 
             static get properties() {
                 return {
-                    // ID des Form Elements. Diese Info wird
-                    // in der *FormBehavior benötigt, um das
-                    // Formular vor dem Versand validieren zu
-                    // können.
+                    /*
+                     * ID des Form Elements. Diese Info wird
+                     * in der *FormBehavior benötigt, um das
+                     * Formular vor dem Versand validieren zu
+                     * können.
+                     */
                     _formid: {
                         type: Object,
-                        value: '#form'
+                        value: '#updateform'
+                    },
+                    /*
+                     * Das 'domain' property wird benötigt, um den richtigen Pfad 
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * benötigt, in dem die I18nBehavior verwendet wird.
+                     */
+                     _domain: {
+                        type: String,
+                        value: 'animad'
+                    },
+                    /*
+                     * Das 'entity' property wird benötigt, um den richtigen Pfad 
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * benötigt, in dem die I18nBehavior verwendet wird.
+                     */
+                    _entity: {
+                        type: String,
+                        value: 'enclosure'
                     }
                 }
             }
