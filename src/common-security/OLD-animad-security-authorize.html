@@ -1,0 +1,152 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../animad-icons.html">
+
+<dom-module id="animad-security-authorize">
+    <template>
+        <style>
+        </style>
+
+        <iron-ajax
+            auto
+            id="getPermissions"
+            url="http://localhost:8870/getPermissionsDummy"
+            handle-as="json"
+            last-response="{{permissions}}"
+            on-response="ajaxHasChanged"
+            >
+        </iron-ajax>    
+
+<!--
+        Funktion als Promise
+        <template is="dom-repeat" items="[[permissions]]">
+            <span>{{item}}</span>
+        </template>-->
+        
+        <template is="dom-if" if="{{ajaxChanged}}">
+            <template is="dom-if" if="{{checkPermissions(permission)}}">
+            <slot></slot>
+            </template>
+        </template>
+
+    </template>
+    <script>
+        /**
+         * # Formular zum Erstellen von einem 'Animal'
+         * `<animad-animal-create-form>` stellt ein Formular zur Verfügung, über das man ein
+         * neues 'Animal' mit all seinen Attributen erstellen kann.
+         * ## Anwendung in der Applikation
+         * <link rel="import" href="[Pfad zu meinen Abhängigkeiten]/animad-animal/animad-animal-create-form.html">
+         * ...
+         * <animad-animal-create-form></animad-animal-create-form>
+         * ...
+         * 
+         * @customElement
+         * @polymer
+         *
+         */
+        // GENERATOR patter (camel case): [DOMAINNAME][ENTITY]CreateForm
+        class AnimadSecurityAuthorize extends Polymer.Element {
+
+            // GENERATOR pattern: [DOMAINNAME]-[ENTITY]-create-form
+            static get is() {
+                return 'animad-security-authorize';
+            }
+
+            // properties
+            static get properties() {
+                return {
+                    // GENERATOR 
+                    /**
+                     * Url um die Permissions abzurufen.
+                     */
+                    permission: {
+                        type: String
+                    },
+                    permissionsUrl: {
+                        type: String
+                    },
+                    permissions: {
+                        type: Object,
+                        value: []
+                    },
+                    ajaxChanged: {
+                        type: Boolean,
+                        value: false
+                    },
+                    /**
+                     * Url um die 'Genders' abzurufen.
+                     */
+                    gendersUrl: {
+                        type: String
+                    },
+                    // GENERATOR für 'past' und 'future' Datumseingaben wird der heutige Tag als String benötigt
+                    /**
+                     * Das heutige Datum. Wird verwendet für 'past' und 'future' Datumsangaben.
+                     */
+                    _today: {
+                        type: String,
+                        computed: 'calculateToday()'
+                    }
+                }
+            }
+
+            constructor() {
+                super();
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+
+            }
+
+            // methods
+
+            /**
+             * berechnet das aktuelle Tagesdatum in der Form 'yyyy-mm-dd'
+             *
+             * @return {string} das aktuelle Tagesdatum als String
+             */
+            calculateToday() {
+                var today = new Date();
+                var dd = today.getDate();
+                var mm = today.getMonth() + 1; //January is 0!
+                var yyyy = today.getFullYear();
+
+                if (dd < 10) {
+                    dd = '0' + dd
+                }
+
+                if (mm < 10) {
+                    mm = '0' + mm
+                }
+
+                today = yyyy + '-' + mm + '-' + dd;
+                return today;
+            }
+
+            checkPermissions(permissionToCheck) {
+            console.log('checkPermissions called');
+                if (typeof this.permissions === 'undefined') {
+                    console.log('No Permissions found - firing request');
+                    this.$.getPermissions.generateRequest();
+                }
+
+                if (this.permissions.filter(e => e === permissionToCheck).length > 0) {
+                    console.log('Permission found in list');
+                    return true;
+                }
+                console.log('Permission ' + permissionToCheck + ' NOT found in list. Found: ' + this.permissions);
+                return false;
+            }
+            
+            ajaxHasChanged() {
+                console.log('Setting ajaxChanged');
+                this.ajaxChanged = true;
+            }
+
+        }
+
+        customElements.define(AnimadSecurityAuthorize.is, AnimadSecurityAuthorize);
+    </script>
+</dom-module>

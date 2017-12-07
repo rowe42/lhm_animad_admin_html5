@@ -1,0 +1,89 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="animad-icons.html">
+
+<link rel="import" href="common-security/common-security-authorize.html">
+<link rel="import" href="common-security/common-security-check.html">
+<link rel="import" href="common-security/secure-paper-input.html">
+
+<link rel="import" href="shared-styles.html">
+
+<!-- GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-view -->
+<dom-module id="animad-security-view">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+
+                padding: 10px;
+            }
+        </style>
+
+        <div class="card">
+            <div class="circle"><iron-icon icon="animad-icons:basecamp"></iron-icon></div>
+            <h1>Security view</h1>
+            <p>Zeigt die verschiedenen Einbindungsarten der Security-Components.</p>
+            <iron-form id="create-form">
+                <form action="http://httpbin.org/get" method="get">
+                    
+                    <!-- Beispiel 1-->
+                    <p>
+                        Der folgende Text ist nur zu sehen, wenn der aktuelle User Permission=RESOURCE1 hat:
+                    <common-security-authorize permission="RESOURCE1">Text für RESOURCE1</common-security-authorize>
+                    </p>
+                    
+                    <!-- Beispiel 2-->
+                    <p>
+                    <common-security-check permission="RESOURCE2" allowed="{{allowed}}"></common-security-check>
+                    <paper-input id="prefill-change-example" label="Bei diesem Feld ändert sich die Vorbefüllung von (keine Angabe) zu (berechtigt) bei Permission=RESOURCE2" 
+                                 value="{{prefill}}"></paper-input>
+                    </p>
+                    
+                    <!-- Beispiel 3-->
+                    <p>
+                    <secure-paper-input id="readonly-example" permission="RESOURCE3" label="Feld ist readonly, außer bei Permission=RESOURCE3" 
+                                        value="Vorbefüllung"></secure-paper-input>
+                    </p>
+                    
+                    <br>
+                    <br>
+                    <paper-button raised>Submit</paper-button>
+                </form>
+            </iron-form>      
+        </div>
+    </template>
+
+    <script>
+        class AnimadSecurityView extends Polymer.Element {
+            static get is() {
+                return 'animad-security-view';
+            }
+
+            // properties
+            static get properties() {
+                return {
+                    prefill: {
+                        type: String,
+                        value: 'keine Angabe'
+                    },
+                    allowed: {
+                        type: Boolean,
+                        value: false,
+                        observer: '_activeChanged'
+                    }
+                }
+            }
+
+            _activeChanged(newValue, oldValue) {
+                if (this.allowed) {
+                    this.prefill = '(berechtigt)';
+                }
+            }
+        }
+
+        window.customElements.define(AnimadSecurityView.is, AnimadSecurityView);
+    </script>
+</dom-module>

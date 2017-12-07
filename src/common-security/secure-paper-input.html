@@ -1,0 +1,23 @@
+<link rel="import" href="common-security-mixin.html">
+
+<dom-module id="secure-paper-input">
+    <script>
+        class SecurePaperInput extends CommonSecurityMixin(customElements.get('paper-input')) {
+
+            static get is() {
+                return 'secure-paper-input';
+            }
+
+            constructor() {
+                super();
+                this.readonly = true;
+            }
+
+            _allowedChanged(newValue, oldValue) {
+                this.readonly=!this.allowed;
+            }
+        }
+
+        customElements.define(SecurePaperInput.is, SecurePaperInput);
+    </script>
+</dom-module>

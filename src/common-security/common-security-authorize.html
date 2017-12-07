@@ -1,0 +1,36 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../../bower_components/iron-meta/iron-meta.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../animad-icons.html">
+<link rel="import" href="common-security-mixin.html">
+
+<dom-module id="common-security-authorize">
+    <template>
+        <style>
+        </style>
+
+        <template is="dom-if" if="{{allowed}}">
+            <slot></slot>
+        </template>
+    </template>
+    <script>
+
+
+        /**
+         * # Ein- oder Ausblenden des enthaltenen Kindelements nach Berechtigung.
+         * 
+         * @customElement
+         * @polymer
+         *
+         */
+        class CommonSecurityAuthorize extends CommonSecurityMixin(Polymer.Element) {
+
+            static get is() {
+                return 'common-security-authorize';
+            }
+        }
+
+        customElements.define(CommonSecurityAuthorize.is, CommonSecurityAuthorize);
+    </script>
+</dom-module>

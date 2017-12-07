@@ -1,0 +1,59 @@
+<script>
+
+
+    CommonSecurityMixin = function (superClass) {
+        return class extends superClass {
+
+            // properties
+            static get properties() {
+                return {
+                    permission: {
+                        type: String
+                    },
+                    _security: {
+                        type: Object,
+                        value() {
+                            return document.querySelector('#animad_security');
+                        },
+                        notify: true
+                    },
+                    allowed: {
+                        type: Boolean,
+                        value: false,
+                        notify: true,
+                        observer: '_allowedChanged'
+                    }
+                }
+            }
+
+            constructor() {
+                super();
+                this._boundListener = this._customeventlistener.bind(this);
+
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+                window.addEventListener('permissionsReceived', this._boundListener);
+            }
+
+            // methods
+
+            checkPermissions() {
+                this.allowed = this._security.checkPermissions(this.permission);
+                return this.allowed;
+            }
+
+            _customeventlistener() {
+                console.log('Custom Event Listener in Security-Mixin called.');
+                this.notifyPath('_security.permissions');
+                this.checkPermissions();
+            }
+
+            _allowedChanged(newValue, oldValue) {
+                //do nothing - override...
+            }
+        }
+    }
+
+</script>
