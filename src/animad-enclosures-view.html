@@ -4,6 +4,9 @@
 <!-- custom components -->
 <link rel="import" href="animad-enclosure/animad-enclosure-update-form.html">
 <link rel="import" href="animad-enclosure/animad-enclosure-create-form.html">
+
+<link rel="import" href="behaviors/animad-i18n-behavior.html">
+<link rel="import" href="behaviors/mixin.html">
 <link rel="import" href="animad-icons.html">
 
 <link rel="import" href="shared-styles.html">
@@ -23,18 +26,18 @@
     </nebula-resources>
     <div id="view" class="card">
       <div class="circle"><iron-icon icon="animad-icons:basecamp"></iron-icon></div>
-      <h1>Enclosures view</h1>
-      <h2>Create Form Sample</h2>
+      <h1>[[t('main_heading')]]</h1>
+      <h2>[[t('create_sample_heading')]]</h2>
       <animad-enclosure-create-form post-url="https://httpbin.org/anything">
       </animad-enclosure-create-form>
       <br />
       <br />
-      <h2>Update Form Sample</h2>
+      <h2>[[t('update_sample_heading')]]</h2>
       <animad-enclosure-update-form get-url="http://demo6512140.mockable.io/enclosures" post-url="https://httpbin.org/anything">
       </animad-enclosure-update-form>
       <br />
       <br />
-      <h2>Read Form Sample</h2>
+      <h2>[[t('read_sample_heading')]]</h2>
       <animad-enclosure-update-form get-url="http://demo6512140.mockable.io/enclosures" post-url="https://httpbin.org/anything" readform>
       </animad-enclosure-update-form>
       </div>
@@ -42,9 +45,36 @@
 
   <script>
     // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]View
-    class AnimadEnclosuresView extends Nebula.PolyglotBehavior(Polymer.Element) {
+    class AnimadEnclosuresView extends mix(Polymer.Element).with(AnimadI18nBehavior) {
       // GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-view
       static get is() { return 'animad-enclosures-view'; }
+
+      static get properties() {
+        return {
+          /*
+           * Das '_domain' property wird benötigt, um den richtigen Pfad 
+           * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+           * benötigt, in dem die I18nBehavior verwendet wird. Im Falle 
+           * einer view ist der Wert IMMER 'view'.
+           */
+          _domain: {
+            type: String,
+            value: 'view'
+          },
+          /*
+           * Das '_entity' property wird benötigt, um den richtigen Pfad 
+           * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+           * benötigt, in dem die I18nBehavior verwendet wird. Im Falle 
+           * einer view ist der Wert immer der Präfix, der im Namen der view
+           * vor '*-view' steht. Bei animad-enclosures-view.html also 
+           * 'animad-enclosures'.
+           */
+          _entity: {
+            type: String,
+            value: 'animad-enclosures'
+          }
+        }
+      }
 
     }
 

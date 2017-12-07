@@ -123,7 +123,7 @@
                 //    console.log('initialized i18n');
                 //}
             } else {
-                throw "Illegal Argument exception: cannot read lang and resources properties."
+                throw "Illegal Argument exception: there is an error in your properties.\n lang -> " + this.lang + "\n resources -> " + this.resources + "\n domain -> " + this._domain + "\n entity -> " + this._entity;
             }
         }
     }

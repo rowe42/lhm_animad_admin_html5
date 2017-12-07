@@ -1,36 +1,52 @@
 {
-    "en": {
-      "animad": {
-        "enclosure": {
-          "name": "Name",
-          "name_error": "Name with 3 letters required!",
-          "cleaningTime": "Cleaning Time",
-          "cleaningTime_error": "Cleaning Time",
-          "form_error": "An error occured. Code:",
-          "form_validation": "Please fix the form errors.",
-          "form_success": "The form has been saved.",
-          "button_save": "save",
-          "button_reset": "reset",
-          "button_reload": "reload",
-          "button_edit": "edit"
-        }
+  "en": {
+    "view": {
+      "animad-enclosures": {
+        "main_heading": "Enclosures View",
+        "create_sample_heading": "'Create' Form Sample",
+        "update_sample_heading": "'Update' Form Sample",
+        "read_sample_heading": "'Read' Form sample"
       }
     },
-    "de": {
-      "animad": {
-        "enclosure": {
-          "name": "Name des Geheges",
-          "name_error": "Geben Sie bitte einen Namen für das Gehege an, der mindestens 3 Buchstaben hat!",
-          "cleaningTime": "Tägliche Putzzeit",
-          "cleaningTime_error": "Tägliche Putzzeit muss im Format <HH:mm> eingegeben werden!",
-          "form_error": "Es ist ein Fehler beim Speichern aufgetreten. Fehlercode ist '%{code}'.",
-          "form_validation": "Bitte die angezeigten Fehler im Formular beheben!",
-          "form_success": "Das Formular wurde gespeichert!",
-          "button_save": "speichern",
-          "button_reset": "zurücksetzen",
-          "button_reload": "neu laden",
-          "button_edit": "bearbeiten"
-        }
+    "animad": {
+      "enclosure": {
+        "name": "Name",
+        "name_error": "Name with 3 letters required!",
+        "cleaningTime": "Cleaning Time",
+        "cleaningTime_error": "Cleaning Time",
+        "form_error": "An error occured. Code:",
+        "form_validation": "Please fix the form errors.",
+        "form_success": "The form has been saved.",
+        "button_save": "save",
+        "button_reset": "reset",
+        "button_reload": "reload",
+        "button_edit": "edit"
       }
     }
+  },
+  "de": {
+    "view": {
+      "animad-enclosures": {
+        "main_heading": "Übersicht Gehege",
+        "create_sample_heading": "Beispiel für ein 'create' Formular",
+        "update_sample_heading": "Beispiel für ein 'update' Formular",
+        "read_sample_heading": "Beispiel für ein 'update' Formular"
+      }
+    },
+    "animad": {
+      "enclosure": {
+        "name": "Name des Geheges",
+        "name_error": "Geben Sie bitte einen Namen für das Gehege an, der mindestens 3 Buchstaben hat!",
+        "cleaningTime": "Tägliche Putzzeit",
+        "cleaningTime_error": "Tägliche Putzzeit muss im Format <HH:mm> eingegeben werden!",
+        "form_error": "Es ist ein Fehler beim Speichern des Geheges aufgetreten. Fehlercode ist '%{code}'.",
+        "form_validation": "Bitte die angezeigten Fehler im Formular beheben!",
+        "form_success": "Das Gehege wurde gespeichert!",
+        "button_save": "speichern",
+        "button_reset": "zurücksetzen",
+        "button_reload": "neu laden",
+        "button_edit": "bearbeiten"
+      }
+    }
+  }
 }
