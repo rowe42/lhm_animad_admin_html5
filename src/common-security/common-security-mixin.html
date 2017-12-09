@@ -28,12 +28,12 @@
 
             constructor() {
                 super();
-                this._boundListener = this._customeventlistener.bind(this);
-
+                this._boundListener = this._customeventlistener.bind(this);                
             }
 
             connectedCallback() {
                 super.connectedCallback();
+                this.checkPermissions();
                 window.addEventListener('permissionsReceived', this._boundListener);
             }
 

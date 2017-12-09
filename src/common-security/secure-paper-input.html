@@ -10,10 +10,14 @@
 
             constructor() {
                 super();
-                this.readonly = true;
+                this._evaluateAllowed();
             }
 
             _allowedChanged(newValue, oldValue) {
+                this._evaluateAllowed();
+            }
+            
+            _evaluateAllowed() {
                 this.readonly=!this.allowed;
             }
         }
