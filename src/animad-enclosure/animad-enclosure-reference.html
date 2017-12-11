@@ -1,0 +1,53 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-autocomplete/paper-autocomplete.html">
+
+<link rel="import" href="../animad-icons.html">
+<link rel="import" href="../behaviors/animad-form-behavior.html">
+<link rel="import" href="../behaviors/animad-i18n-behavior.html">
+<link rel="import" href="../behaviors/mixin.html">
+
+<dom-module id="animad-enclosure-reference">
+    <template>
+        <style>
+        </style>
+        <paper-autocomplete id="my-id" label="Select"></paper-autocomplete>
+    </template>
+    <script>
+      class AnimadEnclosureReference extends mix(Polymer.Element).with(AnimadI18nBehavior) {
+            static get is() { return 'animad-enclosure-reference'; }
+
+            static get properties() {
+                return {
+                    /*
+                     * Das '_domain' property wird benötigt, um den richtigen Pfad 
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * benötigt, in dem die I18nBehavior verwendet wird.
+                     */
+                     _domain: {
+                        type: String,
+                        value: 'animad'
+                    },
+                    /*
+                     * Das '_entity' property wird benötigt, um den richtigen Pfad 
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * benötigt, in dem die I18nBehavior verwendet wird.
+                     */
+                    _entity: {
+                        type: String,
+                        value: 'enclosure'
+                    }
+                }
+            }
+
+            constructor() {
+                super();
+            }
+
+            connectedCallback() {
+            }
+
+        }
+
+        customElements.define(AnimadEnclosureReference.is, AnimadEnclosureReference);
+    </script>
+</dom-module>
