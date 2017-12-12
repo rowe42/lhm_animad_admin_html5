@@ -41,7 +41,7 @@
                     value() {
                         var l = document.querySelector('animad-app').shadowRoot.querySelector('#language');
                         if(!l) {
-                            throw "Couldn't find element 'nebula-language' with id 'language' in your animad-app element! Please fix this to use i18n.";
+                            console.warn("WARNING: Couldn't find element 'nebula-language' with id 'language' in your animad-app element! Please fix this to use i18n.");
                         }
                         return l.lang;
                     }
@@ -58,7 +58,7 @@
                     value() {
                         var r = document.querySelector('animad-app').shadowRoot.querySelector('#locales');
                         if(!r) {
-                            throw "Couldn't find element 'nebula-resources' with id 'locales' in your animad-app element! Please fix this to use i18n.";
+                            console.warn("WARNING: Couldn't find element 'nebula-resources' with id 'locales' in your animad-app element! Please fix this to use i18n.");
                         }
                         return r.resources;
                     }
@@ -123,7 +123,10 @@
                 //    console.log('initialized i18n');
                 //}
             } else {
-                throw "Illegal Argument exception: there is an error in your properties.\n lang -> " + this.lang + "\n resources -> " + this.resources + "\n domain -> " + this._domain + "\n entity -> " + this._entity;
+                this._polyglot = new Polyglot({
+                    phrases: {}
+                });
+                console.warn("WARNING: there is an error in your properties.\n lang -> " + this.lang + "\n resources -> " + this.resources + "\n domain -> " + this._domain + "\n entity -> " + this._entity);
             }
         }
     }
