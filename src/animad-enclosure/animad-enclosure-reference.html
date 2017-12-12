@@ -4,16 +4,17 @@
 <link rel="import" href="../animad-icons.html">
 <link rel="import" href="../behaviors/animad-form-behavior.html">
 <link rel="import" href="../behaviors/animad-i18n-behavior.html">
+<link rel="import" href="../behaviors/animad-reference-behavior.html">
 <link rel="import" href="../behaviors/mixin.html">
 
 <dom-module id="animad-enclosure-reference">
     <template>
         <style>
         </style>
-        <paper-autocomplete id="my-id" label="Select"></paper-autocomplete>
+        <paper-autocomplete id="my-id" label="Gehege" on-keydown="addOnEnter"></paper-autocomplete>
     </template>
     <script>
-      class AnimadEnclosureReference extends mix(Polymer.Element).with(AnimadI18nBehavior) {
+      class AnimadEnclosureReference extends mix(Polymer.Element).with(AnimadI18nBehavior, AnimadReferenceBehavior) {
             static get is() { return 'animad-enclosure-reference'; }
 
             static get properties() {
@@ -44,8 +45,8 @@
             }
 
             connectedCallback() {
+                super.connectedCallback();
             }
-
         }
 
         customElements.define(AnimadEnclosureReference.is, AnimadEnclosureReference);
