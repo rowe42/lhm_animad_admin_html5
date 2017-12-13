@@ -26,17 +26,17 @@
       <h1>[[t('main_heading')]]</h1>
       <h2>[[t('create_sample_heading')]]</h2>
       <animad-enclosure-create-form post-url="https://httpbin.org/anything">
-      <animad-enclosure-reference id="enclosure_ref"></animad-enclosure-reference>
-      </animad-enclosure-create-form>
+        <animad-enclosure-reference source-url="http://demo6512140.mockable.io/enclosures" text-property="name" value-property="id" preload></animad-enclosure-reference>
+      </animad-enclosure-create-form>      
       <br />
       <br />
       <h2>[[t('update_sample_heading')]]</h2>
-      <animad-enclosure-update-form get-url="http://demo6512140.mockable.io/enclosures" post-url="https://httpbin.org/anything">
+      <animad-enclosure-update-form get-url="http://demo6512140.mockable.io/enclosure/4711" post-url="https://httpbin.org/anything">
       </animad-enclosure-update-form>
       <br />
       <br />
       <h2>[[t('read_sample_heading')]]</h2>
-      <animad-enclosure-update-form get-url="http://demo6512140.mockable.io/enclosures" post-url="https://httpbin.org/anything" readform>
+      <animad-enclosure-update-form get-url="http://demo6512140.mockable.io/enclosure/4711" post-url="https://httpbin.org/anything" readform>
       </animad-enclosure-update-form>
       </div>
   </template>

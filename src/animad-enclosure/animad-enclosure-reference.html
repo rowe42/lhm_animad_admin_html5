@@ -1,5 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/paper-autocomplete/paper-autocomplete.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
 
 <link rel="import" href="../animad-icons.html">
 <link rel="import" href="../behaviors/animad-form-behavior.html">
@@ -11,7 +12,10 @@
     <template>
         <style>
         </style>
-        <paper-autocomplete id="my-id" label="Gehege" on-keydown="addOnEnter"></paper-autocomplete>
+        <paper-autocomplete 
+            label="[[label]]"
+            source="[[source]]">
+        </paper-autocomplete>
     </template>
     <script>
       class AnimadEnclosureReference extends mix(Polymer.Element).with(AnimadI18nBehavior, AnimadReferenceBehavior) {

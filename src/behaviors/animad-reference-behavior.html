@@ -5,16 +5,125 @@
                 /*
                  *
                  */
-                _array: {
+                sourceUrl: {
+                    type: String
+                },
+                /*
+                 * 
+                 */
+                source: {
                     type: Array,
                     value() {
-                        var name = 'data.' + this._entity + 's';
-                        this.parentNode.set(name, []);
-                        return this.parentNode.get(name);
+                        return [];
                     }
+                },
+                /*
+                 *
+                 */
+                 _items: {
+                    type: Array,
+                    value() {
+                        // var name = 'data.' + this._entity + 's';
+                        // console.log(this.parentNode);
+                        // this.parentNode.set(name, []);
+                        // return this.parentNode.get(name);
+
+                        return [];
+                    }
+                },
+                /*
+                 * 
+                 */
+                preload: {
+                    type: Boolean,
+                    value: false
+                },
+                // TODO delete - i18n
+                label: {
+                    type: String,
+                    value: "Booo"
+                },
+                textProperty: {
+                    type: String,
+                    value: "text"
+                },
+                valueProperty: {
+                    type: String,
+                    value: "value"
                 }
 
             }
+        }
+
+        connectedCallback() {
+            super.connectedCallback();
+            // Wenn gewünscht, wird der content
+            // beim Erstellen der Komponente vorab
+            // vom Server geladen.
+            if(this.preload) {
+                this._loadReferenceData();
+            }
+
+            // Es muss ein eventlistener registriert werden,
+            // um die selektierten Elemente verarbeiten zu
+            // können.
+            var e = this.shadowRoot.querySelector('paper-autocomplete');
+            e.addEventListener('autocomplete-selected', this._appendItem);
+        }
+
+        _appendItem(event) {
+            // Der 'host' des Elternknotens wird benötigt
+            // um an die Properties zu kommen.
+            var h = this.parentNode.host;
+            var name = 'data.' + h._entity + 's';
+
+            // Wenn noch kein Attribut vorhanden ist, um
+            // die Referenz zu speichern, so muss eines 
+            // mit einem leeren Array erzeugt werden.
+            if(!h.parentNode.get(name)) {
+                h.parentNode.set(name, []);
+            }
+
+            // Der key der ausgewählten Referenz wird
+            // im Array gespeichert.
+            h.parentNode.push(name, event.detail.value);
+        }
+
+        _loadReferenceData() {
+            var headers = new Headers();
+            headers.append("Content-Type", "application/json");
+            headers.append("Accept", "application/json");
+
+            var init = {
+                method: 'GET',
+                headers: headers,
+                mode: 'cors',
+                cache: 'default'
+            };
+
+            // create request object
+            var request = new Request(this.sourceUrl, init);
+
+            // call the server
+            fetch(request)
+                .then(response => {
+                    if (response.ok) {
+                        //console.log(response);
+                        response.json().then(body => {
+                            // Bei Erfolg werden die Daten, die vom Server kommen 
+                            // in eine key/value liste umgewandelt und im Array
+                            // Property 'source' gespeichert.
+                            for (var i = 0; i < body.length; i++) {
+                                this.source.push({
+                                    "text": body[i][this.textProperty],
+                                    "value": body[i][this.valueProperty]
+                                })
+                            }
+                        })
+                    } else {
+                        this._error(response.status);
+                    }
+                });
         }
     }
 </script>
