@@ -1,5 +1,5 @@
 <script>
-    let AnimadReferenceBehavior = (superclass) => class extends superclass {
+    let AnimadRelationBehavior = (superclass) => class extends superclass {
         static get properties() {
             return {
                 /*
@@ -15,7 +15,8 @@
                     type: Array,
                     value() {
                         return [];
-                    }
+                    },
+                    observer: "_test"
                 },
                 /*
                  *
@@ -40,11 +41,6 @@
                     type:Boolean,
                     value: false
                 },
-                // TODO delete - i18n
-                label: {
-                    type: String,
-                    value: "Booo"
-                },
                 /*
                  * Property des geladenen Objekts, das den 
                  * anzuzeigenden Text enthält.
@@ -59,6 +55,13 @@
                 valueProperty: {
                     type: String,
                     value: "value"
+                },
+                /*
+                 *
+                 */
+                data: {
+                    type: Object,
+                    notify: true
                 }
 
             }
@@ -66,24 +69,34 @@
 
         connectedCallback() {
             super.connectedCallback();
-            // Wenn gewünscht, wird der content
-            // beim Erstellen der Komponente vorab
-            // vom Server geladen.
-            if(this.preload) {
-                this._loadReferenceData();
-            }
 
             // Es muss ein eventlistener registriert werden,
             // um die selektierten Elemente verarbeiten zu
             // können.
             var e = this.shadowRoot.querySelector('paper-autocomplete');
             e.addEventListener('autocomplete-selected', this._appendItem);
+
+            // Wenn gewünscht, wird der content
+            // beim Erstellen der Komponente vorab
+            // vom Server geladen.
+            if(this.preload) {
+                this._loadReferenceData();
+
+                // Die generische Query Methode muss
+                // durch eine eigen Methode überschrieben 
+                // werden.
+                e.queryFn = this._querySimple;
+            }
+        }
+
+        _querySimple (datasource, query) {
+            return datasource.filter(x => x[this.textProperty].toLowerCase().indexOf(query) != -1);
         }
 
         _appendItem(event) {
+
             // Der 'host' des Elternknotens wird benötigt
             // um an die Properties zu kommen.
-
             var h = this.parentNode.host;
             var name = 'data.' + h._entity + 's';
             var id = event.detail.value;
@@ -91,18 +104,19 @@
             // Wenn noch kein Attribut vorhanden ist, um
             // die Referenz zu speichern, so muss eines 
             // mit einem leeren Array erzeugt werden.
-            if(!h.parentNode.get(name)) {
-                h.parentNode.set(name, []);
+            if(!h.get(name)) {
+                h.set(name, []);
             }
 
             // Wenn das Property 'save-relation-by-id' gesetzt ist...
             if(this.saveRelationById) {
                 // Der key der ausgewählten Referenz wird
                 // im Array gespeichert.
-                h.parentNode.push(name, id);
+                h.push(name, id);
             } else {
                 // Das Relationsobjekt wird gespeichert
-                h.parentNode.push(name, this.source.find(x => x.value === id).item);
+                var item = this.source.find(x => x[this.valueProperty] === id);
+                h.push(name, item);
             }
 
             // Textfeld leeren
@@ -110,11 +124,9 @@
         }
 
         _removeItem(event) {
-            // Der 'host' des Elternknotens wird benötigt
-            // um an die Properties zu kommen.
-            var h = this.parentNode.host;
-            var name = 'data.' + h._entity + 's';
-
+            var name = 'data.' + this._entity + 's';
+            var index = event.target.dataset.item;
+            this.splice(name, index, 1);
 
         }
 
@@ -140,15 +152,8 @@
                         //console.log(response);
                         response.json().then(body => {
                             // Bei Erfolg werden die Daten, die vom Server kommen 
-                            // in eine key/value liste umgewandelt und im Array
-                            // Property 'source' gespeichert.
-                            for (var i = 0; i < body.length; i++) {
-                                this.source.push({
-                                    "text": body[i][this.textProperty],
-                                    "value": body[i][this.valueProperty],
-                                    "item": body[i]
-                                })
-                            }
+                            // im Array Property 'source' gespeichert.
+                            this.set("source", body);
                         })
                     } else {
                         this._error(response.status);

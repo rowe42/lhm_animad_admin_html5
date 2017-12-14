@@ -35,9 +35,14 @@
     },
     "animad": {
       "enclosure": {
+        "relation_name": "Gehege",
+        "id": "Id des Geheges",
+        "relation_search_id": "",
         "name": "Name des Geheges",
+        "relation_search_name": "",
         "name_error": "Geben Sie bitte einen Namen für das Gehege an, der mindestens 3 Buchstaben hat!",
         "cleaningTime": "Tägliche Putzzeit",
+        "relation_search_cleaningTime": "Reinigungszeit: ",
         "cleaningTime_error": "Tägliche Putzzeit muss im Format <HH:mm> eingegeben werden!",
         "form_error": "Es ist ein Fehler beim Speichern des Geheges aufgetreten. Fehlercode ist '%{code}'.",
         "form_validation": "Bitte die angezeigten Fehler im Formular beheben!",
@@ -45,7 +50,8 @@
         "button_save": "speichern",
         "button_reset": "zurücksetzen",
         "button_reload": "neu laden",
-        "button_edit": "bearbeiten"
+        "button_edit": "bearbeiten",
+        "relation_list": "%{name} (ID: %{id})"
       }
     }
   }
