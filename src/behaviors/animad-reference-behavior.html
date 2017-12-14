@@ -20,14 +20,9 @@
                 /*
                  *
                  */
-                 _items: {
+                 _selected: {
                     type: Array,
                     value() {
-                        // var name = 'data.' + this._entity + 's';
-                        // console.log(this.parentNode);
-                        // this.parentNode.set(name, []);
-                        // return this.parentNode.get(name);
-
                         return [];
                     }
                 },
@@ -38,15 +33,29 @@
                     type: Boolean,
                     value: false
                 },
+                /*
+                 *
+                 */
+                saveRelationById: {
+                    type:Boolean,
+                    value: false
+                },
                 // TODO delete - i18n
                 label: {
                     type: String,
                     value: "Booo"
                 },
+                /*
+                 * Property des geladenen Objekts, das den 
+                 * anzuzeigenden Text enthält.
+                 */
                 textProperty: {
                     type: String,
                     value: "text"
                 },
+                /*
+                 * Property das die ID des Objekts enthält.
+                 */
                 valueProperty: {
                     type: String,
                     value: "value"
@@ -74,8 +83,10 @@
         _appendItem(event) {
             // Der 'host' des Elternknotens wird benötigt
             // um an die Properties zu kommen.
+
             var h = this.parentNode.host;
             var name = 'data.' + h._entity + 's';
+            var id = event.detail.value;
 
             // Wenn noch kein Attribut vorhanden ist, um
             // die Referenz zu speichern, so muss eines 
@@ -84,9 +95,27 @@
                 h.parentNode.set(name, []);
             }
 
-            // Der key der ausgewählten Referenz wird
-            // im Array gespeichert.
-            h.parentNode.push(name, event.detail.value);
+            // Wenn das Property 'save-relation-by-id' gesetzt ist...
+            if(this.saveRelationById) {
+                // Der key der ausgewählten Referenz wird
+                // im Array gespeichert.
+                h.parentNode.push(name, id);
+            } else {
+                // Das Relationsobjekt wird gespeichert
+                h.parentNode.push(name, this.source.find(x => x.value === id).item);
+            }
+
+            // Textfeld leeren
+            event.currentTarget.clear();
+        }
+
+        _removeItem(event) {
+            // Der 'host' des Elternknotens wird benötigt
+            // um an die Properties zu kommen.
+            var h = this.parentNode.host;
+            var name = 'data.' + h._entity + 's';
+
+
         }
 
         _loadReferenceData() {
@@ -116,7 +145,8 @@
                             for (var i = 0; i < body.length; i++) {
                                 this.source.push({
                                     "text": body[i][this.textProperty],
-                                    "value": body[i][this.valueProperty]
+                                    "value": body[i][this.valueProperty],
+                                    "item": body[i]
                                 })
                             }
                         })

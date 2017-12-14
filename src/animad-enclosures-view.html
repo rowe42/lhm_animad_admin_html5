@@ -25,8 +25,13 @@
       <div class="circle"><iron-icon icon="animad-icons:basecamp"></iron-icon></div>
       <h1>[[t('main_heading')]]</h1>
       <h2>[[t('create_sample_heading')]]</h2>
-      <animad-enclosure-create-form post-url="https://httpbin.org/anything">
-        <animad-enclosure-reference source-url="http://demo6512140.mockable.io/enclosures" text-property="name" value-property="id" preload></animad-enclosure-reference>
+      <animad-enclosure-create-form data="{{createFormData}}" post-url="https://httpbin.org/anything">
+        <animad-enclosure-reference
+          data="{{createFormData}}"
+          source-url="http://demo6512140.mockable.io/enclosures"
+          text-property="name"
+          value-property="id"
+          preload></animad-enclosure-reference>
       </animad-enclosure-create-form>      
       <br />
       <br />
@@ -50,7 +55,7 @@
       static get properties() {
         return {
           /*
-           * Das '_domain' property wird benötigt, um den richtigen Pfad 
+           * Das '_domain' property wird benötigt, um" den richtigen Pfad 
            * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
            * benötigt, in dem die I18nBehavior verwendet wird. Im Falle 
            * einer view ist der Wert IMMER 'view'.
