@@ -8,10 +8,11 @@
 <link rel="import" href="../../bower_components/nebula-i18n/nebula-i18n.html">
 <link rel="import" href="../../bower_components/polymer/lib/elements/custom-style.html">
 <link rel="import" href="../../bower_components/shadycss/apply-shim.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-if.html">
 
 <!-- animad elements -->
 <link rel="import" href="animad-enclosure-form.html">
-<link rel="import" href="animad-enclosure-simple-relation.html">
+<link rel="import" href="../animad-keeper/animad-keeper-simple-relation.html">
 
 <link rel="import" href="../animad-icons.html">
 <link rel="import" href="../behaviors/animad-form-behavior.html">
@@ -39,12 +40,14 @@
         <iron-form id="iform">
             <form class="animad-enclosure-form">
                 <animad-enclosure-form data="{{data}}" auto-validate></animad-enclosure-form>
-                <animad-enclosure-simple-relation
-                data="{{data}}"
-                source-url="http://demo6512140.mockable.io/enclosures"
-                text-property="name"
-                value-property="id"
-                preload></animad-enclosure-relation>
+                <template is="dom-if" if="{{keepersRelation}}">
+                    <animad-keeper-simple-relation
+                    data="{{data}}"
+                    source-url="http://demo6512140.mockable.io/keepers"
+                    text-property="lastname"
+                    value-property="id"
+                    preload></animad-keeper-relation>
+                </template>
             </form>
         </iron-form>
         <!-- 
@@ -98,7 +101,15 @@
                     _entity: {
                         type: String,
                         value: 'enclosure'
-                    }
+                    },
+                    /*
+                     * Wenn dieser Wert auf 'true' gesetzt wird, dann können
+                     * im Formular Relationen zur Entität 'Keeper' gesetzt werden.
+                     */
+                    keepersRelation: {
+                        type: Boolean,
+                        value: false
+                    } 
                 }
             }
 
