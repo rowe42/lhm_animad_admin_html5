@@ -22,9 +22,6 @@
                 postUrl: {
                     type: String
                 },
-                i18nContext: {
-                    type: String
-                },
                 /**
                  * Das leere Objekt.
                  *   
@@ -32,6 +29,7 @@
                  */
                 data: {
                     type: Object,
+                    notify: true,
                     value() {
                         return {}
                     }

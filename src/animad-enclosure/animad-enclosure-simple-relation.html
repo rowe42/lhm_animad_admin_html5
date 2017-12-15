@@ -1,0 +1,156 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-autocomplete/paper-autocomplete.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+<link rel="import" href="../animad-icons.html">
+<link rel="import" href="../behaviors/animad-form-behavior.html">
+<link rel="import" href="../behaviors/animad-i18n-behavior.html">
+<link rel="import" href="../behaviors/animad-relation-behavior.html">
+<link rel="import" href="../behaviors/mixin.html">
+
+<dom-module id="animad-enclosure-simple-relation">
+    <template>
+        <style>
+        </style>
+        <paper-autocomplete 
+            label="[[t('relation_name')]]"
+            source="[[source]]"
+            text-property="[[textProperty]]"
+            value-property="[[valueProperty]]">
+            <template slot="autocomplete-custom-template">
+                <!-- NOTICE: Due to shadow-dom, custom template styles need to be included with the template in Polymer 2.x -->
+                <style>
+                  :host {
+                    display: block;
+                  }
+                  paper-item.account-item {
+                    padding: 8px 16px;
+                  }
+                  .enclosure-name {
+                    color: #333;
+                  }
+                  .enclosure-id, .enclosure-cleaningTime {
+                    margin-top: 4px;
+                    color: #999;
+                  }
+                  .enclosure-cleaningTime {
+                    font-size: small;
+                  }
+                  /**
+                   * IE11 paper-item min-height bug: https://github.com/PolymerElements/paper-item/issues/35
+                   * If you are running on IE11, add this lines to reset min-height on IE11
+                   */
+                  @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+                    paper-item.account-item {
+                      min-height: 100% !important;
+                      height: auto !important;
+                      /**
+                       * If you are experimenting that some CSS properties for paper-item are not overriden in Polymer 2.x with IE11,
+                       * please add !important to ensure the shadow-dom v1 polyfill works properly
+                       */
+                      padding: 8px 16px !important;
+                    }
+                  }
+                </style>
+                <paper-item class="account-item" on-tap="_onSelect" id$="[[_getSuggestionId(index)]]" role="option" aria-selected="false">
+                  <div>
+                    <div class="enclosure-name">[[item.name]]</div>
+                    <div class="enclosure-id">[[item.id]]</div>
+                    <div class="enclosure-cleaningTime">[[item.cleaningTime]]</div>
+                  </div>
+                  <paper-ripple></paper-ripple>
+                </paper-item>
+              </template>
+        </paper-autocomplete>
+        <paper-listbox>
+            <template is="dom-repeat" items="{{data.enclosures}}">
+                <paper-item>
+                    <paper-item-body>[[_format(index)]]</paper-item-body>
+                    <paper-icon-button icon="animad-icons:link-off" data-item$="[[index]]" on-tap="_removeItem"></paper-icon-button>
+                </paper-item>
+            </template>
+        </paper-listbox>
+    </template>
+    <script>
+        /**
+         * # Formular zum Erstellen von einer Ralation zu einem 'Enclosure'.
+         * `<animad-anclosure-simple-relation>` stellt ein Suchfeld zur Verfügung, 
+         * über das man ein 'Enclosure' selektieren und als Relation an eine 
+         * vorhandenen Datenstruktur einfügen kann. 
+         *
+         * ## Anwendung in der Applikation
+         * ```html
+         * <link rel="import" href="[Pfad zu meinen Abhängigkeiten]/animad-enclosure/animad-enclosure-simple-relation.html">
+         * ...
+         * <animad-enclosure-simple-relation 
+         *   data="{{data}}"
+         *   source-url="[Quelle zu den Enclosures]"
+         *   text-property="name"
+         *   value-property="id"
+         *   preload>
+         * </animad-enclosure-simple-relation>
+         * ...
+         * ```
+         * 
+         * @customElement
+         * @polymer
+         *
+         */
+      class AnimadEnclosureSimpleRelation extends mix(Polymer.Element).with(AnimadI18nBehavior, AnimadRelationBehavior) {
+            static get is() { return 'animad-enclosure-simple-relation'; }
+
+            static get properties() {
+                return {
+                    /*
+                     * Das '_domain' property wird benötigt, um den richtigen Pfad 
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * benötigt, in dem die I18nBehavior verwendet wird.
+                     */
+                     _domain: {
+                        type: String,
+                        value: 'animad'
+                    },
+                    /*
+                     * Das '_entity' property wird benötigt, um den richtigen Pfad 
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * benötigt, in dem die I18nBehavior verwendet wird.
+                     */
+                    _entity: {
+                        type: String,
+                        value: 'enclosure'
+                    }
+                }
+            }
+
+            constructor() {
+                super();
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+            }
+
+            /*
+             * Bereitet die Ausgabe der Relationen in der Liste 
+             * nach den Vorgaben in der locales Datei auf. Dies
+             * ist notwendig, weil man im HTML Bereich Databinding
+             * nicht schachteln kann.
+             * 
+             * @param index des jeweiligen Elements
+             * @return formatierter Text
+             */
+            _format(index) {
+                var name = 'data.' + this._entity + 's';
+                var items = this.get(name);
+                var item = items[index];
+                return this.t('relation_list', {id: item.id, name: item.name, cleaningTime: item.cleaningTime});
+            }
+        }
+
+        customElements.define(AnimadEnclosureSimpleRelation.is, AnimadEnclosureSimpleRelation);
+    </script>
+</dom-module>
