@@ -51,8 +51,8 @@
         "form_success": "The form has been saved.",
         "button_save": "save",
         "button_reset": "reset",
-        "button_reload": "neu laden",
-        "button_edit": "reload",
+        "button_reload": "reload",
+        "button_edit": "edit",
         "relation_list": "%{firstname} %{lastname} (ID: %{id})"
       }
     }

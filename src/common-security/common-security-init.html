@@ -67,12 +67,11 @@
             // methods
 
             checkPermissions(permissionToCheck) {
-                console.log('checkPermissions called');
                 if (this._permissions.filter(e => e === permissionToCheck).length > 0) {
-                    console.log('Permission ' + permissionToCheck + ' found in list');
+                    console.log('checkPermissions: Permission ' + permissionToCheck + ' found in list');
                     return true;
                 }
-                console.log('Permission ' + permissionToCheck + ' NOT found in list. Found: ' + this._permissions);
+                console.log('checkPermissions: Permission ' + permissionToCheck + ' NOT found in list. Found: ' + this._permissions);
                 return false;
             }
 
