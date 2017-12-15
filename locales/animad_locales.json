@@ -4,23 +4,56 @@
       "animad-enclosures": {
         "main_heading": "Enclosures View",
         "create_sample_heading": "'Create' Form Sample",
+        "create_with_relation_sample_heading": "'Create' Form Sample with Relation",
         "update_sample_heading": "'Update' Form Sample",
         "read_sample_heading": "'Read' Form sample"
       }
     },
     "animad": {
       "enclosure": {
+        "relation_name": "Enclosure",
+        "id": "Enclosure Id",
+        "relation_search_id": "",
         "name": "Name",
         "name_error": "Name with 3 letters required!",
         "cleaningTime": "Cleaning Time",
         "cleaningTime_error": "Cleaning Time",
-        "form_error": "An error occured. Code:",
+        "form_error": "An error occured with code '%{code}'.",
         "form_validation": "Please fix the form errors.",
         "form_success": "The form has been saved.",
         "button_save": "save",
         "button_reset": "reset",
         "button_reload": "reload",
-        "button_edit": "edit"
+        "button_edit": "edit",
+        "relation_list": "%{name} (ID: %{id})"
+      },
+      "keeper":{
+        "relation_name": "Keeper",
+        "id": "Keeper ID",
+        "relation_search_id": "",
+        "firstname": "Firstname",
+        "relation_search_firstname": "",
+        "firstname_error": "",
+        "lastname": "Lastname",
+        "relation_search_lastname": "",
+        "lastname_error": "",
+        "birthdate": "Date of Birth",
+        "relation_search_birthdate": "",
+        "birthdate_error": "Please give a past date!",
+        "employmentdate": "Date of Employment",
+        "relation_search_employmentdate": "",
+        "employmentdate_error": "Please give a past date!",
+        "skill": "Skills",
+        "relation_search_skill": "",
+        "skill_error": "",
+        "form_error": "An error occured with code '%{code}'.",
+        "form_validation": "Please fix the form errors.",
+        "form_success": "The form has been saved.",
+        "button_save": "save",
+        "button_reset": "reset",
+        "button_reload": "reload",
+        "button_edit": "edit",
+        "relation_list": "%{firstname} %{lastname} (ID: %{id})"
       }
     }
   },
@@ -29,15 +62,21 @@
       "animad-enclosures": {
         "main_heading": "Übersicht Gehege",
         "create_sample_heading": "Beispiel für ein 'create' Formular",
+        "create_with_relation_sample_heading": "Beispiel für ein 'create' Formular mit Relation zu Wärtern",
         "update_sample_heading": "Beispiel für ein 'update' Formular",
         "read_sample_heading": "Beispiel für ein 'update' Formular"
       }
     },
     "animad": {
       "enclosure": {
+        "relation_name": "Gehege",
+        "id": "Id des Geheges",
+        "relation_search_id": "",
         "name": "Name des Geheges",
+        "relation_search_name": "",
         "name_error": "Geben Sie bitte einen Namen für das Gehege an, der mindestens 3 Buchstaben hat!",
         "cleaningTime": "Tägliche Putzzeit",
+        "relation_search_cleaningTime": "Reinigungszeit: ",
         "cleaningTime_error": "Tägliche Putzzeit muss im Format <HH:mm> eingegeben werden!",
         "form_error": "Es ist ein Fehler beim Speichern des Geheges aufgetreten. Fehlercode ist '%{code}'.",
         "form_validation": "Bitte die angezeigten Fehler im Formular beheben!",
@@ -45,7 +84,36 @@
         "button_save": "speichern",
         "button_reset": "zurücksetzen",
         "button_reload": "neu laden",
-        "button_edit": "bearbeiten"
+        "button_edit": "bearbeiten",
+        "relation_list": "%{name} (ID: %{id})"
+      },
+      "keeper":{
+        "relation_name": "Wärter",
+        "id": "Id des Wärters",
+        "relation_search_id": "",
+        "firstname": "Vorname",
+        "relation_search_firstname": "",
+        "firstname_error": "Geben Sie bitte einen Vornamen für den Wärter an, der mindestens 3 Buchstaben hat!",
+        "lastname": "Nachname",
+        "relation_search_lastname": "",
+        "lastname_error": "Geben Sie bitte einen Nachnamen für den Wärter an, der mindestens 3 Buchstaben hat!",
+        "birthdate": "Geburtsdatum",
+        "relation_search_birthdate": "",
+        "birthdate_error": "Geben Sie bitte ein Geburtsdatum in der Vergangenheit an!",
+        "employmentdate": "Einstellungsdatum",
+        "relation_search_employmentdate": "",
+        "employmentdate_error": "Geben Sie bitte ein Einstellungsdatum in der Vergangenheit an!",
+        "skill": "Erfahrung",
+        "relation_search_skill": "",
+        "skill_error": "",
+        "form_error": "Es ist ein Fehler beim Speichern des Wärters aufgetreten. Fehlercode ist '%{code}'.",
+        "form_validation": "Bitte die angezeigten Fehler im Formular beheben!",
+        "form_success": "Der Wärter wurde gespeichert!",
+        "button_save": "speichern",
+        "button_reset": "zurücksetzen",
+        "button_reload": "neu laden",
+        "button_edit": "bearbeiten",
+        "relation_list": "%{firstname} %{lastname} (ID: %{id})"
       }
     }
   }

@@ -1,0 +1,211 @@
+<script>
+    /*
+     * Behavior, um einem Relation Element mit den notwendigen Eigenschaften 
+     * auszustatten, um Relationen zu einem Zielobjekt hinzu zu fügen und
+     * wieder zu entfernen. Um korrekt funktionieren zu können,
+     * muss das Element die Properties 'domain' und 'entity' setzen:
+     *
+     * ```javascript
+     *  _domain: {
+     *    type: String,
+     *    value: 'animad'
+     *  },
+     *  _entity: {
+     *    type: String,
+     *    value: 'enclosure'
+     *  }
+     * ```
+     * 
+     * Eingebunden wird das Mixin auf Klassenebene.
+     * 
+     * @polymerMixinClass
+     */
+    let AnimadRelationBehavior = (superclass) => class extends superclass {
+        static get properties() {
+            return {
+                /*
+                 * Die Quelle der Daten.
+                 */
+                sourceUrl: {
+                    type: String
+                },
+                /*
+                 * Der Daten-Cache.
+                 */
+                source: {
+                    type: Array,
+                    value() {
+                        return [];
+                    }
+                },
+                /*
+                 * Legt fest, ob die Daten vorab in den Speicher
+                 * geladen werden. Dies ist bei kleinen Datenmengen
+                 * durchaus sinnvoll. Die Daten werden in dem 
+                 * Augenblick geladen, in dem die Komponente 
+                 * gerendert wird.
+                 */
+                preload: {
+                    type: Boolean,
+                    value: false
+                },
+                /*
+                 * Legt fest, ob die Relation per ID gespeichert werden
+                 * soll. Ist dieser Wert auf 'false' gesetzt (default),
+                 * so wird in der Zielstruktur ein Array von Objekten der
+                 * Relation angelegt.
+                 */
+                saveRelationById: {
+                    type:Boolean,
+                    value: false
+                },
+                /*
+                 * Property des geladenen Objekts, das den 
+                 * anzuzeigenden Text enthält.
+                 */
+                textProperty: {
+                    type: String,
+                    value: "text"
+                },
+                /*
+                 * Property das die ID des Objekts enthält.
+                 */
+                valueProperty: {
+                    type: String,
+                    value: "value"
+                },
+                /*
+                 * Die übergerdnete Datenstruktur, um das Datenbinding
+                 * durchgängig zu machen.
+                 */
+                data: {
+                    type: Object,
+                    notify: true
+                }
+
+            }
+        }
+
+        connectedCallback() {
+            super.connectedCallback();
+
+            // Es muss ein eventlistener registriert werden,
+            // um die selektierten Elemente verarbeiten zu
+            // können.
+            var e = this.shadowRoot.querySelector('paper-autocomplete');
+            e.addEventListener('autocomplete-selected', this._appendItem);
+
+            // Wenn gewünscht, wird der content
+            // beim Erstellen der Komponente vorab
+            // vom Server geladen.
+            if(this.preload) {
+                this._loadReferenceData();
+
+                // Die generische Query Methode muss
+                // durch eine eigen Methode überschrieben 
+                // werden.
+                e.queryFn = this._querySimple;
+            }
+        }
+
+        /*
+         * Sucht in einer vorgeladenen Quelle (Property preload 
+         * ist auf 'true' gesetzt) nach Vorkommen einer Zeichenkette
+         * im Attribut, dass im Property 'textPropety' angegeben wurde.
+         *
+         * @param die Auswahlliste Liste
+         * @param die Such-Zeichenkette
+         * @return ein Array der selektierten Elemente 
+         */
+        _querySimple (datasource, query) {
+            return datasource.filter(x => x[this.textProperty].toLowerCase().indexOf(query) != -1);
+        }
+
+        /*
+         * Listener Methode, um ein ausgewähltes Element der 
+         * Zielstruktur hinzu zu fügen.
+         * 
+         * @param Event mit den notwendigen Daten 
+         */
+        _appendItem(event) {
+
+            // Der 'host' des Elternknotens wird benötigt
+            // um an die Properties zu kommen.
+            var h = this.parentNode.host;
+            var name = 'data.' + h._entity + 's';
+            var id = event.detail.value;
+
+            // Wenn noch kein Attribut vorhanden ist, um
+            // die Referenz zu speichern, so muss eines 
+            // mit einem leeren Array erzeugt werden.
+            if(!h.get(name)) {
+                h.set(name, []);
+            }
+
+            // Wenn das Property 'save-relation-by-id' gesetzt ist...
+            if(this.saveRelationById) {
+                // Der key der ausgewählten Referenz wird
+                // im Array gespeichert.
+                h.push(name, id);
+            } else {
+                // Das Relationsobjekt wird gespeichert
+                var item = this.source.find(x => x[this.valueProperty] === id);
+                h.push(name, item);
+            }
+
+            // Textfeld leeren
+            event.currentTarget.clear();
+        }
+
+        /*
+         * Entfernt bereits ausgewähltes Element aus
+         * der Zieldatenstruktur.
+         *
+         * @param Event mit den notwendigen Daten 
+         */
+        _removeItem(event) {
+            var name = 'data.' + this._entity + 's';
+            var index = event.target.dataset.item;
+            this.splice(name, index, 1);
+
+        }
+
+        /*
+         * Lädt die Daten zur Auswahl in den Speicher. 
+         */
+        _loadReferenceData() {
+            var headers = new Headers();
+            headers.append("Content-Type", "application/json");
+            headers.append("Accept", "application/json");
+
+            var init = {
+                method: 'GET',
+                headers: headers,
+                mode: 'cors',
+                cache: 'default'
+            };
+
+            // create request object
+            if(!this.sourceUrl) {
+                var url = this.sourceUrl;
+                console.warn('Property source-url is ${url}. Fix this, to preload your data.')
+            }
+            var request = new Request(this.sourceUrl, init);
+
+            // call the server
+            fetch(request)
+                .then(response => {
+                    if (response.ok) {
+                        //console.log(response);
+                        response.json().then(body => {
+                            // Bei Erfolg werden die Daten, die vom Server kommen 
+                            // im Array Property 'source' gespeichert.
+                            this.set("source", body);
+                        })
+                    } else {
+                        this._error(response.status);
+                    }
+                });
+        }
+    }
+</script>
