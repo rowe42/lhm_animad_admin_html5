@@ -19,33 +19,15 @@
 <link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="../animad-icons.html">
 
+<link rel="import" href="../behaviors/animad-i18n-behavior.html">
+<link rel="import" href="../behaviors/mixin.html">
+
 <!-- GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-list -->
 <dom-module id="animad-keepers-list">
     <template>
       <style>
       </style>
 
-      <nebula-language
-          supported='["en", "de"]'
-          lang="{{lang}}">
-      </nebula-language>
-      <nebula-resources
-              id="locales"
-              file="animad_keepers_locales"
-              path="/locales"
-              resources="{{resources}}">
-      </nebula-resources>
-
-      <nebula-language
-          supported='["en", "de"]'
-          lang="{{lang}}">
-      </nebula-language>
-      <nebula-resources
-              id="locales"
-              file="animad_keepers_locales"
-              path="/locales"
-              resources="{{resources}}">
-      </nebula-resources>
       <!--
         Search panel, NEW and DELETE functionality
       -->
@@ -53,7 +35,7 @@
         <paper-item-body>
 
           <paper-search-bar
-            placeholder = "[[$t('animad_keepers_filter_placeholder')]] (paper-search-bar)"
+            placeholder = "[[t('filter_placeholder')]]"
             hide-filter-button = "[[_hideFilterButton]]"
 
             items = "{{_filteredKeepers}}"
@@ -71,7 +53,7 @@
       <iron-collapse id="filterSelection" opened={{_openedFilterSelection}}>
         <div>
           <div>
-            <paper-checkbox checked>Filter by Last</paper-checkbox>
+            <paper-checkbox checked>Filter by last</paper-checkbox>
           </div>
           <div>
             <paper-checkbox checked>Filter by First</paper-checkbox>
@@ -96,11 +78,11 @@
         Modal dialog to ask before deleting all selected items
       -->
       <paper-dialog id="dialogDeleteSelected">
-        <h2>[[$t('animad_keepers_modal_delete_header')]]</h2>
-        <p>[[$t('animad_keepers_modal_delete_text_multi')]]</p>
+        <h2>[[t('modal_delete_header')]]</h2>
+        <p>[[t('modal_delete_text_multi')]]</p>
         <paper-item>
-          <paper-button raised dialog-confirm on-click="deleteSelectedRows">[[$t('animad_keepers_modal_delete_button_yes')]]</paper-button>
-          <paper-button raised dialog-dismiss autofocus>[[$t('animad_keepers_modal_delete_button_no')]]</paper-button>
+          <paper-button raised dialog-confirm on-click="deleteSelectedRows">[[t('modal_delete_button_yes')]]</paper-button>
+          <paper-button raised dialog-dismiss autofocus>[[t('modal_delete_button_no')]]</paper-button>
         </paper-item>
       </paper-dialog>
 
@@ -108,11 +90,11 @@
         Modal dialog to ask before deleting all selected items
       -->
       <paper-dialog id="dialogDeleteItem">
-        <h2>[[$t('animad_keepers_modal_delete_header')]]</h2>
-        <p>[[$t('animad_keepers_modal_delete_text_single')]] ([[_deleteInfo]])?</p>
+        <h2>[[t('modal_delete_header')]]</h2>
+        <p>[[t('modal_delete_text_single')]] ([[_deleteInfo]])?</p>
         <paper-item>
-          <paper-button raised dialog-confirm on-click="deleteSelectedRows">[[$t('animad_keepers_modal_delete_button_yes')]]</paper-button>
-          <paper-button raised dialog-dismiss on-click="unsetTemporaryDeleteInfo" autofocus>[[$t('animad_keepers_modal_delete_button_no')]]</paper-button>
+          <paper-button raised dialog-confirm on-click="deleteSelectedRows">[[t('modal_delete_button_yes')]]</paper-button>
+          <paper-button raised dialog-dismiss on-click="unsetTemporaryDeleteInfo" autofocus>[[t('modal_delete_button_no')]]</paper-button>
         </paper-item>
       </paper-dialog>
 
@@ -133,21 +115,21 @@
 
         <vaadin-grid-column>
           <template class="header">
-            <vaadin-grid-sorter path="first">[[$t('animad_keepers_first')]]</vaadin-grid-sorter>
+            <vaadin-grid-sorter path="firstname">[[t('firstname')]]</vaadin-grid-sorter>
           </template>
-          <template>[[item.first]]</template>
+          <template>[[item.firstname]]</template>
         </vaadin-grid-column>
 
         <vaadin-grid-column >
           <template class="header">
-            <vaadin-grid-sorter path="last">[[$t('animad_keepers_last')]]</vaadin-grid-sorter>
+            <vaadin-grid-sorter path="lastname">[[t('lastname')]]</vaadin-grid-sorter>
           </template>
-          <template>[[item.last]]</template>
+          <template>[[item.lastname]]</template>
         </vaadin-grid-column>
 
         <vaadin-grid-column>
           <template class="header">
-            <vaadin-grid-sorter path="age">[[$t('animad_keepers_age')]]</vaadin-grid-sorter>
+            <vaadin-grid-sorter path="age">[[t('age')]]</vaadin-grid-sorter>
           </template>
           <template>[[item.age]]</template>
         </vaadin-grid-column>
@@ -162,7 +144,7 @@
 
     <script>
       // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]List
-      class AnimadKeepersList extends Nebula.PolyglotBehavior(Polymer.Element) {
+      class AnimadKeepersList extends mix(Polymer.Element).with(AnimadI18nBehavior) {
 
         static get is() { return 'animad-keepers-list'; }
 
@@ -171,30 +153,52 @@
           // GENERATOR pattern _filtered[ENTITNAME] (initially set to _[ENTITYNAME])
           // GENERATOR _sort Array contains an entry for each field of the ENTITY: {by: '[fieldname]', descending: true, upward: 'none', downward: 'none'}
           return {
+            /*
+             * Das '_domain' property wird benötigt, um" den richtigen Pfad
+             * zu den i18n Werten zu erzeugen. Es wird in jedem Element
+             * benötigt, in dem die I18nBehavior verwendet wird. Im Falle
+             * einer view ist der Wert IMMER 'view'.
+             */
+            _domain: {
+              type: String,
+              value: 'animad'
+            },
+            /*
+             * Das '_entity' property wird benötigt, um den richtigen Pfad
+             * zu den i18n Werten zu erzeugen. Es wird in jedem Element
+             * benötigt, in dem die I18nBehavior verwendet wird. Im Falle
+             * einer view ist der Wert immer der Präfix, der im Namen der view
+             * vor '*-view' steht. Bei animad-enclosures-view.html also
+             * 'animad-enclosures'.
+             */
+            _entity: {
+              type: String,
+              value: 'keeper'
+            },
             _keepers: {
               type: Array,
               value() {
                 return [
-                  {first: 'Patti', last: 'Smith', age: 32},
-                  {first: 'Polly Jean', last: 'Harvey', age: 38},
-                  {first: 'Joan', last: 'Jett', age: 62},
-                  {first: 'Beth', last: 'Ditto', age: 27},
-                  {first: 'Siouxsie', last: 'Sioux', age: 53},
-                  {first: 'Lydia', last: 'Lunch', age: 32},
-                  {first: 'Debbie', last: 'Harry', age: 57},
-                  {first: 'Sadie', last: 'May', age: 22},
-                  {first: 'Kim', last: 'Deal', age: 44},
-                  {first: 'Kelly', last: 'Deal', age: 44},
-                  {first: 'Courtney', last: 'Love', age: 56},
-                  {first: 'Kathleen', last: 'Hanna', age: 34},
-                  {first: 'Tobi', last: 'Vail', age: 28},
-                  {first: 'Kathi', last: 'Wilcox', age: 32},
-                  {first: 'Tanya', last: 'Donelly', age: 45},
-                  {first: 'Laura Jane', last: 'Grace', age: 47},
-                  {first: 'Donita', last: 'Sparks', age: 51},
-                  {first: 'Suzi', last: 'Gardner', age: 20},
-                  {first: 'Jennifer', last: 'Finch  ', age: 33},
-                  {first: 'Demetra', last: 'Plakas', age: 47},
+                  {firstname: 'Patti', lastname: 'Smith', age: 32},
+                  {firstname: 'Polly Jean', lastname: 'Harvey', age: 38},
+                  {firstname: 'Joan', lastname: 'Jett', age: 62},
+                  {firstname: 'Beth', lastname: 'Ditto', age: 27},
+                  {firstname: 'Siouxsie', lastname: 'Sioux', age: 53},
+                  {firstname: 'Lydia', lastname: 'Lunch', age: 32},
+                  {firstname: 'Debbie', lastname: 'Harry', age: 57},
+                  {firstname: 'Sadie', lastname: 'May', age: 22},
+                  {firstname: 'Kim', lastname: 'Deal', age: 44},
+                  {firstname: 'Kelly', lastname: 'Deal', age: 44},
+                  {firstname: 'Courtney', lastname: 'Love', age: 56},
+                  {firstname: 'Kathleen', lastname: 'Hanna', age: 34},
+                  {firstname: 'Tobi', lastname: 'Vail', age: 28},
+                  {firstname: 'Kathi', lastname: 'Wilcox', age: 32},
+                  {firstname: 'Tanya', lastname: 'Donelly', age: 45},
+                  {firstname: 'Laura Jane', lastname: 'Grace', age: 47},
+                  {firstname: 'Donita', lastname: 'Sparks', age: 51},
+                  {firstname: 'Suzi', lastname: 'Gardner', age: 20},
+                  {firstname: 'Jennifer', lastname: 'Finch  ', age: 33},
+                  {firstname: 'Demetra', lastname: 'Plakas', age: 47},
                 ];
               }
             },
@@ -259,7 +263,6 @@
           }
           else {
             _selectedItems = this.shadowRoot.querySelector('#animadKeepersList').selectedItems;
-            console.log(_selectedItems);
           }
           // loop over all items to delete
           for (var i in _selectedItems) {
@@ -284,10 +287,11 @@
 
         confirmDeleteRow(e) {
           // get item of row where delete button was clicked
+          // TBD: Wurde die Sortierung geändert, dann wird die falsche Zeile gelöscht, weil filteredKeepers nicht sortiert ist...
           var item = this._filteredKeepers[e.target.id];
 
           // set temporary delete information
-          this._deleteInfo = item.first+", "+item.last+", "+item.age;
+          this._deleteInfo = item.firstname+", "+item.lastname+", "+item.age;
           this._deleteItem = [item];
 
           // check if selected item should be deleted
@@ -306,7 +310,7 @@
             if (!val) return true;
 
             // GENERATOR über alle Felder des Objekts filtern: item.<feldname1>.includes || item.<feldname2>.includes || ...
-            return (item.first.includes(val) || item.last.includes(val)) || item.age.toString().includes(val);
+            return (item.firstname.includes(val) || item.lastname.includes(val)) || item.age.toString().includes(val);
           }
         }
 

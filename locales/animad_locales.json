@@ -53,7 +53,23 @@
         "button_reset": "reset",
         "button_reload": "reload",
         "button_edit": "edit",
-        "relation_list": "%{firstname} %{lastname} (ID: %{id})"
+        "relation_list": "%{firstname} %{lastname} (ID: %{id})",
+        "last": "Name",
+        "first": "Firstname",
+        "age": "Age",
+        "filter_button_save": "Save",
+        "filter_button_reset": "Reset",
+        "filter_placeholder": "Search in name and firstname",
+        "filter_no_results_text": "No results",
+        "filter_label_no_values": "No filters set",
+        "filter_button_more": "More",
+        "button_new": "New",
+        "button_delete": "Delete",
+        "modal_delete_header": "Delete",
+        "modal_delete_text_single": "Do you really want to delete this item?",
+        "modal_delete_text_multi": "Do you really want to delete the selected items?",
+        "modal_delete_button_yes": "Yes",
+        "modal_delete_button_no": "No"
       }
     }
   },
@@ -113,7 +129,21 @@
         "button_reset": "zurücksetzen",
         "button_reload": "neu laden",
         "button_edit": "bearbeiten",
-        "relation_list": "%{firstname} %{lastname} (ID: %{id})"
+        "relation_list": "%{firstname} %{lastname} (ID: %{id})",
+        "age": "Alter",
+        "filter_button_save": "Sichern",
+        "filter_button_reset": "Zurücksetzen",
+        "filter_placeholder": "Suche in Name und Vorname",
+        "filter_no_results_text": "Keine Datensätze gefunden",
+        "filter_label_no_values": "Keine Filter gesetzt",
+        "filter_button_more": "Weitere Datensätze",
+        "button_new": "Neu",
+        "button_delete": "Löschen",
+        "modal_delete_header": "Löschen",
+        "modal_delete_text_single": "Wollen Sie den ausgewählten Datensatz wirklich löschen?",
+        "modal_delete_text_multi": "Wollen Sie die ausgewählten Datensätze wirklich löschen?",
+        "modal_delete_button_yes": "Ja",
+        "modal_delete_button_no": "Nein"
       }
     }
   }
