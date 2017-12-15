@@ -11,7 +11,7 @@
 
 <!-- animad elements -->
 <link rel="import" href="animad-enclosure-form.html">
-<link rel="import" href="animad-enclosure-relation.html">
+<link rel="import" href="animad-enclosure-simple-relation.html">
 
 <link rel="import" href="../animad-icons.html">
 <link rel="import" href="../behaviors/animad-form-behavior.html">
@@ -39,7 +39,7 @@
         <iron-form id="iform">
             <form class="animad-enclosure-form">
                 <animad-enclosure-form data="{{data}}" auto-validate></animad-enclosure-form>
-                <animad-enclosure-relation
+                <animad-enclosure-simple-relation
                 data="{{data}}"
                 source-url="http://demo6512140.mockable.io/enclosures"
                 text-property="name"
