@@ -62,59 +62,36 @@
             >
           </paper-search-bar>
 
-          <iron-collapse id="filterSelection" opened={{_openedFilterSelection}}>
+        </paper-item-body>
+
+        <paper-button raised on-click="handleNew">New</paper-button>
+        <paper-button raised on-click="confirmDeleteSelected">Delete</paper-button>
+      </paper-item>
+
+      <iron-collapse id="filterSelection" opened={{_openedFilterSelection}}>
+        <div>
+          <div>
+            <paper-checkbox checked>Filter by Last</paper-checkbox>
+          </div>
+          <div>
+            <paper-checkbox checked>Filter by First</paper-checkbox>
+          </div>
+          <div>
             <div>
+              Alter
               <div>
-                <paper-checkbox checked>Filter by Last</paper-checkbox>
+                <paper-checkbox >jünger als 30 Jahre</paper-checkbox>
               </div>
               <div>
-                <paper-checkbox checked>Filter by First</paper-checkbox>
+                <paper-checkbox >30-49 Jahre</paper-checkbox>
               </div>
               <div>
-                <div>
-                  Alter
-                  <div>
-                    <paper-checkbox >jünger als 30 Jahre</paper-checkbox>
-                  </div>
-                  <div>
-                    <paper-checkbox >30-49 Jahre</paper-checkbox>
-                  </div>
-                  <div>
-                    <paper-checkbox >älter als 50 Jahre</paper-checkbox>
-                  </div>
-                </div>
+                <paper-checkbox >älter als 50 Jahre</paper-checkbox>
               </div>
             </div>
-          </iron-collapse>
-        </paper-item-body>
-
-        <paper-button raised on-click="handleNew">New</paper-button>
-        <paper-button raised onclick="dialogDeleteSelected.open()">Delete</paper-button>
-      </paper-item>
-
-      <paper-item id="list-panel-2">
-        <paper-item-body>
-          <paper-search-panel
-            search = "{{_search}}"
-            items = "{{_filteredKeepers}}"
-            on-change-request-params="setFilteredKeepersPanel"
-            hide-filter-button = "[[_hideFilterButton]]"
-            placeholder = "[[$t('animad_keepers_filter_placeholder')]] (paper-search-panel)"
-            no-results-text = "[[$t('animad_keepers_filter_no_results_text')]]"
-            filters = "[[_allFilters]]"
-            reset-button = "[[$t('animad_keepers_filter_button_reset')]]"
-            save-button = "[[$t('animad_keepers_filter_button_save')]]"
-            no-values-label = "[[$t('animad_keepers_filter_label_no_values')]]"
-            more-button = "[[$t('animad_keepers_filter_button_more')]]"
-            paper-search-filter = "setSearchFilter"
-            >
-          </paper-search-panel>
-
-        </paper-item-body>
-        <paper-button raised on-click="handleNew">New</paper-button>
-        <paper-button raised onclick="dialogDeleteSelected.open()">Delete</paper-button>
-      </paper-item>
-
+          </div>
+        </div>
+      </iron-collapse>
       <!--
         Modal dialog to ask before deleting all selected items
       -->
@@ -177,7 +154,7 @@
 
         <vaadin-grid-column>
           <template>
-            <paper-icon-button icon="animad-icons:delete" id="[[index]]" on-click="deleteRow"></paper-icon-button>
+            <paper-icon-button icon="animad-icons:delete" id="[[index]]" on-click="confirmDeleteRow"></paper-icon-button>
           </template>
         </vaadin-grid-column>
       </vaadin-grid>
@@ -300,7 +277,12 @@
 
         }
 
-        deleteRow(e) {
+        confirmDeleteSelected(e) {
+          // check if selected item should be deleted
+          this.$.dialogDeleteSelected.open();
+        }
+
+        confirmDeleteRow(e) {
           // get item of row where delete button was clicked
           var item = this._filteredKeepers[e.target.id];
 
@@ -309,7 +291,7 @@
           this._deleteItem = [item];
 
           // check if selected item should be deleted
-          dialogDeleteItem.open();
+          this.$.dialogDeleteItem.open();
         }
 
         unsetTemporaryDeleteInfo() {
