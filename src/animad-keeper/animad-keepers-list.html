@@ -281,7 +281,8 @@
             _tmpSelectedItems = _selectedItems;
           }
           else {
-            _selectedItems = this.$.animadKeepersList.selectedItems;
+            _selectedItems = this.shadowRoot.querySelector('#animadKeepersList').selectedItems;
+            console.log(_selectedItems);
           }
           // loop over all items to delete
           for (var i in _selectedItems) {
@@ -337,7 +338,6 @@
         }
 
         setSearchFilter(e) {
-          console.log(this.$.collapse);
           this._openedFilterSelection = !this._openedFilterSelection;
         }
       }
