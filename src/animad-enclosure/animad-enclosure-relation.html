@@ -110,12 +110,19 @@
                 super.connectedCallback();
             }
 
+            /*
+             * Bereitet die Ausgabe der Relationen in der Liste 
+             * nach den Vorgaben in der locales Datei auf. Dies
+             * ist notwendig, weil man im HTML Bereich Databinding
+             * nicht schachteln kann.
+             * 
+             * @param index des jeweiligen Elements
+             * @return formatierter Text
+             */
             _format(index) {
-                console.log(index);
-                var name = 'data.' + this._entity + 's.' + index;
-                console.log(name);
-                var item = this.get('name');
-                console.log(this.get('name'));
+                var name = 'data.' + this._entity + 's';
+                var items = this.get(name);
+                var item = items[index];
                 return this.t('relation_list', {id: item.id, name: item.name, cleaningTime: item.cleaningTime});
             }
         }
