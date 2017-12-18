@@ -46,6 +46,9 @@
         "skill": "Skills",
         "relation_search_skill": "",
         "skill_error": "",
+        "salary": "Gehalt",
+        "relation_search_salary": "",
+        "salary_error": "",
         "form_error": "An error occured with code '%{code}'.",
         "form_validation": "Please fix the form errors.",
         "form_success": "The form has been saved.",
@@ -56,7 +59,6 @@
         "relation_list": "%{firstname} %{lastname} (ID: %{id})",
         "last": "Name",
         "first": "Firstname",
-        "age": "Age",
         "filter_button_save": "Save",
         "filter_button_reset": "Reset",
         "filter_placeholder": "Search in name and firstname",
@@ -70,7 +72,7 @@
         "modal_delete_text_multi": "Do you really want to delete the selected items?",
         "modal_delete_button_yes": "Yes",
         "modal_delete_button_no": "No",
-        "modal_deleteinfo": "%{firstname} %{lastname}, %{age} years"
+        "modal_deleteinfo": "%{firstname} %{lastname}, Skill: %{skill}"
       }
     }
   },
@@ -123,6 +125,9 @@
         "skill": "Erfahrung",
         "relation_search_skill": "",
         "skill_error": "",
+        "salary": "Gehalt",
+        "relation_search_salary": "",
+        "salary_error": "",
         "form_error": "Es ist ein Fehler beim Speichern des Wärters aufgetreten. Fehlercode ist '%{code}'.",
         "form_validation": "Bitte die angezeigten Fehler im Formular beheben!",
         "form_success": "Der Wärter wurde gespeichert!",
@@ -131,7 +136,6 @@
         "button_reload": "neu laden",
         "button_edit": "bearbeiten",
         "relation_list": "%{firstname} %{lastname} (ID: %{id})",
-        "age": "Alter",
         "filter_button_save": "Sichern",
         "filter_button_reset": "Zurücksetzen",
         "filter_placeholder": "Suche in Name und Vorname",
@@ -145,7 +149,7 @@
         "modal_delete_text_multi": "Wollen Sie die ausgewählten Datensätze wirklich löschen?",
         "modal_delete_button_yes": "Ja",
         "modal_delete_button_no": "Nein",
-        "modal_deleteinfo": "%{firstname} %{lastname}, %{age} Jahre"
+        "modal_deleteinfo": "%{firstname} %{lastname}, Erfahrung: %{skill}"
       }
     }
   }
