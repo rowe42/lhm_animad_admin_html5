@@ -115,6 +115,15 @@
 
         <vaadin-grid-column>
           <template class="header">
+            <vaadin-grid-sorter path="id">[[t('id')]]</vaadin-grid-sorter>
+          </template>
+          <template>
+            <div id="item-id-[[index]]">[[item.id]]</div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column>
+          <template class="header">
             <vaadin-grid-sorter path="firstname">[[t('firstname')]]</vaadin-grid-sorter>
           </template>
           <template>[[item.firstname]]</template>
@@ -179,26 +188,26 @@
               type: Array,
               value() {
                 return [
-                  {firstname: 'Patti', lastname: 'Smith', age: 32},
-                  {firstname: 'Polly Jean', lastname: 'Harvey', age: 38},
-                  {firstname: 'Joan', lastname: 'Jett', age: 62},
-                  {firstname: 'Beth', lastname: 'Ditto', age: 27},
-                  {firstname: 'Siouxsie', lastname: 'Sioux', age: 53},
-                  {firstname: 'Lydia', lastname: 'Lunch', age: 32},
-                  {firstname: 'Debbie', lastname: 'Harry', age: 57},
-                  {firstname: 'Sadie', lastname: 'May', age: 22},
-                  {firstname: 'Kim', lastname: 'Deal', age: 44},
-                  {firstname: 'Kelly', lastname: 'Deal', age: 44},
-                  {firstname: 'Courtney', lastname: 'Love', age: 56},
-                  {firstname: 'Kathleen', lastname: 'Hanna', age: 34},
-                  {firstname: 'Tobi', lastname: 'Vail', age: 28},
-                  {firstname: 'Kathi', lastname: 'Wilcox', age: 32},
-                  {firstname: 'Tanya', lastname: 'Donelly', age: 45},
-                  {firstname: 'Laura Jane', lastname: 'Grace', age: 47},
-                  {firstname: 'Donita', lastname: 'Sparks', age: 51},
-                  {firstname: 'Suzi', lastname: 'Gardner', age: 20},
-                  {firstname: 'Jennifer', lastname: 'Finch  ', age: 33},
-                  {firstname: 'Demetra', lastname: 'Plakas', age: 47},
+                  {id: 1, firstname: 'Patti', lastname: 'Smith', age: 32},
+                  {id: 2, firstname: 'Polly Jean', lastname: 'Harvey', age: 38},
+                  {id: 3, firstname: 'Joan', lastname: 'Jett', age: 62},
+                  {id: 4, firstname: 'Beth', lastname: 'Ditto', age: 27},
+                  {id: 5, firstname: 'Siouxsie', lastname: 'Sioux', age: 53},
+                  {id: 6, firstname: 'Lydia', lastname: 'Lunch', age: 32},
+                  {id: 7, firstname: 'Debbie', lastname: 'Harry', age: 57},
+                  {id: 8, firstname: 'Sadie', lastname: 'May', age: 22},
+                  {id: 9, firstname: 'Kim', lastname: 'Deal', age: 44},
+                  {id: 10, firstname: 'Kelly', lastname: 'Deal', age: 44},
+                  {id: 11, firstname: 'Courtney', lastname: 'Love', age: 56},
+                  {id: 12, firstname: 'Kathleen', lastname: 'Hanna', age: 34},
+                  {id: 13, firstname: 'Tobi', lastname: 'Vail', age: 28},
+                  {id: 14, firstname: 'Kathi', lastname: 'Wilcox', age: 32},
+                  {id: 15, firstname: 'Tanya', lastname: 'Donelly', age: 45},
+                  {id: 16, firstname: 'Laura Jane', lastname: 'Grace', age: 47},
+                  {id: 17, firstname: 'Donita', lastname: 'Sparks', age: 51},
+                  {id: 18, firstname: 'Suzi', lastname: 'Gardner', age: 20},
+                  {id: 19, firstname: 'Jennifer', lastname: 'Finch  ', age: 33},
+                  {id: 20, firstname: 'Demetra', lastname: 'Plakas', age: 47},
                 ];
               }
             },
@@ -288,15 +297,24 @@
         confirmDeleteRow(e) {
           // get item of row where delete button was clicked
           // TBD: Wurde die Sortierung geändert, dann wird die falsche Zeile gelöscht, weil filteredKeepers nicht sortiert ist...
-          var item = this._filteredKeepers[e.target.id];
+          var item_id = this.shadowRoot.querySelector("#item-id-"+e.target.id).innerHTML;
+          var item = this._filteredKeepers.find(this.findItemByIndex(item_id));
 
           // set temporary delete information
           this._deleteInfo = this.t('modal_deleteinfo', {firstname: item.firstname, lastname: item.lastname, age: item.age});
-//          this._deleteInfo = item.firstname+", "+item.lastname+", "+item.age;
           this._deleteItem = [item];
 
           // check if selected item should be deleted
+          // attention: this.$ necessary to enable it for Opera (https://github.com/PolymerElements/paper-dialog/issues/128)
           this.$.dialogDeleteItem.open();
+        }
+
+        findItemByIndex(val) {
+          return function(item) {
+            if (!item) return false;
+            if (!val) return false;
+            return item.id == val;
+          }
         }
 
         unsetTemporaryDeleteInfo() {
