@@ -39,7 +39,7 @@
             hide-filter-button = "[[_hideFilterButton]]"
 
             items = "{{_filteredKeepers}}"
-            on-query-changed="setFilteredKeepersBar"
+            on-query-changed="setFilteredKeepers"
             on-paper-search-filter = "setSearchFilter"
             >
           </paper-search-bar>
@@ -296,9 +296,8 @@
 
         confirmDeleteRow(e) {
           // get item of row where delete button was clicked
-          // TBD: Wurde die Sortierung geändert, dann wird die falsche Zeile gelöscht, weil filteredKeepers nicht sortiert ist...
           var item_id = this.shadowRoot.querySelector("#item-id-"+e.target.id).innerHTML;
-          var item = this._filteredKeepers.find(this.findItemByIndex(item_id));
+          var item = this._filteredKeepers.find(keeper => keeper.id == item_id);
 
           // set temporary delete information
           this._deleteInfo = this.t('modal_deleteinfo', {firstname: item.firstname, lastname: item.lastname, age: item.age});
@@ -309,37 +308,14 @@
           this.$.dialogDeleteItem.open();
         }
 
-        findItemByIndex(val) {
-          return function(item) {
-            if (!item) return false;
-            if (!val) return false;
-            return item.id == val;
-          }
-        }
-
         unsetTemporaryDeleteInfo() {
           this._deleteItem = [];
           this._deleteInfo = "";
         }
 
-        // GENERATOR pattern filter[ENTITYNAME]
-        filterKeepers(val) {
-          return function(item) {
-            if (!item) return false;
-            if (!val) return true;
-
-            // GENERATOR über alle Felder des Objekts filtern: item.<feldname1>.includes || item.<feldname2>.includes || ...
-            return (item.firstname.includes(val) || item.lastname.includes(val)) || item.age.toString().includes(val);
-          }
-        }
-
-        // GENERATOR pattern (camel case): setFiltered[ENTITYNAME]
-        setFilteredKeepersPanel(e) {
-          this._filteredKeepers = this._keepers.filter(this.filterKeepers(e.target.search));
-        }
-
-        setFilteredKeepersBar(e) {
-          this._filteredKeepers = this._keepers.filter(this.filterKeepers(e.target.query));
+        setFilteredKeepers(e) {
+          var filter = e.target.query;
+          this._filteredKeepers = this._keepers.filter(keeper => keeper.firstname.includes(filter) || keeper.lastname.includes(filter));
         }
 
         setSearchFilter(e) {
