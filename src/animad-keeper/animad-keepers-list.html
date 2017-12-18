@@ -291,7 +291,8 @@
           var item = this._filteredKeepers[e.target.id];
 
           // set temporary delete information
-          this._deleteInfo = item.firstname+", "+item.lastname+", "+item.age;
+          this._deleteInfo = this.t('modal_deleteinfo', {firstname: item.firstname, lastname: item.lastname, age: item.age});
+//          this._deleteInfo = item.firstname+", "+item.lastname+", "+item.age;
           this._deleteItem = [item];
 
           // check if selected item should be deleted

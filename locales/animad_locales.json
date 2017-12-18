@@ -66,10 +66,11 @@
         "button_new": "New",
         "button_delete": "Delete",
         "modal_delete_header": "Delete",
-        "modal_delete_text_single": "Do you really want to delete this item?",
+        "modal_delete_text_single": "Do you really want to delete this item? ",
         "modal_delete_text_multi": "Do you really want to delete the selected items?",
         "modal_delete_button_yes": "Yes",
-        "modal_delete_button_no": "No"
+        "modal_delete_button_no": "No",
+        "modal_deleteinfo": "%{firstname} %{lastname}, %{age} years"
       }
     }
   },
@@ -143,7 +144,8 @@
         "modal_delete_text_single": "Wollen Sie den ausgewählten Datensatz wirklich löschen?",
         "modal_delete_text_multi": "Wollen Sie die ausgewählten Datensätze wirklich löschen?",
         "modal_delete_button_yes": "Ja",
-        "modal_delete_button_no": "Nein"
+        "modal_delete_button_no": "Nein",
+        "modal_deleteinfo": "%{firstname} %{lastname}, %{age} Jahre"
       }
     }
   }
