@@ -1,17 +1,19 @@
 {
+  "entrypoint": "index.html",
   "builds": [
     {
-      "preset": "es5-bundled"
+      "preset": "es5-bundled",
+      "bundle": {
+        "excludes": ["bower_components/webcomponentsjs/webcomponents-loader.js"]
+      }
     }
   ],
   "sources": [
+    "manifest.json",
     "src/**/*",
     "images/**/*",
     "locales/**/*",
     "bower.json"
-  ],
-  "extraDependencies": [
-    "bower_components/webcomponentsjs/*"
   ],
   "lint": {
     "rules": [
