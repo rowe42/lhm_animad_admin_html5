@@ -1,15 +1,10 @@
 {
   "entrypoint": "index.html",
   "shell": "src/animad-app.html",
-  "fragments": [
-    "src/animad-keepers-view.html",
-    "src/animad-animals-view.html",
-    "src/animad-enclosures-view.html",
-    "src/animad-view404.html"
-  ],
   "sources": [
     "src/**/*",
     "images/**/*",
+    "locales/**/*",
     "bower.json"
   ],
   "extraDependencies": [
