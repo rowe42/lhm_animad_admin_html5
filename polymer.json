@@ -1,23 +1,27 @@
 {
   "entrypoint": "index.html",
-  "builds": [
-    {
-      "preset": "es5-bundled",
-      "bundle": {
-        "excludes": ["bower_components/webcomponentsjs/webcomponents-loader.js"]
-      }
-    }
+  "shell": "src/animad-app.html",
+  "fragments": [
+    "src/animad-keepers-view.html",
+    "src/animad-animals-view.html",
+    "src/animad-enclosures-view.html",
+    "src/animad-view404.html"
   ],
   "sources": [
-    "manifest.json",
     "src/**/*",
     "images/**/*",
-    "locales/**/*",
     "bower.json"
   ],
+  "extraDependencies": [
+    "manifest.json",
+    "bower_components/webcomponentsjs/*.js"
+  ],
   "lint": {
-    "rules": [
-      "polymer-2"
-    ]
-  }
+    "rules": ["polymer-2"]
+  },
+  "builds": [
+    {
+      "preset": "es5-bundled"
+    }
+  ]
 }
