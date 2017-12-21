@@ -349,16 +349,21 @@
           this._deleteInfo = "";
         }
 
-        setFilteredKeepers(event) {
-          var filter = event.target.query;
+        filterKeepers() {
           this._filteredKeepers =
             this._keepers.filter(keeper =>
-                keeper.firstname.includes(filter) ||
-                keeper.lastname.includes(filter) ||
-                keeper.employmentdate.includes(filter) ||
-                keeper.skill.includes(filter) ||
-                keeper.birthdate.includes(filter) ||
-                keeper.salary.includes(filter));
+                keeper.firstname.includes(this._search) ||
+                keeper.lastname.includes(this._search) ||
+                keeper.employmentdate.includes(this._search) ||
+                keeper.skill.includes(this._search) ||
+                keeper.birthdate.includes(this._search) ||
+                keeper.salary.includes(this._search));
+          this._filteredKeepers = this._filteredKeepers.filter(this.useSelectedFilters, this);
+        }
+
+        setFilteredKeepers(event) {
+          this._search = event.target.query;
+          this.filterKeepers();
         }
 
         openFilterSelection() {
@@ -374,23 +379,75 @@
           var filterObject = JSON.parse(filterString);
 
           // search for filter object in property _allFilters
-          var selectedFiltertype = this._allFilters.find(filter => filter.id === filtertype );
-          var selectedFilter = selectedFiltertype.filters.find(type => type.id === filterObject.id);
+          var allFiltersByType = this._allFilters.find(filter => filter.id === filtertype );
+          var selectedFilter = allFiltersByType.filters.find(type => type.id === filterObject.id);
 
           // check wether the filter object exists in _selectedFilters
-          var index = this._selectedFilters.indexOf(selectedFilter);
+          var filterObject = {type: filtertype, filter: selectedFilter};
+          var index = this._selectedFilters.findIndex(selFilter => selFilter.type === filtertype && selFilter.filter === selectedFilter);
           if (index != -1) {
             // does exist so remove it from _selectedFilters
             this.splice('_selectedFilters', index, 1);
           }
           else {
             // doesn't exist so push it to _selectedFilters
-            this.push('_selectedFilters', selectedFilter);
+            this.push('_selectedFilters', filterObject);
           }
 
           // set number of filters selected
           this._nrSelectedFilters = this._selectedFilters.length;
+
+          // filter the keepers
+          this.filterKeepers();
         }
+
+        useSelectedFilters(keeper) {
+          for (var filterObject of this._selectedFilters) {
+            switch (filterObject.type) {
+              case this._allFilters[0].id: // for the example: birthdate
+                switch (filterObject.filter.id) {
+                  case this._allFilters[0].filters[0].id:
+                    console.log("Implementation for "+ this._allFilters[0].id + "," + this._allFilters[0].filters[0].label);
+                    return true;
+                  case this._allFilters[0].filters[1].id:
+                    console.log("Implementation for "+ this._allFilters[0].id + "," + this._allFilters[0].filters[1].label);
+                    return true;
+                  case this._allFilters[0].filters[2].id:
+                    console.log("Implementation for "+ this._allFilters[0].id + "," + this._allFilters[0].filters[2].label);
+                    return true;
+                  default:
+                  console.log("Filter not defined");
+                    return true;
+                }
+                break;
+              case this._allFilters[1].id: // for the example: salary
+                switch (filterObject.filter.id) {
+                  case this._allFilters[1].filters[0].id:
+                    console.log("Implementation for "+ this._allFilters[0].id + "," + this._allFilters[1].filters[0].label);
+                    return parseInt(keeper.salary) <= 1000;
+//                    return true;
+                  case this._allFilters[1].filters[1].id:
+                    console.log("Implementation for "+ this._allFilters[0].id + "," + this._allFilters[1].filters[1].label);
+                    return true;
+                  case this._allFilters[1].filters[2].id:
+                    console.log("Implementation for "+ this._allFilters[0].id + "," + this._allFilters[1].filters[2].label);
+                    return true;
+                  case this._allFilters[1].filters[3].id:
+                    console.log("Implementation for "+ this._allFilters[0].id + "," + this._allFilters[1].filters[3].label);
+                    return true;
+                  default:
+                  console.log("Filter not defined");
+                    return true;
+                }
+                break;
+              default:
+                console.log("Filter not defined");
+                return true;
+            }
+          }
+          return true;
+        }
+
       }
 
       customElements.define(AnimadKeepersList.is, AnimadKeepersList);
