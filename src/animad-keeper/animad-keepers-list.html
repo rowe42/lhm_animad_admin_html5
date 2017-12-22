@@ -34,7 +34,6 @@
       -->
       <paper-item id="search-panel">
         <paper-item-body>
-
           <paper-search-bar
             placeholder = "[[t('filter_placeholder')]]"
             hide-filter-button = "[[_hideFilterButton]]"
@@ -45,7 +44,6 @@
             on-paper-search-filter = "openFilterSelection"
             >
           </paper-search-bar>
-
         </paper-item-body>
 
         <paper-button raised on-click="handleNew">New</paper-button>
@@ -53,7 +51,7 @@
       </paper-item>
 
       <!--
-        Select / Unselect filters from _allFilters and push / splice them to / from _selectedFilters
+        Anzeige und Auswahl von selektierbaren Filtern
       -->
       <iron-collapse id="filter-selection" opened={{_openedFilterSelection}}>
         <template is="dom-repeat" items="{{_allFilters}}" as="allFilters">
@@ -69,7 +67,7 @@
       </iron-collapse>
 
       <!--
-        Modal dialog to ask before deleting all selected items
+        Modaler Dialog zur Abfrage vor dem Löschen von in der Liste über Checkboxen selektierten Datensätze
       -->
       <paper-dialog id="dialogDeleteSelected">
         <h2>[[t('modal_delete_header')]]</h2>
@@ -81,7 +79,7 @@
       </paper-dialog>
 
       <!--
-        Modal dialog to ask before deleting all selected items
+        Modaler Dialog zur Abfrage vor dem Löschen eines Datensatzes über Papierkorb
       -->
       <paper-dialog id="dialogDeleteItem">
         <h2>[[t('modal_delete_header')]]</h2>
@@ -94,9 +92,7 @@
 
       <!--
       // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]List - id
-      // GENERATOR pattern :             _[ENTITYNAME] - items
-      // GENERATOR pattern (camel case): filter[ENTITYNAME](_search) - filter
-      // GENERATOR pattern (camel case): sort[ENTITYNAME](_currentSort.descending) - sort
+      // GENERATOR pattern:             _filtered[ENTITYNAME] - items
       -->
       <vaadin-grid id="animadKeepersList" items="[[_filteredKeepers]]" multi-sort="[[multiSort]]">
         <vaadin-grid-selection-column auto-select>
@@ -173,9 +169,6 @@
         static get is() { return 'animad-keepers-list'; }
 
         static get properties() {
-          // GENERATOR pattern _[ENTITYNAME]
-          // GENERATOR pattern _filtered[ENTITNAME] (initially set to _[ENTITYNAME])
-          // GENERATOR _sort Array contains an entry for each field of the ENTITY: {by: '[fieldname]', descending: true, upward: 'none', downward: 'none'}
           return {
             /*
              * Das '_domain' property wird benötigt, um" den richtigen Pfad
@@ -226,14 +219,23 @@
                 ];
               }
             },
-            _hideFilterButton: {
-              type: Boolean,
-              value: false
+            /*
+              Das _filtered<ENTTTY> array enthält alle Objekte, die auf angegebene oder ausgewählte Filter zutreffen.
+              Die Tabelle zeigt die Einträge aus _filtered<ENTITY> an.
+              GENERATOR: _filtered<ENTITY>
+            */
+            _filteredKeepers: {
+              type: Array,
+              value() {
+                return this._keepers;
+              }
             },
-            _nrSelectedFilters: {
-              type: Number,
-              value: 0
-            },
+            /*
+              _allFilters sind optionale (leeres Array), selektierbare Filter. Sie werden über ein Array definiert, Das
+              die Struktur [{id, [{id, label}, {id2, label2}, ...}, {id2, [{id, label}, ...]}, ...] einhalten muss.
+              GENERATOR: _allFilters ist optional und kann auch ein leeres Array [] enthalten. In diesem Fall muss
+              _hideFilterButton auf true gesetzt werden.
+            */
             _allFilters: {
               type: Array,
               value() {
@@ -258,34 +260,69 @@
                 ]
               }
             },
+            /*
+              _hideFilterButton gibt an, ob der Filter-Button von <paper-search-bar>
+              angezeigt wird (_hideFilterButton = false) oder nicht (_hideFilterButton = true)
+              GENERATOR: _hideFilterButton auf true setzen, wenn _allFilters ein leeres Array ist. Sonst auf false.
+            */
+            _hideFilterButton: {
+              type: Boolean,
+              value: false
+            },
+            /*
+              _nrSelectedFilters gibt an, wieviele selektierbare Filter ausgewählt wurden.
+            */
+            _nrSelectedFilters: {
+              type: Number,
+              value: 0
+            },
+            /*
+              _selectedFilters enthält die Information über alle ausgewählten Filter.
+            */
             _selectedFilters: {
               type: Array,
               value() {
                 return [];
               }
             },
+            /*
+              _search enthält den String, der im Sucheingabe-Feld zum Filtern eingegeben wurde.
+            */
             _search: {
               type: String,
               value: ""
             },
-            _filteredKeepers: {
-              type: Array,
-              value() {
-                return this._keepers;
-              }
-            },
+            /*
+              Ist _openedFilterSelection auf true gesetzt, so werden die selektierbaren Filter
+              unterhalb des Sucheingabe-Feldes angezeigt. Ansonsten werden die selektierbaren
+              Filter nicht angezeigt.
+            */
             _openedFilterSelection: {
               type: Boolean,
               value: false
             },
+            /*
+              multiSort gibt an, ob in der Tabelle nach mehreren Feldern sortiert
+              werden kann (multiSort = true) oder nicht (multiSort = false)
+            */
            multiSort: {
              type: Boolean,
              value: false
            },
+           /*
+            _deleteInfo enthält beim Löschen über Papierkorb die Information über den zu
+            löschenden Datensatz. Nach Bestätigung oder Abbruch des Löschvorgangs wird
+            die Information aus _deleteInfo wieder gelöscht.
+           */
            _deleteInfo: {
              type: String,
              value: ""
            },
+           /*
+            _deleteItem enthält beim Löschen über Papierkorb den zu löschenden Datensatz.
+            Nach Bestätigung oder Abbruch des Löschvorgangs wird _deleteItem wieder
+            in den Initial-Zustand zurückgesetzt.
+           */
            _deleteItem: {
              type: Array,
              value: []
