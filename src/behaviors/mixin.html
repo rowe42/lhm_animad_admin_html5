@@ -1,13 +1,14 @@
 <script>
-    let mix = (superclass) => new MixinBuilder(superclass);
+    /* @polymerMixin */
+    let mix = (superClass) => new MixinBuilder(superClass);
 
     class MixinBuilder {
-        constructor(superclass) {
-            this.superclass = superclass;
+        constructor(superClass) {
+            this.superClass = superClass;
         }
 
         with(...mixins) {
-            return mixins.reduce((c, mixin) => mixin(c), this.superclass);
+            return mixins.reduce((c, mixin) => mixin(c), this.superClass);
         }
-    } 
+    }
 </script>

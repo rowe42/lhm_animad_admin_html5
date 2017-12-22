@@ -1,9 +1,6 @@
 {
-  "builds": [
-    {
-      "preset": "es5-bundled"
-    }
-  ],
+  "entrypoint": "index.html",
+  "shell": "src/animad-app.html",
   "sources": [
     "src/**/*",
     "images/**/*",
@@ -11,11 +8,15 @@
     "bower.json"
   ],
   "extraDependencies": [
-    "bower_components/webcomponentsjs/*"
+    "manifest.json",
+    "bower_components/webcomponentsjs/*.js"
   ],
   "lint": {
-    "rules": [
-      "polymer-2"
-    ]
-  }
+    "rules": ["polymer-2"]
+  },
+  "builds": [
+    {
+      "preset": "es5-bundled"
+    }
+  ]
 }
