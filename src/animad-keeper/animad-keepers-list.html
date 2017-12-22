@@ -395,11 +395,12 @@
                 keeper.skill.toLowerCase().includes(this._search) ||
                 keeper.birthdate.toLowerCase().includes(this._search) ||
                 keeper.salary.toLowerCase().includes(this._search));
-          this._filteredKeepers = this._filteredKeepers.toLowerCase().filter(this.useSelectedFilters, this);
+          this._filteredKeepers = this._filteredKeepers.filter(this.useSelectedFilters, this);
         }
 
         setFilteredKeepers(event) {
           this._search = event.target.query.toLowerCase();
+          console.log("_search");
           this.filterKeepers();
         }
 
