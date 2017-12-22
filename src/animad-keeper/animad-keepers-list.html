@@ -389,17 +389,17 @@
         filterKeepers() {
           this._filteredKeepers =
             this._keepers.filter(keeper =>
-                keeper.firstname.includes(this._search) ||
-                keeper.lastname.includes(this._search) ||
-                keeper.employmentdate.includes(this._search) ||
-                keeper.skill.includes(this._search) ||
-                keeper.birthdate.includes(this._search) ||
-                keeper.salary.includes(this._search));
-          this._filteredKeepers = this._filteredKeepers.filter(this.useSelectedFilters, this);
+                keeper.firstname.toLowerCase().includes(this._search) ||
+                keeper.lastname.toLowerCase().includes(this._search) ||
+                keeper.employmentdate.toLowerCase().includes(this._search) ||
+                keeper.skill.toLowerCase().includes(this._search) ||
+                keeper.birthdate.toLowerCase().includes(this._search) ||
+                keeper.salary.toLowerCase().includes(this._search));
+          this._filteredKeepers = this._filteredKeepers.toLowerCase().filter(this.useSelectedFilters, this);
         }
 
         setFilteredKeepers(event) {
-          this._search = event.target.query;
+          this._search = event.target.query.toLowerCase();
           this.filterKeepers();
         }
 
