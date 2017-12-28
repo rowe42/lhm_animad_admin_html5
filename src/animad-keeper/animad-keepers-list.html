@@ -1,4 +1,4 @@
-<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+paper-checkbox<link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
 <link rel="import" href="../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../../bower_components/paper-search/paper-search-panel.html">
@@ -16,6 +16,7 @@
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-selection-column.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-sorter.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-filter.html">
+<link rel="import" href="../../bower_components/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../animad-icons.html">
@@ -47,7 +48,7 @@
         </paper-item-body>
 
         <paper-button raised on-click="handleNew">New</paper-button>
-        <paper-button raised on-click="confirmDeleteSelected">Delete</paper-button>
+        <paper-button raised on-click="confirmDeleteSelected" disabled$="[[_noItemsSelected]]">Delete</paper-button>
       </paper-item>
 
       <!--
@@ -95,13 +96,21 @@
       // GENERATOR pattern:             _filtered[ENTITYNAME] - items
       -->
       <vaadin-grid id="animadKeepersList" items="[[_filteredKeepers]]" multi-sort="[[multiSort]]">
-        <vaadin-grid-selection-column auto-select>
-        </vaadin-grid-selection-column>
+
+        <vaadin-grid-column width="50px" flex-grow="0">
+          <template class="header">
+            <vaadin-checkbox aria-label="Select All" on-click="_invert" checked="[[_isChecked(inverted, indeterminate)]]" indeterminate="[[indeterminate]]" />
+          </template>
+          <template>
+            <vaadin-checkbox aria-label="Select Row" on-click="_selectItem" checked="[[_isSelected(inverted, selected)]]"/>
+          </template>
+        </vaadin-grid-column>
 
         <vaadin-grid-column width="50px" flex-grow="0" >
           <template class="header">#</template>
           <template>[[index]]</template>
         </vaadin-grid-column>
+
 
         <vaadin-grid-column>
           <template class="header">
@@ -326,8 +335,66 @@
            _deleteItem: {
              type: Array,
              value: []
+           },
+           inverted: {
+             type: Boolean,
+             value: false
+           },
+           indeterminate: {
+             type: Boolean,
+             value: false
+           },
+           _noItemsSelected: {
+             type: Boolean,
+             computed: "_hasNoItemsSelected(inverted, indeterminate)"
            }
          }
+        }
+
+        static get observers() {
+            return ['_resetSelection(inverted)']
+        }
+
+        _resetSelection(inverted) {
+          this.$.animadKeepersList.selectedItems = [];
+          this.updateStyles();
+          this.indeterminate = false;
+        }
+
+        _invert(e) {
+          this.inverted = !this.inverted;
+          for (var item of this.$.animadKeepersList.items) {
+            if (this.inverted) {
+              this.$.animadKeepersList.selectItem(item);
+            }
+            else {
+              this.$.animadKeepersList.deselectItem(item);
+            }
+          }
+        }
+
+        // iOS needs indeterminated + checked at the same time
+        // test with firefox: correct behavior if only inverted is used to set checked
+        _isChecked(inverted, indeterminate) {
+          return inverted;
+        }
+
+        _hasNoItemsSelected(inverted, indeterminate) {
+          var itemsSel = indeterminate || inverted;
+          return !itemsSel;
+        }
+
+        _selectItem(e) {
+          if (e.target.checked) {
+            this.$.animadKeepersList.deselectItem(e.model.item);
+          } else {
+            this.$.animadKeepersList.selectItem(e.model.item);
+          }
+          this.indeterminate = this.$.animadKeepersList.selectedItems.length > 0;
+        }
+
+        _isSelected(inverted, selected) {
+          return selected;
         }
 
         handleNew() {
@@ -337,15 +404,16 @@
 
         deleteSelectedRows(e) {
           var _selectedItems = [];
-          var _tmpSelectedItems = [];
 
           if (this._deleteItem.length > 0) {
+            // delete single item (basket button in row)
             _selectedItems = this._deleteItem;
-            _tmpSelectedItems = _selectedItems;
           }
           else {
+            // delete all shown selected items (delete button on top of grid)
             _selectedItems = this.shadowRoot.querySelector('#animadKeepersList').selectedItems;
           }
+
           // loop over all items to delete
           for (var i in _selectedItems) {
             // check if _filteredKeepers contains _selectedItems[i]
@@ -356,6 +424,13 @@
               this.splice('_filteredKeepers', index, 1);
             }
           }
+
+          // loop must be backwards to deselect all selected items that were deleted
+          for (var i = _selectedItems.length-1; i >=0; i-- ) {
+            this.$.animadKeepersList.deselectItem(_selectedItems[i]);
+          }
+          // TBD: not yet completely correct, also for this.inverted
+          this.indeterminate = this.$.animadKeepersList.selectedItems.length > 0;
 
           // unset temporary delete information
           this.unsetTemporaryDeleteInfo();
@@ -400,7 +475,6 @@
 
         setFilteredKeepers(event) {
           this._search = event.target.query.toLowerCase();
-          console.log("_search");
           this.filterKeepers();
         }
 
