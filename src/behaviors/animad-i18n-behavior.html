@@ -15,26 +15,27 @@
      *    value: 'enclosure'
      *  }
      * ```
-     * 
+     *
      * Über die Methode 't(KEY)' können die Übersetzungen aufgelöst werden:
      * ```html
-     *   <paper-input 
-     *       id="enclosure-cleaningTime" 
-     *       label="[[t('cleaningTime')]]" 
+     *   <paper-input
+     *       id="enclosure-cleaningTime"
+     *       label="[[t('cleaningTime')]]"
      *       value="{{data.cleaningTime}}"
      *       error-message="[[t('cleaningTime_error')]]">
      *   </paper-input>
      * ```
-     * 
+     *
      * @polymerMixinClass
      */
-    let AnimadI18nBehavior = (superclass) => class extends superclass {
+    /* @polymerMixin */
+    let AnimadI18nBehavior = (superClass) => class extends superClass {
         static get properties() {
             return {
-                /*
-                 * Das Language Objekt zum Ermitteln des aktuell verwendeten Locales. 
-                 * Dieses Element muss zentral (am besten im *-app Element) vorhanden sein. 
-                 * Es wird nur einmal benötigt.  
+                /**
+                 * Das Language Objekt zum Ermitteln des aktuell verwendeten Locales.
+                 * Dieses Element muss zentral (am besten im *-app Element) vorhanden sein.
+                 * Es wird nur einmal benötigt.
                  */
                 lang: {
                     type: String,
@@ -44,14 +45,14 @@
                             console.warn("WARNING: Couldn't find element 'nebula-language' with id 'language' in your animad-app element! Please fix this to use i18n.");
                         }
                         return l.lang;
-                    }
+                    },
                 },
-                /*
+                /**
                  * Das Recource Objekt mit den key/value Paaren. Dieses Element muss
-                 * zentral (am besten im *-app Element) vorhanden sein. es wird nur 
+                 * zentral (am besten im *-app Element) vorhanden sein. es wird nur
                  * einmal benötigt. Damit wird verhindert, dass die Resourcen Datei
                  * mehrfach eingelesen (und auch im Speicher verwaltet) wird, wenn sie
-                 * von unterschiedlichen Elementen verwendet wird.  
+                 * von unterschiedlichen Elementen verwendet wird.
                  */
                 resources: {
                     type: Object,
@@ -61,22 +62,22 @@
                             console.warn("WARNING: Couldn't find element 'nebula-resources' with id 'locales' in your animad-app element! Please fix this to use i18n.");
                         }
                         return r.resources;
-                    }
+                    },
                 },
                 /*
                  * Die Instanz von polyglot.js (eine i18n lib von airnb)
                  */
                 _polyglot: {
-                    type: Object
+                    type: Object,
                 },
-            }
+            };
         }
 
-        /*
-         * Löst einen i18n Schlüssel in den Wert (in der entsprechenden Sprache) auf. 
+        /**
+         * Löst einen i18n Schlüssel in den Wert (in der entsprechenden Sprache) auf.
          *
-         * @param key Der Schlüssel als String
-         * @return Der Wert des Schlüssels in der aktiven Sprache 
+         * @param {string} key Der Schlüssel als String
+         * @return {string} Der Wert des Schlüssels in der aktiven Sprache
          */
         t(key) {
             if(!this._polyglot) {
@@ -86,19 +87,19 @@
             return value;
         }
 
-        /*
+        /**
          * Löst einen i18n Schlüssel in den Wert (in der entsprechenden Sprache) auf. Dabei
          * kann er Werte in der Übersetzung ersetzen. Beispiel:
          * ...
          * "error": "Es ist ein Fehler aufgetreten (code '%{code}')!"
          * ...
-         * 
+         *
          * Verwendet wird das so:
          * t("error", {code: "404"});
-         * 
-         * @param key Der Schlüssel als String
-         * @param extension Ein Objekt an werten, die in die Nachricht eingesetzt werden sollen.
-         * @return Der Wert des Schlüssels in der aktiven Sprache
+         *
+         * @param {string} key - Der Schlüssel als String
+         * @param {object} extension - Ein Objekt an werten, die in die Nachricht eingesetzt werden sollen.
+         * @return {string} Der Wert des Schlüssels in der aktiven Sprache
          */
         t(key, extension) {
             if(!this._polyglot) {
@@ -119,9 +120,9 @@
                 this._polyglot = new Polyglot({
                     phrases: subtree
                 });
-                //if(this._polyglot) {
-                //    console.log('initialized i18n');
-                //}
+//                if(this._polyglot) {
+//                    console.log('initialized i18n');
+//                }
             } else {
                 this._polyglot = new Polyglot({
                     phrases: {}
