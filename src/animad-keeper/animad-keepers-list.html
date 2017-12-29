@@ -422,15 +422,18 @@ paper-checkbox<link rel="import" href="../../bower_components/polymer/polymer-el
               // TBD: Daten im Backend löschen -> _keepers
             if (index >= 0) {
               this.splice('_filteredKeepers', index, 1);
+              var j = this._keepers.indexOf(_selectedItems[i]);
+              this.splice('_keepers', j, 1);
             }
           }
 
           // loop must be backwards to deselect all selected items that were deleted
-          for (var i = _selectedItems.length-1; i >=0; i-- ) {
+          for (var i = _selectedItems.length-1; i >= 0; i-- ) {
             this.$.animadKeepersList.deselectItem(_selectedItems[i]);
           }
           // TBD: not yet completely correct, also for this.inverted
           this.indeterminate = this.$.animadKeepersList.selectedItems.length > 0;
+          this.inverted = this.inverted && this.$.animadKeepersList.selectedItems.length > 0;
 
           // unset temporary delete information
           this.unsetTemporaryDeleteInfo();
