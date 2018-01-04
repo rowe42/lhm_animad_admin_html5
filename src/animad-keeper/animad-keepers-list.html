@@ -21,6 +21,7 @@ paper-checkbox<link rel="import" href="../../bower_components/polymer/polymer-el
 <link rel="import" href="../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../animad-icons.html">
 
+<link rel="import" href="../behaviors/animad-list-behavior.html">
 <link rel="import" href="../behaviors/animad-i18n-behavior.html">
 <link rel="import" href="../behaviors/mixin.html">
 
@@ -37,25 +38,25 @@ paper-checkbox<link rel="import" href="../../bower_components/polymer/polymer-el
         <paper-item-body>
           <paper-search-bar
             placeholder = "[[t('filter_placeholder')]]"
-            hide-filter-button = "[[_hideFilterButton]]"
+            hide-filter-button$="[[_hideFilterButton(allFilters)]]"
             nr-selected-filters=[[_nrSelectedFilters]]
 
-            items = "{{_filteredKeepers}}"
-            on-query-changed="setFilteredKeepers"
-            on-paper-search-filter = "openFilterSelection"
+            items = "{{filteredData}}"
+            on-query-changed="filterData"
+            on-paper-search-filter = "_toggleFilterSelection"
             >
           </paper-search-bar>
         </paper-item-body>
 
         <paper-button raised on-click="handleNew">New</paper-button>
-        <paper-button raised on-click="confirmDeleteSelected" disabled$="[[_noItemsSelected]]">Delete</paper-button>
+        <paper-button raised on-click="confirmDeleteSelected" disabled$="[[!_itemsSelected(inverted, indeterminate)]]">Delete</paper-button>
       </paper-item>
 
       <!--
         Anzeige und Auswahl von selektierbaren Filtern
       -->
-      <iron-collapse id="filter-selection" opened={{_openedFilterSelection}}>
-        <template is="dom-repeat" items="{{_allFilters}}" as="allFilters">
+      <iron-collapse id="filter-selection" opened=[[_isFilterSelectionOpen]]>
+        <template is="dom-repeat" items="{{allFilters}}" as="allFilters">
           <div>
             [[t(allFilters.id)]]
             <template is="dom-repeat" items="{{allFilters.filters}}" as="filter">
@@ -95,14 +96,14 @@ paper-checkbox<link rel="import" href="../../bower_components/polymer/polymer-el
       // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]List - id
       // GENERATOR pattern:             _filtered[ENTITYNAME] - items
       -->
-      <vaadin-grid id="animadKeepersList" items="[[_filteredKeepers]]" multi-sort="[[multiSort]]">
+      <vaadin-grid id="vgrid" items="[[filteredData]]" multi-sort="[[multiSort]]">
 
         <vaadin-grid-column width="50px" flex-grow="0">
           <template class="header">
-            <vaadin-checkbox aria-label="Select All" on-click="_invert" checked="[[_isChecked(inverted, indeterminate)]]" indeterminate="[[indeterminate]]" />
+            <vaadin-checkbox aria-label="Select All" on-click="_invertSelection" checked="[[_allRowsSelected(inverted, indeterminate)]]" indeterminate="[[indeterminate]]" />
           </template>
           <template>
-            <vaadin-checkbox aria-label="Select Row" on-click="_selectItem" checked="[[_isSelected(inverted, selected)]]"/>
+            <vaadin-checkbox aria-label="Select Row" on-click="_selectItem" checked="[[_isRowSelected(selected, inverted)]]"/>
           </template>
         </vaadin-grid-column>
 
@@ -111,15 +112,6 @@ paper-checkbox<link rel="import" href="../../bower_components/polymer/polymer-el
           <template>[[index]]</template>
         </vaadin-grid-column>
 
-
-        <vaadin-grid-column>
-          <template class="header">
-            <vaadin-grid-sorter path="id">[[t('id')]]</vaadin-grid-sorter>
-          </template>
-          <template>
-            <div id="item-id-[[index]]">[[item.id]]</div>
-          </template>
-        </vaadin-grid-column>
 
         <vaadin-grid-column>
           <template class="header">
@@ -173,7 +165,7 @@ paper-checkbox<link rel="import" href="../../bower_components/polymer/polymer-el
 
     <script>
       // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]List
-      class AnimadKeepersList extends mix(Polymer.Element).with(AnimadI18nBehavior) {
+      class AnimadKeepersList extends mix(Polymer.Element).with(AnimadListBehavior, AnimadI18nBehavior) {
 
         static get is() { return 'animad-keepers-list'; }
 
@@ -201,51 +193,12 @@ paper-checkbox<link rel="import" href="../../bower_components/polymer/polymer-el
               type: String,
               value: 'keeper'
             },
-            _keepers: {
-              type: Array,
-              value() {
-                return [
-                  {id: 1, firstname: 'Patti', lastname: 'Smith', employmentdate: "2012-03-01", skill: '',   birthdate: "1968-10-20",  salary: 1200},
-                  {id: 2, firstname: 'Polly Jean', lastname: 'Harvey', employmentdate: "1998-12-01", skill: '',   birthdate: "1972-04-16",  salary: 2200},
-                  {id: 3, firstname: 'Joan', lastname: 'Jett', employmentdate: "1999-11-01", skill: '',   birthdate: "1954-11-11",  salary: 2195},
-                  {id: 4, firstname: 'Beth', lastname: 'Ditto', employmentdate: "2014-01-01", skill: '',   birthdate: "1981-12-12",  salary: 2450},
-                  {id: 5, firstname: 'Siouxsie', lastname: 'Sioux', employmentdate: "2013-11-15", skill: '',   birthdate: "1988-03-12",  salary: 890},
-                  {id: 6, firstname: 'Lydia', lastname: 'Lunch', employmentdate: "2017-06-01", skill: '',   birthdate: "1967-04-16",  salary: 1354},
-                  {id: 7, firstname: 'Debbie', lastname: 'Harry', employmentdate: "2015-04-15", skill: '',   birthdate: "1952-11-10",  salary: 1234},
-                  {id: 8, firstname: 'Sadie', lastname: 'May', employmentdate: "2012-12-15", skill: '',   birthdate: "1951-01-01",  salary: 450},
-                  {id: 9, firstname: 'Kim', lastname: 'Deal', employmentdate: "2013-06-21", skill: '',   birthdate: "1962-02-02",  salary: 2431},
-                  {id: 10, firstname: 'Kelly', lastname: 'Deal', employmentdate: "2016-06-12", skill: '',   birthdate: "1962-02-02",  salary: 2431},
-                  {id: 11, firstname: 'Courtney', lastname: 'Love', employmentdate: "2014-02-01", skill: '',   birthdate: "1964-05-04",  salary: 1254},
-                  {id: 12, firstname: 'Kathleen', lastname: 'Hanna', employmentdate: "1996-12-01", skill: '',   birthdate: "1958-12-21",  salary: 2134},
-                  {id: 13, firstname: 'Tobi', lastname: 'Vail', employmentdate: "1993-04-01", skill: '',   birthdate: "1966-04-04",  salary: 1200},
-                  {id: 14, firstname: 'Kathi', lastname: 'Wilcox', employmentdate: "1997-01-01", skill: '',   birthdate: "1978-07-08",  salary: 1300},
-                  {id: 15, firstname: 'Tanya', lastname: 'Donelly', employmentdate: "1988-12-01", skill: '',   birthdate: "1965-03-02",  salary: 3421},
-                  {id: 16, firstname: 'Laura Jane', lastname: 'Grace', employmentdate: "1987-04-05", skill: '',   birthdate: "1945-12-30",  salary: 3212},
-                  {id: 17, firstname: 'Donita', lastname: 'Sparks', employmentdate: "1997-04-01", skill: '',   birthdate: "1966-06-06",  salary: 3421},
-                  {id: 18, firstname: 'Suzi', lastname: 'Gardner', employmentdate: "2017-12-01", skill: '',   birthdate: "1993-02-01",  salary: 786},
-                  {id: 19, firstname: 'Jennifer', lastname: 'Finch  ', employmentdate: "2017-03-01", skill: '',   birthdate: "1955-06-05",  salary: 1343},
-                  {id: 20, firstname: 'Demetra', lastname: 'Plakas', employmentdate: "2011-05-015", skill: '',   birthdate: "1981-01-04",  salary: 3421},
-                ];
-              }
-            },
             /*
-              Das _filtered<ENTTTY> array enthält alle Objekte, die auf angegebene oder ausgewählte Filter zutreffen.
-              Die Tabelle zeigt die Einträge aus _filtered<ENTITY> an.
-              GENERATOR: _filtered<ENTITY>
-            */
-            _filteredKeepers: {
-              type: Array,
-              value() {
-                return this._keepers;
-              }
-            },
-            /*
-              _allFilters sind optionale (leeres Array), selektierbare Filter. Sie werden über ein Array definiert, Das
+              allFilters sind optionale (leeres Array), selektierbare Filter. Sie werden über ein Array definiert, Das
               die Struktur [{id, [{id, label}, {id2, label2}, ...}, {id2, [{id, label}, ...]}, ...] einhalten muss.
-              GENERATOR: _allFilters ist optional und kann auch ein leeres Array [] enthalten. In diesem Fall muss
-              _hideFilterButton auf true gesetzt werden.
+              GENERATOR: allFilters kann auch ein leeres Array [] enthalten. Dann wird der Filter-Button im search-panel nicht angezeigt.
             */
-            _allFilters: {
+            allFilters: {
               type: Array,
               value() {
                 return [
@@ -268,15 +221,6 @@ paper-checkbox<link rel="import" href="../../bower_components/polymer/polymer-el
                   }
                 ]
               }
-            },
-            /*
-              _hideFilterButton gibt an, ob der Filter-Button von <paper-search-bar>
-              angezeigt wird (_hideFilterButton = false) oder nicht (_hideFilterButton = true)
-              GENERATOR: _hideFilterButton auf true setzen, wenn _allFilters ein leeres Array ist. Sonst auf false.
-            */
-            _hideFilterButton: {
-              type: Boolean,
-              value: false
             },
             /*
               _nrSelectedFilters gibt an, wieviele selektierbare Filter ausgewählt wurden.
@@ -302,39 +246,12 @@ paper-checkbox<link rel="import" href="../../bower_components/polymer/polymer-el
               value: ""
             },
             /*
-              Ist _openedFilterSelection auf true gesetzt, so werden die selektierbaren Filter
-              unterhalb des Sucheingabe-Feldes angezeigt. Ansonsten werden die selektierbaren
-              Filter nicht angezeigt.
-            */
-            _openedFilterSelection: {
-              type: Boolean,
-              value: false
-            },
-            /*
               multiSort gibt an, ob in der Tabelle nach mehreren Feldern sortiert
               werden kann (multiSort = true) oder nicht (multiSort = false)
             */
            multiSort: {
              type: Boolean,
              value: false
-           },
-           /*
-            _deleteInfo enthält beim Löschen über Papierkorb die Information über den zu
-            löschenden Datensatz. Nach Bestätigung oder Abbruch des Löschvorgangs wird
-            die Information aus _deleteInfo wieder gelöscht.
-           */
-           _deleteInfo: {
-             type: String,
-             value: ""
-           },
-           /*
-            _deleteItem enthält beim Löschen über Papierkorb den zu löschenden Datensatz.
-            Nach Bestätigung oder Abbruch des Löschvorgangs wird _deleteItem wieder
-            in den Initial-Zustand zurückgesetzt.
-           */
-           _deleteItem: {
-             type: Array,
-             value: []
            },
            inverted: {
              type: Boolean,
@@ -343,58 +260,8 @@ paper-checkbox<link rel="import" href="../../bower_components/polymer/polymer-el
            indeterminate: {
              type: Boolean,
              value: false
-           },
-           _noItemsSelected: {
-             type: Boolean,
-             computed: "_hasNoItemsSelected(inverted, indeterminate)"
            }
          }
-        }
-
-        static get observers() {
-            return ['_resetSelection(inverted)']
-        }
-
-        _resetSelection(inverted) {
-          this.$.animadKeepersList.selectedItems = [];
-          this.updateStyles();
-          this.indeterminate = false;
-        }
-
-        _invert(e) {
-          this.inverted = !this.inverted;
-          for (var item of this.$.animadKeepersList.items) {
-            if (this.inverted) {
-              this.$.animadKeepersList.selectItem(item);
-            }
-            else {
-              this.$.animadKeepersList.deselectItem(item);
-            }
-          }
-        }
-
-        // iOS needs indeterminated + checked at the same time
-        // test with firefox: correct behavior if only inverted is used to set checked
-        _isChecked(inverted, indeterminate) {
-          return inverted;
-        }
-
-        _hasNoItemsSelected(inverted, indeterminate) {
-          var itemsSel = indeterminate || inverted;
-          return !itemsSel;
-        }
-
-        _selectItem(e) {
-          if (e.target.checked) {
-            this.$.animadKeepersList.deselectItem(e.model.item);
-          } else {
-            this.$.animadKeepersList.selectItem(e.model.item);
-          }
-          this.indeterminate = this.$.animadKeepersList.selectedItems.length > 0;
-        }
-
-        _isSelected(inverted, selected) {
-          return selected;
         }
 
         handleNew() {
@@ -402,87 +269,79 @@ paper-checkbox<link rel="import" href="../../bower_components/polymer/polymer-el
           // TBD
         }
 
-        deleteSelectedRows(e) {
-          var _selectedItems = [];
+        deleteSelectedRows() {
+          var selectedItems = [];
 
           if (this._deleteItem.length > 0) {
             // delete single item (basket button in row)
-            _selectedItems = this._deleteItem;
+            selectedItems = this._deleteItem;
           }
           else {
             // delete all shown selected items (delete button on top of grid)
-            _selectedItems = this.shadowRoot.querySelector('#animadKeepersList').selectedItems;
+            selectedItems = this.shadowRoot.querySelector('#vgrid').selectedItems;
           }
 
           // loop over all items to delete
-          for (var i in _selectedItems) {
-            // check if _filteredKeepers contains _selectedItems[i]
-            var index = this._filteredKeepers.indexOf(_selectedItems[i]);
+          for (var i in selectedItems) {
+            // check if filteredData contains selectedItems[i]
+            var index = this.filteredData.indexOf(selectedItems[i]);
 
-              // TBD: Daten im Backend löschen -> _keepers
             if (index >= 0) {
-              this.splice('_filteredKeepers', index, 1);
-              var j = this._keepers.indexOf(_selectedItems[i]);
-              this.splice('_keepers', j, 1);
+              this.splice('filteredData', index, 1);
+
+              // TBD: Daten im Backend löschen -> data
+              var j = this.data.indexOf(selectedItems[i]);
+              this.splice('data', j, 1);
             }
           }
 
           // loop must be backwards to deselect all selected items that were deleted
-          for (var i = _selectedItems.length-1; i >= 0; i-- ) {
-            this.$.animadKeepersList.deselectItem(_selectedItems[i]);
+          for (var i = selectedItems.length-1; i >= 0; i-- ) {
+            this.$.vgrid.deselectItem(selectedItems[i]);
           }
           // TBD: not yet completely correct, also for this.inverted
-          this.indeterminate = this.$.animadKeepersList.selectedItems.length > 0;
-          this.inverted = this.inverted && this.$.animadKeepersList.selectedItems.length > 0;
+          this.indeterminate = this.$.vgrid.selectedItems.length > 0;
+          this.inverted = this.inverted && this.indeterminate;
 
           // unset temporary delete information
           this.unsetTemporaryDeleteInfo();
 
         }
 
-        confirmDeleteSelected(e) {
+        confirmDeleteSelected() {
           // check if selected item should be deleted
+          // attention: this.$ necessary to enable it for Opera (https://github.com/PolymerElements/paper-dialog/issues/128)
           this.$.dialogDeleteSelected.open();
         }
 
         confirmDeleteRow(e) {
           // get item of row where delete button was clicked
-          var item_id = this.shadowRoot.querySelector("#item-id-"+e.target.id).innerHTML;
-          var item = this._filteredKeepers.find(keeper => keeper.id == item_id);
+          var item = this.filteredData[e.target.id];
 
           // set temporary delete information
-          this._deleteInfo = this.t('modal_deleteinfo', {id: item.id, firstname: item.firstname, lastname: item.lastname, employmentdate: item.employmentdate, skill: item.skill,   birthdate: item.birthdate,  salary: item.salary},);
+          this._deleteInfo = this.t('modal_deleteinfo', {firstname: item.firstname, lastname: item.lastname, employmentdate: item.employmentdate, skill: item.skill,   birthdate: item.birthdate,  salary: item.salary});
           this._deleteItem = [item];
 
-          // check if selected item should be deleted
+          // user must confirm that item should be deleted
           // attention: this.$ necessary to enable it for Opera (https://github.com/PolymerElements/paper-dialog/issues/128)
           this.$.dialogDeleteItem.open();
         }
 
-        unsetTemporaryDeleteInfo() {
-          this._deleteItem = [];
-          this._deleteInfo = "";
-        }
-
         filterKeepers() {
-          this._filteredKeepers =
-            this._keepers.filter(keeper =>
+          this.filteredData =
+            this.data.filter(keeper =>
                 keeper.firstname.toLowerCase().includes(this._search) ||
                 keeper.lastname.toLowerCase().includes(this._search) ||
                 keeper.employmentdate.toLowerCase().includes(this._search) ||
                 keeper.skill.toLowerCase().includes(this._search) ||
                 keeper.birthdate.toLowerCase().includes(this._search) ||
                 new String(keeper.salary).toLowerCase().includes(this._search));
-          this._filteredKeepers = this._filteredKeepers.filter(this.useSelectedFilters, this);
+          this.filteredData = this.filteredData.filter(this.useSelectedFilters, this);
         }
 
-        setFilteredKeepers(event) {
+        filterData(event) {
           this._search = event.target.query.toLowerCase();
           this.filterKeepers();
-        }
-
-        openFilterSelection() {
-          this._openedFilterSelection = !this._openedFilterSelection;
         }
 
         setSelectedFilters(event) {
@@ -493,8 +352,8 @@ paper-checkbox<link rel="import" href="../../bower_components/polymer/polymer-el
           // convert attribute filter string to filter object
           var filterObject = JSON.parse(filterString);
 
-          // search for filter object in property _allFilters
-          var allFiltersByType = this._allFilters.find(filter => filter.id === filtertype );
+          // search for filter object in property allFilters
+          var allFiltersByType = this.allFilters.find(filter => filter.id === filtertype );
           var selectedFilter = allFiltersByType.filters.find(type => type.id === filterObject.id);
 
           // check wether the filter object exists in _selectedFilters
@@ -519,36 +378,36 @@ paper-checkbox<link rel="import" href="../../bower_components/polymer/polymer-el
         useSelectedFilters(keeper) {
           for (var filterObject of this._selectedFilters) {
             switch (filterObject.type) {
-              case this._allFilters[0].id: // for the example: birthdate
+              case this.allFilters[0].id: // for the example: birthdate
                 switch (filterObject.filter.id) {
-                  case this._allFilters[0].filters[0].id:
-                    console.log("Implementation for "+ this._allFilters[0].id + "," + this._allFilters[0].filters[0].label);
+                  case this.allFilters[0].filters[0].id:
+                    console.log("Implementation for "+ this.allFilters[0].id + "," + this.allFilters[0].filters[0].label);
                     return true;
-                  case this._allFilters[0].filters[1].id:
-                    console.log("Implementation for "+ this._allFilters[0].id + "," + this._allFilters[0].filters[1].label);
+                  case this.allFilters[0].filters[1].id:
+                    console.log("Implementation for "+ this.allFilters[0].id + "," + this.allFilters[0].filters[1].label);
                     return true;
-                  case this._allFilters[0].filters[2].id:
-                    console.log("Implementation for "+ this._allFilters[0].id + "," + this._allFilters[0].filters[2].label);
+                  case this.allFilters[0].filters[2].id:
+                    console.log("Implementation for "+ this.allFilters[0].id + "," + this.allFilters[0].filters[2].label);
                     return true;
                   default:
                   console.log("Filter not defined");
                     return true;
                 }
                 break;
-              case this._allFilters[1].id: // for the example: salary
+              case this.allFilters[1].id: // for the example: salary
                 switch (filterObject.filter.id) {
-                  case this._allFilters[1].filters[0].id:
-                    console.log("Implementation for "+ this._allFilters[0].id + "," + this._allFilters[1].filters[0].label);
+                  case this.allFilters[1].filters[0].id:
+                    console.log("Implementation for "+ this.allFilters[0].id + "," + this.allFilters[1].filters[0].label);
                     return keeper.salary <= 1000;
 //                    return true;
-                  case this._allFilters[1].filters[1].id:
-                    console.log("Implementation for "+ this._allFilters[0].id + "," + this._allFilters[1].filters[1].label);
+                  case this.allFilters[1].filters[1].id:
+                    console.log("Implementation for "+ this.allFilters[0].id + "," + this.allFilters[1].filters[1].label);
                     return true;
-                  case this._allFilters[1].filters[2].id:
-                    console.log("Implementation for "+ this._allFilters[0].id + "," + this._allFilters[1].filters[2].label);
+                  case this.allFilters[1].filters[2].id:
+                    console.log("Implementation for "+ this.allFilters[0].id + "," + this.allFilters[1].filters[2].label);
                     return true;
-                  case this._allFilters[1].filters[3].id:
-                    console.log("Implementation for "+ this._allFilters[0].id + "," + this._allFilters[1].filters[3].label);
+                  case this.allFilters[1].filters[3].id:
+                    console.log("Implementation for "+ this.allFilters[0].id + "," + this.allFilters[1].filters[3].label);
                     return true;
                   default:
                   console.log("Filter not defined");
