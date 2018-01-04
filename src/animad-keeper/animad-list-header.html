@@ -1,0 +1,114 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../bower_components/nebula-i18n/nebula-i18n.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/custom-style.html">
+<link rel="import" href="../../bower_components/shadycss/apply-shim.html">
+
+<link rel="import" href="../behaviors/animad-i18n-behavior.html">
+<link rel="import" href="../behaviors/mixin.html">
+
+<dom-module id="animad-list-header">
+    <template>
+        <style is="custom-style">
+
+        </style>
+        <!--
+          Search bar, NEW and DELETE functionality
+        -->
+        <paper-item id="search-panel">
+          <paper-item-body>
+            <paper-search-bar
+              placeholder = "[[t('filter_placeholder')]]"
+              hide-filter-button$="[[_hideFilterButton(allFilters)]]"
+              nr-selected-filters=[[_nrSelectedFilters]]
+
+              items = "{{data}}"
+              on-query-changed="filterData"
+              on-paper-search-filter = "_toggleFilterSelection"
+              >
+            </paper-search-bar>
+          </paper-item-body>
+
+          <paper-button raised on-click="handleNew">New</paper-button>
+          <paper-button raised on-click="confirmDeleteSelected" disabled$="[[!_itemsSelected(inverted, indeterminate)]]">Delete</paper-button>
+        </paper-item>
+
+        <!--
+          Anzeige und Auswahl von selektierbaren Filtern
+        -->
+        <iron-collapse id="filter-selection" opened=[[_isFilterSelectionOpen]]>
+          <template is="dom-repeat" items="{{allFilters}}" as="allFilters">
+            <div>
+              [[t(allFilters.id)]]
+              <template is="dom-repeat" items="{{allFilters.filters}}" as="filter">
+                <div>
+                  <paper-checkbox on-tap="setSelectedFilters" data-filtertype$="[[allFilters.id]]" data-filter$="[[filter]]">[[t(filter.label)]]</paper-checkbox>
+                </div>
+              </template>
+            </div>
+          </template>
+        </iron-collapse>
+
+    </template>
+    <script>
+        /**
+         * TBD:
+           Events für
+            - confirmDeleteSelected
+            - handleNew
+            - setSelectedFilters (bzw. hier die Filter in selectedFilters sammeln. selectedFilters kann dann benutzt werden)
+            - filterData
+          Properties für:
+            - disabled$="[[!_itemsSelected(inverted, indeterminate)]]
+         */
+        class AnimadListHeader extends mix(Polymer.Element).with(AnimadI18nBehavior) {
+            static get is() { return 'animad-list-header'; }
+
+            static get properties() {
+                return {
+              			/**
+              			 * Text shown in the search box if the user didn't enter any query
+              			 */
+              			placeholder: {
+              				type: String,
+              				value: 'Search'
+              			},
+                    allFilters: {
+                      type: Array,
+                      value: {
+                        return []
+                      }
+                    },
+                    data: {
+                      type: Array,
+                      value: {
+                        return []
+                      }
+                    },
+                    _nrSelectedFilters: {
+                      type: Number,
+                      value: 0
+                    },
+                    _isFilterSelectionOpen: {
+                      type: Boolean,
+                      value: false
+                    }
+                }
+            }
+
+            // Show filter selection
+            _toggleFilterSelection() {
+              this._isFilterSelectionOpen = !this._isFilterSelectionOpen;
+            }
+
+            // Filter button wird nur angezeigt, wenn die allFilter > 0
+            _hideFilterButton(filters) {
+              return (!filters || filters.length === 0);
+            }
+
+        }
+
+        customElements.define(AnimadEnclosureForm.is, AnimadEnclosureForm);
+    </script>
+</dom-module>
