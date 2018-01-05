@@ -245,13 +245,14 @@
          }
         }
 
-        // Observe changes to the users array
+        // Observe changes to allFilters array
         static get observers() {
           return [
             'initLocalizedFilter(allFilters)'
           ]
         }
 
+        // localize all allFilters.filters.label
         initLocalizedFilter(allFilters){
           var localizedFilters = []
           for (var i in allFilters){
@@ -348,42 +349,43 @@
         }
 
         useSelectedFilters(keeper) {
+          var isIncluded = true;
           for (var filterObject of this._selectedFilters) {
             switch (filterObject.type) {
               case this.allFilters[0].id: // for the example: birthdate
                 switch (filterObject.filter.id) {
                   case this.allFilters[0].filters[0].id:
                     console.log("Implementation for "+ this.allFilters[0].id + "," + this.allFilters[0].filters[0].label);
-                    return true;
+                    break;
                   case this.allFilters[0].filters[1].id:
                     console.log("Implementation for "+ this.allFilters[0].id + "," + this.allFilters[0].filters[1].label);
-                    return true;
+                    break;
                   case this.allFilters[0].filters[2].id:
                     console.log("Implementation for "+ this.allFilters[0].id + "," + this.allFilters[0].filters[2].label);
-                    return true;
+                    break;
                   default:
-                  console.log("Filter not defined");
-                    return true;
+                    console.log("Filter not defined");
+                    break;
                 }
                 break;
               case this.allFilters[1].id: // for the example: salary
                 switch (filterObject.filter.id) {
                   case this.allFilters[1].filters[0].id:
                     console.log("Implementation for "+ this.allFilters[1].id + "," + this.allFilters[1].filters[0].label);
-                    return keeper.salary <= 1000;
-//                    return true;
+                    isIncluded = isIncluded && keeper.salary <= 1000;
+                    break;
                   case this.allFilters[1].filters[1].id:
                     console.log("Implementation for "+ this.allFilters[1].id + "," + this.allFilters[1].filters[1].label);
-                    return true;
+                    break;
                   case this.allFilters[1].filters[2].id:
                     console.log("Implementation for "+ this.allFilters[1].id + "," + this.allFilters[1].filters[2].label);
-                    return true;
+                    break;
                   case this.allFilters[1].filters[3].id:
                     console.log("Implementation for "+ this.allFilters[1].id + "," + this.allFilters[1].filters[3].label);
-                    return true;
+                    break;
                   default:
-                  console.log("Filter not defined");
-                    return true;
+                    console.log("Filter not defined");
+                    break;
                 }
                 break;
               default:
@@ -391,7 +393,7 @@
                 return true;
             }
           }
-          return true;
+          return isIncluded;
         }
 
       }
