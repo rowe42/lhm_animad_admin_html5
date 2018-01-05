@@ -36,8 +36,9 @@
           placeholder-search="[[t('filter_placeholder')]]"
           placeholder-delete="Löschen"
           placeholder-new="Neu"
-          all-filters="[[allFilters]]"
+          all-filters="[[localizedFilters]]"
           selected-filters = "{{_selectedFilters}}"
+          search="{{_search}}"
           on-search="filterData"
           on-filter="filterKeepers"
           on-delete="confirmDeleteSelected"
@@ -198,6 +199,15 @@
                     ]
                   }
                 ]
+              },
+              /*
+                allFiltersLocalized entspricht allFilters, aber die Werte in 'label' sind durch lokalisierte Werte ersetzt worden.
+              */
+              localizedFilters: {
+                type: Array,
+                value() {
+                  return this.allFilters;
+                }
               }
             },
             /*
@@ -233,6 +243,24 @@
              value: false
            }
          }
+        }
+
+        // Observe changes to the users array
+        static get observers() {
+          return [
+            'initLocalizedFilter(allFilters)'
+          ]
+        }
+
+        initLocalizedFilter(allFilters){
+          var localizedFilters = []
+          for (var i in allFilters){
+            var filters = allFilters[i].filters;
+            for (var j in filters){
+              filters[j].label = this.t(filters[j].label);
+            }
+          }
+          this.localizedFilters = allFilters;
         }
 
         handleNew() {
@@ -298,8 +326,7 @@
           this.$.dialogDeleteItem.open();
         }
 
-        filterKeepers(event) {
-          this._selectedFilters = event.target.selectedFilters;
+        filterKeepers() {
           this.filter();
         }
 
@@ -342,17 +369,17 @@
               case this.allFilters[1].id: // for the example: salary
                 switch (filterObject.filter.id) {
                   case this.allFilters[1].filters[0].id:
-                    console.log("Implementation for "+ this.allFilters[0].id + "," + this.allFilters[1].filters[0].label);
+                    console.log("Implementation for "+ this.allFilters[1].id + "," + this.allFilters[1].filters[0].label);
                     return keeper.salary <= 1000;
 //                    return true;
                   case this.allFilters[1].filters[1].id:
-                    console.log("Implementation for "+ this.allFilters[0].id + "," + this.allFilters[1].filters[1].label);
+                    console.log("Implementation for "+ this.allFilters[1].id + "," + this.allFilters[1].filters[1].label);
                     return true;
                   case this.allFilters[1].filters[2].id:
-                    console.log("Implementation for "+ this.allFilters[0].id + "," + this.allFilters[1].filters[2].label);
+                    console.log("Implementation for "+ this.allFilters[1].id + "," + this.allFilters[1].filters[2].label);
                     return true;
                   case this.allFilters[1].filters[3].id:
-                    console.log("Implementation for "+ this.allFilters[0].id + "," + this.allFilters[1].filters[3].label);
+                    console.log("Implementation for "+ this.allFilters[1].id + "," + this.allFilters[1].filters[3].label);
                     return true;
                   default:
                   console.log("Filter not defined");

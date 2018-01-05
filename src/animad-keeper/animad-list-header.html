@@ -151,14 +151,8 @@
 		_onChangeRequest: function(newValue, oldValue) {
 			// Ignore initial setting of properties (caller is supposed to trigger this call automatically)
 			if (typeof oldValue !== 'undefined') {
-				// Set back to default to avoid endless listers
-				this.count = 20;
-				this._updateData();
+        this.fire('search');
 			}
-		},
-		_updateData: function() {
-      this.fire('search');
-			//this.fire('change-request-params');
 		},
     _onFilter(event) {
       // get attribute ('data-') values from tapped checkbox
