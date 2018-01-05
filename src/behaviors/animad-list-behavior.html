@@ -12,15 +12,6 @@ _allRowSelected<script>
         static get properties() {
             return {
               /*
-                Ist _openedFilterSelection auf true gesetzt, so werden die selektierbaren Filter
-                unterhalb des Sucheingabe-Feldes angezeigt. Ansonsten werden die selektierbaren
-                Filter nicht angezeigt.
-              */
-              _isFilterSelectionOpen: {
-                type: Boolean,
-                value: false
-              },
-              /*
                _deleteInfo enthält beim Löschen über Papierkorb die Information über den zu
                löschenden Datensatz. Nach Bestätigung oder Abbruch des Löschvorgangs wird
                die Information aus _deleteInfo wieder gelöscht.
@@ -78,16 +69,6 @@ _allRowSelected<script>
               },
             }
         }
-
-        // Show filter selection
-        _toggleFilterSelection() {
-          this._isFilterSelectionOpen = !this._isFilterSelectionOpen;
-        }
-
-        _hideFilterButton(filters) {
-          return (!filters || filters.length === 0);
-        }
-
 
         unsetTemporaryDeleteInfo() {
           this._deleteItem = [];

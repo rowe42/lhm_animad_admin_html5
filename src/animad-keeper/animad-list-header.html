@@ -1,114 +1,213 @@
-<link rel="import" href="../../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../../bower_components/iron-form/iron-form.html">
-<link rel="import" href="../../bower_components/nebula-i18n/nebula-i18n.html">
-<link rel="import" href="../../bower_components/polymer/lib/elements/custom-style.html">
-<link rel="import" href="../../bower_components/shadycss/apply-shim.html">
-
-<link rel="import" href="../behaviors/animad-i18n-behavior.html">
-<link rel="import" href="../behaviors/mixin.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../../bower_components/paper-search/paper-search-bar.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
 
 <dom-module id="animad-list-header">
-    <template>
-        <style is="custom-style">
 
-        </style>
-        <!--
-          Search bar, NEW and DELETE functionality
-        -->
-        <paper-item id="search-panel">
-          <paper-item-body>
-            <paper-search-bar
-              placeholder = "[[t('filter_placeholder')]]"
-              hide-filter-button$="[[_hideFilterButton(allFilters)]]"
-              nr-selected-filters=[[_nrSelectedFilters]]
+	<template>
+		<style>
+		</style>
 
-              items = "{{data}}"
-              on-query-changed="filterData"
-              on-paper-search-filter = "_toggleFilterSelection"
-              >
-            </paper-search-bar>
-          </paper-item-body>
+    <paper-item id="search-panel">
+      <paper-item-body>
+    		<paper-search-bar
+    			id="search-bar"
+    			class="search"
+    			icon="[[icon]]"
+    			placeholder="[[placeholderSearch]]"
+    			hide-filter-button="[[_hideFilterButton(allFilters)]]"
+    			disable-filter-button="[[_disableFilterButton(allFilters)]]"
+    			query="{{search}}"
+    			nr-selected-filters="[[_nrSelectedFilters]]"
+    			on-paper-search-filter="_toggleFilterSelectionOpen">
+    		</paper-search-bar>
+      </paper-item-body>
 
-          <paper-button raised on-click="handleNew">New</paper-button>
-          <paper-button raised on-click="confirmDeleteSelected" disabled$="[[!_itemsSelected(inverted, indeterminate)]]">Delete</paper-button>
-        </paper-item>
+      <paper-button id="new-button" raised on-tap="_onNew">[[placeholderNew]]</paper-button>
+      <paper-button id="delete-button" raised on-tap="_onDelete" disabled="[[disableDeleteButton]]">[[placeholderDelete]]</paper-button>
+    </paper-item>
 
-        <!--
-          Anzeige und Auswahl von selektierbaren Filtern
-        -->
-        <iron-collapse id="filter-selection" opened=[[_isFilterSelectionOpen]]>
-          <template is="dom-repeat" items="{{allFilters}}" as="allFilters">
+    <iron-collapse id="filter-selection" opened=[[_isFilterSelectionOpen]]>
+      <template is="dom-repeat" items="{{allFilters}}" as="allFilters">
+        <div>
+          [[allFilters.id]]
+          <template is="dom-repeat" items="{{allFilters.filters}}" as="filter">
             <div>
-              [[t(allFilters.id)]]
-              <template is="dom-repeat" items="{{allFilters.filters}}" as="filter">
-                <div>
-                  <paper-checkbox on-tap="setSelectedFilters" data-filtertype$="[[allFilters.id]]" data-filter$="[[filter]]">[[t(filter.label)]]</paper-checkbox>
-                </div>
-              </template>
+              <paper-checkbox on-tap="_onFilter" data-filtertype$="[[allFilters.id]]" data-filter$="[[filter]]">[[filter.label]]</paper-checkbox>
             </div>
           </template>
-        </iron-collapse>
+        </div>
+      </template>
+    </iron-collapse>
 
-    </template>
-    <script>
-        /**
-         * TBD:
-           Events für
-            - confirmDeleteSelected
-            - handleNew
-            - setSelectedFilters (bzw. hier die Filter in selectedFilters sammeln. selectedFilters kann dann benutzt werden)
-            - filterData
-          Properties für:
-            - disabled$="[[!_itemsSelected(inverted, indeterminate)]]
-         */
-        class AnimadListHeader extends mix(Polymer.Element).with(AnimadI18nBehavior) {
-            static get is() { return 'animad-list-header'; }
-
-            static get properties() {
-                return {
-              			/**
-              			 * Text shown in the search box if the user didn't enter any query
-              			 */
-              			placeholder: {
-              				type: String,
-              				value: 'Search'
-              			},
-                    allFilters: {
-                      type: Array,
-                      value: {
-                        return []
-                      }
-                    },
-                    data: {
-                      type: Array,
-                      value: {
-                        return []
-                      }
-                    },
-                    _nrSelectedFilters: {
-                      type: Number,
-                      value: 0
-                    },
-                    _isFilterSelectionOpen: {
-                      type: Boolean,
-                      value: false
-                    }
-                }
-            }
-
-            // Show filter selection
-            _toggleFilterSelection() {
-              this._isFilterSelectionOpen = !this._isFilterSelectionOpen;
-            }
-
-            // Filter button wird nur angezeigt, wenn die allFilter > 0
-            _hideFilterButton(filters) {
-              return (!filters || filters.length === 0);
-            }
-
-        }
-
-        customElements.define(AnimadEnclosureForm.is, AnimadEnclosureForm);
-    </script>
+	</template>
 </dom-module>
+
+<script>
+
+(function() {
+
+	Polymer({
+		is: 'animad-list-header',
+
+		/**
+		 * Fired when the user changes the parameter defining the currently shown items
+		 *
+		 * @event change-request-params
+		 */
+		 /**
+		 * Fired when the user requests to search for a query
+		 *
+		 * @event search
+		 */
+
+		properties: {
+			/**
+			 * Query for which the user was searching
+			 */
+			search: {
+				type: String,
+				observer: '_onChangeRequest',
+				notify: true
+			},
+      /*
+        selectedFilters enthält die Information über alle ausgewählten Filter.
+      */
+      selectedFilters: {
+        type: Array,
+        value() {
+          return [];
+        }
+      },
+			/**
+			 * All filters from which the user can choose
+			 */
+			allFilters: Object,
+      /**
+			 * Whether to hide the Filter button. Set attribute "hide-filter-button" to do so.
+			 */
+			hideFilterButton: {
+				type: Boolean,
+				value: false
+			},
+      /**
+			 * Whether to disable the Filter button. Set attribute "disable-filter-button" to do so.
+			 */
+			disableFilterButton: {
+				type: Boolean,
+				value: false
+			},
+      /**
+			 * Whether to disable the Delete button. Set attribute "disable-delete-button" to do so.
+			 */
+			disableDeleteButton: {
+				type: Boolean,
+				value: false
+			},
+			/**
+			 * Icon shown in the search background
+			 */
+			icon: {
+				type: String,
+				value: 'search'
+			},
+			/**
+			 * Text shown in the search box if the user didn't enter any query
+			 */
+			placeholderSearch: {
+				type: String,
+				value: 'Search'
+			},
+			/**
+			 * Text for Delete button if the user didn't enter any query
+			 */
+			placeholderDelete: {
+				type: String,
+				value: 'Delete'
+			},
+			/**
+			 * Text for New button if the user didn't enter any query
+			 */
+			placeholderNew: {
+				type: String,
+				value: 'New'
+			},
+      _isFilterSelectionOpen: {
+        type: Boolean,
+        value: false
+      }
+		},
+
+		getPaperSearchBarInstance: function() {
+			return this.$.paperSearchBar;
+		},
+
+		// Private methods
+		_onChangeRequest: function(newValue, oldValue) {
+			// Ignore initial setting of properties (caller is supposed to trigger this call automatically)
+			if (typeof oldValue !== 'undefined') {
+				// Set back to default to avoid endless listers
+				this.count = 20;
+				this._updateData();
+			}
+		},
+		_updateData: function() {
+      this.fire('search');
+			//this.fire('change-request-params');
+		},
+    _onFilter(event) {
+      // get attribute ('data-') values from tapped checkbox
+      var filtertype = event.target.dataset.filtertype;
+      var filterString = event.target.dataset.filter;
+
+      // convert attribute filter string to filter object
+      var filterObject = JSON.parse(filterString);
+
+      // search for filter object in property allFilters
+      var allFiltersByType = this.allFilters.find(filter => filter.id === filtertype );
+      var selectedFilter = allFiltersByType.filters.find(type => type.id === filterObject.id);
+
+      // check wether the filter object exists in selectedFilters
+      var filterObject = {type: filtertype, filter: selectedFilter};
+      var index = this.selectedFilters.findIndex(selFilter => selFilter.type === filtertype && selFilter.filter === selectedFilter);
+      if (index != -1) {
+        // does exist so remove it from selectedFilters
+        this.splice('selectedFilters', index, 1);
+      }
+      else {
+        // doesn't exist so push it to selectedFilters
+        this.push('selectedFilters', filterObject);
+      }
+
+      // set number of filters selected
+      this._nrSelectedFilters = this.selectedFilters.length;
+
+      // fire Event search to enable filtering
+      this.fire('filter');
+    },
+    _onDelete(event){
+      this.fire('delete');
+    },
+    _onNew(event) {
+      this.fire('new');
+    },
+    _toggleFilterSelectionOpen: function() {
+			this._isFilterSelectionOpen = !this._isFilterSelectionOpen;
+		},
+    _hideFilterButton: function(filters) {
+			return this.hideFilterButton || !filters || filters.length === 0;
+		},
+		_disableFilterButton: function(filters) {
+      return this.disableFilterButton || !filters || filters.length === 0;
+		},
+
+	});
+
+})();
+
+</script>

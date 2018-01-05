@@ -1,4 +1,4 @@
-paper-checkbox<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
 <link rel="import" href="../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../../bower_components/paper-search/paper-search-panel.html">
@@ -24,6 +24,7 @@ paper-checkbox<link rel="import" href="../../bower_components/polymer/polymer-el
 <link rel="import" href="../behaviors/animad-list-behavior.html">
 <link rel="import" href="../behaviors/animad-i18n-behavior.html">
 <link rel="import" href="../behaviors/mixin.html">
+<link rel="import" href="./animad-list-header.html"
 
 <!-- GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-list -->
 <dom-module id="animad-keepers-list">
@@ -31,42 +32,19 @@ paper-checkbox<link rel="import" href="../../bower_components/polymer/polymer-el
       <style>
       </style>
 
-      <!--
-        Search bar, NEW and DELETE functionality
-      -->
-      <paper-item id="search-panel">
-        <paper-item-body>
-          <paper-search-bar
-            placeholder = "[[t('filter_placeholder')]]"
-            hide-filter-button$="[[_hideFilterButton(allFilters)]]"
-            nr-selected-filters=[[_nrSelectedFilters]]
-
-            items = "{{filteredData}}"
-            on-query-changed="filterData"
-            on-paper-search-filter = "_toggleFilterSelection"
-            >
-          </paper-search-bar>
-        </paper-item-body>
-
-        <paper-button raised on-click="handleNew">New</paper-button>
-        <paper-button raised on-click="confirmDeleteSelected" disabled$="[[!_itemsSelected(inverted, indeterminate)]]">Delete</paper-button>
-      </paper-item>
-
-      <!--
-        Anzeige und Auswahl von selektierbaren Filtern
-      -->
-      <iron-collapse id="filter-selection" opened=[[_isFilterSelectionOpen]]>
-        <template is="dom-repeat" items="{{allFilters}}" as="allFilters">
-          <div>
-            [[t(allFilters.id)]]
-            <template is="dom-repeat" items="{{allFilters.filters}}" as="filter">
-              <div>
-                <paper-checkbox on-tap="setSelectedFilters" data-filtertype$="[[allFilters.id]]" data-filter$="[[filter]]">[[t(filter.label)]]</paper-checkbox>
-              </div>
-            </template>
-          </div>
-        </template>
-      </iron-collapse>
+      <animad-list-header
+          placeholder-search="[[t('filter_placeholder')]]"
+          placeholder-delete="Löschen"
+          placeholder-new="Neu"
+          all-filters="[[allFilters]]"
+          selected-filters = "{{_selectedFilters}}"
+          on-search="filterData"
+          on-filter="filterKeepers"
+          on-delete="confirmDeleteSelected"
+          on-new="handleNew"
+          disable-delete-button="[[!_itemsSelected(inverted, indeterminate)]]"
+        >
+      </animad-list-header>
 
       <!--
         Modaler Dialog zur Abfrage vor dem Löschen von in der Liste über Checkboxen selektierten Datensätze
@@ -223,13 +201,6 @@ paper-checkbox<link rel="import" href="../../bower_components/polymer/polymer-el
               }
             },
             /*
-              _nrSelectedFilters gibt an, wieviele selektierbare Filter ausgewählt wurden.
-            */
-            _nrSelectedFilters: {
-              type: Number,
-              value: 0
-            },
-            /*
               _selectedFilters enthält die Information über alle ausgewählten Filter.
             */
             _selectedFilters: {
@@ -327,7 +298,17 @@ paper-checkbox<link rel="import" href="../../bower_components/polymer/polymer-el
           this.$.dialogDeleteItem.open();
         }
 
-        filterKeepers() {
+        filterKeepers(event) {
+          this._selectedFilters = event.target.selectedFilters;
+          this.filter();
+        }
+
+        filterData(event) {
+          this._search = event.target.search.toLowerCase();
+          this.filter();
+        }
+
+        filter(){
           this.filteredData =
             this.data.filter(keeper =>
                 keeper.firstname.toLowerCase().includes(this._search) ||
@@ -337,42 +318,6 @@ paper-checkbox<link rel="import" href="../../bower_components/polymer/polymer-el
                 keeper.birthdate.toLowerCase().includes(this._search) ||
                 new String(keeper.salary).toLowerCase().includes(this._search));
           this.filteredData = this.filteredData.filter(this.useSelectedFilters, this);
-        }
-
-        filterData(event) {
-          this._search = event.target.query.toLowerCase();
-          this.filterKeepers();
-        }
-
-        setSelectedFilters(event) {
-          // get attribute ('data-') values from tapped checkbox
-          var filtertype = event.target.dataset.filtertype;
-          var filterString = event.target.dataset.filter;
-
-          // convert attribute filter string to filter object
-          var filterObject = JSON.parse(filterString);
-
-          // search for filter object in property allFilters
-          var allFiltersByType = this.allFilters.find(filter => filter.id === filtertype );
-          var selectedFilter = allFiltersByType.filters.find(type => type.id === filterObject.id);
-
-          // check wether the filter object exists in _selectedFilters
-          var filterObject = {type: filtertype, filter: selectedFilter};
-          var index = this._selectedFilters.findIndex(selFilter => selFilter.type === filtertype && selFilter.filter === selectedFilter);
-          if (index != -1) {
-            // does exist so remove it from _selectedFilters
-            this.splice('_selectedFilters', index, 1);
-          }
-          else {
-            // doesn't exist so push it to _selectedFilters
-            this.push('_selectedFilters', filterObject);
-          }
-
-          // set number of filters selected
-          this._nrSelectedFilters = this._selectedFilters.length;
-
-          // filter the keepers
-          this.filterKeepers();
         }
 
         useSelectedFilters(keeper) {
