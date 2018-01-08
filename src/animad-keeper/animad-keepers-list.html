@@ -35,7 +35,7 @@
           on-filter="filterKeepers"
           on-delete="confirmDeleteSelected"
           on-new="handleNew"
-          disable-delete-button="[[disableDeleteButton]]"
+          disable-delete-button="[[_disableDeleteButton]]"
         >
       </animad-list-header>
 
@@ -76,7 +76,6 @@
           <template class="header">#</template>
           <template>[[index]]</template>
         </vaadin-grid-column>
-
 
         <vaadin-grid-column>
           <template class="header">
@@ -226,7 +225,7 @@
                return [];
              }
            },
-           disableDeleteButton: {
+           _disableDeleteButton: {
              type: Boolean,
              value: true
            }
@@ -241,8 +240,8 @@
           ]
         }
 
-        selectionChanged(nrSelectedItems){
-          this.disableDeleteButton = (nrSelectedItems === 0);
+        selectionChanged(nrSelectedItems) {
+          this._disableDeleteButton = (nrSelectedItems === 0);
         }
 
         // localize all allFilters.filters.label
