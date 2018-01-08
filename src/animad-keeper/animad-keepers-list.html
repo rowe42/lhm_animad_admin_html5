@@ -68,13 +68,20 @@
       // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]List - id
       // GENERATOR pattern:             _filtered[ENTITYNAME] - items
       -->
-      <vaadin-grid id="vgrid" items="[[filteredData]]" multi-sort="[[multiSort]]" selected-items="{{selectedItems}}">
+      <vaadin-grid id="animad-list" items="{{filteredData}}" multi-sort="[[multiSort]]" selected-items="{{_selectedItems}}">
         <vaadin-grid-selection-column auto-select>
         </vaadin-grid-selection-column>
 
         <vaadin-grid-column width="50px" flex-grow="0" >
           <template class="header">#</template>
           <template>[[index]]</template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column hidden>
+          <template class="header">
+            <vaadin-grid-sorter path="id">[[t('id')]]</vaadin-grid-sorter>
+          </template>
+          <template>[[item.id]]</template>
         </vaadin-grid-column>
 
         <vaadin-grid-column>
@@ -121,7 +128,7 @@
 
         <vaadin-grid-column>
           <template>
-            <paper-icon-button icon="animad-icons:delete" id="[[index]]" on-click="confirmDeleteRow"></paper-icon-button>
+            <paper-icon-button icon="animad-icons:delete" id="[[item.id]]" on-click="confirmDeleteRow"></paper-icon-button>
           </template>
         </vaadin-grid-column>
       </vaadin-grid>
@@ -219,16 +226,6 @@
              type: Boolean,
              value: false
            },
-           selectedItems: {
-             type: Array,
-             value() {
-               return [];
-             }
-           },
-           _disableDeleteButton: {
-             type: Boolean,
-             value: true
-           }
          }
         }
 
@@ -236,12 +233,24 @@
         static get observers() {
           return [
             'initLocalizedFilter(allFilters)',
-            'selectionChanged(selectedItems.length)'
+            'dataChanged(data.splices)'
           ]
         }
 
-        selectionChanged(nrSelectedItems) {
-          this._disableDeleteButton = (nrSelectedItems === 0);
+        dataChanged(data) {
+          // loop must be backwards to deselect all selected items that were deleted
+          for (var i = this._deleteItems.length-1; i >= 0; i-- ) {
+            var index = this.filteredData.indexOf(this._deleteItems[i]);
+            if (index >= 0) {
+              this.shadowRoot.querySelector('#animad-list').deselectItem(this._deleteItems[i]);
+            }
+          }
+
+          // unset temporary delete information
+          this.unsetTemporaryDeleteInfo();
+
+          this.filteredData = data;
+          this.filter();
         }
 
         // localize all allFilters.filters.label
@@ -262,54 +271,46 @@
         }
 
         deleteSelectedRows() {
-          var selectedItems = [];
-
-          if (this._deleteItem.length > 0) {
-            // delete single item (basket button in row)
-            selectedItems = this._deleteItem;
-          }
-          else {
-            // delete all shown selected items (delete button on top of grid)
-            selectedItems = this.selectedItems;
-          }
+          var items = this._deleteItems;
 
           // loop over all items to delete
-          for (var i in selectedItems) {
-            // check if filteredData contains selectedItems[i]
-            var index = this.filteredData.indexOf(selectedItems[i]);
+          for (var i in items) {
+            // check if filteredData contains _selectedItems[i]
+            var index = this.filteredData.indexOf(items[i]);
 
             if (index >= 0) {
 
               // TBD: Daten im Backend löschen -> data
-              var j = this.data.indexOf(selectedItems[i]);
+              var j = this.data.indexOf(items[i]);
               this.splice('data', j, 1);
+            }
+            else {
+              this.splice('_deleteItems', i, 1);
             }
           }
 
-          // loop must be backwards to deselect all selected items that were deleted
-          for (var i = selectedItems.length-1; i >= 0; i-- ) {
-            this.$.vgrid.deselectItem(selectedItems[i]);
-          }
-
-          // unset temporary delete information
-          this.unsetTemporaryDeleteInfo();
-
-          this.filterKeepers();
+          this._deleteItems = items;
         }
 
         confirmDeleteSelected() {
           // check if selected item should be deleted
           // attention: this.$ necessary to enable it for Opera (https://github.com/PolymerElements/paper-dialog/issues/128)
+          this._deleteItems = this._selectedItems;
           this.$.dialogDeleteSelected.open();
         }
 
+
         confirmDeleteRow(e) {
+          // find clicked item by id in filteredData
+          var index = this.filteredData.findIndex(item => item.id == e.target.id);
+
           // get item of row where delete button was clicked
-          var item = this.filteredData[e.target.id];
+          //var item = this.filteredData[e.target.id];
+          var item = this.filteredData[index];
 
           // set temporary delete information
           this._deleteInfo = this.t('modal_deleteinfo', {firstname: item.firstname, lastname: item.lastname, employmentdate: item.employmentdate, skill: item.skill,   birthdate: item.birthdate,  salary: item.salary});
-          this._deleteItem = [item];
+          this._deleteItems = [item];
 
           // user must confirm that item should be deleted
           // attention: this.$ necessary to enable it for Opera (https://github.com/PolymerElements/paper-dialog/issues/128)
