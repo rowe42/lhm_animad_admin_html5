@@ -75,59 +75,5 @@ _allRowSelected<script>
           this._deleteInfo = "";
         }
 
-        static get observers() {
-            return ['_resetSelection(inverted)']
-        }
-
-        _resetSelection(inverted) {
-          if (!inverted) {
-            this.shadowRoot.querySelector('#vgrid').selectedItems = [];
-            this.updateStyles();
-            this.indeterminate = false;
-          }
-        }
-
-        _invertSelection() {
-          this.inverted = !this.inverted;
-          for (var item of this.$.vgrid.items) {
-            if (this.inverted) {
-              this.$.vgrid.selectItem(item);
-            }
-            else {
-              this.$.vgrid.deselectItem(item);
-            }
-          }
-        }
-
-        // iOS needs indeterminated + checked at the same time
-        // test with firefox & opera: correct behavior if only inverted is used to set checked
-        _allRowsSelected(inverted, indeterminate) {
-          return inverted;
-        }
-
-        _itemsSelected(inverted, indeterminate) {
-          return (indeterminate || inverted);
-        }
-
-        _selectItem(e) {
-          if (e.target.checked) {
-            this.$.vgrid.deselectItem(e.model.item);
-          } else {
-            this.$.vgrid.selectItem(e.model.item);
-          }
-          this.indeterminate = this.$.vgrid.selectedItems.length > 0;
-          if (this.$.vgrid.selectedItems.length === this.data.length) {
-            this.inverted = false;
-            this._invertSelection();
-          }
-          else if (!this.indeterminate && this.inverted){
-            this._invertSelection();
-          }
-        }
-
-        _isRowSelected(selected, inverted) {
-          return selected || inverted;
-        }
-
     };
 </script>

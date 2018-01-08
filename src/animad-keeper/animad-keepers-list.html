@@ -1,13 +1,8 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
-<link rel="import" href="../../bower_components/iron-list/iron-list.html">
-<link rel="import" href="../../bower_components/paper-search/paper-search-panel.html">
-<link rel="import" href="../../bower_components/paper-search/paper-search-bar.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
-<link rel="import" href="../../bower_components/polymer/lib/elements/array-selector.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/nebula-i18n/nebula-i18n.html">
 <link rel="import" href="../../bower_components/vaadin-material-theme/vaadin-grid.html">
@@ -16,15 +11,12 @@
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-selection-column.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-sorter.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-filter.html">
-<link rel="import" href="../../bower_components/vaadin-checkbox/vaadin-checkbox.html">
-<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
-<link rel="import" href="../../bower_components/iron-list/iron-list.html">
-<link rel="import" href="../animad-icons.html">
 
+<link rel="import" href="../animad-icons.html">
 <link rel="import" href="../behaviors/animad-list-behavior.html">
 <link rel="import" href="../behaviors/animad-i18n-behavior.html">
 <link rel="import" href="../behaviors/mixin.html">
-<link rel="import" href="./animad-list-header.html"
+<link rel="import" href="./animad-list-header.html">
 
 <!-- GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-list -->
 <dom-module id="animad-keepers-list">
@@ -43,9 +35,10 @@
           on-filter="filterKeepers"
           on-delete="confirmDeleteSelected"
           on-new="handleNew"
-          disable-delete-button="[[!_itemsSelected(inverted, indeterminate)]]"
+          disable-delete-button="[[disableDeleteButton]]"
         >
       </animad-list-header>
+
 
       <!--
         Modaler Dialog zur Abfrage vor dem Löschen von in der Liste über Checkboxen selektierten Datensätze
@@ -75,16 +68,9 @@
       // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]List - id
       // GENERATOR pattern:             _filtered[ENTITYNAME] - items
       -->
-      <vaadin-grid id="vgrid" items="[[filteredData]]" multi-sort="[[multiSort]]">
-
-        <vaadin-grid-column width="50px" flex-grow="0">
-          <template class="header">
-            <vaadin-checkbox aria-label="Select All" on-click="_invertSelection" checked="[[_allRowsSelected(inverted, indeterminate)]]" indeterminate="[[indeterminate]]" />
-          </template>
-          <template>
-            <vaadin-checkbox aria-label="Select Row" on-click="_selectItem" checked="[[_isRowSelected(selected, inverted)]]"/>
-          </template>
-        </vaadin-grid-column>
+      <vaadin-grid id="vgrid" items="[[filteredData]]" multi-sort="[[multiSort]]" selected-items="{{selectedItems}}">
+        <vaadin-grid-selection-column auto-select>
+        </vaadin-grid-selection-column>
 
         <vaadin-grid-column width="50px" flex-grow="0" >
           <template class="header">#</template>
@@ -234,13 +220,15 @@
              type: Boolean,
              value: false
            },
-           inverted: {
-             type: Boolean,
-             value: false
+           selectedItems: {
+             type: Array,
+             value() {
+               return [];
+             }
            },
-           indeterminate: {
+           disableDeleteButton: {
              type: Boolean,
-             value: false
+             value: true
            }
          }
         }
@@ -248,8 +236,13 @@
         // Observe changes to allFilters array
         static get observers() {
           return [
-            'initLocalizedFilter(allFilters)'
+            'initLocalizedFilter(allFilters)',
+            'selectionChanged(selectedItems.length)'
           ]
+        }
+
+        selectionChanged(nrSelectedItems){
+          this.disableDeleteButton = (nrSelectedItems === 0);
         }
 
         // localize all allFilters.filters.label
@@ -278,7 +271,7 @@
           }
           else {
             // delete all shown selected items (delete button on top of grid)
-            selectedItems = this.shadowRoot.querySelector('#vgrid').selectedItems;
+            selectedItems = this.selectedItems;
           }
 
           // loop over all items to delete
@@ -287,7 +280,6 @@
             var index = this.filteredData.indexOf(selectedItems[i]);
 
             if (index >= 0) {
-              this.splice('filteredData', index, 1);
 
               // TBD: Daten im Backend löschen -> data
               var j = this.data.indexOf(selectedItems[i]);
@@ -299,13 +291,11 @@
           for (var i = selectedItems.length-1; i >= 0; i-- ) {
             this.$.vgrid.deselectItem(selectedItems[i]);
           }
-          // TBD: not yet completely correct, also for this.inverted
-          this.indeterminate = this.$.vgrid.selectedItems.length > 0;
-          this.inverted = this.inverted && this.indeterminate;
 
           // unset temporary delete information
           this.unsetTemporaryDeleteInfo();
 
+          this.filterKeepers();
         }
 
         confirmDeleteSelected() {
@@ -392,10 +382,10 @@
                 console.log("Filter not defined");
                 return true;
             }
+
           }
           return isIncluded;
         }
-
       }
 
       customElements.define(AnimadKeepersList.is, AnimadKeepersList);
