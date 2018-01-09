@@ -67,12 +67,18 @@ _allRowSelected<script>
                 type: Array,
                 value: []
               },
+              /*
+                _selectedItems enthält alle in der Liste selektierten Datensätze
+              */
               _selectedItems: {
                 type: Array,
                 value() {
                   return [];
                 }
               },
+              /*
+                _disableDeleteButton deaktiviert (true) oder aktiviert (false) den Delete-Button
+              */
               _disableDeleteButton: {
                 type: Boolean,
                 value: true
@@ -86,6 +92,22 @@ _allRowSelected<script>
           ]
         }
 
+        // Löscht alle in _deleteItems enthaltenen Datensätze
+        _deleteSelectedRows() {
+          var items = this._deleteItems;
+          var allItems = this.data;
+
+          // loop over all items to delete
+          for (var i in items) {
+            // TBD: Daten im Backend löschen -> data
+            var j = this.data.indexOf(items[i]);
+            allItems.splice(j, 1);
+          }
+
+          this.data = allItems;
+          this.notifyPath('data.length');
+        }
+
         _selectionChanged(nrSelectedItems) {
           this._disableDeleteButton = (nrSelectedItems === 0);
         }
@@ -94,7 +116,5 @@ _allRowSelected<script>
           this._deleteItems = [];
           this._deleteInfo = "";
         }
-
-
     };
 </script>
