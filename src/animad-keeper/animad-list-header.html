@@ -55,7 +55,7 @@
 		    </iron-collapse>
     </template>
     <script>
-        class AnimadListHeader extends Polymer.LegacyElementMixin(Polymer.Element) {
+        class AnimadListHeader extends Polymer.Element {
             static get is() { return 'animad-list-header'; }
 
             static get properties() {
@@ -160,11 +160,16 @@
 				          }
                 }
             }
+
+            attached() {
+              super.attached();
+              console.log("attached");
+            }
 						// Private methods
 			  		_onChangeRequest(newValue, oldValue) {
 			  			// Ignore initial setting of properties (caller is supposed to trigger this call automatically)
 			  			if (typeof oldValue !== 'undefined') {
-			          this.fire('search');
+                this.dispatchEvent(new CustomEvent('search', {bubbles: true, composed: true}));
 			  			}
 			  		}
 
@@ -195,15 +200,15 @@
 			        // set number of filters selected
 			        this._nrSelectedFilters = this.selectedFilters.length;
 
-			        // fire Event search to enable filtering
-			        this.fire('filter');
+			        // send Event search to enable filtering
+              this.dispatchEvent(new CustomEvent('filter', {bubbles: true, composed: true}));
 			      }
 
 			      _onDelete(event){
-			        this.fire('delete');
+              this.dispatchEvent(new CustomEvent('delete', {bubbles: true, composed: true}));
 			      }
 			      _onNew(event) {
-			        this.fire('new');
+              this.dispatchEvent(new CustomEvent('new', {bubbles: true, composed: true}));
 			      }
 			      _toggleFilterSelectionOpen() {
 			  			this._isFilterSelectionOpen = !this._isFilterSelectionOpen;
