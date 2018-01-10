@@ -14,28 +14,7 @@
               data: {
                 type: Array,
                 value() {
-                  return [
-                    {id: 1, firstname: 'Patti', lastname: 'Smith', employmentdate: "2012-03-01", skill: '',   birthdate: "1968-10-20",  salary: 1200},
-                    {id: 2, firstname: 'Polly Jean', lastname: 'Harvey', employmentdate: "1998-12-01", skill: '',   birthdate: "1972-04-16",  salary: 2200},
-                    {id: 3, firstname: 'Joan', lastname: 'Jett', employmentdate: "1999-11-01", skill: '',   birthdate: "1954-11-11",  salary: 2195},
-                    {id: 4, firstname: 'Beth', lastname: 'Ditto', employmentdate: "2014-01-01", skill: '',   birthdate: "1981-12-12",  salary: 2450},
-                    {id: 5, firstname: 'Siouxsie', lastname: 'Sioux', employmentdate: "2013-11-15", skill: '',   birthdate: "1988-03-12",  salary: 890},
-                    {id: 6, firstname: 'Lydia', lastname: 'Lunch', employmentdate: "2017-06-01", skill: '',   birthdate: "1967-04-16",  salary: 1354},
-                    {id: 7, firstname: 'Debbie', lastname: 'Harry', employmentdate: "2015-04-15", skill: '',   birthdate: "1952-11-10",  salary: 1234},
-                    {id: 8, firstname: 'Sadie', lastname: 'May', employmentdate: "2012-12-15", skill: '',   birthdate: "1951-01-01",  salary: 450},
-                    {id: 9, firstname: 'Kim', lastname: 'Deal', employmentdate: "2013-06-21", skill: '',   birthdate: "1962-02-02",  salary: 2431},
-                    {id: 10, firstname: 'Kelly', lastname: 'Deal', employmentdate: "2016-06-12", skill: '',   birthdate: "1962-02-02",  salary: 2431},
-                    {id: 11, firstname: 'Courtney', lastname: 'Love', employmentdate: "2014-02-01", skill: '',   birthdate: "1964-05-04",  salary: 1254},
-                    {id: 12, firstname: 'Kathleen', lastname: 'Hanna', employmentdate: "1996-12-01", skill: '',   birthdate: "1958-12-21",  salary: 2134},
-                    {id: 13, firstname: 'Tobi', lastname: 'Vail', employmentdate: "1993-04-01", skill: '',   birthdate: "1966-04-04",  salary: 1200},
-                    {id: 14, firstname: 'Kathi', lastname: 'Wilcox', employmentdate: "1997-01-01", skill: '',   birthdate: "1978-07-08",  salary: 1300},
-                    {id: 15, firstname: 'Tanya', lastname: 'Donelly', employmentdate: "1988-12-01", skill: '',   birthdate: "1965-03-02",  salary: 3421},
-                    {id: 16, firstname: 'Laura Jane', lastname: 'Grace', employmentdate: "1987-04-05", skill: '',   birthdate: "1945-12-30",  salary: 3212},
-                    {id: 17, firstname: 'Donita', lastname: 'Sparks', employmentdate: "1997-04-01", skill: '',   birthdate: "1966-06-06",  salary: 3421},
-                    {id: 18, firstname: 'Suzi', lastname: 'Gardner', employmentdate: "2017-12-01", skill: '',   birthdate: "1993-02-01",  salary: 786},
-                    {id: 19, firstname: 'Jennifer', lastname: 'Finch  ', employmentdate: "2017-03-01", skill: '',   birthdate: "1955-06-05",  salary: 1343},
-                    {id: 20, firstname: 'Demetra', lastname: 'Plakas', employmentdate: "2011-05-015", skill: '',   birthdate: "1981-01-04",  salary: 3421},
-                  ];
+                  return [];
                 }
               },
               /*
@@ -83,31 +62,38 @@
                 type: Boolean,
                 value: true
               },
+              /* _backendData enthält die Antwort des Backend-Aufrufs als JSON String*/
+              _backendData: {
+                type: Object,
+                observer: '_backendDataChanged'
+              },
             }
         }
 
         static get observers() {
           return [
-            '_selectionChanged(_selectedItems.length)'
+            '_selectionChanged(_selectedItems.length)',
+            '_dataChanged(data.length)'
           ]
         }
-/* Für Suche über Data-Provider (Lazy Loading)
-        ready() {
-          super.ready();
-          this.size = 200;
-          this.dataProvider = function(params, callback) {
-            var xhr = new XMLHttpRequest();
-            xhr.onload = function() {
-              callback(JSON.parse(xhr.responseText).result);
-            };
-            var index = params.page * params.pageSize;
-            xhr.open('GET', 'https://demo.vaadin.com/demo-data/1.0/people?index=' + index + '&count=' + params.pageSize, true);
-            xhr.send();
-          }
-        }
-*/
 
-        // Löscht alle in _deleteItems enthaltenen Datensätze
+        // Override / Enhance to handle data individually
+        _dataChanged(dataLength) {
+          // unset temporary delete information
+          this.unsetTemporaryDeleteInfo();
+        }
+
+        // Override to handle backendData individually
+        _backendDataChanged(backendData, backendDataOld){
+          // Assignmetn triggers observer _dataChanged
+          this.data = backendData;
+        }
+
+        _selectionChanged(nrSelectedItems) {
+          this._disableDeleteButton = (nrSelectedItems === 0);
+        }
+
+        // Deletes all data that is contained in array _deleteItems
         _deleteSelectedRows() {
           var items = this._deleteItems;
           var allItems = this.data;
@@ -119,17 +105,21 @@
             allItems.splice(j, 1);
           }
 
+          // triggers observer _dataChanged
           this.data = allItems;
           this.notifyPath('data.length');
-        }
-
-        _selectionChanged(nrSelectedItems) {
-          this._disableDeleteButton = (nrSelectedItems === 0);
         }
 
         unsetTemporaryDeleteInfo() {
           this._deleteItems = [];
           this._deleteInfo = "";
+        }
+
+        // Backend methods
+        handleResponse(e) {
+          if (e.detail) {
+            this._backendData = e.detail.__data.response;
+          }
         }
 
 

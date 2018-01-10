@@ -11,6 +11,7 @@
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-selection-column.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-sorter.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-filter.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html"
 
 <link rel="import" href="../animad-icons.html">
 <link rel="import" href="../behaviors/animad-list-behavior.html">
@@ -23,6 +24,17 @@
     <template>
       <style>
       </style>
+
+      <iron-ajax
+          auto
+          url="[[url]]"
+          method="[[_httpMethod]]"
+          headers="[[_httpHeaders]]"
+          params="[[_httpParams]]"
+          handle-as="json"
+          on-response="handleResponse"
+          debounce-duration="[[_debounceDuration]]">
+      </iron-ajax>
 
       <animad-list-header
           placeholder-search="[[t('filter_placeholder')]]"
@@ -238,32 +250,92 @@
              type: Boolean,
              value: false
            },
+           // pagination stuff
+           /*
+             _doPagination gibt an, ob die Datensätze seitenweise angezeigt werden (true)
+             oder ob alle Datensätze gescrollt werden sollen (false).
+           */
            _doPagination: {
              type: Boolean,
              value: false
            },
+           /*
+             pageSize gibt an, wieviele Datensätze bei seitenweiser Anzeige pro Seite
+             angezeigt werden sollen.
+           */
            pageSize: {
              type: Number,
              value: 7
            },
+           /*
+             page ist die aktuell angezeigte Seite.
+           */
            page: {
              type: Number,
              value: 0
            },
+           /*
+             pages ist die Anzahl der Seiten insgesamt
+           */
            pages: {
              type: Array,
              value: null
            },
+           // backend stuff
+           /*
+              die URL zum Backend
+           */
+            url: {
+              type: String,
+              value: "http://localhost:39146/keepers"
+            },
+            /* GENERATOR: Defaults to GET */
+            _httpMethod: {
+              type: String,
+              value: 'GET'
+            },
+            /* JSON-Formatted String
+              Example: '{"X-Requested-With": "XMLHttpRequest"}'*/
+            _httpHeaders: {
+              type: String,
+              value: '{}'
+            },
+            /* JSON-Formatted String
+              Example: '{"part":"snippet", "q":"polymer", "key": "YOUTUBE_API_KEY", "type": "video"}'*/
+            _httpParams: {
+              type: String,
+              value: '{}'
+            },
+            /*Length of time in milliseconds to debounce multiple automatically generated requests*/
+            _debounceDuration: {
+              type: Number,
+              value: 300
+            },
          }
         }
 
         static get observers() {
           return [
             '_initLocalizedFilter(allFilters)',
-            '_dataChanged(data.length)',
             '_itemsChanged(filteredData, page)'
           ]
         }
+
+        /* Für Suche über Data-Provider (Lazy Loading)
+                ready() {
+                  super.ready();
+                  this.size = 200;
+                  this.dataProvider = function(params, callback) {
+                    var xhr = new XMLHttpRequest();
+                    xhr.onload = function() {
+                      callback(JSON.parse(xhr.responseText).result);
+                    };
+                    var index = params.page * params.pageSize;
+                    xhr.open('GET', 'https://demo.vaadin.com/demo-data/1.0/people?index=' + index + '&count=' + params.pageSize, true);
+                    xhr.send();
+                  }
+                }
+        */
 
         // refresh view and reset any delete information
         _dataChanged(dataLength) {
@@ -276,8 +348,7 @@
           this.filteredData = this.data;
           this.filter();
 
-          // unset temporary delete information
-          this.unsetTemporaryDeleteInfo();
+          super._dataChanged(dataLength);
         }
 
         // localize all allFilters.filters.label
@@ -401,6 +472,8 @@
           }
           return isIncluded;
         }
+
+        // Methoden für Blättern
         _isSelected(page, item) {
             return page === item - 1;
         }
@@ -429,6 +502,32 @@
             var end = (page + 1) * this.pageSize;
             this.shadowRoot.querySelector('#animad-list').items = records.slice(start, end);
           }
+        }
+
+        // Override super._backendDataChanged to assign backendData to data correct
+        _backendDataChanged(backendData, backendDataOld){
+          var items = [];
+          var backendItems = backendData._embedded.keepers;
+          for (var item of backendItems) {
+            // get id
+            var href = item._links.self.href;
+            var index = href.lastIndexOf('/') + 1;
+            var itemId = href.substring(index);
+
+            // Convert skill-array into String
+            var skills = item.skill;
+            var skill = "";
+            if (skills) {
+              skill = skills.toString();
+            }
+
+            // Push item to items-array
+            var uiItem = {id: itemId, firstname: item.firstName, lastname: item.lastName, employmentdate: item.employmentDate, skill: skill,   birthdate: item.birthday,  salary: item.salary};
+            items.push(uiItem);
+          }
+
+          // Assignment triggers observer _dataChanged
+          this.data = items;
         }
       }
 
