@@ -18,17 +18,6 @@
                 }
               },
               /*
-                Das _filteredData array enthält alle Objekte, die auf angegebene oder ausgewählte Filter zutreffen.
-                Die Tabelle zeigt die Einträge aus _filteredData an.
-                GENERATOR: _filteredData
-              */
-              filteredData: {
-                type: Array,
-                value() {
-                  return this.data;
-                }
-              },
-              /*
                _deleteInfo enthält beim Löschen über Papierkorb die Information über den zu
                löschenden Datensatz. Nach Bestätigung oder Abbruch des Löschvorgangs wird
                die Information aus _deleteInfo wieder gelöscht.
@@ -55,44 +44,78 @@
                   return [];
                 }
               },
-              /*
-                _disableDeleteButton deaktiviert (true) oder aktiviert (false) den Delete-Button
-              */
-              _disableDeleteButton: {
-                type: Boolean,
-                value: true
-              },
               /* _backendData enthält die Antwort des Backend-Aufrufs als JSON String*/
               _backendData: {
                 type: Object,
                 observer: '_backendDataChanged'
               },
+              // backend stuff
+              /*
+                 die URL zum Backend
+              */
+               url: {
+                 type: String,
+                 value: "http://localhost:39146/keepers"
+               },
+               /*
+                 doPagination gibt an, ob die Datensätze seitenweise angezeigt werden (true)
+                 oder ob alle Datensätze gescrollt werden sollen (false). Standard: false
+               */
+               doPagination: {
+                 type: Boolean,
+                 value: true
+               },
+               /*
+                 pageSize gibt an, wieviele Zeilen bei seitenweiser Anzeige pro Seite
+                 angezeigt werden sollen. Standard: 20 Zeilen
+               */
+               pageSize: {
+                 type: Number,
+                 value: 5
+               },
+               /*
+                 _page ist die aktuell angezeigte Seite.
+               */
+               _page: {
+                 type: Number,
+                 value: 0
+               },
+               /*
+                 _pages ist die Anzahl der Seiten insgesamt
+               */
+               _pages: {
+                 type: Array,
+                 value: null
+               },
             }
         }
 
-        static get observers() {
-          return [
-            '_selectionChanged(_selectedItems.length)',
-            '_dataChanged(data.length)'
-          ]
-        }
-
-        // Override / Enhance to handle data individually
-        _dataChanged(dataLength) {
-          // unset temporary delete information
-          this.unsetTemporaryDeleteInfo();
-        }
-
+        // Observers
         // Override to handle backendData individually
         _backendDataChanged(backendData, backendDataOld){
           // Assignmetn triggers observer _dataChanged
           this.data = backendData;
         }
 
-        _selectionChanged(nrSelectedItems) {
-          this._disableDeleteButton = (nrSelectedItems === 0);
+        // Callback methods
+        ready() {
+          super.ready();
+          this._loadData();
+          /* Für Suche über Data-Provider (Lazy Loading)
+          this.size = 200;
+          this.dataProvider = function(params, callback) {
+            var xhr = new XMLHttpRequest();
+            xhr.onload = function() {
+              callback(JSON.parse(xhr.responseText).result);
+            };
+            var index = params.page * params.pageSize;
+            xhr.open('GET', 'https://demo.vaadin.com/demo-data/1.0/people?index=' + index + '&count=' + params.pageSize, true);
+            xhr.send();
+          }
+          */
         }
 
+        // Protected methods
         // Deletes all data that is contained in array _deleteItems
         _deleteSelectedRows() {
           var items = this._deleteItems;
@@ -100,8 +123,11 @@
 
           // loop over all items to delete
           for (var i in items) {
-            // TBD: Daten im Backend löschen -> data
             var j = this.data.indexOf(items[i]);
+            // Backend Call
+            this._deleteItem(this.data[j]);
+
+            // Update view
             allItems.splice(j, 1);
           }
 
@@ -110,18 +136,54 @@
           this.notifyPath('data.length');
         }
 
-        unsetTemporaryDeleteInfo() {
-          this._deleteItems = [];
-          this._deleteInfo = "";
+        // Pagination methods
+        _isSelected(page, item) {
+            return page === item - 1;
+        }
+        _select(e) {
+          this._page = e.model.item - 1;
+        }
+        _next() {
+          this._page = Math.min(this._pages.length - 1, this._page + 1);
+        }
+        _prev() {
+          this._page = Math.max(0, this._page - 1);
         }
 
         // Backend methods
-        handleResponse(e) {
-          if (e.detail) {
-            this._backendData = e.detail.__data.response;
-          }
+
+        // Search
+        _loadData(){
+          // TBD: error handling
+          fetch(this.url, {
+              method: 'GET',
+              headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+              }
+            }).then(response => response.json()).then(data => {
+              this._backendData = data;
+            });
         }
 
-
+        // Delete
+        _deleteItem(item) {
+          // TBD Handle relations (or is this backend stuff??)
+          var url = this.url+'/'+item.id;
+          fetch(url, {
+              method: 'DELETE',
+              headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+              }
+            }).then(response => {
+              if (response.status === 200 || response.status === 202 || response.status === 204) {
+                // TBD Success notification
+              }
+              else {
+                // TBD Error notification
+              }
+            });
+        }
     };
 </script>
