@@ -5,4 +5,4 @@ if [ $? -eq 0 ]; then
 	echo "bower installed"
 fi
 bower install bower.json
-/usr/libexec/assemble
+/usr/libexec/s2i/assemble
