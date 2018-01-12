@@ -31,12 +31,11 @@
           all-filters="[[_localizedFilters]]"
           selected-filters = "{{_selectedFilters}}"
           search="{{_search}}"
-          on-search="filterData"
-          on-filter="filterKeepers"
-          on-delete="confirmDeleteSelected"
-          on-new="handleNew"
-          disable-delete-button="[[_disableDeleteButton]]"
-        >
+          on-search="_filterData"
+          on-filter="_filterKeepers"
+          on-delete="_confirmDeleteSelected"
+          on-new="_handleNew"
+          disable-delete-button="[[_disableDeleteButton]]">
       </animad-list-header>
 
 
@@ -68,7 +67,11 @@
       // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]List - id
       // GENERATOR pattern:             _filtered[ENTITYNAME] - items
       -->
-      <vaadin-grid id="animad-list" items="{{filteredData}}" multi-sort="[[multiSort]]" selected-items="{{_selectedItems}}">
+<!-- Für Suche über Lazy Loading:
+     <vaadin-grid id="animad-list" data-provider="[[dataProvider]]"  size="200" multi-sort="[[multiSort]]" selected-items="{{_selectedItems}}"> -->
+
+     <vaadin-grid id="animad-list" items="[[filteredData]]"  multi-sort="[[multiSort]]" selected-items="{{_selectedItems}}" page-size="[[pageSize]]">
+<!--      <vaadin-grid id="animad-list" items="[[filteredData]]"  multi-sort="[[multiSort]]" selected-items="{{_selectedItems}}"> -->
         <vaadin-grid-selection-column auto-select>
         </vaadin-grid-selection-column>
 
@@ -128,10 +131,18 @@
 
         <vaadin-grid-column>
           <template>
-            <paper-icon-button icon="animad-icons:delete" id="[[item.id]]" on-click="confirmDeleteRow"></paper-icon-button>
+            <paper-icon-button icon="animad-icons:delete" id="[[item.id]]" on-click="_confirmDeleteRow"></paper-icon-button>
           </template>
         </vaadin-grid-column>
       </vaadin-grid>
+
+      <div id="pages" hidden$="[[!doPagination]]">
+          <button on-tap="_prev">&lt;</button>
+          <template is="dom-repeat" items="[[_pages]]">
+            <button on-tap="_select" selected$="[[_isSelected(_page, item)]]">[[item]]</button>
+          </template>
+          <button on-tap="_next">&gt;</button>
+        </div>
     </template>
 
     <script>
@@ -163,6 +174,16 @@
             _entity: {
               type: String,
               value: 'keeper'
+            },
+            /*
+              _filteredData enthält alle Objekte, die auf angegebene oder ausgewählte Filter zutreffen.
+              Die Tabelle zeigt die Einträge aus _filteredData an.
+            */
+            filteredData: {
+              type: Array,
+              value() {
+                return this.data;
+              }
             },
             /*
               allFilters sind optionale (leeres Array), selektierbare Filter. Sie werden über ein Array definiert, Das
@@ -226,29 +247,43 @@
              type: Boolean,
              value: false
            },
+           /*
+             _disableDeleteButton deaktiviert (true) oder aktiviert (false) den Delete-Button
+           */
+           _disableDeleteButton: {
+             type: Boolean,
+             value: true
+           },
          }
         }
 
         static get observers() {
           return [
+            '_selectionChanged(_selectedItems.length)',
             '_initLocalizedFilter(allFilters)',
+            '_itemsChanged(filteredData, _page)',
             '_dataChanged(data.length)'
           ]
         }
 
+        // Observers
+        _selectionChanged(nrSelectedItems) {
+          this._disableDeleteButton = (nrSelectedItems === 0);
+        }
+
         // refresh view and reset any delete information
-        _dataChanged(data) {
+        _dataChanged(dataLength) {
+          // refresh list data
+          this.filteredData = this.data;
+          this._filter();
+
           // unselect all deleted items
           for (var item of this._deleteItems) {
             this.shadowRoot.querySelector('#animad-list').deselectItem(item);
           }
 
-          // refresh list data
-          this.filteredData = data;
-          this.filter();
-
-          // unset temporary delete information
-          this.unsetTemporaryDeleteInfo();
+          this._deleteItems = [];
+          this._deleteInfos = "";
         }
 
         // localize all allFilters.filters.label
@@ -263,12 +298,60 @@
           this._localizedFilters = allFilters;
         }
 
-        handleNew() {
-          console.log("handleNew");
+        // Changes shown items in grid
+        _itemsChanged(filteredData, page) {
+          if (this.filteredData && this.filteredData.length > 0) {
+            if (!this.doPagination) {
+              this.pageSize = this.filteredData.length;
+              return;
+            }
+            var records = this.filteredData;
+            this._pages = Array.apply( null, {length: Math.ceil(records.length / this.pageSize)} ).map(function(item, index) {
+              return index + 1;
+            });
+            var start = page * this.pageSize;
+            var end = (page + 1) * this.pageSize;
+            this.shadowRoot.querySelector('#animad-list').items = records.slice(start, end);
+          }
+          else {
+            this._pages = 0;
+            this._page = 0;
+          }
+        }
+
+        // Override super._backendDataChanged for correct assignment of backendData to data
+        _backendDataChanged(backendData, backendDataOld){
+          var items = [];
+          var backendItems = backendData._embedded.keepers;
+          for (var item of backendItems) {
+            // get id
+            var href = item._links.self.href;
+            var index = href.lastIndexOf('/') + 1;
+            var itemId = href.substring(index);
+
+            // Convert skill-array into String
+            var skills = item.skill;
+            var skill = "";
+            if (skills) {
+              skill = skills.toString();
+            }
+
+            // Push item to items-array
+            var uiItem = {id: itemId, firstname: item.firstName, lastname: item.lastName, employmentdate: item.employmentDate, skill: skill,   birthdate: item.birthday,  salary: item.salary};
+            items.push(uiItem);
+          }
+
+          // Assignment triggers observer _dataChanged
+          this.data = items;
+        }
+
+        // proteceted methods
+        _handleNew() {
+          console.log("_handleNew");
           // TBD
         }
 
-        confirmDeleteSelected() {
+        _confirmDeleteSelected() {
           this._deleteItems = [];
           // loop over all items to delete
           for (var item of this._selectedItems) {
@@ -286,7 +369,7 @@
           this.$.dialogDeleteSelected.open();
         }
 
-        confirmDeleteRow(e) {
+        _confirmDeleteRow(e) {
           // find clicked item by id in filteredData
           var index = this.filteredData.findIndex(item => item.id == e.target.id);
 
@@ -303,16 +386,16 @@
           this.$.dialogDeleteItem.open();
         }
 
-        filterKeepers() {
-          this.filter();
+        _filterKeepers() {
+          this._filter();
         }
 
-        filterData(event) {
+        _filterData(event) {
           this._search = event.target.search.toLowerCase();
-          this.filter();
+          this._filter();
         }
 
-        filter(){
+        _filter(){
           this.filteredData =
             this.data.filter(keeper =>
                 keeper.firstname.toLowerCase().includes(this._search) ||
@@ -372,6 +455,7 @@
           }
           return isIncluded;
         }
+
       }
 
       customElements.define(AnimadKeepersList.is, AnimadKeepersList);

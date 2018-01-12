@@ -9,7 +9,8 @@
 
 <dom-module id="animad-list-header">
     <template>
-        <style></style>
+      <style></style>
+      <div hidden$="[[hideHeader]]">
 				<paper-item id="search-panel">
 		      <paper-item-body>
 		    		<paper-search-bar
@@ -53,6 +54,7 @@
 		        </div>
 		      </template>
 		    </iron-collapse>
+      </div>
     </template>
     <script>
         class AnimadListHeader extends Polymer.Element {
@@ -81,6 +83,10 @@
 				    			 * All filters from which the user can choose
 				    			 */
 				    			allFilters: Object,
+                  /*
+                  * Wether to hide the whole list header. Set attribute "hide-header" to do so.
+                  */
+                  hideHeader: Boolean,
 				          /**
 				    			 * Whether to hide the Filter button. Set attribute "hide-filter-button" to do so.
 				    			 */
