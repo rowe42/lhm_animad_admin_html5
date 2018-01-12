@@ -1,0 +1,6 @@
+#!/bin/bash
+# install bower
+npm install bower
+if [ $? -eq 0 ]; then
+	echo "bower installed"
+fi
