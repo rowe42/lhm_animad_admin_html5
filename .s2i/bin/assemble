@@ -1,8 +1,9 @@
 #!/bin/bash
 # install bower
-npm install bower
+npm install -g bower
 if [ $? -eq 0 ]; then
 	echo "bower installed"
 fi
+npm install -g polymer-cli
 bower install bower.json
 /usr/libexec/s2i/assemble
