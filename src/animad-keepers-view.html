@@ -27,8 +27,15 @@
       <div class="circle"><iron-icon icon="animad-icons:basecamp"></iron-icon></div>
       <h1>Keepers view</h1>
       <div class="animad-keeper-view-content">
+	<h2>Beispiel mit Pagination</h2>
+        <animad-keepers-list do-pagination="true" page-size="7" url="http://localhost:39146/keepers"></animad-keepers-list>
+        <h2>Beispiel ohne Pagination (Default)</h2>
+        <animad-keepers-list url="http://localhost:39146/keepers"></animad-keepers-list>
+        <h2>Beispiel ohne Buttons Neu und Löschen</h2>
+        <animad-keepers-list hide-new="true" hide-delete="true" url="http://localhost:39146/keepers"></animad-keepers-list>
+        <h2>Beispiel ohne Tabellenbearbeitungs-Header</h2>
+        <animad-keepers-list hide-header="true" url="http://localhost:39146/keepers"></animad-keepers-list>
         <animad-keeper-create-form></animad-keeper-create-form>
-        <animad-keepers-list></animad-keepers-list>
       </div>
 
       </div>
