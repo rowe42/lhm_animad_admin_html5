@@ -137,6 +137,70 @@
                  type: Array,
                  value: null
                },
+               /*
+                 multiSort gibt an, ob in der Tabelle nach mehreren Feldern sortiert
+                 werden kann (multiSort = true) oder nicht (multiSort = false)
+               */
+               multiSort: {
+                type: Boolean,
+                value: false
+               },
+               /*
+               * Wether to hide the whole list header. Set attribute "hide-header" to do so.
+               */
+               hideHeader: {
+                type: Boolean,
+                value: false
+               },
+               /**
+          			 * Whether to hide the New button in header. Set attribute "hide-new" to do so.
+          			 */
+               hideNew: {
+                type: Boolean,
+                value: false
+               },
+               /**
+          			 * Whether to hide the Delete buttons in header and list rows. Set attribute "hide-delete" to do so.
+          			 */
+               hideDelete: {
+                type: Boolean,
+                value: false
+               },
+               /**
+         			 * Whether to hide the Filter button. Set attribute "hide-filter" to do so.
+         			 */
+         			hideFilter: {
+         				type: Boolean,
+         				value: false
+         			},
+               /**
+         			 * Whether to disable the Filter button. Set attribute "disable-filter" to do so.
+         			 */
+         			disableFilter: {
+         				type: Boolean,
+         				value: false
+         			},
+               /**
+         			 * Whether to disable the Delete button. Set attribute "disable-delete" to do so.
+         			 */
+         			disableDelete: {
+         				type: Boolean,
+         				value: false
+         			},
+              /**
+         			 * Whether to disable the New button. Set attribute "disable-new" to do so.
+         			 */
+         			disableNew: {
+         				type: Boolean,
+         				value: false
+         			},
+         			/**
+         			 * Icon shown in the search background
+         			 */
+         			icon: {
+         				type: String,
+         				value: 'search'
+         			},
             }
         }
 
@@ -151,7 +215,7 @@
 
         // Selected/Unselected items in list
         _selectionChanged(nrSelectedItems) {
-          this._disableDeleteButton = (nrSelectedItems === 0);
+          this._disableDeleteButton = this.disableDelete || (nrSelectedItems === 0);
         }
 
         // Changes shown items in grid

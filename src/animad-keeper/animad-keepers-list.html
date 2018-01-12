@@ -38,8 +38,11 @@
           disable-delete-button="[[_disableDeleteButton]]"
           hide-header="[[hideHeader]]"
           hide-new-button="[[hideNew]]"
-          hide-delete-button="[[hideDelete]]">
-
+          hide-delete-button="[[hideDelete]]"
+          hide-filter-button="[[hideFilter]]"
+          disable-filter-button="[[disableFilter]]"
+          disable-new-button="[[disableNew]]"
+          icon="[[icon]]">
       </animad-list-header>
 
 
@@ -130,7 +133,12 @@
 
         <vaadin-grid-column>
           <template>
-            <paper-icon-button icon="animad-icons:delete" id="[[item.id]]" on-click="_confirmDeleteRow"></paper-icon-button>
+            <paper-icon-button
+              icon="animad-icons:delete"
+              id="[[item.id]]"
+              hidden="[[hideDelete]]"
+              on-click="_confirmDeleteRow">
+            </paper-icon-button>
           </template>
         </vaadin-grid-column>
       </vaadin-grid>
@@ -203,26 +211,6 @@
                 ]
               }
             },
-            /*
-              multiSort gibt an, ob in der Tabelle nach mehreren Feldern sortiert
-              werden kann (multiSort = true) oder nicht (multiSort = false)
-            */
-           multiSort: {
-             type: Boolean,
-             value: false
-           },
-           hideHeader: {
-           type: Boolean,
-           value: false
-           },
-           hideNew: {
-           type: Boolean,
-           value: false
-           },
-           hideDelete: {
-           type: Boolean,
-           value: false
-           }
          }
         }
 
