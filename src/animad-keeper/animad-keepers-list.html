@@ -31,11 +31,15 @@
           all-filters="[[_localizedFilters]]"
           selected-filters = "{{_selectedFilters}}"
           search="{{_search}}"
-          on-search="_filterData"
-          on-filter="_filterKeepers"
+          on-search="_searchData"
+          on-filter="_filterData"
           on-delete="_confirmDeleteSelected"
           on-new="_handleNew"
-          disable-delete-button="[[_disableDeleteButton]]">
+          disable-delete-button="[[_disableDeleteButton]]"
+          hide-header="[[hideHeader]]"
+          hide-new-button="[[hideNew]]"
+          hide-delete-button="[[hideDelete]]">
+
       </animad-list-header>
 
 
@@ -47,7 +51,7 @@
         <p>[[t('modal_delete_text_multi')]]</p>
         <paper-item>
           <paper-button raised dialog-confirm on-click="_deleteSelectedRows">[[t('modal_delete_button_yes')]]</paper-button>
-          <paper-button raised dialog-dismiss on-click="unsetTemporaryDeleteInfo" autofocus>[[t('modal_delete_button_no')]]</paper-button>
+          <paper-button raised dialog-dismiss on-click="_unsetTemporaryDeleteInfo" autofocus>[[t('modal_delete_button_no')]]</paper-button>
         </paper-item>
       </paper-dialog>
 
@@ -56,22 +60,17 @@
       -->
       <paper-dialog id="dialogDeleteItem">
         <h2>[[t('modal_delete_header')]]</h2>
-        <p>[[t('modal_delete_text_single')]] ([[_deleteInfo]])?</p>
+        <p>[[t('modal_delete_text_single')]] [[_deleteInfo]]</p>
         <paper-item>
           <paper-button raised dialog-confirm on-click="_deleteSelectedRows">[[t('modal_delete_button_yes')]]</paper-button>
-          <paper-button raised dialog-dismiss on-click="unsetTemporaryDeleteInfo" autofocus>[[t('modal_delete_button_no')]]</paper-button>
+          <paper-button raised dialog-dismiss on-click="_unsetTemporaryDeleteInfo" autofocus>[[t('modal_delete_button_no')]]</paper-button>
         </paper-item>
       </paper-dialog>
 
-      <!--
-      // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]List - id
-      // GENERATOR pattern:             _filtered[ENTITYNAME] - items
-      -->
 <!-- Für Suche über Lazy Loading:
      <vaadin-grid id="animad-list" data-provider="[[dataProvider]]"  size="200" multi-sort="[[multiSort]]" selected-items="{{_selectedItems}}"> -->
 
-     <vaadin-grid id="animad-list" items="[[filteredData]]"  multi-sort="[[multiSort]]" selected-items="{{_selectedItems}}" page-size="[[pageSize]]">
-<!--      <vaadin-grid id="animad-list" items="[[filteredData]]"  multi-sort="[[multiSort]]" selected-items="{{_selectedItems}}"> -->
+     <vaadin-grid id="animad-list" items="[[_filteredData]]"  multi-sort="[[multiSort]]" selected-items="{{_selectedItems}}" page-size="[[pageSize]]">
         <vaadin-grid-selection-column auto-select>
         </vaadin-grid-selection-column>
 
@@ -89,16 +88,16 @@
 
         <vaadin-grid-column>
           <template class="header">
-            <vaadin-grid-sorter path="firstname">[[t('firstname')]]</vaadin-grid-sorter>
+            <vaadin-grid-sorter path="firstName">[[t('firstname')]]</vaadin-grid-sorter>
           </template>
-          <template>[[item.firstname]]</template>
+          <template>[[item.firstName]]</template>
         </vaadin-grid-column>
 
         <vaadin-grid-column >
           <template class="header">
-            <vaadin-grid-sorter path="lastname">[[t('lastname')]]</vaadin-grid-sorter>
+            <vaadin-grid-sorter path="lastName">[[t('lastname')]]</vaadin-grid-sorter>
           </template>
-          <template>[[item.lastname]]</template>
+          <template>[[item.lastName]]</template>
         </vaadin-grid-column>
 
         <vaadin-grid-column>
@@ -137,12 +136,12 @@
       </vaadin-grid>
 
       <div id="pages" hidden$="[[!doPagination]]">
-          <button on-tap="_prev">&lt;</button>
-          <template is="dom-repeat" items="[[_pages]]">
-            <button on-tap="_select" selected$="[[_isSelected(_page, item)]]">[[item]]</button>
-          </template>
-          <button on-tap="_next">&gt;</button>
-        </div>
+        <button on-tap="_prev">&lt;</button>
+        <template is="dom-repeat" items="[[_pages]]">
+          <button on-tap="_select" selected$="[[_isSelected(_page, item)]]">[[item]]</button>
+        </template>
+        <button on-tap="_next">&gt;</button>
+      </div>
     </template>
 
     <script>
@@ -176,16 +175,6 @@
               value: 'keeper'
             },
             /*
-              _filteredData enthält alle Objekte, die auf angegebene oder ausgewählte Filter zutreffen.
-              Die Tabelle zeigt die Einträge aus _filteredData an.
-            */
-            filteredData: {
-              type: Array,
-              value() {
-                return this.data;
-              }
-            },
-            /*
               allFilters sind optionale (leeres Array), selektierbare Filter. Sie werden über ein Array definiert, Das
               die Struktur [{id, [{id, label}, {id2, label2}, ...}, {id2, [{id, label}, ...]}, ...] einhalten muss.
               GENERATOR: allFilters kann auch ein leeres Array [] enthalten. Dann wird der Filter-Button im search-panel nicht angezeigt.
@@ -212,32 +201,7 @@
                     ]
                   }
                 ]
-              },
-              /*
-                allFiltersLocalized entspricht allFilters, aber die Werte in 'label' sind durch lokalisierte Werte ersetzt worden.
-              */
-              _localizedFilters: {
-                type: Array,
-                value() {
-                  return this.allFilters;
-                }
               }
-            },
-            /*
-              _selectedFilters enthält die Information über alle ausgewählten Filter.
-            */
-            _selectedFilters: {
-              type: Array,
-              value() {
-                return [];
-              }
-            },
-            /*
-              _search enthält den String, der im Sucheingabe-Feld zum Filtern eingegeben wurde.
-            */
-            _search: {
-              type: String,
-              value: ""
             },
             /*
               multiSort gibt an, ob in der Tabelle nach mehreren Feldern sortiert
@@ -247,34 +211,32 @@
              type: Boolean,
              value: false
            },
-           /*
-             _disableDeleteButton deaktiviert (true) oder aktiviert (false) den Delete-Button
-           */
-           _disableDeleteButton: {
-             type: Boolean,
-             value: true
+           hideHeader: {
+           type: Boolean,
+           value: false
            },
+           hideNew: {
+           type: Boolean,
+           value: false
+           },
+           hideDelete: {
+           type: Boolean,
+           value: false
+           }
          }
         }
 
         static get observers() {
           return [
-            '_selectionChanged(_selectedItems.length)',
-            '_initLocalizedFilter(allFilters)',
-            '_itemsChanged(filteredData, _page)',
             '_dataChanged(data.length)'
           ]
         }
 
         // Observers
-        _selectionChanged(nrSelectedItems) {
-          this._disableDeleteButton = (nrSelectedItems === 0);
-        }
-
         // refresh view and reset any delete information
         _dataChanged(dataLength) {
           // refresh list data
-          this.filteredData = this.data;
+          this._filteredData = this.data;
           this._filter();
 
           // unselect all deleted items
@@ -284,39 +246,6 @@
 
           this._deleteItems = [];
           this._deleteInfos = "";
-        }
-
-        // localize all allFilters.filters.label
-        _initLocalizedFilter(allFilters){
-
-          for (var i in allFilters){
-            var filters = allFilters[i].filters;
-            for (var j in filters){
-              filters[j].label = this.t(filters[j].label);
-            }
-          }
-          this._localizedFilters = allFilters;
-        }
-
-        // Changes shown items in grid
-        _itemsChanged(filteredData, page) {
-          if (this.filteredData && this.filteredData.length > 0) {
-            if (!this.doPagination) {
-              this.pageSize = this.filteredData.length;
-              return;
-            }
-            var records = this.filteredData;
-            this._pages = Array.apply( null, {length: Math.ceil(records.length / this.pageSize)} ).map(function(item, index) {
-              return index + 1;
-            });
-            var start = page * this.pageSize;
-            var end = (page + 1) * this.pageSize;
-            this.shadowRoot.querySelector('#animad-list').items = records.slice(start, end);
-          }
-          else {
-            this._pages = 0;
-            this._page = 0;
-          }
         }
 
         // Override super._backendDataChanged for correct assignment of backendData to data
@@ -337,7 +266,7 @@
             }
 
             // Push item to items-array
-            var uiItem = {id: itemId, firstname: item.firstName, lastname: item.lastName, employmentdate: item.employmentDate, skill: skill,   birthdate: item.birthday,  salary: item.salary};
+            var uiItem = {id: itemId, firstName: item.firstName, lastName: item.lastName, employmentdate: item.employmentDate, skill: skill,   birthdate: item.birthday,  salary: item.salary};
             items.push(uiItem);
           }
 
@@ -351,63 +280,39 @@
           // TBD
         }
 
-        _confirmDeleteSelected() {
-          this._deleteItems = [];
-          // loop over all items to delete
-          for (var item of this._selectedItems) {
-            // check if filteredData contains selected item
-            var index = this.filteredData.indexOf(item);
-
-            if (index >= 0) {
-              // yes: add it to deletedItems
-              this._deleteItems.push(item);
-            }
-          }
-
-          // check if selected item should be deleted
-          // attention: this.$ necessary to enable it for Opera (https://github.com/PolymerElements/paper-dialog/issues/128)
-          this.$.dialogDeleteSelected.open();
-        }
-
         _confirmDeleteRow(e) {
-          // find clicked item by id in filteredData
-          var index = this.filteredData.findIndex(item => item.id == e.target.id);
+          // this is optional. If not implemented will only ask question (translated): Do you really want to delete this item?
+          var index = this._filteredData.findIndex(item => item.id == e.target.id);
+          var item = this._filteredData[index];
+          this._deleteInfo = this.t('modal_deleteinfo', {firstname: item.firstName, lastname: item.lastName, employmentdate: item.employmentdate, skill: item.skill,   birthdate: item.birthdate,  salary: item.salary});
 
-          // get item of row where delete button was clicked
-          //var item = this.filteredData[e.target.id];
-          var item = this.filteredData[index];
-
-          // set temporary delete information
-          this._deleteInfo = this.t('modal_deleteinfo', {firstname: item.firstname, lastname: item.lastname, employmentdate: item.employmentdate, skill: item.skill,   birthdate: item.birthdate,  salary: item.salary});
-          this._deleteItems = [item];
-
-          // user must confirm that item should be deleted
-          // attention: this.$ necessary to enable it for Opera (https://github.com/PolymerElements/paper-dialog/issues/128)
-          this.$.dialogDeleteItem.open();
+          super._confirmDeleteRow(e);
         }
 
-        _filterKeepers() {
+        // Filter selection changed
+        _filterData() {
           this._filter();
         }
 
-        _filterData(event) {
+        // Input in search field changed
+        _searchData(event) {
           this._search = event.target.search.toLowerCase();
           this._filter();
         }
 
         _filter(){
-          this.filteredData =
+          this._filteredData =
             this.data.filter(keeper =>
-                keeper.firstname.toLowerCase().includes(this._search) ||
-                keeper.lastname.toLowerCase().includes(this._search) ||
+                keeper.firstName.toLowerCase().includes(this._search) ||
+                keeper.lastName.toLowerCase().includes(this._search) ||
                 keeper.employmentdate.toLowerCase().includes(this._search) ||
                 keeper.skill.toLowerCase().includes(this._search) ||
                 keeper.birthdate.toLowerCase().includes(this._search) ||
                 new String(keeper.salary).toLowerCase().includes(this._search));
-          this.filteredData = this.filteredData.filter(this.useSelectedFilters, this);
+          this._filteredData = this._filteredData.filter(this._useSelectedFilters, this);
         }
 
-        useSelectedFilters(keeper) {
+        _useSelectedFilters(keeper) {
           var isIncluded = true;
           for (var filterObject of this._selectedFilters) {
             switch (filterObject.type) {
