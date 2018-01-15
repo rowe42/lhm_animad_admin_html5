@@ -11,31 +11,45 @@
 <dom-module id="animad-enclosure-form">
     <template>
         <style is="custom-style">
-            
+           .animad-enclosure-form {
+                @apply --animad-enclosure-form;
+            } 
+
+            .animad-enclosure-name-field {
+                @apply --animad-enclosure-name-field;
+            }
+
+            .animad-enclosure-cleaningTime-field {
+                @apply --animad-enclosure-cleaningTime-field;
+            }
         </style>
-        <paper-input 
-            id="enclosure-name" 
-            type="text" 
-            name="name" 
-            label="[[t('name')]]" 
-            value="{{data.name}}" 
-            readonly="[[readonly]]"
-            required 
-            auto-validate="[[autoValidate]]" 
-            minlength="3" 
-            maxlength="30" 
-            error-message="[[t('name_error')]]">
-        </paper-input>
-        <paper-input 
-            id="enclosure-cleaningTime" 
-            type="time" 
-            name=cleaningTime 
-            label="[[t('cleaningTime')]]" 
-            value="{{data.cleaningTime}}"
-            readonly="[[readonly]]" 
-            required auto-validate="[[autoValidate]]" 
-            error-message="[[t('cleaningTime_error')]]">
-        </paper-input>
+        <div class="animad-enclosure-form">
+            <paper-input 
+                class="animad-enclosure-name-field"
+                id="enclosure-name" 
+                type="text" 
+                name="name" 
+                label="[[t('name')]]" 
+                value="{{data.name}}" 
+                readonly="[[readonly]]"
+                required 
+                auto-validate="[[autoValidate]]" 
+                minlength="3" 
+                maxlength="30" 
+                error-message="[[t('name_error')]]">
+            </paper-input>
+            <paper-input
+                class="animad-enclosure-cleaningTime-field"
+                id="enclosure-cleaningTime" 
+                type="time" 
+                name=cleaningTime 
+                label="[[t('cleaningTime')]]" 
+                value="{{data.cleaningTime}}"
+                readonly="[[readonly]]" 
+                required auto-validate="[[autoValidate]]" 
+                error-message="[[t('cleaningTime_error')]]">
+            </paper-input>
+        </div>
     </template>
     <script>
         /**
