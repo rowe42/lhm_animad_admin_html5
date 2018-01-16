@@ -43,7 +43,7 @@
                 <template is="dom-if" if="{{keepersRelation}}">
                     <animad-keeper-simple-relation
                     data="{{data}}"
-                    source-url="http://demo6512140.mockable.io/keepers"
+                    source-url="{{keepersUrl}}"
                     text-property="lastname"
                     value-property="id"
                     preload></animad-keeper-relation>
@@ -109,6 +109,9 @@
                     keepersRelation: {
                         type: Boolean,
                         value: false
+                    },
+                    keepersUrl: {
+                        type: String
                     } 
                 }
             }
