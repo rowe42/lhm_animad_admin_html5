@@ -67,6 +67,9 @@
                     value() {
                         return document.querySelector('#global_warning_toast');
                     }
+                },
+                formReset: {
+                    type: String
                 }
             }
         }
@@ -146,6 +149,13 @@
          */
         _resetForm() {
             this.shadowRoot.querySelector('#iform').reset();
+            // um das reset event in die eigebetteten Komponenten
+            // zu bekommen, wird das 'resetForm' Property in 
+            // Verbindung mit einem Observer verwendet. Ändert sich
+            // der Wert des Propertys, so wird in den 'relation'
+            // Komponenten ein Event ausgelöst, dass die Relation
+            // Liste leert. 
+            this.set('formReset', Math.random());
         }
 
         /**
