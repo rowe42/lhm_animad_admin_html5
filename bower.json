@@ -30,7 +30,8 @@
     "fetch": "^2.0.3",
     "vaadin-grid": "vaadin/vaadin-grid#^4.0.0",
     "vaadin-material-theme": "vaadin/vaadin-material-theme#^0.3.0",
-    "paper-autocomplete": "ellipticaljs/paper-autocomplete#^3.4.0"
+    "paper-autocomplete": "ellipticaljs/paper-autocomplete#^3.4.0",
+    "web-animations-js": "^2.3.1"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0",
