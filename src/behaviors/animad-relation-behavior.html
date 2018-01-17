@@ -82,6 +82,14 @@
                 data: {
                     type: Object,
                     notify: true
+                },
+                /*
+                 * Dieses Property wird genutzt, um ein 'Reset Form' Event
+                 * von der übergeordneten Komponente zu bekommen. (HACK)
+                 */
+                formReset: {
+                    type: String,
+                    observer: '_emptyArray'
                 }
 
             }
@@ -169,6 +177,18 @@
             var index = event.target.dataset.item;
             this.splice(name, index, 1);
 
+        }
+
+        /*
+         * Entfernt alle Elemente aus der Zielstruktur.
+         * Dies ist notwendig, wenn das Formular vom 
+         * Nutzer zurückgesetzt wird.
+         */
+        _emptyArray(newValue, oldValue) {
+            var name = 'data.' + this._entity + 's';
+            var entity = this._entity + 's';
+            var a = this.data[entity]
+            this.splice(name, 0, a.length);
         }
 
         /*
