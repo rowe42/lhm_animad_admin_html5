@@ -1,3 +1,6 @@
+<link rel="import" href="../common-libs/traverson.html">
+<link rel="import" href="../common-libs/traverson-hal.html">
+
 <script>
     /**
      * Behavior, um einem beliebigen Formular (Update, Create, Read) alle Eigenschaften
@@ -34,6 +37,15 @@
                     value() {
                         return {}
                     }
+                },
+                /*
+                 * Legt fest, ob die zu erwartende Payload HATEOS bzw.
+                 * HAL fähig ist. Wenn ja, dann werden die Links aus
+                 * der Payload verwendet.
+                 */
+                hateoas: {
+                    type: Boolean,
+                    value: false
                 },
                 /**
                  *
@@ -110,11 +122,78 @@
 
         }
 
+        
+        _loadFormData() {
+            if(this.hateoas) {
+                this._traversFormData();
+            } else {
+                this._fetchFormData();
+            }
+        }
+
+        /*
+         * Holt sich eine HAL Resource über die URL, die im Property 
+         * 'getUrl' gespeichert ist. Die Nutzdaten werden im 'data' 
+         * Property gespeichert. Danach werden alle benötigten Links 
+         * aufgelöst.
+         */
+        _traversFormData() {
+            // register HAL adapter in Traverson's media type registry
+            traverson.registerMediaType(TraversonJsonHalAdapter.mediaType,
+                TraversonJsonHalAdapter);
+
+            traverson
+            .from(this.getUrl)
+            .jsonHal()
+            .get((error, document, traversal) => {
+                if(error) {
+                    console.error('_traversFormData(): No luck :)');
+                } else {
+                    this.set('data', JSON.parse(document.body));
+
+                    var it = this._relations.entries();
+
+                    // set links for relations
+                    for(let entity of it) {
+                        this._setHateoasLink(traversal, entity[1] + 'List', '_' + entity + 'sUrl');
+                    }
+
+                    // set link for sending
+                    this._setHateoasLink(traversal, 'self', 'postUrl');
+
+                    console.log("data? " + this.data);
+                }
+            });
+            
+        }
+
+        /*
+         * Setzt die Links aus der HAL Payload in die angegebene
+         * Variable.
+         * 
+         * @param traversal Das HAL Objekt.
+         * @param link      Der Link Alias mit dem er im HAL Objekt gefunden werden kann.
+         * @param variable  Die Variable in der die URL gespeichert (per Databinding) werden soll. 
+         */
+        _setHateoasLink(traversal, link, variable) {
+            traversal
+                .continue()
+                .follow(link)
+                .getUrl((error, url) => {
+                    if (error) {
+                        console.error('No luck with ' + link);
+                    } else {
+                        console.log("the url for " + link + ": " + url);
+                        this.set(variable, url);
+                    }
+                });
+        }
+
         /*
          * Lädt die Daten über die definierte URL. Die Daten
          * werden im Property 'data' gespeichert.
          */
-        _loadFormData() {
+        _fetchFormData() {
             var init = {
                 method: 'GET',
                 // headers

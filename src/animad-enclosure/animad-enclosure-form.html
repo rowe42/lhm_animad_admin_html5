@@ -60,13 +60,26 @@
 
             static get properties() {
                 return {
+                    /*
+                     * Das Nutzdatenobjekt.
+                     */
                     data: {
                         type: Object,
                         value() {
                             return {}
-                        }
+                        },
+                        observer: '_changedData'
                     },
-                    autoValidate: Boolean,
+                    /*
+                     * Soll das Formular automatisch validiert werden?
+                     */
+                    autoValidate: {
+                       type:  Boolean,
+                       value: false
+                    },
+                    /*
+                     * Soll das Formular nur lesend dargestellt werden?
+                     */
                     readonly: {
                         type: Boolean,
                         value: false
@@ -90,6 +103,10 @@
                         value: 'enclosure'
                     }
                 }
+            }
+
+            _changedData(newV, oldV) {
+                console.log("data changed -> " + newV);
             }
         }
 

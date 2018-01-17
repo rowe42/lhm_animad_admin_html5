@@ -1,0 +1,53 @@
+<link rel="import" href="../common-libs/traverson.html">
+<link rel="import" href="../common-libs/traverson-hal.html">
+
+<script>
+    let AnimadTraversonBehavior = (superClass) => class extends superClass {
+
+        static get properties() {
+            return {
+                traversal: {
+                    type: Object
+                }
+            }
+        }
+
+        foo(url, link) {
+            // register HAL adapter in Traverson's media type registry
+            traverson.registerMediaType(TraversonJsonHalAdapter.mediaType,
+                TraversonJsonHalAdapter);
+
+            traverson
+            .from(url)
+            .jsonHal()
+            //.follow(link)
+            .getResource((error, document, traversal) => {
+                if(error) {
+                    console.error('No luck :)');
+                } else {
+                    console.log('We have followed the path and reached the target resource.');
+                    console.log(JSON.stringify(document));
+                    
+                    this.bar(traversal, link);
+                    this.bar(traversal, 'self');
+                    
+                }
+            });           
+        }
+
+        bar(traversal, link) {
+            traversal
+                .continue()
+                .follow(link)
+                .getUrl((error, url) => {
+                    if (error) {
+                        console.error('No luck :)');
+                    } else {
+                        console.log("the url: " + url);
+                    }
+
+                })
+        }
+
+    }
+</script>

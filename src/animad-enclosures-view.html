@@ -5,8 +5,12 @@
 <link rel="import" href="animad-enclosure/animad-enclosure-update-form.html">
 <link rel="import" href="animad-enclosure/animad-enclosure-create-form.html">
 
+<!-- custom behaviors -->
 <link rel="import" href="behaviors/animad-i18n-behavior.html">
+<link rel="import" href="behaviors/animad-traverson-behavior.html">
 <link rel="import" href="behaviors/mixin.html">
+
+<!-- custom iconset -->
 <link rel="import" href="animad-icons.html">
 
 <link rel="import" href="shared-styles.html">
@@ -22,6 +26,7 @@
     </style>
     <div id="view" class="card">
       <div class="circle"><iron-icon icon="animad-icons:basecamp"></iron-icon></div>
+      <!--
       <h1>[[t('main_heading')]]</h1>
       <h2>[[t('create_sample_heading')]]</h2>
       <animad-enclosure-create-form post-url="https://httpbin.org/anything">
@@ -41,12 +46,21 @@
       <h2>[[t('read_sample_heading')]]</h2>
       <animad-enclosure-update-form get-url="http://demo6512140.mockable.io/enclosure/4711" post-url="https://httpbin.org/anything" readform>
       </animad-enclosure-update-form>
+      <br />
+      <br />
+    -->
+      <h2>[[t('update_sample_heading_with_relation')]]</h2>
+      <animad-enclosure-update-form 
+        get-url="http://demo6512140.mockable.io/enclosures/3bca5b38-13be-4fd3-b656-fa79a639ddd5" 
+        post-url="https://httpbin.org/anything" 
+        hateoas keepers animals>
+      </animad-enclosure-update-form>
       </div>
   </template>
 
   <script>
     // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]View
-    class AnimadEnclosuresView extends mix(Polymer.Element).with(AnimadI18nBehavior) {
+    class AnimadEnclosuresView extends mix(Polymer.Element).with(AnimadI18nBehavior, AnimadTraversonBehavior) {
       // GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-view
       static get is() { return 'animad-enclosures-view'; }
 
@@ -76,7 +90,6 @@
           }
         }
       }
-
     }
 
     // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]View

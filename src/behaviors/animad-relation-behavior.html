@@ -28,7 +28,8 @@
                  * Die Quelle der Daten.
                  */
                 sourceUrl: {
-                    type: String
+                    type: String,
+                    observer: ''
                 },
                 /*
                  * Der Daten-Cache.
@@ -82,7 +83,16 @@
                 data: {
                     type: Object,
                     notify: true
-                }
+                },
+                /*
+                 * Legt fest, ob die zu erwartende Payload HATEOS bzw.
+                 * HAL fähig ist. Wenn ja, dann werden die Links aus
+                 * der Payload verwendet.
+                 */
+                 hateoas: {
+                    type: Boolean,
+                    value: false
+                },
 
             }
         }
@@ -174,7 +184,39 @@
         /*
          * Lädt die Daten zur Auswahl in den Speicher. 
          */
-        _loadReferenceData() {
+         _loadReferenceData()  {
+            if(this.hateoas) {
+                this._traverseReferenceData();
+            } else {
+                this._fetchReferenceData();
+            }
+         }
+
+        _traverseReferenceData() {
+            // register HAL adapter in Traverson's media type registry
+            traverson.registerMediaType(TraversonJsonHalAdapter.mediaType,
+                TraversonJsonHalAdapter);
+
+            traverson
+            .from(this.sourceUrl)
+            .jsonHal()
+            .getResource((error, document) => {
+                if(error) {
+                    console.error('No luck :)');
+                } else {
+                    // TODO delete
+                    console.log('We have followed the path and reached the target resource: ' + this.sourceUrl);
+                    console.log(JSON.stringify(document));
+                }
+            });
+        }
+
+        /*
+         * Lädt die Daten zur Auswahl in den Speicher. Hierbei wird 
+         * angenommen, dass es sich um eine 'gewöhnliche' JSON Payload
+         * handelt.  
+         */
+        _fetchReferenceData() {
             var headers = new Headers();
             headers.append("Content-Type", "application/json");
             headers.append("Accept", "application/json");
@@ -197,8 +239,8 @@
             fetch(request)
                 .then(response => {
                     if (response.ok) {
-                        //console.log(response);
                         response.json().then(body => {
+                            console.log(body);
                             // Bei Erfolg werden die Daten, die vom Server kommen 
                             // im Array Property 'source' gespeichert.
                             this.set("source", body);

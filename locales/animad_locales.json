@@ -90,7 +90,8 @@
         "create_sample_heading": "Beispiel für ein 'create' Formular",
         "create_with_relation_sample_heading": "Beispiel für ein 'create' Formular mit Relation zu Wärtern",
         "update_sample_heading": "Beispiel für ein 'update' Formular",
-        "read_sample_heading": "Beispiel für ein 'update' Formular"
+        "read_sample_heading": "Beispiel für ein 'update' Formular",
+        "update_sample_heading_with_relation": "Beispiel für update Formular mit Relation aus einer HAL Quelle"
       }
     },
     "animad": {

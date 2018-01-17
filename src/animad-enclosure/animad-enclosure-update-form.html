@@ -40,13 +40,14 @@
         -->
         <iron-form id="iform">
             <form class="animad-enclosure-form">
-                <animad-enclosure-form data="{{data}}" readonly="{{readform}}" auto-validate></animad-enclosure-form>
-                <template is="dom-if" if="{{keepersRelation}}">
+                <animad-enclosure-form data="{{data}}" readonly="[[readform]]" auto-validate></animad-enclosure-form>
+                <template is="dom-if" if="[[keepers]]">
                     <animad-keeper-simple-relation
                     data="{{data}}"
-                    source-url="{{keepersUrl}}"
+                    source-url="{{_keepersUrl}}"
                     text-property="lastname"
                     value-property="id"
+                    hateoas="[[hateoas]]"
                     preload></animad-keeper-relation>
                 </template>
             </form>
@@ -125,17 +126,42 @@
                         type: String,
                         value: 'enclosure'
                     },
-                    // diese Werte müssen abhängig von den Realationen generiert werden
+                    // GENERATOR: diese Werte müssen abhängig von den Realationen generiert werden
                     /*
-                     * Wenn dieser Wert auf 'true' gesetzt wird, dann können
-                     * im Formular Relationen zur Entität 'Keeper' gesetzt werden.
+                     * Über dieses Element Property kann gesteuert werden, ob die
+                     * Relation zu den 'keepers' angezeigt wird, oder nicht.
                      */
-                     keepersRelation: {
+                    keepers: {
                         type: Boolean,
                         value: false
                     },
-                    keepersUrl: {
+                    /*
+                     * Die URL wird automatisch über die HATEOAS Links gesetzt.
+                     */
+                    _keepersUrl: {
                         type: String
+                    },
+                    /*
+                     * Über dieses Element Property kann gesteuert werden, ob die
+                     * Relation zu den 'animals' angezeigt wird, oder nicht.
+                     */
+                    animals: {
+                        type: Boolean,
+                        value: false
+                    },
+                    /*
+                     * Die URL wird automatisch über die HATEOAS Links gesetzt.
+                     */
+                    _animalsUrl: {
+                        type: String
+                    },
+                    /*
+                     * Hier wird gespeichert, welche Relationen aktiv angezeigt
+                     * werden sollen. Das Property wird automatisch berechnet. 
+                     */
+                    _relations: {
+                        type: Array,
+                        computed: '_registerRelations(keepers, animals)'
                     }
                 }
             }
@@ -150,6 +176,27 @@
                 // (Methode wird über *FormBehavior 
                 // zur Verfügung gestellt)
                 this._loadFormData();
+            }
+
+            /**
+             * GENERATOR muss abhängig von den Relationen generiert werden.
+             * 
+             * Prüft, welche Relationen im Formular angezeigt werden sollen. 
+             * Alle Relationen, die auf 'true' stehen, werden in die Liste
+             * übernommen. Über die Liste werden dann die Daten nachgeladen.
+             * Dazu werden die HATEOAS Links des Formularobjektes ausgelesen.
+             */
+            _registerRelations(keepers, animals) {
+                var relations = [];
+                if(keepers) {
+                    relations.push('keeper');
+                }
+
+                if(animals) {
+                    relations.push('animal');
+                }
+
+                return relations;
             }
 
             _editForm() {
