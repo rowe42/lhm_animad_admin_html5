@@ -116,7 +116,7 @@
                     .follow(link)
                     .getResource((error, resource) => {
                         if (error) {
-                            console.error('No luck with ' + link);
+                            console.warn('No luck with ' + link);
                         } else {
                             var array = resource._embedded[this._entity + 's'];
                             this.set(path, array);

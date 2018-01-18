@@ -94,10 +94,7 @@
             var valid = this.shadowRoot.querySelector('#iform').validate();
 
             if (valid) {
-                // console print TODO delete this
-                this.foo = JSON.stringify(this.data);
-                console.log("form is valid: " + this.foo);
-
+                
                 // prepare request
                 var init = {
                     method: verb,
