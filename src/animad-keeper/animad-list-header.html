@@ -22,7 +22,8 @@
 		    			disable-filter-button="[[_disableFilterButton(allFilters)]]"
 		    			query="{{search}}"
 		    			nr-selected-filters="[[_nrSelectedFilters]]"
-		    			on-paper-search-filter="_toggleFilterSelectionOpen">
+		    			on-paper-search-filter="_toggleFilterSelectionOpen"
+              on-paper-search-search="_onSearchRequest">
 		    		</paper-search-bar>
 		      </paper-item-body>
 
@@ -172,10 +173,14 @@
               console.log("attached");
             }
 						// Private methods
+            _onSearchRequest(event){
+              this.dispatchEvent(new CustomEvent('search', {bubbles: true, composed: true}));
+            }
+
 			  		_onChangeRequest(newValue, oldValue) {
 			  			// Ignore initial setting of properties (caller is supposed to trigger this call automatically)
 			  			if (typeof oldValue !== 'undefined') {
-                this.dispatchEvent(new CustomEvent('search', {bubbles: true, composed: true}));
+                this.dispatchEvent(new CustomEvent('filter', {bubbles: true, composed: true}));
 			  			}
 			  		}
 
@@ -207,7 +212,7 @@
 			        this._nrSelectedFilters = this.selectedFilters.length;
 
 			        // send Event search to enable filtering
-              this.dispatchEvent(new CustomEvent('filter', {bubbles: true, composed: true}));
+              this.dispatchEvent(new CustomEvent('filter-selection', {bubbles: true, composed: true}));
 			      }
 
 			      _onDelete(event){

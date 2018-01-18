@@ -54,9 +54,16 @@
                 }
               },
               /*
-                _search enthält den String, der im Sucheingabe-Feld zum Filtern eingegeben wurde.
+                _search enthält den String, der im Eingabe-Feld zum Suche eingegeben wurde.
               */
               _search: {
+                type: String,
+                value: ""
+              },
+              /*
+                _search enthält den String, der im Eingabe-Feld zum Filtern eingegeben wurde.
+              */
+              _filterString: {
                 type: String,
                 value: ""
               },
@@ -201,6 +208,10 @@
          				type: String,
          				value: 'search'
          			},
+              loadCompleteData: {
+                type: Boolean,
+                value: false
+              },
             }
         }
 
@@ -213,6 +224,13 @@
           ]
         }
 
+        _hideSearchHeader(hideHeader){
+          return hideHeader || this.loadCompleteData;
+        }
+
+        _hideFilterHeader(hideHeader){
+          return hideHeader || !this.loadCompleteData;
+        }
         // Selected/Unselected items in list
         _selectionChanged(nrSelectedItems) {
           this._disableDeleteButton = this.disableDelete || (nrSelectedItems === 0);
@@ -248,7 +266,9 @@
         // Callback methods
         ready() {
           super.ready();
-          this._loadData();
+          if (this.loadCompleteData){
+            this._loadData();
+          }
           /* Für Suche über Data-Provider (Lazy Loading)
           this.size = 200;
           this.dataProvider = function(params, callback) {
@@ -361,6 +381,21 @@
         _loadData(){
           // TBD: error handling
           fetch(this.url, {
+              method: 'GET',
+              headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+              }
+            }).then(response => response.json()).then(data => {
+              this._backendData = data;
+            });
+        }
+
+        _fetchFuzzyData(search){
+          var fuzzyUrl=this.url+"/search/findFullTextFuzzy?q='"+search+"'";
+          console.log(fuzzyUrl);
+          // TBD: error handling
+          fetch(fuzzyUrl, {
               method: 'GET',
               headers: {
             'Accept': 'application/json',

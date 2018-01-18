@@ -25,18 +25,36 @@
       </style>
 
       <animad-list-header
+          placeholder-search="[[t('search_placeholder')]]"
+          placeholder-delete="Löschen"
+          placeholder-new="Neu"
+          all-filters="[[_localizedFilters]]"
+          search="{{_search}}"
+          on-search="_searchData"
+          on-delete="_confirmDeleteSelected"
+          on-new="_handleNew"
+          disable-delete-button="[[_disableDeleteButton]]"
+          hide-header="[[_hideSearchHeader(hideHeader)]]"
+          hide-new-button="[[hideNew]]"
+          hide-delete-button="[[hideDelete]]"
+          hide-filter-button="true"
+          disable-new-button="[[disableNew]]"
+          icon="[[icon]]">
+      </animad-list-header>
+
+      <animad-list-header
           placeholder-search="[[t('filter_placeholder')]]"
           placeholder-delete="Löschen"
           placeholder-new="Neu"
           all-filters="[[_localizedFilters]]"
           selected-filters = "{{_selectedFilters}}"
-          search="{{_search}}"
-          on-search="_searchData"
+          search="{{_filterString}}"
           on-filter="_filterData"
+          on-filter-selection="_filterSelectionData"
           on-delete="_confirmDeleteSelected"
           on-new="_handleNew"
           disable-delete-button="[[_disableDeleteButton]]"
-          hide-header="[[hideHeader]]"
+          hide-header="[[_hideFilterHeader(hideHeader)]]"
           hide-new-button="[[hideNew]]"
           hide-delete-button="[[hideDelete]]"
           hide-filter-button="[[hideFilter]]"
@@ -225,7 +243,9 @@
         _dataChanged(dataLength) {
           // refresh list data
           this._filteredData = this.data;
-          this._filter();
+          if (this.loadCompleteData) {
+            this._filter();
+          }
 
           // unselect all deleted items
           for (var item of this._deleteItems) {
@@ -277,26 +297,31 @@
           super._confirmDeleteRow(e);
         }
 
+        _searchData(event) {
+          this._search = event.target.search.toLowerCase();
+          super._fetchFuzzyData(this._search);
+        }
+
         // Filter selection changed
-        _filterData() {
+        _filterSelectionData() {
           this._filter();
         }
 
         // Input in search field changed
-        _searchData(event) {
-          this._search = event.target.search.toLowerCase();
+        _filterData(event) {
+          this._filterString = event.target.search.toLowerCase();
           this._filter();
         }
 
         _filter(){
           this._filteredData =
             this.data.filter(keeper =>
-                keeper.firstName.toLowerCase().includes(this._search) ||
-                keeper.lastName.toLowerCase().includes(this._search) ||
-                keeper.employmentdate.toLowerCase().includes(this._search) ||
-                keeper.skill.toLowerCase().includes(this._search) ||
-                keeper.birthdate.toLowerCase().includes(this._search) ||
-                new String(keeper.salary).toLowerCase().includes(this._search));
+                keeper.firstName.toLowerCase().includes(this._filterString) ||
+                keeper.lastName.toLowerCase().includes(this._filterString) ||
+                keeper.employmentdate.toLowerCase().includes(this._filterString) ||
+                keeper.skill.toLowerCase().includes(this._filterString) ||
+                keeper.birthdate.toLowerCase().includes(this._filterString) ||
+                new String(keeper.salary).toLowerCase().includes(this._filterString));
           this._filteredData = this._filteredData.filter(this._useSelectedFilters, this);
         }
 
