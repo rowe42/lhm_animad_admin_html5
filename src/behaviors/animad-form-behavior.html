@@ -17,20 +17,9 @@
                 /**
                  * Url um die Formulardaten zu laden.
                  */
-                getUrl: {
+                url: {
                     type: String,
                     observer: '_loadFormData'
-                },
-                /**
-                 * Url an die die Formulardaten gesendet werden. 
-                 * Wird bei Update und Read Formularen automatisch
-                 * durch die Werte in der HAL Payload befüllt. 
-                 *
-                 * Bei einem create Formular muss dieser Wert von 
-                 * Hand gesetzt werden.
-                 */
-                postUrl: {
-                    type: String
                 },
                 /**
                  * Das leere Objekt.
@@ -80,11 +69,27 @@
             }
         }
 
+        /*
+         * Wird von 'create' Formularen aufgerufen, um eine neue Entität
+         * zu speichern.
+         */
+        _saveEntity() {
+            this._send('POST');
+        }
+
+        /*
+         * Wird von 'update' Formularen aufgerufen, um eine bereits
+         * bestehende Entität zu aktualisieren.
+         */
+        _updateEntity() {
+            this._send('PUT');
+        }
+
         /**
          * Validiert die Formulardaten. Danach werden sie an die angegebene
          * URL als JSON Objekt gesendet.
          */
-        _sendForm() {
+        _send(verb) {
             // check if the formcontent is valid against the defined rules
             var valid = this.shadowRoot.querySelector('#iform').validate();
 
@@ -95,7 +100,7 @@
 
                 // prepare request
                 var init = {
-                    method: 'POST',
+                    method: verb,
                     mode: 'cors',
                     body: JSON.stringify(this.data)
                 }
@@ -121,7 +126,7 @@
 
         /*
          * Holt sich eine HAL Resource über die URL, die im Property 
-         * 'getUrl' gespeichert ist. Die Nutzdaten werden im 'data' 
+         * 'url' gespeichert ist. Die Nutzdaten werden im 'data' 
          * Property gespeichert. Danach werden alle benötigten Links 
          * aufgelöst.
          */
@@ -147,37 +152,13 @@
                             // es automatisch an untergeordnete Elemente
                             // wie beispielsweise Relationen weiter gegegen. 
                             this.set('_traversal', traversal);
-
-                            // set link for sending
-                            this._setHateoasLink(traversal, 'self', 'postUrl');
                         }
                     });
             }
         }
 
         _reloadForm() {
-            this._loadFormData(this.getUrl, null);
-        }
-
-        /*
-         * Setzt die Links aus der HAL Payload in die angegebene
-         * Variable.
-         * 
-         * @param traversal Das HAL Objekt.
-         * @param link      Der Link Alias mit dem er im HAL Objekt gefunden werden kann.
-         * @param variable  Die Variable in der die URL gespeichert (per Databinding) werden soll. 
-         */
-        _setHateoasLink(traversal, link, variable) {
-            traversal
-                .continue()
-                .follow(link)
-                .getUrl((error, url) => {
-                    if (error) {
-                        console.error('No luck with ' + link);
-                    } else {
-                        this.set(variable, url);
-                    }
-                });
+            this._loadFormData(this.url, null);
         }
 
         /**
@@ -185,6 +166,7 @@
          */
         _resetForm() {
             this.shadowRoot.querySelector('#iform').reset();
+            this._reloadForm();
         }
 
         /**

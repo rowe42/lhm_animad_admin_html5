@@ -59,7 +59,7 @@
             </paper-button>
         </template>
         <template is="dom-if" if="{{!readform}}">
-            <paper-button class="send" on-tap="_sendForm" raised>
+            <paper-button class="send" on-tap="_updateEntity" raised>
                 <iron-icon icon="animad-icons:send"></iron-icon>
                 [[t('button_save')]]
             </paper-button>
@@ -141,18 +141,6 @@
                         value: false
                     }
                 }
-            }
-
-            constructor() {
-                super();
-            }
-
-            connectedCallback() {
-                super.connectedCallback();
-                // Daten ins Formular laden 
-                // (Methode wird über *FormBehavior 
-                // zur Verfügung gestellt)
-                this._loadFormData();
             }
         }
 

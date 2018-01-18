@@ -43,9 +43,7 @@
                 <template is="dom-if" if="{{keepersRelation}}">
                     <animad-keeper-simple-relation
                     data="{{data}}"
-                    source-url="{{keepersUrl}}"
-                    text-property="lastname"
-                    value-property="id"
+                    traversal="{{_traversal}}"
                     preload></animad-keeper-relation>
                 </template>
             </form>
@@ -53,7 +51,7 @@
         <!-- 
             buttons
         -->
-        <paper-button class="send" on-tap="_sendForm" raised>
+        <paper-button class="send" on-tap="_saveEntity" raised>
             <iron-icon icon="animad-icons:send"></iron-icon>
              [[t('button_save')]]
         </paper-button>
@@ -110,19 +108,16 @@
                         type: Boolean,
                         value: false
                     },
-                    keepersUrl: {
-                        type: String
-                    } 
+                    /*
+                     * Über dieses Element Property kann gesteuert werden, ob die
+                     * Relation zu den 'animals' angezeigt wird, oder nicht.
+                     */
+                    animals: {
+                        type: Boolean,
+                        value: false
+                    }
                 }
             }
-
-            constructor() {
-                super();
-            }
-
-            connectedCallback() {
-            }
-
         }
 
         customElements.define(AnimadEnclosureCreateForm.is, AnimadEnclosureCreateForm);
