@@ -34,9 +34,9 @@
                 data: {
                     type: Object,
                     notify: true,
-                    value() {
-                        return {}
-                    }
+                    //value() {
+                    //    return {}
+                    //}
                 },
                 /*
                  * Legt fest, ob die zu erwartende Payload HATEOS bzw.
@@ -79,6 +79,14 @@
                     value() {
                         return document.querySelector('#global_warning_toast');
                     }
+                },
+                /*
+                 * Das Traversal Objekt, damit bei Read oder Update
+                 * Formularen die Relationen nachgeladen werden können.
+                 */
+                _traversal: {
+                    type: Object,
+                    notify: true
                 }
             }
         }
@@ -151,17 +159,11 @@
                 } else {
                     this.set('data', JSON.parse(document.body));
 
-                    var it = this._relations.entries();
-
-                    // set links for relations
-                    for(let entity of it) {
-                        this._setHateoasLink(traversal, entity[1] + 'List', '_' + entity + 'sUrl');
-                    }
+                    // 
+                    this.set('_traversal', traversal);
 
                     // set link for sending
                     this._setHateoasLink(traversal, 'self', 'postUrl');
-
-                    console.log("data? " + this.data);
                 }
             });
             
@@ -183,7 +185,6 @@
                     if (error) {
                         console.error('No luck with ' + link);
                     } else {
-                        console.log("the url for " + link + ": " + url);
                         this.set(variable, url);
                     }
                 });

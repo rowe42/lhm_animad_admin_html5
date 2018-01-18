@@ -1,3 +1,6 @@
+<link rel="import" href="../common-libs/traverson.html">
+<link rel="import" href="../common-libs/traverson-hal.html">
+
 <script>
     /**
      * Behavior, um einem Relation Element mit den notwendigen Eigenschaften 
@@ -25,11 +28,12 @@
         static get properties() {
             return {
                 /*
-                 * Die Quelle der Daten.
+                 * Die Quelle der Daten. Diese URL wird nur benötigt, wenn
+                 * keine HAL / HATEOAS Quelle zur Verfügung steht. 
                  */
                 sourceUrl: {
                     type: String,
-                    observer: ''
+                    observer: '_fetchReferenceData'
                 },
                 /*
                  * Der Daten-Cache.
@@ -38,7 +42,8 @@
                     type: Array,
                     value() {
                         return [];
-                    }
+                    },
+                    notify: true
                 },
                 /*
                  * Legt fest, ob die Daten vorab in den Speicher
@@ -52,31 +57,6 @@
                     value: false
                 },
                 /*
-                 * Legt fest, ob die Relation per ID gespeichert werden
-                 * soll. Ist dieser Wert auf 'false' gesetzt (default),
-                 * so wird in der Zielstruktur ein Array von Objekten der
-                 * Relation angelegt.
-                 */
-                saveRelationById: {
-                    type:Boolean,
-                    value: false
-                },
-                /*
-                 * Property des geladenen Objekts, das den 
-                 * anzuzeigenden Text enthält.
-                 */
-                textProperty: {
-                    type: String,
-                    value: "text"
-                },
-                /*
-                 * Property das die ID des Objekts enthält.
-                 */
-                valueProperty: {
-                    type: String,
-                    value: "value"
-                },
-                /*
                  * Die übergerdnete Datenstruktur, um das Datenbinding
                  * durchgängig zu machen.
                  */
@@ -85,15 +65,12 @@
                     notify: true
                 },
                 /*
-                 * Legt fest, ob die zu erwartende Payload HATEOS bzw.
-                 * HAL fähig ist. Wenn ja, dann werden die Links aus
-                 * der Payload verwendet.
+                 * Das Traversal Objekt um die Daten initial zu laden.
                  */
-                 hateoas: {
-                    type: Boolean,
-                    value: false
-                },
-
+                traversal: {
+                    type: Object,
+                    observer: '_loadRelationData'
+                }
             }
         }
 
@@ -106,29 +83,93 @@
             var e = this.shadowRoot.querySelector('paper-autocomplete');
             e.addEventListener('autocomplete-selected', this._appendItem);
 
-            // Wenn gewünscht, wird der content
-            // beim Erstellen der Komponente vorab
-            // vom Server geladen.
-            if(this.preload) {
-                this._loadReferenceData();
 
-                // Die generische Query Methode muss
-                // durch eine eigen Methode überschrieben 
-                // werden.
-                e.queryFn = this._querySimple;
+            // Die generische Query Methode muss
+            // durch eine eigen Methode überschrieben 
+            // werden.
+            e.queryFn = this._querySimple;
+        }
+
+        /*
+         * Wird ein Traversal Objekt übergeben, dann werden automatisch 
+         * die vorhandenen Daten geladen. Dies sind einerseits die zur 
+         * Entität gehörenden Relationen, andererseits werden die möglichen
+         * Relationen vorgeladen (sofern das 'preload' Attribut gesetzt ist).
+         *
+         * @param   das neue Traversal Objekt
+         * @param   der bisherige Wert des Propeties (wird nicht benötigt)
+         */
+        _loadRelationData(traversal, oldV) {
+
+            if (traversal) {
+
+                // register HAL adapter in Traverson's media type registry
+                traverson.registerMediaType(TraversonJsonHalAdapter.mediaType,
+                    TraversonJsonHalAdapter);
+
+                // Der Link Alias hat immer die Form
+                // '[Name der Entity]List'. Dabei ist
+                // [Name der Entity] klein geschrieben
+                // und singular.
+                var link = this._entity + 'List';
+
+                // Bereits vorhandene Relationen werden 
+                // in das 'data' Property gehängt.
+                var path = 'data.' + this._entity + 's';
+
+                // Die bereits verknüpften Relationen 
+                // werden geladen.
+                traversal
+                    .continue()
+                    .follow(link)
+                    .getResource((error, resource) => {
+                        if (error) {
+                            console.error('No luck with ' + link);
+                        } else {
+                            var array = resource._embedded[this._entity + 's'];
+                            this.set(path, array);
+                        }
+                    });
+
+                // Wenn die Auswahlliste vorgeladen werden soll, dann
+                // kann dies über den '[Name der Entity]s' Link gemacht 
+                // werden. 
+                if (this.preload) {
+                    traversal
+                        .continue()
+                        .follow(this._entity + 's')
+                        .getResource((error, resource) => {
+                            if (error) {
+                                console.error('No luck with ' + this._entity + 's');
+                            } else {
+                                var array = resource._embedded[this._entity + 's'];
+                                array.forEach((element) => {
+                                    // der formatierte Text zur Auswahl
+                                    var text = this._formatSuggester(element);
+                                    // die id
+                                    var value = element._links.self.href;
+
+                                    // Die beiden Werte als Objekt in das 'source' Array 
+                                    // speichern. Dieses Array ist Quelle für die 
+                                    // Autocomplete Componente.
+                                    this.push('source', { "text": text, "value": value, "entity": element })
+                                });
+                            }
+                        });
+                }
             }
         }
 
         /*
          * Sucht in einer vorgeladenen Quelle (Property preload 
          * ist auf 'true' gesetzt) nach Vorkommen einer Zeichenkette
-         * im Attribut, dass im Property 'textPropety' angegeben wurde.
+         * im Attribut, dass im Property 'textProperty' angegeben wurde.
          *
          * @param die Auswahlliste Liste
          * @param die Such-Zeichenkette
          * @return ein Array der selektierten Elemente 
          */
-        _querySimple (datasource, query) {
+        _querySimple(datasource, query) {
             return datasource.filter(x => x[this.textProperty].toLowerCase().indexOf(query) != -1);
         }
 
@@ -141,7 +182,8 @@
         _appendItem(event) {
 
             // Der 'host' des Elternknotens wird benötigt
-            // um an die Properties zu kommen.
+            // um an die Properties zu kommen, da wir nicht
+            // im 'this' scope sind.
             var h = this.parentNode.host;
             var name = 'data.' + h._entity + 's';
             var id = event.detail.value;
@@ -149,19 +191,19 @@
             // Wenn noch kein Attribut vorhanden ist, um
             // die Referenz zu speichern, so muss eines 
             // mit einem leeren Array erzeugt werden.
-            if(!h.get(name)) {
+            if (!h.get(name)) {
                 h.set(name, []);
             }
 
             // Wenn das Property 'save-relation-by-id' gesetzt ist...
-            if(this.saveRelationById) {
+            if (this.saveRelationById) {
                 // Der key der ausgewählten Referenz wird
                 // im Array gespeichert.
                 h.push(name, id);
             } else {
                 // Das Relationsobjekt wird gespeichert
-                var item = this.source.find(x => x[this.valueProperty] === id);
-                h.push(name, item);
+                var item = this.source.find(x => x.value === id);
+                h.push(name, item.entity);
             }
 
             // Textfeld leeren
@@ -177,78 +219,53 @@
         _removeItem(event) {
             var name = 'data.' + this._entity + 's';
             var index = event.target.dataset.item;
+            console.log("index -> " + index);
             this.splice(name, index, 1);
-
-        }
-
-        /*
-         * Lädt die Daten zur Auswahl in den Speicher. 
-         */
-         _loadReferenceData()  {
-            if(this.hateoas) {
-                this._traverseReferenceData();
-            } else {
-                this._fetchReferenceData();
-            }
-         }
-
-        _traverseReferenceData() {
-            // register HAL adapter in Traverson's media type registry
-            traverson.registerMediaType(TraversonJsonHalAdapter.mediaType,
-                TraversonJsonHalAdapter);
-
-            traverson
-            .from(this.sourceUrl)
-            .jsonHal()
-            .getResource((error, document) => {
-                if(error) {
-                    console.error('No luck :)');
-                } else {
-                    // TODO delete
-                    console.log('We have followed the path and reached the target resource: ' + this.sourceUrl);
-                    console.log(JSON.stringify(document));
-                }
-            });
+            console.log("data -> " + JSON.stringify(this.data));
         }
 
         /*
          * Lädt die Daten zur Auswahl in den Speicher. Hierbei wird 
          * angenommen, dass es sich um eine 'gewöhnliche' JSON Payload
-         * handelt.  
+         * handelt. 
+         * 
+         * Die Methode wird aufgerufen, wenn das Property 'sourceUrl' 
+         * gesetzt wurde. 
          */
-        _fetchReferenceData() {
-            var headers = new Headers();
-            headers.append("Content-Type", "application/json");
-            headers.append("Accept", "application/json");
+        _fetchReferenceData(url, oldV) {
 
-            var init = {
-                method: 'GET',
-                headers: headers,
-                mode: 'cors',
-                cache: 'default'
-            };
+            if (this.sourceUrl) {
+                var headers = new Headers();
+                headers.append("Content-Type", "application/json");
+                headers.append("Accept", "application/json");
 
-            // create request object
-            if(!this.sourceUrl) {
-                var url = this.sourceUrl;
+                var init = {
+                    method: 'GET',
+                    headers: headers,
+                    mode: 'cors',
+                    cache: 'default'
+                };
+
+                // create request object
+                var request = new Request(this.sourceUrl, init);
+
+                // call the server
+                fetch(request)
+                    .then(response => {
+                        if (response.ok) {
+                            response.json().then(body => {
+                                console.log(body);
+                                // Bei Erfolg werden die Daten, die vom Server kommen 
+                                // im Array Property 'source' gespeichert.
+                                this.set("source", body);
+                            })
+                        } else {
+                            this._error(response.status);
+                        }
+                    });
+            } else {
                 console.warn('Property source-url is ${url}. Fix this, to preload your data.')
             }
-            var request = new Request(this.sourceUrl, init);
-
-            // call the server
-            fetch(request)
-                .then(response => {
-                    if (response.ok) {
-                        response.json().then(body => {
-                            console.log(body);
-                            // Bei Erfolg werden die Daten, die vom Server kommen 
-                            // im Array Property 'source' gespeichert.
-                            this.set("source", body);
-                        })
-                    } else {
-                        this._error(response.status);
-                    }
-                });
         }
     }
 </script>

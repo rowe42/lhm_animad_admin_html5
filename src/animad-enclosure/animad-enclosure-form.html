@@ -67,8 +67,7 @@
                         type: Object,
                         value() {
                             return {}
-                        },
-                        observer: '_changedData'
+                        }
                     },
                     /*
                      * Soll das Formular automatisch validiert werden?
@@ -103,10 +102,6 @@
                         value: 'enclosure'
                     }
                 }
-            }
-
-            _changedData(newV, oldV) {
-                console.log("data changed -> " + newV);
             }
         }
 
