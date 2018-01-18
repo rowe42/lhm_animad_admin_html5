@@ -32,7 +32,7 @@
     "vaadin-material-theme": "vaadin/vaadin-material-theme#^0.3.0",
     "paper-autocomplete": "ellipticaljs/paper-autocomplete#^3.4.0",
     "traverson-hal": "^6.0.0",
-    "traverson": "^6.0.3"
+    "traverson": "^6.0.3",
     "web-animations-js": "^2.3.1"
   },
   "devDependencies": {
