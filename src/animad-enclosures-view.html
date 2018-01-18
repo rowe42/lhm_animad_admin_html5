@@ -26,7 +26,6 @@
     </style>
     <div id="view" class="card">
       <div class="circle"><iron-icon icon="animad-icons:basecamp"></iron-icon></div>
-      <!--
       <h1>[[t('main_heading')]]</h1>
       <h2>[[t('create_sample_heading')]]</h2>
       <animad-enclosure-create-form post-url="https://httpbin.org/anything">
@@ -39,21 +38,19 @@
       <br />
       <br />
       <h2>[[t('update_sample_heading')]]</h2>
-      <animad-enclosure-update-form get-url="http://demo6512140.mockable.io/enclosures/3bca5b38-13be-4fd3-b656-fa79a639ddd5" post-url="https://httpbin.org/anything">
+      <animad-enclosure-update-form get-url="http://demo6512140.mockable.io/enclosures/3bca5b38-13be-4fd3-b656-fa79a639ddd5">
       </animad-enclosure-update-form>
       <br />
       <br />
       <h2>[[t('read_sample_heading')]]</h2>
-      <animad-enclosure-update-form get-url="http://demo6512140.mockable.io/enclosure/4711" post-url="https://httpbin.org/anything" readform>
+      <animad-enclosure-update-form get-url="http://demo6512140.mockable.io/enclosures/3bca5b38-13be-4fd3-b656-fa79a639ddd5" readform>
       </animad-enclosure-update-form>
       <br />
       <br />
-    -->
       <h2>[[t('update_sample_heading_with_relation')]]</h2>
       <animad-enclosure-update-form 
         get-url="http://demo6512140.mockable.io/enclosures/3bca5b38-13be-4fd3-b656-fa79a639ddd5" 
-        post-url="https://httpbin.org/anything" 
-        hateoas keepers animals>
+        keepers>
       </animad-enclosure-update-form>
       </div>
   </template>

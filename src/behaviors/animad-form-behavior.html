@@ -18,10 +18,16 @@
                  * Url um die Formulardaten zu laden.
                  */
                 getUrl: {
-                    type: String
+                    type: String,
+                    observer: '_loadFormData'
                 },
                 /**
-                 * Url an die die Formulardaten gesendet werden.
+                 * Url an die die Formulardaten gesendet werden. 
+                 * Wird bei Update und Read Formularen automatisch
+                 * durch die Werte in der HAL Payload befüllt. 
+                 *
+                 * Bei einem create Formular muss dieser Wert von 
+                 * Hand gesetzt werden.
                  */
                 postUrl: {
                     type: String
@@ -37,15 +43,6 @@
                     //value() {
                     //    return {}
                     //}
-                },
-                /*
-                 * Legt fest, ob die zu erwartende Payload HATEOS bzw.
-                 * HAL fähig ist. Wenn ja, dann werden die Links aus
-                 * der Payload verwendet.
-                 */
-                hateoas: {
-                    type: Boolean,
-                    value: false
                 },
                 /**
                  *
@@ -74,19 +71,11 @@
                 /**
                  *
                  */
-                 _warningToast: {
+                _warningToast: {
                     type: Object,
                     value() {
                         return document.querySelector('#global_warning_toast');
                     }
-                },
-                /*
-                 * Das Traversal Objekt, damit bei Read oder Update
-                 * Formularen die Relationen nachgeladen werden können.
-                 */
-                _traversal: {
-                    type: Object,
-                    notify: true
                 }
             }
         }
@@ -130,43 +119,44 @@
 
         }
 
-        
-        _loadFormData() {
-            if(this.hateoas) {
-                this._traversFormData();
-            } else {
-                this._fetchFormData();
-            }
-        }
-
         /*
          * Holt sich eine HAL Resource über die URL, die im Property 
          * 'getUrl' gespeichert ist. Die Nutzdaten werden im 'data' 
          * Property gespeichert. Danach werden alle benötigten Links 
          * aufgelöst.
          */
-        _traversFormData() {
-            // register HAL adapter in Traverson's media type registry
-            traverson.registerMediaType(TraversonJsonHalAdapter.mediaType,
-                TraversonJsonHalAdapter);
+        _loadFormData(url, oldV) {
 
-            traverson
-            .from(this.getUrl)
-            .jsonHal()
-            .get((error, document, traversal) => {
-                if(error) {
-                    console.error('_traversFormData(): No luck :)');
-                } else {
-                    this.set('data', JSON.parse(document.body));
+            if (url) {
 
-                    // 
-                    this.set('_traversal', traversal);
+                // register HAL adapter in Traverson's media type registry
+                traverson.registerMediaType(TraversonJsonHalAdapter.mediaType,
+                    TraversonJsonHalAdapter);
 
-                    // set link for sending
-                    this._setHateoasLink(traversal, 'self', 'postUrl');
-                }
-            });
-            
+                traverson
+                    .from(url)
+                    .jsonHal()
+                    .get((error, document, traversal) => {
+                        if (error) {
+                            console.error('_traversFormData(): No luck :)');
+                        } else {
+                            this.set('data', JSON.parse(document.body));
+
+                            // Das Traversal Objekt wird im Property
+                            // 'traversal' gespeichert. Dadurch wird 
+                            // es automatisch an untergeordnete Elemente
+                            // wie beispielsweise Relationen weiter gegegen. 
+                            this.set('_traversal', traversal);
+
+                            // set link for sending
+                            this._setHateoasLink(traversal, 'self', 'postUrl');
+                        }
+                    });
+            }
+        }
+
+        _reloadForm() {
+            this._loadFormData(this.getUrl, null);
         }
 
         /*
@@ -190,42 +180,20 @@
                 });
         }
 
-        /*
-         * Lädt die Daten über die definierte URL. Die Daten
-         * werden im Property 'data' gespeichert.
-         */
-        _fetchFormData() {
-            var init = {
-                method: 'GET',
-                // headers
-                mode: 'cors',
-                cache: 'default'
-            };
-
-            // create request object
-            var request = new Request(this.getUrl, init);
-
-            // call the server
-            fetch(request)
-            .then(response => {
-                if(response.ok) {
-                    //console.log(response);
-                    response.json().then(body => {
-                        // Bei Erfolg werden die Daten, die vom Server kommen 
-                        // im 'data' Property gespeichert.
-                        this.set('data', body);
-                    }) 
-                } else {
-                    this._error(response.status);
-                }
-            })
-        }
-
         /**
          * Setzt das Formular zurück.
          */
         _resetForm() {
             this.shadowRoot.querySelector('#iform').reset();
+        }
+
+        /**
+         * Macht ein 'readonly' Formular editierbar.
+         */
+        _editForm() {
+            if (this.readform) {
+                this.set('readform', false);
+            }
         }
 
         /**
@@ -240,7 +208,7 @@
          * Der 'Toast', der bei Fehlern angezeigt wird.
          */
         _error(status) {
-            this._errorToast.text = this.t('form_error', {code: status});
+            this._errorToast.text = this.t('form_error', { code: status });
             this._errorToast.open();
         }
     };

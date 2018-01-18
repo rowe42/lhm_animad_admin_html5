@@ -28,14 +28,6 @@
         static get properties() {
             return {
                 /*
-                 * Die Quelle der Daten. Diese URL wird nur benötigt, wenn
-                 * keine HAL / HATEOAS Quelle zur Verfügung steht. 
-                 */
-                sourceUrl: {
-                    type: String,
-                    observer: '_fetchReferenceData'
-                },
-                /*
                  * Der Daten-Cache.
                  */
                 source: {
@@ -222,50 +214,6 @@
             console.log("index -> " + index);
             this.splice(name, index, 1);
             console.log("data -> " + JSON.stringify(this.data));
-        }
-
-        /*
-         * Lädt die Daten zur Auswahl in den Speicher. Hierbei wird 
-         * angenommen, dass es sich um eine 'gewöhnliche' JSON Payload
-         * handelt. 
-         * 
-         * Die Methode wird aufgerufen, wenn das Property 'sourceUrl' 
-         * gesetzt wurde. 
-         */
-        _fetchReferenceData(url, oldV) {
-
-            if (this.sourceUrl) {
-                var headers = new Headers();
-                headers.append("Content-Type", "application/json");
-                headers.append("Accept", "application/json");
-
-                var init = {
-                    method: 'GET',
-                    headers: headers,
-                    mode: 'cors',
-                    cache: 'default'
-                };
-
-                // create request object
-                var request = new Request(this.sourceUrl, init);
-
-                // call the server
-                fetch(request)
-                    .then(response => {
-                        if (response.ok) {
-                            response.json().then(body => {
-                                console.log(body);
-                                // Bei Erfolg werden die Daten, die vom Server kommen 
-                                // im Array Property 'source' gespeichert.
-                                this.set("source", body);
-                            })
-                        } else {
-                            this._error(response.status);
-                        }
-                    });
-            } else {
-                console.warn('Property source-url is ${url}. Fix this, to preload your data.')
-            }
         }
     }
 </script>
