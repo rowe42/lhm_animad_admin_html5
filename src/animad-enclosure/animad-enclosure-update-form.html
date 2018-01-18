@@ -13,6 +13,8 @@
 
 <!-- animad elements -->
 <link rel="import" href="animad-enclosure-form.html">
+<link rel="import" href="../animad-keeper/animad-keeper-simple-relation.html">
+
 <link rel="import" href="../animad-icons.html">
 <link rel="import" href="../behaviors/animad-form-behavior.html">
 <link rel="import" href="../behaviors/animad-i18n-behavior.html">
@@ -36,8 +38,14 @@
             Das Formular.
         -->
         <iron-form id="iform">
-            <form class="animad-enclosure-update-form">
-                <animad-enclosure-form data="{{data}}" readonly="{{readform}}" auto-validate></animad-enclosure-form>
+            <form class="animad-enclosure-form">
+                <animad-enclosure-form data="{{data}}" readonly="[[readform]]" auto-validate></animad-enclosure-form>
+                <template is="dom-if" if="[[keepers]]">
+                    <animad-keeper-simple-relation
+                    data="{{data}}"
+                    traversal="{{_traversal}}"
+                    preload></animad-keeper-relation>
+                </template>
             </form>
         </iron-form>
         <!-- 
@@ -50,11 +58,11 @@
             </paper-button>
         </template>
         <template is="dom-if" if="{{!readform}}">
-            <paper-button class="send" on-tap="_sendForm" raised>
+            <paper-button class="send" on-tap="_updateEntity" raised>
                 <iron-icon icon="animad-icons:send"></iron-icon>
                 [[t('button_save')]]
             </paper-button>
-            <paper-button slot="buttons" class="reset" on-tap="_loadFormData" raised>
+            <paper-button slot="buttons" class="reset" on-tap="_reloadForm" raised>
                 <iron-icon icon="animad-icons:loop"></iron-icon>
                 [[t('button_reload')]]
             </paper-button>
@@ -113,28 +121,26 @@
                     _entity: {
                         type: String,
                         value: 'enclosure'
+                    },
+                    // GENERATOR: diese Werte müssen abhängig von den Relationen generiert werden
+                    /*
+                     * Über dieses Element Property kann gesteuert werden, ob die
+                     * Relation zu den 'keepers' angezeigt wird, oder nicht.
+                     */
+                    keepers: {
+                        type: Boolean,
+                        value: false
+                    },
+                    /*
+                     * Über dieses Element Property kann gesteuert werden, ob die
+                     * Relation zu den 'animals' angezeigt wird, oder nicht.
+                     */
+                    animals: {
+                        type: Boolean,
+                        value: false
                     }
                 }
             }
-
-            constructor() {
-                super();
-            }
-
-            connectedCallback() {
-                super.connectedCallback();
-                // Daten ins Formular laden 
-                // (Methode wird über *FormBehavior 
-                // zur Verfügung gestellt)
-                this._loadFormData();
-            }
-
-            _editForm() {
-                if(this.readform) {
-                    this.set('readform', false);
-                }
-            }
-
         }
 
         customElements.define(AnimadEnclosureUpdateForm.is, AnimadEnclosureUpdateForm);

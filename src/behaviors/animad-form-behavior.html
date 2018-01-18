@@ -1,3 +1,6 @@
+<link rel="import" href="../common-libs/traverson.html">
+<link rel="import" href="../common-libs/traverson-hal.html">
+
 <script>
     /**
      * Behavior, um einem beliebigen Formular (Update, Create, Read) alle Eigenschaften
@@ -14,14 +17,9 @@
                 /**
                  * Url um die Formulardaten zu laden.
                  */
-                getUrl: {
-                    type: String
-                },
-                /**
-                 * Url an die die Formulardaten gesendet werden.
-                 */
-                postUrl: {
-                    type: String
+                url: {
+                    type: String,
+                    observer: '_loadFormData'
                 },
                 /**
                  * Das leere Objekt.
@@ -31,9 +29,9 @@
                 data: {
                     type: Object,
                     notify: true,
-                    value() {
-                        return {}
-                    }
+                    //value() {
+                    //    return {}
+                    //}
                 },
                 /**
                  *
@@ -62,7 +60,7 @@
                 /**
                  *
                  */
-                 _warningToast: {
+                _warningToast: {
                     type: Object,
                     value() {
                         return document.querySelector('#global_warning_toast');
@@ -78,22 +76,35 @@
             }
         }
 
+        /*
+         * Wird von 'create' Formularen aufgerufen, um eine neue Entität
+         * zu speichern.
+         */
+        _saveEntity() {
+            this._send('POST');
+        }
+
+        /*
+         * Wird von 'update' Formularen aufgerufen, um eine bereits
+         * bestehende Entität zu aktualisieren.
+         */
+        _updateEntity() {
+            this._send('PUT');
+        }
+
         /**
          * Validiert die Formulardaten. Danach werden sie an die angegebene
          * URL als JSON Objekt gesendet.
          */
-        _sendForm() {
+        _send(verb) {
             // check if the formcontent is valid against the defined rules
             var valid = this.shadowRoot.querySelector('#iform').validate();
 
             if (valid) {
-                // console print TODO delete this
-                this.foo = JSON.stringify(this.data);
-                console.log("form is valid: " + this.foo);
-
+                
                 // prepare request
                 var init = {
-                    method: 'POST',
+                    method: verb,
                     mode: 'cors',
                     body: JSON.stringify(this.data)
                 }
@@ -118,34 +129,40 @@
         }
 
         /*
-         * Lädt die Daten über die definierte URL. Die Daten
-         * werden im Property 'data' gespeichert.
+         * Holt sich eine HAL Resource über die URL, die im Property 
+         * 'url' gespeichert ist. Die Nutzdaten werden im 'data' 
+         * Property gespeichert. Danach werden alle benötigten Links 
+         * aufgelöst.
          */
-        _loadFormData() {
-            var init = {
-                method: 'GET',
-                // headers
-                mode: 'cors',
-                cache: 'default'
-            };
+        _loadFormData(url, oldV) {
 
-            // create request object
-            var request = new Request(this.getUrl, init);
+            if (url) {
 
-            // call the server
-            fetch(request)
-            .then(response => {
-                if(response.ok) {
-                    //console.log(response);
-                    response.json().then(body => {
-                        // Bei Erfolg werden die Daten, die vom Server kommen 
-                        // im 'data' Property gespeichert.
-                        this.set('data', body);
-                    }) 
-                } else {
-                    this._error(response.status);
-                }
-            })
+                // register HAL adapter in Traverson's media type registry
+                traverson.registerMediaType(TraversonJsonHalAdapter.mediaType,
+                    TraversonJsonHalAdapter);
+
+                traverson
+                    .from(url)
+                    .jsonHal()
+                    .get((error, document, traversal) => {
+                        if (error) {
+                            console.error('_traversFormData(): No luck :)');
+                        } else {
+                            this.set('data', JSON.parse(document.body));
+
+                            // Das Traversal Objekt wird im Property
+                            // 'traversal' gespeichert. Dadurch wird 
+                            // es automatisch an untergeordnete Elemente
+                            // wie beispielsweise Relationen weiter gegegen. 
+                            this.set('_traversal', traversal);
+                        }
+                    });
+            }
+        }
+
+        _reloadForm() {
+            this._loadFormData(this.url, null);
         }
 
         /**
@@ -153,13 +170,16 @@
          */
         _resetForm() {
             this.shadowRoot.querySelector('#iform').reset();
-            // um das reset event in die eigebetteten Komponenten
-            // zu bekommen, wird das 'resetForm' Property in 
-            // Verbindung mit einem Observer verwendet. Ändert sich
-            // der Wert des Propertys, so wird in den 'relation'
-            // Komponenten ein Event ausgelöst, dass die Relation
-            // Liste leert. 
-            this.set('formReset', Math.random());
+            this._reloadForm();
+        }
+
+        /**
+         * Macht ein 'readonly' Formular editierbar.
+         */
+        _editForm() {
+            if (this.readform) {
+                this.set('readform', false);
+            }
         }
 
         /**
@@ -174,7 +194,7 @@
          * Der 'Toast', der bei Fehlern angezeigt wird.
          */
         _error(status) {
-            this._errorToast.text = this.t('form_error', {code: status});
+            this._errorToast.text = this.t('form_error', { code: status });
             this._errorToast.open();
         }
     };

@@ -41,7 +41,8 @@
             <paper-input
                 class="animad-enclosure-cleaningTime-field"
                 id="enclosure-cleaningTime" 
-                type="time" 
+                type="time"
+                step="1"
                 name=cleaningTime 
                 label="[[t('cleaningTime')]]" 
                 value="{{data.cleaningTime}}"
@@ -73,13 +74,25 @@
 
             static get properties() {
                 return {
+                    /*
+                     * Das Nutzdatenobjekt.
+                     */
                     data: {
                         type: Object,
                         value() {
                             return {}
                         }
                     },
-                    autoValidate: Boolean,
+                    /*
+                     * Soll das Formular automatisch validiert werden?
+                     */
+                    autoValidate: {
+                       type:  Boolean,
+                       value: false
+                    },
+                    /*
+                     * Soll das Formular nur lesend dargestellt werden?
+                     */
                     readonly: {
                         type: Boolean,
                         value: false
