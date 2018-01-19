@@ -7,4 +7,5 @@ if [ $? -eq 0 ]; then
 	echo "bower installed"
 fi
 bower install bower.json
+polymer build
 /usr/libexec/s2i/assemble
