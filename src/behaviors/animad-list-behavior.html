@@ -392,6 +392,27 @@
         }
 
         _fetchFuzzyData(search){
+          // TBD: transfer table's cellname to backend's fieldname
+          var phrasesString = JSON.stringify(this._polyglot.phrases);
+          var phrases = phrasesString.split(',');
+          var start = search.length;
+          var end = search.length;
+          while (start >= 0 && end > -1) {
+            var end = search.lastIndexOf(":", start);
+            if (end > -1) {
+              var start = search.lastIndexOf(" ", end);
+              var oldsearch = search.substring(start, end).trim();
+              var newsearch = oldsearch;
+              for (var phrase of phrases) {
+                phrase = phrase.replace(/"/g, '');
+                var s = phrase.split(":");
+                if(s.length > 1 && s[1].toLowerCase() == newsearch) {
+                  newsearch = s[0];
+                }
+              }
+              search = search.replace(oldsearch, newsearch);
+            }
+          }
           var fuzzyUrl=this.url+"/search/findFullTextFuzzy?q='"+search+"'";
           console.log(fuzzyUrl);
           // TBD: error handling

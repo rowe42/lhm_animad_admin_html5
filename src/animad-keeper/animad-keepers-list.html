@@ -29,15 +29,17 @@
           placeholder-delete="Löschen"
           placeholder-new="Neu"
           all-filters="[[_localizedFilters]]"
+          selected-filters = "{{_selectedFilters}}"
           search="{{_search}}"
           on-search="_searchData"
+          on-filter-selection="_filterSelectionData"
           on-delete="_confirmDeleteSelected"
           on-new="_handleNew"
           disable-delete-button="[[_disableDeleteButton]]"
           hide-header="[[_hideSearchHeader(hideHeader)]]"
           hide-new-button="[[hideNew]]"
           hide-delete-button="[[hideDelete]]"
-          hide-filter-button="true"
+          hide-filter-button="[[hideFilter]]"
           disable-new-button="[[disableNew]]"
           icon="[[icon]]">
       </animad-list-header>
