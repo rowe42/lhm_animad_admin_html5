@@ -62,6 +62,24 @@
                 traversal: {
                     type: Object,
                     observer: '_loadRelationData'
+                },
+                /*
+                 * Wenn in der HAL Nachricht ein Link vorhanden ist, der 
+                 * es ermöglicht ein neues Objekt für die Relation zu 
+                 * erstellen, dann wird dieses Property auf 'true' gesetzt.
+                 * Dadurch wird ein 'new' Button neben dem Suchfeld 
+                 * dargestellt.
+                 */
+                _new: {
+                    type: Boolean,
+                    value: false,
+                    notify: true
+                },
+                /*
+                 * Der Link um ein neues Objekt für die Relation zu erstellen.
+                 */
+                _newUrl: {
+                    type: String
                 }
             }
         }
@@ -77,7 +95,7 @@
 
 
             // Die generische Query Methode muss
-            // durch eine eigen Methode überschrieben 
+            // durch eine eigene Methode überschrieben 
             // werden.
             e.queryFn = this._querySimple;
         }
@@ -123,6 +141,21 @@
                         }
                     });
 
+                // Es wird initial geprüft, ob in der Payload ein Link
+                // vorhanden ist, der es ermöglicht Relationsobjekte
+                // 'on the fly' zu erstellen.
+                traversal
+                    .continue()
+                    .follow(this._entity + 'New')
+                    .getUrl((error, url) => {
+                        if(error) {
+                            console.warn('cannot find alias: ' + this._entity + 'New');
+                        } else {
+                            this._new = true;
+                            this._newUrl = url;
+                        }
+                    });
+
                 // Wenn die Auswahlliste vorgeladen werden soll, dann
                 // kann dies über den '[Name der Entity]s' Link gemacht 
                 // werden. 
@@ -150,6 +183,14 @@
                         });
                 }
             }
+        }
+
+        /*
+         * Öffnet den Dialog um ein neues Relationsobjekt 
+         * 'on the fly' anlegen zu können.
+         */
+        _showDialog() {
+            this.shadowRoot.querySelector('paper-dialog').open();
         }
 
         /*

@@ -6,21 +6,36 @@
 <link rel="import" href="../../bower_components/paper-item/paper-item-body.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
-
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+ 
 <link rel="import" href="../animad-icons.html">
 <link rel="import" href="../behaviors/animad-form-behavior.html">
 <link rel="import" href="../behaviors/animad-i18n-behavior.html">
 <link rel="import" href="../behaviors/animad-relation-behavior.html">
 <link rel="import" href="../behaviors/mixin.html">
 
+<link rel="import" href="animad-keeper-create-form.html">
+
 <dom-module id="animad-keeper-simple-relation">
     <template>
         <style>
         </style>
+        <paper-dialog>
+            <h2>Dialog Title</h2>
+            <paper-dialog-scrollable>
+                <animad-keeper-create-form url="[[_newUrl]]">
+                </animad-keeper-create-form>
+            </paper-dialog-scrollable>
+        </paper-dialog>
         <paper-autocomplete 
             label="[[t('relation_name')]]"
             source="[[source]]">
-            <paper-icon-button slot="suffix" suffix icon="animad-icons:magnify"></paper-icon-button>
+            <paper-icon-button slot="prefix" prefix icon="animad-icons:magnify"></paper-icon-button>
+            <template is="dom-if" if="[[_new]]">
+                <paper-icon-button slot="suffix" icon="animad-icons:plus-box" on-tap="_showDialog"></paper-icon-button>
+            </template>            
         </paper-autocomplete>
         <paper-listbox>
             <template is="dom-repeat" items="{{data.keepers}}">
