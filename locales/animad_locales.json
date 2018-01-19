@@ -18,6 +18,26 @@
       }
     },
     "animad": {
+      "animal": {
+        "relation_name": "Animal",
+        "id": "Animal Id",
+        "relation_search_id": "",
+        "name": "Name",
+        "name_error": "Name with 3 letters required!",
+        "species": "Species",
+        "gender": "Gender",
+        "birthdate": "Date of Birth",
+        "weight": "Weight",
+        "alive": "Alive",
+        "form_error": "An error occured with code '%{code}'.",
+        "form_validation": "Please fix the form errors.",
+        "form_success": "The form has been saved.",
+        "button_save": "save",
+        "button_reset": "reset",
+        "button_reload": "reload",
+        "button_edit": "edit",
+        "relation_list": "%{name} (ID: %{id})"
+      },
       "enclosure": {
         "relation_name": "Enclosure",
         "id": "Enclosure Id",
@@ -121,6 +141,26 @@
       }
     },
     "animad": {
+      "animal": {
+        "relation_name": "Animal",
+        "id": "Animal Id",
+        "relation_search_id": "",
+        "name": "Name",
+        "name_error": "Name with 3 letters required!",
+        "species": "Species",
+        "gender": "Gender",
+        "birthdate": "Date of Birth",
+        "weight": "Weight",
+        "alive": "Alive",
+        "form_error": "An error occured with code '%{code}'.",
+        "form_validation": "Please fix the form errors.",
+        "form_success": "The form has been saved.",
+        "button_save": "save",
+        "button_reset": "reset",
+        "button_reload": "reload",
+        "button_edit": "edit",
+        "relation_list": "%{name} (ID: %{id})"
+      },
       "enclosure": {
         "relation_name": "Gehege",
         "id": "Id des Geheges",
@@ -130,7 +170,7 @@
         "name_error": "Geben Sie bitte einen Namen für das Gehege an, der mindestens 3 Buchstaben hat!",
         "cleaningTime": "Tägliche Putzzeit",
         "relation_search_cleaningTime": "Reinigungszeit: ",
-        "cleaningTime_error": "Tägliche Putzzeit muss im Format <HH:mm> eingegeben werden!",
+        "cleaningTime_error": "Tägliche Putzzeit muss im Format <HH:mm:ss> eingegeben werden!",
         "form_error": "Es ist ein Fehler beim Speichern des Geheges aufgetreten. Fehlercode ist '%{code}'.",
         "form_validation": "Bitte die angezeigten Fehler im Formular beheben!",
         "form_success": "Das Gehege wurde gespeichert!",
