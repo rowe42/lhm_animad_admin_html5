@@ -109,7 +109,7 @@
                     body: JSON.stringify(this.data)
                 }
 
-                var request = new Request(this.postUrl, init);
+                var request = new Request(this.url, init);
 
                 fetch(request)
                     .then(response => {
