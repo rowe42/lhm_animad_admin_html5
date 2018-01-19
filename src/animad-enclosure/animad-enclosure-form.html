@@ -32,11 +32,11 @@
                 label="[[t('name')]]" 
                 value="{{data.name}}" 
                 readonly="[[readonly]]"
-                required 
                 auto-validate="[[autoValidate]]" 
+                error-message="[[t('name_error')]]"
                 minlength="3" 
                 maxlength="30" 
-                error-message="[[t('name_error')]]">
+                required>
             </paper-input>
             <paper-input
                 class="animad-enclosure-cleaningTime-field"
@@ -101,6 +101,8 @@
                      * Das '_domain' property wird benötigt, um den richtigen Pfad 
                      * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
                      * benötigt, in dem die I18nBehavior verwendet wird.
+                     *
+                     * GENERATOR das Attribute value generieren
                      */
                     _domain: {
                         type: String,
@@ -110,6 +112,8 @@
                      * Das '_entity' property wird benötigt, um den richtigen Pfad 
                      * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
                      * benötigt, in dem die I18nBehavior verwendet wird.
+                     *
+                     * GENERATOR das Attribute value generieren
                      */
                     _entity: {
                         type: String,

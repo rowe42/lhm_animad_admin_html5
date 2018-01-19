@@ -12,6 +12,8 @@
 
 <!-- animad elements -->
 <link rel="import" href="animad-enclosure-form.html">
+
+<!-- GENERATOR hier die links für die Relationen -->
 <link rel="import" href="../animad-keeper/animad-keeper-simple-relation.html">
 
 <link rel="import" href="../animad-icons.html">
@@ -39,7 +41,8 @@
         <iron-form id="iform">
             <form class="animad-enclosure-create-form">
                 <animad-enclosure-form data="{{data}}" auto-validate></animad-enclosure-form>
-                <template is="dom-if" if="{{keepersRelation}}">
+                <!-- GENERATOR hier kommen die Templates für die Relationen hin -->
+                <template is="dom-if" if="{{keepers}}">
                     <animad-keeper-simple-relation
                     data="{{data}}"
                     traversal="{{_traversal}}"
@@ -99,11 +102,12 @@
                         type: String,
                         value: 'enclosure'
                     },
+                    // GENERATOR hier die Relationen generieren
                     /*
                      * Wenn dieser Wert auf 'true' gesetzt wird, dann können
                      * im Formular Relationen zur Entität 'Keeper' gesetzt werden.
                      */
-                    keepersRelation: {
+                    keepers: {
                         type: Boolean,
                         value: false
                     },

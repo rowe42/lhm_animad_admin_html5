@@ -12,42 +12,36 @@
 <link rel="import" href="../../bower_components/polymer/lib/elements/dom-if.html">
 
 <!-- animad elements -->
-<link rel="import" href="animad-enclosure-form.html">
+<link rel="import" href="animad-keeper-form.html">
 
 <!-- GENERATOR hier die links für die Relationen -->
-<link rel="import" href="../animad-keeper/animad-keeper-simple-relation.html">
 
 <link rel="import" href="../animad-icons.html">
 <link rel="import" href="../behaviors/animad-form-behavior.html">
 <link rel="import" href="../behaviors/animad-i18n-behavior.html">
 <link rel="import" href="../behaviors/mixin.html">
 
-<dom-module id="animad-enclosure-update-form">
+<dom-module id="animad-keeper-update-form">
     <template>
         <style is="custom-style">
             paper-button.send {
                 background-color: var(--paper-green-500);
                 color: white;
                 margin-top: 50px;
-                @apply --animad-enclosure-create-form-button-send;
+                @apply --animad-keeper-create-form-button-send;
             }
 
-            .animad-enclosure-update-form {
-                @apply --animad-enclosure-update-form;
+            .animad-keeper-update-form {
+                @apply --animad-keeper-update-form;
             }
         </style>
         <!--
             Das Formular.
         -->
         <iron-form id="iform">
-            <form class="animad-enclosure-form">
-                <animad-enclosure-form data="{{data}}" readonly="[[readform]]" auto-validate></animad-enclosure-form>
-                <template is="dom-if" if="[[keepers]]">
-                    <animad-keeper-simple-relation
-                    data="{{data}}"
-                    traversal="{{_traversal}}"
-                    preload></animad-keeper-relation>
-                </template>
+            <form class="animad-keeper-form">
+                <animad-keeper-form data="{{data}}" readonly="[[readform]]" auto-validate></animad-keeper-form>
+                <!-- GENERATOR hier kommen die Templates für die Relationen hin -->
             </form>
         </iron-form>
         <!-- 
@@ -72,14 +66,14 @@
     </template>
     <script>
         /**
-         * # Formular zum Bearbeiten von einem 'Enclosure'
+         * # Formular zum Bearbeiten von einem 'Keeper'
          * `<animad-anclosure-update-form>` stellt ein Formular zur Verfügung, über das man ein
-         * vorhandenes 'Enclosure' mit all seinen Attributen bearbeitet werden kann.
+         * vorhandenes 'Keeper' mit all seinen Attributen bearbeitet werden kann.
          * ## Anwendung in der Applikation
          * ```html
-         * <link rel="import" href="[Pfad zu meinen Abhängigkeiten]/animad-enclosure/animad-enclosure-update-form.html">
+         * <link rel="import" href="[Pfad zu meinen Abhängigkeiten]/animad-keeper/animad-keeper-update-form.html">
          * ...
-         * <animad-enclosure-update-form get-url="[zu ladende Ressource]" post-url="[URL an die die Daten geschickt werden]"></animad-enclosure-update-form>
+         * <animad-keeper-update-form get-url="[zu ladende Ressource]" post-url="[URL an die die Daten geschickt werden]"></animad-keeper-update-form>
          * ...
          * ```
          * 
@@ -87,8 +81,8 @@
          * @polymer
          *
          */
-        class AnimadEnclosureUpdateForm extends mix(Polymer.Element).with(AnimadFormBehavior, AnimadI18nBehavior) {
-            static get is() { return 'animad-enclosure-update-form'; }
+        class AnimadKeeperUpdateForm extends mix(Polymer.Element).with(AnimadFormBehavior, AnimadI18nBehavior) {
+            static get is() { return 'animad-keeper-update-form'; }
 
             static get properties() {
                 return {
@@ -110,6 +104,8 @@
                      * Das '_domain' property wird benötigt, um den richtigen Pfad 
                      * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
                      * benötigt, in dem die I18nBehavior verwendet wird.
+                     *
+                     * GENERATOR das Attribut value generieren
                      */
                      _domain: {
                         type: String,
@@ -119,32 +115,27 @@
                      * Das '_entity' property wird benötigt, um den richtigen Pfad 
                      * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
                      * benötigt, in dem die I18nBehavior verwendet wird.
+                     *
+                     * GENERATOR das Attribut value generieren
                      */
                     _entity: {
                         type: String,
-                        value: 'enclosure'
+                        value: 'keeper'
                     },
-                    // GENERATOR: diese Werte müssen abhängig von den Relationen generiert werden
+                    // GENERATOR: Boolean Werte müssen abhängig von den Relationen generiert werden
                     /*
                      * Über dieses Element Property kann gesteuert werden, ob die
                      * Relation zu den 'keepers' angezeigt wird, oder nicht.
                      */
-                    keepers: {
-                        type: Boolean,
-                        value: false
-                    },
-                    /*
-                     * Über dieses Element Property kann gesteuert werden, ob die
-                     * Relation zu den 'animals' angezeigt wird, oder nicht.
-                     */
-                    animals: {
-                        type: Boolean,
-                        value: false
-                    }
+                    // GENERATOR Beispiel:
+                    //keepers: {
+                    //    type: Boolean,
+                    //    value: false
+                    // },
                 }
             }
         }
 
-        customElements.define(AnimadEnclosureUpdateForm.is, AnimadEnclosureUpdateForm);
+        customElements.define(AnimadKeeperUpdateForm.is, AnimadKeeperUpdateForm);
     </script>
 </dom-module>
