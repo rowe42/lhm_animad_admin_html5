@@ -183,6 +183,20 @@
                 ];
             }
 
+            connectedCallback() {
+                super.connectedCallback();
+                
+                //functionality to toggle the menu on and off
+                var drawerLayout = this.$.drawerLayout;
+                this.$.toggle.addEventListener('click', function () {
+                    if (drawerLayout.forceNarrow || !drawerLayout.narrow) {
+                        drawerLayout.forceNarrow = !drawerLayout.forceNarrow;
+                    } else {
+                        drawerLayout.drawer.toggle();
+                    }
+                });
+            }
+
             _routePageChanged(page) {
                 // If no page was found in the route data, page will be an empty string.
                 // Default to 'view1' in that case.
