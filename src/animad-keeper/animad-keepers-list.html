@@ -25,7 +25,7 @@
       </style>
 
       <animad-list-header
-          placeholder-search="[[t('search_placeholder')]]"
+          placeholder-search="[[_setSearchText('search_placeholder')]]"
           placeholder-delete="Löschen"
           placeholder-new="Neu"
           all-filters="[[_localizedFilters]]"
@@ -41,6 +41,8 @@
           hide-delete-button="[[hideDelete]]"
           hide-filter-button="[[hideFilter]]"
           disable-new-button="[[disableNew]]"
+          show-results="[[showResults]]"
+          results-text="[[_resultsText]]"
           icon="[[icon]]">
       </animad-list-header>
 
@@ -62,6 +64,8 @@
           hide-filter-button="[[hideFilter]]"
           disable-filter-button="[[disableFilter]]"
           disable-new-button="[[disableNew]]"
+          show-results="[[showResults]]"
+          results-text="[[_resultsText]]"
           icon="[[icon]]">
       </animad-list-header>
 
@@ -234,30 +238,8 @@
          }
         }
 
-        static get observers() {
-          return [
-            '_dataChanged(data.length)'
-          ]
-        }
 
         // Observers
-        // refresh view and reset any delete information
-        _dataChanged(dataLength) {
-          // refresh list data
-          this._filteredData = this.data;
-          if (this.loadCompleteData) {
-            this._filter();
-          }
-
-          // unselect all deleted items
-          for (var item of this._deleteItems) {
-            this.shadowRoot.querySelector('#animad-list').deselectItem(item);
-          }
-
-          this._deleteItems = [];
-          this._deleteInfos = "";
-        }
-
         // Override super._backendDataChanged for correct assignment of backendData to data
         _backendDataChanged(backendData, backendDataOld){
           var items = [];

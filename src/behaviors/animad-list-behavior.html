@@ -60,6 +60,12 @@
                 type: String,
                 value: ""
               },
+              /**
+              * Predefined search string. Will be shown in search field after page loading.
+              */
+              defaultSearch: {
+                type: String
+              },
               /*
                 _search enthält den String, der im Eingabe-Feld zum Filtern eingegeben wurde.
               */
@@ -208,10 +214,34 @@
          				type: String,
          				value: 'search'
          			},
+              /**
+               * Whether to search data without filtering while loading or if user has to enter
+               * search string before searching for data.
+              */
               loadCompleteData: {
                 type: Boolean,
                 value: false
               },
+              /**
+               * Whether to show results text (e.g. 30 results found.) or not.
+               */
+              showResults: {
+                type: Boolean,
+                value: true
+              },
+              /**
+               * String to show if 'showResults' is set to true.
+               */
+              _resultsText:{
+                type: String
+              },
+              /**
+               * Set to true as soon as data was searched.
+               */
+              _hasSearched: {
+                type: Boolean,
+                value: false
+              }
             }
         }
 
@@ -220,8 +250,37 @@
           return [
             '_selectionChanged(_selectedItems.length)',
             '_itemsChanged(_filteredData, _page)',
+            '_dataChanged(data.length)',
             '_initLocalizedFilter(allFilters)'
           ]
+        }
+
+        // refresh view and reset any delete information
+        _dataChanged(dataLength) {
+          // refresh list data
+          this._filteredData = this.data;
+          this._filter();
+
+          // unselect all deleted items
+          for (var item of this._deleteItems) {
+            this.shadowRoot.querySelector('#animad-list').deselectItem(item);
+          }
+
+          this._deleteItems = [];
+          this._deleteInfos = "";
+
+          if (this._hasSearched){
+            // set results text
+            if (dataLength > 1) {
+              this._resultsText = dataLength+this.t('results_found_text');
+            }
+            else if (dataLength == 1) {
+              this._resultsText = dataLength+this.t('results_one_found_text');
+            }
+            else {
+              this._resultsText = this.t('no_results_found_text');
+            }
+          }
         }
 
         _hideSearchHeader(hideHeader){
@@ -266,6 +325,7 @@
         // Callback methods
         ready() {
           super.ready();
+          this._search = this.defaultSearch;
           if (this.loadCompleteData){
             this._loadData();
           }
@@ -281,6 +341,14 @@
             xhr.send();
           }
           */
+        }
+
+        // Set text to show in search field
+        _setSearchText(placeholder) {
+          if (this._search && this._search.length > 0) {
+            return this.defaultSearch;
+          }
+          return this.t(placeholder);
         }
 
         // Protected methods
@@ -380,6 +448,7 @@
         // Search
         _loadData(){
           // TBD: error handling
+          this._hasSearched = true;
           fetch(this.url, {
               method: 'GET',
               headers: {
@@ -391,9 +460,7 @@
             });
         }
 
-        _fetchFuzzyData(search){
-          // TBD: transfer table's cellname to backend's fieldname
-          var phrasesString = JSON.stringify(this._polyglot.phrases);
+        _transferCellnameToFieldname(phrasesString, search) {
           var phrases = phrasesString.split(',');
           var start = search.length;
           var end = search.length;
@@ -413,8 +480,16 @@
               search = search.replace(oldsearch, newsearch);
             }
           }
-          var fuzzyUrl=this.url+"/search/findFullTextFuzzy?q='"+search+"'";
-          console.log(fuzzyUrl);
+
+          return search;
+        }
+
+        _fetchFuzzyData(search){
+          this._hasSearched = true;
+
+          var phrasesString = JSON.stringify(this._polyglot.phrases);
+          var searchStr = this._transferCellnameToFieldname(phrasesString, search);
+          var fuzzyUrl=this.url+"/search/findFullTextFuzzy?q='"+searchStr+"'";
           // TBD: error handling
           fetch(fuzzyUrl, {
               method: 'GET',
