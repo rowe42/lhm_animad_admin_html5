@@ -12,6 +12,8 @@
 
 <!-- animad elements -->
 <link rel="import" href="animad-enclosure-form.html">
+
+<!-- GENERATOR hier die links für die Relationen -->
 <link rel="import" href="../animad-keeper/animad-keeper-simple-relation.html">
 
 <link rel="import" href="../animad-icons.html">
@@ -39,13 +41,11 @@
         <iron-form id="iform">
             <form class="animad-enclosure-create-form">
                 <animad-enclosure-form data="{{data}}" auto-validate></animad-enclosure-form>
-                <template is="dom-if" if="{{keepersRelation}}">
+                <!-- GENERATOR hier kommen die Templates für die Relationen hin -->
+                <template is="dom-if" if="{{keepers}}">
                     <animad-keeper-simple-relation
                     data="{{data}}"
-                    form-reset="{{formReset}}"
-                    source-url="http://demo6512140.mockable.io/keepers"
-                    text-property="lastname"
-                    value-property="id"
+                    traversal="{{_traversal}}"
                     preload></animad-keeper-relation>
                 </template>
             </form>
@@ -53,7 +53,7 @@
         <!-- 
             buttons
         -->
-        <paper-button class="send" on-tap="_sendForm" raised>
+        <paper-button class="send" on-tap="_saveEntity" raised>
             <iron-icon icon="animad-icons:send"></iron-icon>
              [[t('button_save')]]
         </paper-button>
@@ -102,24 +102,25 @@
                         type: String,
                         value: 'enclosure'
                     },
+                    // GENERATOR hier die Relationen generieren
                     /*
                      * Wenn dieser Wert auf 'true' gesetzt wird, dann können
                      * im Formular Relationen zur Entität 'Keeper' gesetzt werden.
                      */
-                    keepersRelation: {
+                    keepers: {
                         type: Boolean,
                         value: false
-                    } 
+                    },
+                    /*
+                     * Über dieses Element Property kann gesteuert werden, ob die
+                     * Relation zu den 'animals' angezeigt wird, oder nicht.
+                     */
+                    animals: {
+                        type: Boolean,
+                        value: false
+                    }
                 }
             }
-
-            constructor() {
-                super();
-            }
-
-            connectedCallback() {
-            }
-
         }
 
         customElements.define(AnimadEnclosureCreateForm.is, AnimadEnclosureCreateForm);

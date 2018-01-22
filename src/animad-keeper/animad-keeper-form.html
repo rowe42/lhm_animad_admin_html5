@@ -4,37 +4,185 @@
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 
+<!-- custom behaviors -->
+<link rel="import" href="../behaviors/animad-i18n-behavior.html">
+<link rel="import" href="../behaviors/mixin.html">
+
 <dom-module id="animad-keeper-form">
     <template>
-        <style></style>
-        <paper-input type="text" name="firstname" required label="Vorname" value="{{data.firstname}}" minlength="3" maxlength="30"></paper-input>
-        <paper-input type="text" name="lastname" required label="Nachname" value="{{data.lastname}}" minlength="3" maxlength="30"></paper-input>
-        <paper-input type="date" name="birthdate" required label="Geburtsdatum (yyyy-mm-dd)" value="{{data.birthdate}}" auto-validate required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"></paper-input>
-        <paper-input type="date" name="employmentdate" required label="Einstellungsdatum (yyyy-mm-dd)" value="{{data.employmentdate}}" auto-validate required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"></paper-input>
-        <br>
-        <paper-dropdown-menu id="keeper-skills" label="Skills*" value="{{data.skill}}" required>
-                    <paper-listbox slot="dropdown-content">
-                        <!--
-                            TODO hier die Werte über die URL (siehe properties) holen und dann
-                            per dom repeat hier anzeigen.
-                        -->
-                        <paper-item>Putzen</paper-item>
-                        <paper-item>Füttern</paper-item>
-                        <paper-item>Verwaltung</paper-item>
-                    </paper-listbox>
-        </paper-dropdown-menu>
+        <style is="custom-style">
+            .animad-keeper-form {
+                @apply --animad-keeper-form;
+            }
+    
+            .animad-keeper-firstName-field {
+                @apply --animad-keeper-firstName-field;
+            }
+    
+            .animad-keeper-lastName-field {
+                @apply --animad-keeper-lastName-field;
+            }
+    
+            .animad-keeper-employmentDate-field {
+                @apply --animad-keeper-employmentDate-field;
+            }
+    
+            .animad-keeper-skill-field {
+                @apply --animad-keeper-skill-field;
+            }
+    
+            .animad-keeper-birthday-field {
+                @apply --animad-keeper-birthday-field;
+            }
+    
+            .animad-keeper-salary-field {
+                @apply --animad-keeper-salary-field;
+            }
+        </style>
+        <div class="animad-keeper-form">
+            <paper-input 
+                class="animad-keeper-firstName-field"
+                id="keeper-firstName"
+                type="text" 
+                name="firstName" 
+                label="[[t('firstName')]]" 
+                value="{{data.firstName}}"
+                auto-validate="[[autoValidate]]"
+                error-message="[[t('firstName_error')]]"
+                minlength="3" 
+                maxlength="30" 
+                required>
+            </paper-input>
+            <paper-input 
+                class="animad-keeper-lastName-field"
+                id="keeper-lastName"
+                type="text" 
+                name="lastName" 
+                label="[[t('lastName')]]" 
+                value="{{data.lastName}}" 
+                auto-validate="[[autoValidate]]"
+                error-message="[[t('lastName_error')]]"
+                minlength="3" 
+                maxlength="30" 
+                required>
+            </paper-input>
+            <paper-input
+                class="animad-keeper-employmentDate-field"
+                id="keeper-employmentDate"
+                type="date" 
+                name="employmentDate"  
+                label="[[t('employmentDate')]]" 
+                value="{{data.employmentDate}}" 
+                auto-validate="[[autoValidate]]"
+                error-message="[[t('employmentDate_error')]]"
+                pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" 
+                required>
+            </paper-input>
+            <paper-dropdown-menu 
+                class="animad-keeper-skill-field"
+                id="keeper-skill" 
+                label="[[t('skill')]]" 
+                value="{{data.skill}}" 
+                required>
+                <paper-listbox slot="dropdown-content">
+                    <paper-item>Putzen</paper-item>
+                    <paper-item>Füttern</paper-item>
+                    <paper-item>Verwaltung</paper-item>
+                </paper-listbox>
+            </paper-dropdown-menu>
+            <paper-input
+                class="animad-keeper-birthday-field" 
+                id="keeper-birthday"
+                type="date" 
+                name="birthday" 
+                label="[[t('birthday')]]" 
+                value="{{data.birthday}}" 
+                auto-validate="[[autoValidate]]"
+                error-message="[[t('birthday_error')]]"
+                pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" 
+                required>
+            </paper-input>
+            <paper-input
+                class="animad-keeper-salary-field" 
+                id="keeper-salary"
+                type="number" 
+                name="salary" 
+                label="[[t('salary')]]" 
+                value="{{data.salary}}" 
+                auto-validate="[[autoValidate]]"
+                error-message="[[t('salary_error')]]"
+                step="0.01" 
+                min="0"
+                required>
+            </paper-input>
+        </div>
     </template>
     <script>
-        class AnimadKeeperForm extends Polymer.Element {
+        /**
+         * # Formular für die Entinität 'Keeper'
+         * `<animad-keeper-form>` stellt alle einfachen Attribute zur Verfügung, die man für das Bearbeiten  eines
+         * 'Keeper' benötigt.
+         * ## Anwendung in der Applikation
+         * ```html
+         * <link rel="import" href="[Pfad zu meinen Abhängigkeiten]/animad-keeper/animad-keeper-form.html">
+         * ...
+         * <animad-keeper-form id="updateform" data="{{data}}" auto-validate></animad-keeper-form>
+         * ...
+         * ```
+         * 
+         * @customElement
+         * @polymer
+         *
+         */
+        class AnimadKeeperForm extends mix(Polymer.Element).with(AnimadI18nBehavior) {
             static get is() { return 'animad-keeper-form'; }
 
             static get properties() {
                 return {
+                    /*
+                     * Das Nutzdatenobjekt.
+                     */
                     data: {
                         type: Object,
                         value() {
                             return {}
                         }
+                    },
+                    /*
+                     * Soll das Formular automatisch validiert werden?
+                     */
+                    autoValidate: {
+                       type:  Boolean,
+                       value: false
+                    },
+                    /*
+                     * Soll das Formular nur lesend dargestellt werden?
+                     */
+                    readonly: {
+                        type: Boolean,
+                        value: false
+                    },
+                    /*
+                     * Das '_domain' property wird benötigt, um den richtigen Pfad 
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * benötigt, in dem die I18nBehavior verwendet wird.
+                     *
+                     * GENERATOR das Attribute value generieren
+                     */
+                    _domain: {
+                        type: String,
+                        value: 'animad'
+                    },
+                    /*
+                     * Das '_entity' property wird benötigt, um den richtigen Pfad 
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * benötigt, in dem die I18nBehavior verwendet wird.
+                     *
+                     * GENERATOR das Attribute value generieren
+                     */
+                    _entity: {
+                        type: String,
+                        value: 'keeper'
                     }
                 }
             }

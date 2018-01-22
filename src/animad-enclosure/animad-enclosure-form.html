@@ -32,16 +32,17 @@
                 label="[[t('name')]]" 
                 value="{{data.name}}" 
                 readonly="[[readonly]]"
-                required 
                 auto-validate="[[autoValidate]]" 
+                error-message="[[t('name_error')]]"
                 minlength="3" 
                 maxlength="30" 
-                error-message="[[t('name_error')]]">
+                required>
             </paper-input>
             <paper-input
                 class="animad-enclosure-cleaningTime-field"
                 id="enclosure-cleaningTime" 
-                type="time" 
+                type="time"
+                step="1"
                 name=cleaningTime 
                 label="[[t('cleaningTime')]]" 
                 value="{{data.cleaningTime}}"
@@ -73,13 +74,25 @@
 
             static get properties() {
                 return {
+                    /*
+                     * Das Nutzdatenobjekt.
+                     */
                     data: {
                         type: Object,
                         value() {
                             return {}
                         }
                     },
-                    autoValidate: Boolean,
+                    /*
+                     * Soll das Formular automatisch validiert werden?
+                     */
+                    autoValidate: {
+                       type:  Boolean,
+                       value: false
+                    },
+                    /*
+                     * Soll das Formular nur lesend dargestellt werden?
+                     */
                     readonly: {
                         type: Boolean,
                         value: false
@@ -88,6 +101,8 @@
                      * Das '_domain' property wird benötigt, um den richtigen Pfad 
                      * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
                      * benötigt, in dem die I18nBehavior verwendet wird.
+                     *
+                     * GENERATOR das Attribute value generieren
                      */
                     _domain: {
                         type: String,
@@ -97,6 +112,8 @@
                      * Das '_entity' property wird benötigt, um den richtigen Pfad 
                      * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
                      * benötigt, in dem die I18nBehavior verwendet wird.
+                     *
+                     * GENERATOR das Attribute value generieren
                      */
                     _entity: {
                         type: String,

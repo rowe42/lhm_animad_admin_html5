@@ -7,6 +7,14 @@
         "create_with_relation_sample_heading": "'Create' Form Sample with Relation",
         "update_sample_heading": "'Update' Form Sample",
         "read_sample_heading": "'Read' Form sample"
+      },
+      "animad-keepers-formsamples": {
+        "main_heading": "Keepers View",
+        "create_sample_heading": "'Create' Form Sample",
+        "create_with_relation_sample_heading": "'Create' Form Sample with Relation",
+        "update_sample_heading": "'Update' Form Sample",
+        "read_sample_heading": "'Read' Form sample",
+        "update_sample_heading_with_relation": "'Update' Form Sample with Relation"
       }
     },
     "animad": {
@@ -28,6 +36,15 @@
         "relation_list": "%{name} (ID: %{id})"
       },
       "keeper":{
+        "firstName": "Firstname",
+        "firstName_error": "",
+        "lastName": "Lastname",
+        "lastName_error": "",
+        "employmentDate": "Date of Employment",
+        "employmentDate_error": "Please give a past date!",
+        "birthday": "Date of Birth",
+        "birthday_error": "Please give a past date!",
+
         "relation_name": "Keeper",
         "id": "Keeper ID",
         "relation_search_id": "",
@@ -56,9 +73,8 @@
         "button_reset": "reset",
         "button_reload": "reload",
         "button_edit": "edit",
-        "relation_list": "%{firstname} %{lastname} (ID: %{id})",
-        "last": "Name",
-        "first": "Firstname",
+        "relation_list": "%{firstName} %{lastName}",
+        "relation_suggest": "%{firstName} %{lastName}",
         "filter_placeholder": "Filter",
         "search_placeholder": "Search",
         "no_results_found_text": "No matching results found.",
@@ -89,7 +105,16 @@
         "create_sample_heading": "Beispiel für ein 'create' Formular",
         "create_with_relation_sample_heading": "Beispiel für ein 'create' Formular mit Relation zu Wärtern",
         "update_sample_heading": "Beispiel für ein 'update' Formular",
-        "read_sample_heading": "Beispiel für ein 'update' Formular"
+        "read_sample_heading": "Beispiel für ein 'read' Formular",
+        "update_sample_heading_with_relation": "Beispiel für update Formular mit Relation aus einer HAL Quelle"
+      },
+      "animad-keepers-formsamples": {
+        "main_heading": "Übersicht Wärter",
+        "create_sample_heading": "Beispiel für ein 'create' Formular",
+        "create_with_relation_sample_heading": "Beispiel für ein 'create' Formular mit Relation zu ???",
+        "update_sample_heading": "Beispiel für ein 'update' Formular",
+        "read_sample_heading": "Beispiel für ein 'read' Formular",
+        "update_sample_heading_with_relation": "Beispiel für update Formular mit Relation aus einer HAL Quelle"
       }
     },
     "animad": {
@@ -113,6 +138,15 @@
         "relation_list": "%{name} (ID: %{id})"
       },
       "keeper":{
+        "firstName": "Vorname",
+        "firstName_error": "Geben Sie bitte einen Vornamen für den Wärter an, der mindestens 3 Buchstaben hat!",
+        "lastName": "Nachname",
+        "lastName_error": "Geben Sie bitte einen Nachnamen für den Wärter an, der mindestens 3 Buchstaben hat!",
+        "employmentDate": "Einstellungsdatum",
+        "employmentDate_error": "Geben Sie bitte ein Einstellungsdatum in der Vergangenheit an!",
+        "birthday": "Geburtsdatum",
+        "birthday_error": "Geben Sie bitte ein Geburtsdatum in der Vergangenheit an!",
+
         "relation_name": "Wärter",
         "id": "Id des Wärters",
         "relation_search_id": "",
@@ -142,8 +176,8 @@
         "button_reload": "neu laden",
         "button_edit": "bearbeiten",
         "relation_list": "%{firstname} %{lastname} (ID: %{id})",
+        "relation_suggest": "%{firstName} %{lastName}",
         "filter_placeholder": "Filter",
-        "filter_button_more": "Weitere Datensätze",
         "search_placeholder": "Suche",
         "no_results_found_text": "Keine Datensätze gefunden",
         "results_one_found_text": " Datensatz gefunden.",

@@ -2,8 +2,8 @@
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/nebula-i18n/nebula-i18n.html">
 <!-- custom components -->
-<link rel="import" href="animad-enclosure/animad-enclosure-update-form.html">
-<link rel="import" href="animad-enclosure/animad-enclosure-create-form.html">
+<link rel="import" href="animad-keeper/animad-keeper-update-form.html">
+<link rel="import" href="animad-keeper/animad-keeper-create-form.html">
 
 <!-- custom behaviors -->
 <link rel="import" href="behaviors/animad-i18n-behavior.html">
@@ -15,7 +15,7 @@
 <link rel="import" href="shared-styles.html">
 
 <!-- GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-view -->
-<dom-module id="animad-enclosures-view">
+<dom-module id="animad-keepers-formsamples-view">
   <template>
     <style include="shared-styles">
       :host {
@@ -24,41 +24,41 @@
       }
     </style>
     <div id="view" class="card">
-      <div class="circle"><iron-icon icon="animad-icons:basecamp"></iron-icon></div>
+      <div class="circle"><iron-icon icon="animad-icons:face"></iron-icon></div>
       <h1>[[t('main_heading')]]</h1>
       <h2>[[t('create_sample_heading')]]</h2>
-      <animad-enclosure-create-form url="http://demo6512140.mockable.io/enclosures/new">
-      </animad-enclosure-create-form>      
+      <animad-keeper-create-form url="http://demo6512140.mockable.io/keepers/new">
+      </animad-keeper-create-form>      
       <br />
       <br />
       <h2>[[t('create_with_relation_sample_heading')]]</h2>
-      <animad-enclosure-create-form url="http://demo6512140.mockable.io/enclosures/new" keepers>
-      </animad-enclosure-create-form>      
+      <animad-keeper-create-form url="http://demo6512140.mockable.io/keepers/new">
+      </animad-keeper-create-form>      
       <br />
       <br />
       <h2>[[t('update_sample_heading')]]</h2>
-      <animad-enclosure-update-form url="http://demo6512140.mockable.io/enclosures/3bca5b38-13be-4fd3-b656-fa79a639ddd5">
-      </animad-enclosure-update-form>
+      <animad-keeper-update-form url="http://demo6512140.mockable.io/keepers/fbd234e5-93d5-44d8-886c-ec4ddbd3f4bb">
+      </animad-keeper-update-form>
       <br />
       <br />
       <h2>[[t('read_sample_heading')]]</h2>
-      <animad-enclosure-update-form url="http://demo6512140.mockable.io/enclosures/3bca5b38-13be-4fd3-b656-fa79a639ddd5" readform>
-      </animad-enclosure-update-form>
+      <animad-keeper-update-form url="http://demo6512140.mockable.io/keepers/fbd234e5-93d5-44d8-886c-ec4ddbd3f4bb" readform>
+      </animad-keeper-update-form>
       <br />
       <br />
       <h2>[[t('update_sample_heading_with_relation')]]</h2>
-      <animad-enclosure-update-form 
-        url="http://demo6512140.mockable.io/enclosures/3bca5b38-13be-4fd3-b656-fa79a639ddd5" 
+      <animad-keeper-update-form 
+        url="http://demo6512140.mockable.io/keepers/fbd234e5-93d5-44d8-886c-ec4ddbd3f4bb" 
         keepers>
-      </animad-enclosure-update-form>
+      </animad-keeper-update-form>
       </div>
   </template>
 
   <script>
     // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]View
-    class AnimadEnclosuresView extends mix(Polymer.Element).with(AnimadI18nBehavior) {
+    class AnimadKeepersFormsamplesView extends mix(Polymer.Element).with(AnimadI18nBehavior) {
       // GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-view
-      static get is() { return 'animad-enclosures-view'; }
+      static get is() { return 'animad-keepers-formsamples-view'; }
 
       static get properties() {
         return {
@@ -82,13 +82,13 @@
            */
           _entity: {
             type: String,
-            value: 'animad-enclosures'
+            value: 'animad-keepers-formsamples'
           }
         }
       }
     }
 
     // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]View
-    window.customElements.define(AnimadEnclosuresView.is, AnimadEnclosuresView);
+    window.customElements.define(AnimadKeepersFormsamplesView.is, AnimadKeepersFormsamplesView);
   </script>
 </dom-module>

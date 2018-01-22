@@ -1,52 +1,117 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/nebula-i18n/nebula-i18n.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/custom-style.html">
+<link rel="import" href="../../bower_components/shadycss/apply-shim.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-if.html">
+
+<!-- animad elements -->
+<link rel="import" href="animad-keeper-form.html">
+
+<!-- GENERATOR hier die links für die Relationen -->
+
+<link rel="import" href="../animad-icons.html">
+<link rel="import" href="../behaviors/animad-form-behavior.html">
+<link rel="import" href="../behaviors/animad-i18n-behavior.html">
+<link rel="import" href="../behaviors/mixin.html">
 
 <link rel="import" href="animad-keeper-form.html">
 
 <dom-module id="animad-keeper-create-form">
     <template>
-        <style></style>
-        <iron-ajax id="httpbin" url="https://httpbin.org/post" method="POST" body="{{foo}}" handle-as="json" on-response="_handleResponse" debounce-duration="300"></iron-ajax>
+        <style is="custom-style">
+            paper-button.send {
+                background-color: var(--paper-green-500);
+                color: white;
+                margin-top: 50px;
+                @apply --animad-keeper-create-form-button-send;
+            }
+
+            .animad-keeper-create-form {
+                @apply --animad-keeper-create-form;
+            }
+        </style>
+        <!--
+            Das vorgefertigte Formular.
+        -->
         <iron-form id="iform">
-            <form>
-                <animad-keeper-form data="{{foo}}"></animad-keeper-form>
-                <br>
-                <br>
-                <paper-button on-tap="_sendForm" raised>Submit</paper-button>
+            <form class="animad-keeper-create-form">
+                <animad-keeper-form data="{{data}}" auto-validate></animad-keeper-form>
+                <!-- GENERATOR hier kommen die Templates für die Relationen hin -->
             </form>
         </iron-form>
+        <!-- 
+            buttons
+        -->
+        <paper-button class="send" on-tap="_saveEntity" raised>
+            <iron-icon icon="animad-icons:send"></iron-icon>
+             [[t('button_save')]]
+        </paper-button>
+        <paper-button class="reset" on-tap="_resetForm" raised>
+            <iron-icon icon="animad-icons:erase"></iron-icon>
+             [[t('button_reset')]]
+        </paper-button>      
     </template>
     <script>
-        class AnimadKeeperCreateForm extends Polymer.Element {
+        /**
+         * # Formular zum Erstellen von einem 'Keeper'
+         * `<animad-anclosure-create-form>` stellt ein Formular zur Verfügung, über das man ein
+         * neues 'Keeper' mit all seinen Attributen erstellen kann.
+         * ## Anwendung in der Applikation
+         * ```html
+         * <link rel="import" href="[Pfad zu meinen Abhängigkeiten]/animad-keeper/animad-keeper-create-form.html">
+         * ...
+         * <animad-keeper-create-form post-url="[URL an die die Daten geschickt werden]"></animad-keeper-create-form>
+         * ...
+         * ```
+         * 
+         * @customElement
+         * @polymer
+         *
+         */
+        class AnimadKeeperCreateForm extends mix(Polymer.Element).with(AnimadFormBehavior, AnimadI18nBehavior) {
             static get is() { return 'animad-keeper-create-form'; }
 
             static get properties() {
                 return {
-                    foo: {
-                        type: Object,
-                        value() {
-                            return {}
-                        }
-                    }
+                    /*
+                     * Das '_domain' property wird benötigt, um den richtigen Pfad 
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * benötigt, in dem die I18nBehavior verwendet wird.
+                     *
+                     * GENERATOR das Attribut value generieren
+                     */
+                     _domain: {
+                        type: String,
+                        value: 'animad'
+                    },
+                    /*
+                     * Das '_entity' property wird benötigt, um den richtigen Pfad 
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * benötigt, in dem die I18nBehavior verwendet wird.
+                     *
+                     * GENERATOR das Attribute value generieren
+                     */
+                    _entity: {
+                        type: String,
+                        value: 'keeper'
+                    },
+                    // GENERATOR: Boolean Werte müssen abhängig von den Relationen generiert werden
+                    /*
+                     * Über dieses Element Property kann gesteuert werden, ob die
+                     * Relation zu den 'keepers' angezeigt wird, oder nicht.
+                     */
+                    // GENERATOR Beispiel:
+                    //keepers: {
+                    //    type: Boolean,
+                    //    value: false
+                    // },
                 }
-            }
-
-            constructor() {
-                super();
-            }
-
-            _sendForm() {
-                console.log(this.$.iform.validate());
-                this.foo = JSON.stringify(this.foo);
-                console.log(this.foo);
-                this.$.httpbin.generateRequest();
-                this.$.iform.reset();
-            }
-
-            _handleResponse(e) {
-                console.log(JSON.stringify(e.detail.response))
             }
         }
 
