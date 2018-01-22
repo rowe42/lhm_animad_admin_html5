@@ -46,48 +46,94 @@
         </style>
         <div class="animad-animal-form">
             <!-- Animal Name -->
-            <paper-input class="animad-animal-name-field" id="animal-name" type="text" name="name" label="[[t('name')]]" value="{{data.name}}"
-                readonly="[[readonly]]" auto-validate="[[autoValidate]]" error-message="[[t('name_error')]]" minlength="3" maxlength="30"
+            <paper-input 
+                class="animad-animal-name-field" 
+                id="animal-name" 
+                type="text" 
+                name="name" 
+                label="[[t('name')]]"
+                value="{{data.name}}"
+                readonly="[[readonly]]" 
+                auto-validate="[[autoValidate]]" 
+                error-message="[[t('name_error')]]" 
+                minlength="3" 
+                maxlength="30"
                 required>
             </paper-input>
             <!-- Animal Species -->
-            <paper-dropdown-menu class="animad-animal-species-field" id="animal-species" name="species" label="[[t('species')]]*" value="{{_animal.species}}"
+            <paper-dropdown-menu 
+                class="animad-animal-species-field" 
+                id="animal-species" 
+                name="species" 
+                label="[[t('species')]]*" 
                 required>
-                <paper-listbox slot="dropdown-content">
+                <paper-listbox 
+                    slot="dropdown-content">
                     <!-- 
-                                TODO hier die Werte über die URL (siehe properties) holen und dann 
-                                per dom repeat hier anzeigen.
-                            -->
+                        TODO: hier die Werte über die URL (siehe properties) holen und dann 
+                        per dom repeat hier anzeigen.
+                        TODO: Vorselektion
+                    -->
                     <paper-item>Barrakuda</paper-item>
                     <paper-item>Elephant</paper-item>
                     <paper-item>Pinguin</paper-item>
                 </paper-listbox>
             </paper-dropdown-menu>
             <!-- Animal Birthdate -->
-            <paper-input class="animad-animal-birthDate-field" id="animal-birthDate" type="date" step="1" name="birthDate" label="[[t('birthDate')]]"
-                value="{{data.birthDate}}" readonly="[[readonly]]" auto-validate="[[autoValidate]]" error-message="[[t('birthDate_error')]]"
+            <paper-input 
+                class="animad-animal-birthDate-field" 
+                id="animal-birthDate" 
+                type="date" step="1" 
+                name="birthDate" 
+                label="[[t('birthDate')]]"
+                value="{{data.birthday}}" 
+                readonly="[[readonly]]" 
+                auto-validate="[[autoValidate]]" 
+                error-message="[[t('birthDate_error')]]"
                 required>
             </paper-input>
             <!-- Animal Gender -->
-            <paper-dropdown-menu class="animad-animal-gender-field" id="animal-gender" name="gender" label="[[t('gender')]]*" value="_animal.gender"
+            <paper-dropdown-menu 
+                class="animad-animal-gender-field" 
+                id="animal-gender"
+                name="gender" 
+                label="[[t('gender')]]*" 
                 required>
-                <paper-listbox slot="dropdown-content">
+                <paper-listbox 
+                    slot="dropdown-content">
                     <!-- 
-                             TODO hier die Werte über die URL (siehe properties) holen und dann 
-                             per dom repeat hier anzeigen.
-                         -->
+                        TODO: hier die Werte über die URL (siehe properties) holen und dann 
+                        per dom repeat hier anzeigen.
+                        TODO: Vorselektion
+                    -->
                     <paper-item>female</paper-item>
                     <paper-item>male</paper-item>
                 </paper-listbox>
             </paper-dropdown-menu>
             <!-- Animal Weight -->
-            <paper-input class="animad-animal-weight-field" id="animal-weight" type="number" name="weight" label="[[t('weight')]]" value="{{data.weight}}"
-                readonly="[[readonly]]" auto-validate="[[autoValidate]]" error-message="[[t('weight_error')]]" min="1" max="50000"
+            <paper-input
+                class="animad-animal-weight-field"
+                id="animal-weight" 
+                type="number" 
+                name="weight" 
+                label="[[t('weight')]]" 
+                value="{{data.weight}}"
+                readonly="[[readonly]]" 
+                auto-validate="[[autoValidate]]" 
+                error-message="[[t('weight_error')]]" 
+                min="1" 
+                max="50000"
                 required>
                 <div slot="suffix">KG</div>
             </paper-input>
             <!-- Animal Alive -->
-            <paper-checkbox class="animad-animal-alive-field" id="animal-alive" name="alive" value="{{data.alive}}">[[t('alive')]]</paper-checkbox>
+            <paper-checkbox 
+                class="animad-animal-alive-field" 
+                id="animal-alive" 
+                name="alive" 
+                checked="{{data.alive}}">
+            [[t('alive')]]
+            </paper-checkbox>
         </div>
     </template>
     <script>
