@@ -1,6 +1,15 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="animad-animal/animad-animal-create-form.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/nebula-i18n/nebula-i18n.html">
+<!-- custom components -->
+<link rel="import" href="animad-animal/animad-animal-update-form.html">
+<link rel="import" href="animad-animal/animad-animal-create-form.html">
+
+<!-- custom behaviors -->
+<link rel="import" href="behaviors/animad-i18n-behavior.html">
+<link rel="import" href="behaviors/mixin.html">
+
+<!-- custom iconset -->
 <link rel="import" href="animad-icons.html">
 
 <link rel="import" href="shared-styles.html">
@@ -14,21 +23,71 @@
         padding: 10px;
       }
     </style>
-
-    <div class="card">
-      <div class="circle"><iron-icon icon="animad-icons:panda"></iron-icon></div>
-      <h1>Animals View</h1>
-      <animad-animal-create-form></animad-animal-create-form>
+    <div id="view" class="card">
+      <div class="circle">
+        <iron-icon icon="animad-icons:basecamp"></iron-icon>
+      </div>
+      <h1>[[t('main_heading')]]</h1>
+      <h2>[[t('create_sample_heading')]]</h2>
+      <animad-animal-create-form url="http://demo7841195.mockable.io/animals/new">
+      </animad-animal-create-form>
+      <br />
+      <br />
+      <h2>[[t('create_with_relation_sample_heading')]]</h2>
+      <animad-animal-create-form url="http://demo7841195.mockable.io/animals/new" keepers>
+      </animad-animal-create-form>
+      <br />
+      <br />
+      <h2>[[t('update_sample_heading')]]</h2>
+      <animad-animal-update-form url="http://demo7841195.mockable.io/animals/TODO: UUID">
+      </animad-animal-update-form>
+      <br />
+      <br />
+      <h2>[[t('read_sample_heading')]]</h2>
+      <animad-animal-update-form url="http://demo7841195.mockable.io/animals/TODO: UUID" readform>
+      </animad-animal-update-form>
+      <br />
+      <br />
+      <h2>[[t('update_sample_heading_with_relation')]]</h2>
+      <animad-animal-update-form url="http://demo6512140.mockable.io/animals/TODO: UUID" keepers>
+      </animad-animal-update-form>
     </div>
   </template>
 
   <script>
     // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]View
-    class AnimadAnimalsView extends Polymer.Element {
+    class AnimadAnimalsView extends mix(Polymer.Element).with(AnimadI18nBehavior) {
       // GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-view
       static get is() { return 'animad-animals-view'; }
+
+      static get properties() {
+        return {
+          /*
+           * Das '_domain' property wird benötigt, um" den richtigen Pfad 
+           * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+           * benötigt, in dem die I18nBehavior verwendet wird. Im Falle 
+           * einer view ist der Wert IMMER 'view'.
+           */
+          _domain: {
+            type: String,
+            value: 'view'
+          },
+          /*
+           * Das '_entity' property wird benötigt, um den richtigen Pfad 
+           * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+           * benötigt, in dem die I18nBehavior verwendet wird. Im Falle 
+           * einer view ist der Wert immer der Präfix, der im Namen der view
+           * vor '*-view' steht. Bei animad-animals-view.html also 
+           * 'animad-animals'.
+           */
+          _entity: {
+            type: String,
+            value: 'animad-animals'
+          }
+        }
+      }
     }
-    
+
     // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]View
     window.customElements.define(AnimadAnimalsView.is, AnimadAnimalsView);
   </script>

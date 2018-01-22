@@ -1,6 +1,13 @@
 {
   "en": {
     "view": {
+      "animad-animal": {
+        "main_heading": "Animals View",
+        "create_sample_heading": "'Create' Form Sample",
+        "create_with_relation_sample_heading": "'Create' Form Sample with Relation",
+        "update_sample_heading": "'Update' Form Sample",
+        "read_sample_heading": "'Read' Form sample"
+      },
       "animad-enclosures": {
         "main_heading": "Enclosures View",
         "create_sample_heading": "'Create' Form Sample",
@@ -26,8 +33,10 @@
         "name_error": "Name with 3 letters required!",
         "species": "Species",
         "gender": "Gender",
-        "birthdate": "Date of Birth",
+        "birthDate": "Date of Birth",
+        "birthDate_error": "Please give a past date!",
         "weight": "Weight",
+        "weight_error":  "1-50000 KG!",
         "alive": "Alive",
         "form_error": "An error occured with code '%{code}'.",
         "form_validation": "Please fix the form errors.",
@@ -123,6 +132,14 @@
   },
   "de": {
     "view": {
+      "animad-animals": {
+        "main_heading": "Übersicht Tiere",
+        "create_sample_heading": "Beispiel für ein 'create' Formular",
+        "create_with_relation_sample_heading": "Beispiel für ein 'create' Formular mit Relation zu Wärtern",
+        "update_sample_heading": "Beispiel für ein 'update' Formular",
+        "read_sample_heading": "Beispiel für ein 'read' Formular",
+        "update_sample_heading_with_relation": "Beispiel für update Formular mit Relation aus einer HAL Quelle"
+      },
       "animad-enclosures": {
         "main_heading": "Übersicht Gehege",
         "create_sample_heading": "Beispiel für ein 'create' Formular",
@@ -146,19 +163,22 @@
         "id": "Animal Id",
         "relation_search_id": "",
         "name": "Name",
-        "name_error": "Name with 3 letters required!",
-        "species": "Species",
-        "gender": "Gender",
-        "birthdate": "Date of Birth",
-        "weight": "Weight",
-        "alive": "Alive",
-        "form_error": "An error occured with code '%{code}'.",
-        "form_validation": "Please fix the form errors.",
+        "name_error": "Geben Sie bitte einen Namen für das Tier an, der mindestens 3 Buchstaben hat!",
+        "species": "Art",
+        "gender": "Geschlecht",
+        "birthDate": "Geburtstag",
+        "birthDate_error":  "Geben Sie bitte ein Geburtsdatum in der Vergangenheit an!",
+        "weight": "Gewicht",
+        "weight_error":  "1-50000 KG!",
+        "alive": "Lebendig",
+        "form_error": "Es ist ein Fehler beim Speichern des Tiers aufgetreten. Fehlercode ist '%{code}'.",
+        "form_validation": "Bitte die angezeigten Fehler im Formular beheben!",
         "form_success": "The form has been saved.",
-        "button_save": "save",
-        "button_reset": "reset",
-        "button_reload": "reload",
-        "button_edit": "edit",
+        "form_success": "Das Tier wurde gespeichert!",
+        "button_save": "speichern",
+        "button_reset": "zurücksetzen",
+        "button_reload": "neu laden",
+        "button_edit": "bearbeiten",
         "relation_list": "%{name} (ID: %{id})"
       },
       "enclosure": {
