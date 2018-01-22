@@ -98,7 +98,7 @@
 <!-- Für Suche über Lazy Loading:
      <vaadin-grid id="animad-list" data-provider="[[dataProvider]]"  size="200" multi-sort="[[multiSort]]" selected-items="{{_selectedItems}}"> -->
 
-     <vaadin-grid id="animad-list" items="[[_filteredData]]"  multi-sort="[[multiSort]]" selected-items="{{_selectedItems}}" page-size="[[pageSize]]">
+     <vaadin-grid id="animad-list" items="[[_filteredData]]"  multi-sort="[[multiSort]]" selected-items="{{_selectedItems}}">
         <vaadin-grid-selection-column auto-select>
         </vaadin-grid-selection-column>
 
@@ -168,13 +168,6 @@
         </vaadin-grid-column>
       </vaadin-grid>
 
-      <div id="pages" hidden$="[[!doPagination]]">
-        <button on-tap="_prev">&lt;</button>
-        <template is="dom-repeat" items="[[_pages]]">
-          <button on-tap="_select" selected$="[[_isSelected(_page, item)]]">[[item]]</button>
-        </template>
-        <button on-tap="_next">&gt;</button>
-      </div>
     </template>
 
     <script>
