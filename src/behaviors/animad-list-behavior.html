@@ -241,7 +241,16 @@
               _hasSearched: {
                 type: Boolean,
                 value: false
-              }
+              },
+              /**
+               *
+               */
+              _errorToast: {
+                  type: Object,
+                  value() {
+                      return document.querySelector('#global_error_toast');
+                  }
+              },
             }
         }
 
@@ -395,7 +404,6 @@
           var item = this._filteredData[index];
 
           // set temporary delete information
-//          this._deleteInfo = this.t('modal_deleteinfo', {firstname: item.firstName, lastname: item.lastName, employmentdate: item.employmentdate, skill: item.skill,   birthdate: item.birthdate,  salary: item.salary});
           this._deleteItems = [item];
 
           // user must confirm that item should be deleted
@@ -406,21 +414,13 @@
         // Deletes all data that is contained in array _deleteItems
         _deleteSelectedRows() {
           var items = this._deleteItems;
-          var allItems = this.data;
 
           // loop over all items to delete
           for (var i in items) {
             var j = this.data.indexOf(items[i]);
             // Backend Call
             this._deleteData(this.data[j]);
-
-            // Update view
-            allItems.splice(j, 1);
           }
-
-          // triggers observer _dataChanged
-          this.data = allItems;
-          this.notifyPath('data.length');
         }
 
         // reset any delete information
@@ -457,7 +457,9 @@
               }
             }).then(response => response.json()).then(data => {
               this._backendData = data;
-            });
+            }).catch(error => {
+              this._error(this.t('list_action_search'), error.message);
+            });;
         }
 
         _transferCellnameToFieldname(phrasesString, search) {
@@ -494,32 +496,60 @@
           fetch(fuzzyUrl, {
               method: 'GET',
               headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
               }
-            }).then(response => response.json()).then(data => {
-              this._backendData = data;
-            });
+            }
+          ).then(response => response.json()
+          ).then(data => { this._backendData = data; }
+          ).catch(error => {
+            this._error(this.t('list_action_search'), error.message);
+          });
         }
 
         // Delete
         _deleteData(item) {
-          // TBD Handle relations (or is this backend stuff??)
           var url = this.url+'/'+item.id;
           fetch(url, {
-              method: 'DELETE',
-              headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-              }
-            }).then(response => {
-              if (response.status === 200 || response.status === 202 || response.status === 204) {
-                // TBD Success notification
-              }
-              else {
-                // TBD Error notification
-              }
-            });
+            method: 'DELETE',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            }
+          }).then(response => {
+            var index = response.url.lastIndexOf('/') + 1;
+            var itemId = response.url.substring(index);
+
+            if (response.ok) {
+              // refresh view
+              index = this.data.findIndex(item => item.id == itemId);
+              this.splice('data', index, 1);
+            }
+            else {
+              // notify user about error
+              this._errorDelete(response.status, itemId);
+            }
+          }).catch(error => {
+            this._error(this.t('list_action_delete'), error.message);
+          });
+        }
+
+        /**
+         * Der 'Toast', der bei Fehlern beim Löschen angezeigt wird.
+         */
+        _errorDelete(status, id) {
+            this._errorToast.text = this.t('list_delete_error', { code: status, id: id });
+            console.error(this._errorToast.text);
+            this._errorToast.open();
+        }
+
+        /**
+         * Der 'Toast', der bei Fehlern (allgemein) angezeigt wird.
+         */
+        _error(action, msg) {
+            this._errorToast.text = this.t('list_error', { action: action });
+            console.error(this._errorToast.text+"("+msg+")");
+            this._errorToast.open();
         }
     };
 </script>
