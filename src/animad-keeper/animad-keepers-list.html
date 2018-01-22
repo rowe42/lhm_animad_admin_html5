@@ -243,23 +243,25 @@
         // Override super._backendDataChanged for correct assignment of backendData to data
         _backendDataChanged(backendData, backendDataOld){
           var items = [];
-          var backendItems = backendData._embedded.keepers;
-          for (var item of backendItems) {
-            // get id
-            var href = item._links.self.href;
-            var index = href.lastIndexOf('/') + 1;
-            var itemId = href.substring(index);
+          if (backendData._embedded) {
+            var backendItems = backendData._embedded.keepers;
+            for (var item of backendItems) {
+              // get id
+              var href = item._links.self.href;
+              var index = href.lastIndexOf('/') + 1;
+              var itemId = href.substring(index);
 
-            // Convert skill-array into String
-            var skills = item.skill;
-            var skill = "";
-            if (skills) {
-              skill = skills.toString();
+              // Convert skill-array into String
+              var skills = item.skill;
+              var skill = "";
+              if (skills) {
+                skill = skills.toString();
+              }
+
+              // Push item to items-array
+              var uiItem = {id: itemId, firstName: item.firstName, lastName: item.lastName, employmentdate: item.employmentDate, skill: skill,   birthdate: item.birthday,  salary: item.salary};
+              items.push(uiItem);
             }
-
-            // Push item to items-array
-            var uiItem = {id: itemId, firstName: item.firstName, lastName: item.lastName, employmentdate: item.employmentDate, skill: skill,   birthdate: item.birthday,  salary: item.salary};
-            items.push(uiItem);
           }
 
           // Assignment triggers observer _dataChanged
