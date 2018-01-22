@@ -116,23 +116,23 @@
 
         <vaadin-grid-column>
           <template class="header">
-            <vaadin-grid-sorter path="firstName">[[t('firstname')]]</vaadin-grid-sorter>
+            <vaadin-grid-sorter path="firstName">[[t('firstName')]]</vaadin-grid-sorter>
           </template>
           <template>[[item.firstName]]</template>
         </vaadin-grid-column>
 
         <vaadin-grid-column >
           <template class="header">
-            <vaadin-grid-sorter path="lastName">[[t('lastname')]]</vaadin-grid-sorter>
+            <vaadin-grid-sorter path="lastName">[[t('lastName')]]</vaadin-grid-sorter>
           </template>
           <template>[[item.lastName]]</template>
         </vaadin-grid-column>
 
         <vaadin-grid-column>
           <template class="header">
-            <vaadin-grid-sorter path="employmentdate">[[t('employmentdate')]]</vaadin-grid-sorter>
+            <vaadin-grid-sorter path="employmentDate">[[t('employmentDate')]]</vaadin-grid-sorter>
           </template>
-          <template>[[item.employmentdate]]</template>
+          <template>[[item.employmentDate]]</template>
         </vaadin-grid-column>
 
         <vaadin-grid-column>
@@ -144,9 +144,9 @@
 
         <vaadin-grid-column>
           <template class="header">
-            <vaadin-grid-sorter path="birthdate">[[t('birthdate')]]</vaadin-grid-sorter>
+            <vaadin-grid-sorter path="birthday">[[t('birthday')]]</vaadin-grid-sorter>
           </template>
-          <template>[[item.birthdate]]</template>
+          <template>[[item.birthday]]</template>
         </vaadin-grid-column>
 
         <vaadin-grid-column>
@@ -217,11 +217,11 @@
               value() {
                 return [
                   {
-                    id: "birthdate",
+                    id: "birthday",
                     filters: [
-                      {id: "0", label: "filter_birthdate_before_1980"},
-                      {id: "1", label: "filter_birthdate_1980_1990"},
-                      {id: "2", label: "filter_birthdate_after_1990"}
+                      {id: "0", label: "filter_birthday_before_1980"},
+                      {id: "1", label: "filter_birthday_1980_1990"},
+                      {id: "2", label: "filter_birthday_after_1990"}
                     ]
                   },
                   {
@@ -260,7 +260,7 @@
               }
 
               // Push item to items-array
-              var uiItem = {id: itemId, firstName: item.firstName, lastName: item.lastName, employmentdate: item.employmentDate, skill: skill,   birthdate: item.birthday,  salary: item.salary};
+              var uiItem = {id: itemId, firstName: item.firstName, lastName: item.lastName, employmentDate: item.employmentDate, skill: skill,   birthday: item.birthday,  salary: item.salary};
               items.push(uiItem);
             }
           }
@@ -279,7 +279,7 @@
           // this is optional. If not implemented will only ask question (translated): Do you really want to delete this item?
           var index = this._filteredData.findIndex(item => item.id == e.target.id);
           var item = this._filteredData[index];
-          this._deleteInfo = this.t('modal_deleteinfo', {firstname: item.firstName, lastname: item.lastName, employmentdate: item.employmentdate, skill: item.skill,   birthdate: item.birthdate,  salary: item.salary});
+          this._deleteInfo = this.t('modal_deleteinfo', {firstName: item.firstName, lastName: item.lastName, employmentDate: item.employmentDate, skill: item.skill,   birthday: item.birthday,  salary: item.salary});
 
           super._confirmDeleteRow(e);
         }
@@ -305,9 +305,9 @@
             this.data.filter(keeper =>
                 keeper.firstName.toLowerCase().includes(this._filterString) ||
                 keeper.lastName.toLowerCase().includes(this._filterString) ||
-                keeper.employmentdate.toLowerCase().includes(this._filterString) ||
+                keeper.employmentDate.toLowerCase().includes(this._filterString) ||
                 keeper.skill.toLowerCase().includes(this._filterString) ||
-                keeper.birthdate.toLowerCase().includes(this._filterString) ||
+                keeper.birthday.toLowerCase().includes(this._filterString) ||
                 new String(keeper.salary).toLowerCase().includes(this._filterString));
           this._filteredData = this._filteredData.filter(this._useSelectedFilters, this);
         }
@@ -316,7 +316,7 @@
           var isIncluded = true;
           for (var filterObject of this._selectedFilters) {
             switch (filterObject.type) {
-              case this.allFilters[0].id: // for the example: birthdate
+              case this.allFilters[0].id: // for the example: birthday
                 switch (filterObject.filter.id) {
                   case this.allFilters[0].filters[0].id:
                     console.log("Implementation for "+ this.allFilters[0].id + "," + this.allFilters[0].filters[0].label);
