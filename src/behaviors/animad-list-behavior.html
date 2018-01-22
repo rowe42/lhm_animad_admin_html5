@@ -54,9 +54,22 @@
                 }
               },
               /*
-                _search enthält den String, der im Sucheingabe-Feld zum Filtern eingegeben wurde.
+                _search enthält den String, der im Eingabe-Feld zum Suche eingegeben wurde.
               */
               _search: {
+                type: String,
+                value: ""
+              },
+              /**
+              * Predefined search string. Will be shown in search field after page loading.
+              */
+              defaultSearch: {
+                type: String
+              },
+              /*
+                _search enthält den String, der im Eingabe-Feld zum Filtern eingegeben wurde.
+              */
+              _filterString: {
                 type: String,
                 value: ""
               },
@@ -201,6 +214,34 @@
          				type: String,
          				value: 'search'
          			},
+              /**
+               * Whether to search data without filtering while loading or if user has to enter
+               * search string before searching for data.
+              */
+              loadCompleteData: {
+                type: Boolean,
+                value: false
+              },
+              /**
+               * Whether to show results text (e.g. 30 results found.) or not.
+               */
+              showResults: {
+                type: Boolean,
+                value: true
+              },
+              /**
+               * String to show if 'showResults' is set to true.
+               */
+              _resultsText:{
+                type: String
+              },
+              /**
+               * Set to true as soon as data was searched.
+               */
+              _hasSearched: {
+                type: Boolean,
+                value: false
+              }
             }
         }
 
@@ -209,10 +250,46 @@
           return [
             '_selectionChanged(_selectedItems.length)',
             '_itemsChanged(_filteredData, _page)',
+            '_dataChanged(data.length)',
             '_initLocalizedFilter(allFilters)'
           ]
         }
 
+        // refresh view and reset any delete information
+        _dataChanged(dataLength) {
+          // refresh list data
+          this._filteredData = this.data;
+          this._filter();
+
+          // unselect all deleted items
+          for (var item of this._deleteItems) {
+            this.shadowRoot.querySelector('#animad-list').deselectItem(item);
+          }
+
+          this._deleteItems = [];
+          this._deleteInfos = "";
+
+          if (this._hasSearched){
+            // set results text
+            if (dataLength > 1) {
+              this._resultsText = dataLength+this.t('results_found_text');
+            }
+            else if (dataLength == 1) {
+              this._resultsText = dataLength+this.t('results_one_found_text');
+            }
+            else {
+              this._resultsText = this.t('no_results_found_text');
+            }
+          }
+        }
+
+        _hideSearchHeader(hideHeader){
+          return hideHeader || this.loadCompleteData;
+        }
+
+        _hideFilterHeader(hideHeader){
+          return hideHeader || !this.loadCompleteData;
+        }
         // Selected/Unselected items in list
         _selectionChanged(nrSelectedItems) {
           this._disableDeleteButton = this.disableDelete || (nrSelectedItems === 0);
@@ -248,7 +325,10 @@
         // Callback methods
         ready() {
           super.ready();
-          this._loadData();
+          this._search = this.defaultSearch;
+          if (this.loadCompleteData){
+            this._loadData();
+          }
           /* Für Suche über Data-Provider (Lazy Loading)
           this.size = 200;
           this.dataProvider = function(params, callback) {
@@ -261,6 +341,14 @@
             xhr.send();
           }
           */
+        }
+
+        // Set text to show in search field
+        _setSearchText(placeholder) {
+          if (this._search && this._search.length > 0) {
+            return this.defaultSearch;
+          }
+          return this.t(placeholder);
         }
 
         // Protected methods
@@ -360,7 +448,50 @@
         // Search
         _loadData(){
           // TBD: error handling
+          this._hasSearched = true;
           fetch(this.url, {
+              method: 'GET',
+              headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+              }
+            }).then(response => response.json()).then(data => {
+              this._backendData = data;
+            });
+        }
+
+        _transferCellnameToFieldname(phrasesString, search) {
+          var phrases = phrasesString.split(',');
+          var start = search.length;
+          var end = search.length;
+          while (start >= 0 && end > -1) {
+            var end = search.lastIndexOf(":", start);
+            if (end > -1) {
+              var start = search.lastIndexOf(" ", end);
+              var oldsearch = search.substring(start, end).trim();
+              var newsearch = oldsearch;
+              for (var phrase of phrases) {
+                phrase = phrase.replace(/"/g, '');
+                var s = phrase.split(":");
+                if(s.length > 1 && s[1].toLowerCase() == newsearch) {
+                  newsearch = s[0];
+                }
+              }
+              search = search.replace(oldsearch, newsearch);
+            }
+          }
+
+          return search;
+        }
+
+        _fetchFuzzyData(search){
+          this._hasSearched = true;
+
+          var phrasesString = JSON.stringify(this._polyglot.phrases);
+          var searchStr = this._transferCellnameToFieldname(phrasesString, search);
+          var fuzzyUrl=this.url+"/search/findFullTextFuzzy?q='"+searchStr+"'";
+          // TBD: error handling
+          fetch(fuzzyUrl, {
               method: 'GET',
               headers: {
             'Accept': 'application/json',

@@ -22,7 +22,8 @@
 		    			disable-filter-button="[[_disableFilterButton(allFilters)]]"
 		    			query="{{search}}"
 		    			nr-selected-filters="[[_nrSelectedFilters]]"
-		    			on-paper-search-filter="_toggleFilterSelectionOpen">
+		    			on-paper-search-filter="_toggleFilterSelectionOpen"
+              on-paper-search-search="_onSearchRequest">
 		    		</paper-search-bar>
 		      </paper-item-body>
 
@@ -41,6 +42,10 @@
               [[placeholderDelete]]
           </paper-button>
 		    </paper-item>
+
+        <template is="dom-if" if="[[showResults]]">
+    			<div>{{resultsText}}</div>
+    		</template>
 
 		    <iron-collapse id="filter-selection" opened=[[_isFilterSelectionOpen]]>
 		      <template is="dom-repeat" items="{{allFilters}}" as="allFilters">
@@ -163,6 +168,20 @@
 				          _isFilterSelectionOpen: {
 				            type: Boolean,
 				            value: false
+				          },
+                  /**
+                   * Toggles visibility of collapsable element for filter selection
+                   */
+				          showResults: {
+				            type: Boolean,
+				            value: true
+				          },
+                  /**
+                   * Toggles visibility of collapsable element for filter selection
+                   */
+				          resultsText: {
+				            type: String,
+				            value: ''
 				          }
                 }
             }
@@ -171,11 +190,16 @@
               super.attached();
               console.log("attached");
             }
+
 						// Private methods
+            _onSearchRequest(event){
+              this.dispatchEvent(new CustomEvent('search', {bubbles: true, composed: true}));
+            }
+
 			  		_onChangeRequest(newValue, oldValue) {
 			  			// Ignore initial setting of properties (caller is supposed to trigger this call automatically)
 			  			if (typeof oldValue !== 'undefined') {
-                this.dispatchEvent(new CustomEvent('search', {bubbles: true, composed: true}));
+                this.dispatchEvent(new CustomEvent('filter', {bubbles: true, composed: true}));
 			  			}
 			  		}
 
@@ -207,7 +231,7 @@
 			        this._nrSelectedFilters = this.selectedFilters.length;
 
 			        // send Event search to enable filtering
-              this.dispatchEvent(new CustomEvent('filter', {bubbles: true, composed: true}));
+              this.dispatchEvent(new CustomEvent('filter-selection', {bubbles: true, composed: true}));
 			      }
 
 			      _onDelete(event){
