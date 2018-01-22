@@ -71,7 +71,7 @@
          * zu speichern.
          */
         _saveEntity() {
-            this._send('POST');
+            this._send('POST', this.url, this.data);
         }
 
         /*
@@ -79,16 +79,20 @@
          * bestehende Entität zu aktualisieren.
          */
         _updateEntity() {
-            this._send('PUT');
+            this._send('PUT', this.url, this.data);
         }
 
         /**
          * Validiert die Formulardaten. Danach werden sie an die angegebene
          * URL als JSON Objekt gesendet.
          */
-        _send(verb) {
+        _send(verb, url, payload) {
             // check if the formcontent is valid against the defined rules
             var valid = this.shadowRoot.querySelector('#iform').validate();
+
+            console.log(verb);
+            console.log(url);
+            console.log(payload);
 
             if (valid) {
                 
@@ -96,16 +100,17 @@
                 var init = {
                     method: verb,
                     mode: 'cors',
-                    body: JSON.stringify(this.data)
+                    body: JSON.stringify(payload)
                 }
 
-                var request = new Request(this.url, init);
+                var request = new Request(url, init);
 
                 fetch(request)
                     .then(response => {
                         if (response.ok) {
                             this._resetForm();
-                            this._success(response.json());
+                            this._success();
+                            console.log(response.json());
                         } else {
                             this._error(response.status);
                         }
@@ -175,7 +180,7 @@
         /**
          * Der 'Toast', der bei Erfolg angezeigt wird.
          */
-        _success(result) {
+        _success() {
             this._successToast.text = this.t('form_success');
             this._successToast.open();
         }

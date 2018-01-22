@@ -49,7 +49,7 @@
                     value: false
                 },
                 /*
-                 * Die übergerdnete Datenstruktur, um das Datenbinding
+                 * Die übergeordnete Datenstruktur, um das Datenbinding
                  * durchgängig zu machen.
                  */
                 data: {
@@ -80,6 +80,14 @@
                  */
                 _newUrl: {
                     type: String
+                },
+                /*
+                 *
+                 */
+                _dialogdata: {
+                    type: Object,
+                    value: {},
+                    notify: true
                 }
             }
         }
@@ -190,7 +198,51 @@
          * 'on the fly' anlegen zu können.
          */
         _showDialog() {
+            // register HAL adapter in Traverson's media type registry
+            traverson.registerMediaType(TraversonJsonHalAdapter.mediaType,
+                    TraversonJsonHalAdapter);
+
+            // Dialog wird geöffnet
             this.shadowRoot.querySelector('paper-dialog').open();
+        }
+
+        _saveDialog() {
+
+            // register HAL adapter in Traverson's media type registry
+            traverson.registerMediaType(TraversonJsonHalAdapter.mediaType,
+                    TraversonJsonHalAdapter);
+
+            console.log("yeahhhh - closing");
+            console.log(this._newUrl);            
+            console.log('sendiiiing -> ' + JSON.stringify(this._dialogdata));
+            //this._send('POST', this._newUrl, this._dialogdata);
+
+            
+            traverson
+            .from(this._newUrl)
+            .follow('self')
+            .post(this._dialogdata, (error, response) => {
+                if(error) {
+                    if (error.name === traverson.errors.HTTPError) {
+                        // special handling for HTTP issues goes here
+                        console.warn('HTTP error...');
+                    } else if (error.name === traverson.errors.JSONError) {
+                        // special handling for JSON parsing problems goes here
+                        console.warn('JSON error...');
+                    } else if (error.name === traverson.errors.LinkError) {
+                        // special handling for invalid or missing links goes here
+                        console.warn('Link error...');
+                        console.log(JSON.stringify(error));
+                    } else {
+                        // not so special handling for all other error conditions goes here
+                        console.warn('an error...');
+                    }
+                } else {
+                    console.log('POST request sucessful')
+                    console.log('HTTP status code: ' + response.statusCode)
+                }
+            })
+            
         }
 
         /*

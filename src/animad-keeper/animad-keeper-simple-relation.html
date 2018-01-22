@@ -21,13 +21,23 @@
 <dom-module id="animad-keeper-simple-relation">
     <template>
         <style>
+            .animad-keeper-create-dialog-form {
+                @apply --animad-keeper-create-dialog-form;
+            }
         </style>
         <paper-dialog>
             <h2>Dialog Title</h2>
             <paper-dialog-scrollable>
-                <animad-keeper-create-form url="[[_newUrl]]" >
-                </animad-keeper-create-form>
+                <iron-form id="iform">
+                    <form class="animad-keeper-create-dialog-form">
+                        <animad-keeper-form data="{{_dialogdata}}" auto-validate></animad-keeper-form>
+                    </form>
+                </iron-form>
             </paper-dialog-scrollable>
+            <div class="buttons">
+                <paper-button dialog-dismiss on-tap="_resetForm">cancel</paper-button>
+                <paper-button dialog-confirm on-tap="_saveDialog">save</paper-button>
+            </div>
         </paper-dialog>
         <paper-autocomplete 
             label="[[t('relation_name')]]"
@@ -73,7 +83,7 @@
          * @polymer
          *
          */
-      class AnimadKeeperSimpleRelation extends mix(Polymer.Element).with(AnimadI18nBehavior, AnimadRelationBehavior) {
+      class AnimadKeeperSimpleRelation extends mix(Polymer.Element).with(AnimadI18nBehavior, AnimadRelationBehavior, AnimadFormBehavior) {
             static get is() { return 'animad-keeper-simple-relation'; }
 
             static get properties() {
