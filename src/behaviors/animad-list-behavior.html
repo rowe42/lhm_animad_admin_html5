@@ -121,36 +121,6 @@
                  value: ""
                },
                /*
-                 doPagination gibt an, ob die Datensätze seitenweise angezeigt werden (true)
-                 oder ob alle Datensätze gescrollt werden sollen (false). Standard: false
-               */
-               doPagination: {
-                 type: Boolean,
-                 value: false
-               },
-               /*
-                 pageSize gibt an, wieviele Zeilen bei seitenweiser Anzeige pro Seite
-                 angezeigt werden sollen. Standard: 20 Zeilen
-               */
-               pageSize: {
-                 type: Number,
-                 value: 20
-               },
-               /*
-                 _page ist die aktuell angezeigte Seite.
-               */
-               _page: {
-                 type: Number,
-                 value: 0
-               },
-               /*
-                 _pages ist die Anzahl der Seiten insgesamt
-               */
-               _pages: {
-                 type: Array,
-                 value: null
-               },
-               /*
                  multiSort gibt an, ob in der Tabelle nach mehreren Feldern sortiert
                  werden kann (multiSort = true) oder nicht (multiSort = false)
                */
@@ -258,7 +228,6 @@
         static get observers() {
           return [
             '_selectionChanged(_selectedItems.length)',
-            '_itemsChanged(_filteredData, _page)',
             '_dataChanged(data.length)',
             '_initLocalizedFilter(allFilters)'
           ]
@@ -271,9 +240,10 @@
           this._filter();
 
           // unselect all deleted items
-          for (var item of this._deleteItems) {
-            this.shadowRoot.querySelector('#animad-list').deselectItem(item);
-          }
+          this._deselectItems(this._deleteItems);
+//          for (var item of this._deleteItems) {
+//            this.shadowRoot.querySelector('#animad-list').deselectItem(item);
+//          }
 
           this._deleteItems = [];
           this._deleteInfos = "";
@@ -292,6 +262,16 @@
           }
         }
 
+        _deselectItems(items){
+          this._selectedItems = [];
+          
+          // this is necessary as vaadin-grid doesn't unselect itself
+          // when selected-items is assigned to an empty array...
+          for (var item of items) {
+            this.shadowRoot.querySelector('#animad-list').deselectItem(item);
+          }
+        }
+
         _hideSearchHeader(hideHeader){
           return hideHeader || this.loadCompleteData;
         }
@@ -302,27 +282,6 @@
         // Selected/Unselected items in list
         _selectionChanged(nrSelectedItems) {
           this._disableDeleteButton = this.disableDelete || (nrSelectedItems === 0);
-        }
-
-        // Changes shown items in grid
-        _itemsChanged(filteredData, page) {
-          if (this._filteredData && this._filteredData.length > 0) {
-            if (!this.doPagination) {
-              this.pageSize = this._filteredData.length;
-              return;
-            }
-            var records = this._filteredData;
-            this._pages = Array.apply( null, {length: Math.ceil(records.length / this.pageSize)} ).map(function(item, index) {
-              return index + 1;
-            });
-            var start = page * this.pageSize;
-            var end = (page + 1) * this.pageSize;
-            this.shadowRoot.querySelector('#animad-list').items = records.slice(start, end);
-          }
-          else {
-            this._pages = 0;
-            this._page = 0;
-          }
         }
 
         // Override to handle backendData individually
@@ -338,18 +297,6 @@
           if (this.loadCompleteData){
             this._loadData();
           }
-          /* Für Suche über Data-Provider (Lazy Loading)
-          this.size = 200;
-          this.dataProvider = function(params, callback) {
-            var xhr = new XMLHttpRequest();
-            xhr.onload = function() {
-              callback(JSON.parse(xhr.responseText).result);
-            };
-            var index = params.page * params.pageSize;
-            xhr.open('GET', 'https://demo.vaadin.com/demo-data/1.0/people?index=' + index + '&count=' + params.pageSize, true);
-            xhr.send();
-          }
-          */
         }
 
         // Set text to show in search field
@@ -429,26 +376,13 @@
           this._deleteInfo = "";
         }
 
-        // Pagination methods
-        _isSelected(page, item) {
-            return page === item - 1;
-        }
-        _select(e) {
-          this._page = e.model.item - 1;
-        }
-        _next() {
-          this._page = Math.min(this._pages.length - 1, this._page + 1);
-        }
-        _prev() {
-          this._page = Math.max(0, this._page - 1);
-        }
-
         // Backend methods
-
         // Search
         _loadData(){
           // TBD: error handling
           this._hasSearched = true;
+          this._deselectItems(this._selectedItems);
+
           fetch(this.url, {
               method: 'GET',
               headers: {
@@ -488,6 +422,7 @@
 
         _fetchFuzzyData(search){
           this._hasSearched = true;
+          this._deselectItems(this._selectedItems);
 
           var phrasesString = JSON.stringify(this._polyglot.phrases);
           var searchStr = this._transferCellnameToFieldname(phrasesString, search);
@@ -501,8 +436,9 @@
               }
             }
           ).then(response => response.json()
-          ).then(data => { this._backendData = data; }
-          ).catch(error => {
+          ).then(data => {
+            this._backendData = data;
+          }).catch(error => {
             this._error(this.t('list_action_search'), error.message);
           });
         }
