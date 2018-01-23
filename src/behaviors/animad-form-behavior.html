@@ -87,12 +87,8 @@
          * URL als JSON Objekt gesendet.
          */
         _send(verb, url, payload) {
-            // check if the formcontent is valid against the defined rules
+            // check if the form content is valid against the defined rules
             var valid = this.shadowRoot.querySelector('#iform').validate();
-
-            console.log(verb);
-            console.log(url);
-            console.log(payload);
 
             if (valid) {
                 

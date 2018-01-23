@@ -82,7 +82,8 @@
                     type: String
                 },
                 /*
-                 *
+                 * Das Formularobjekt für den Dialog um Relationen 'on the fly' 
+                 * erstellen zu können.
                  */
                 _dialogdata: {
                     type: Object,
@@ -198,50 +199,62 @@
          * 'on the fly' anlegen zu können.
          */
         _showDialog() {
-            // register HAL adapter in Traverson's media type registry
-            traverson.registerMediaType(TraversonJsonHalAdapter.mediaType,
-                    TraversonJsonHalAdapter);
-
             // Dialog wird geöffnet
             this.shadowRoot.querySelector('paper-dialog').open();
         }
 
+        /*
+         * 
+         */
         _saveDialog() {
 
-            // register HAL adapter in Traverson's media type registry
-            traverson.registerMediaType(TraversonJsonHalAdapter.mediaType,
-                    TraversonJsonHalAdapter);
+            // check if the form content is valid against the defined rules
+            var valid = this.shadowRoot.querySelector('#iform').validate();
 
-            console.log("yeahhhh - closing");
-            console.log(this._newUrl);            
-            console.log('sendiiiing -> ' + JSON.stringify(this._dialogdata));
-            //this._send('POST', this._newUrl, this._dialogdata);
-
-            
-            traverson
-            .from(this._newUrl)
-            .follow('self')
-            .post(this._dialogdata, (error, response) => {
-                if(error) {
-                    if (error.name === traverson.errors.HTTPError) {
-                        // special handling for HTTP issues goes here
-                        console.warn('HTTP error...');
-                    } else if (error.name === traverson.errors.JSONError) {
-                        // special handling for JSON parsing problems goes here
-                        console.warn('JSON error...');
-                    } else if (error.name === traverson.errors.LinkError) {
-                        // special handling for invalid or missing links goes here
-                        console.warn('Link error...');
-                        console.log(JSON.stringify(error));
-                    } else {
-                        // not so special handling for all other error conditions goes here
-                        console.warn('an error...');
-                    }
-                } else {
-                    console.log('POST request sucessful')
-                    console.log('HTTP status code: ' + response.statusCode)
+            if(valid) {            
+                // prepare request
+                var init = {
+                    method: 'POST',
+                    mode: 'cors',
+                    body: JSON.stringify(this._dialogdata)
                 }
-            })
+
+                var request = new Request(this._newUrl, init);
+
+                fetch(request)
+                    .then(response => {
+                        if (response.ok) {
+                            // Formular zurücksetzen
+                            if(typeof this._resetForm === "function") {
+                                this._resetForm();
+                            } else {
+                                console.warn('Cannot find mixin "*-form-behavior.html"!');
+                            }
+
+                            // 'Erfolgs' Toast öffnen    
+                            if(typeof this._success === "function") {
+                                this._success();
+                            } else {
+                                console.warn('Cannot find mixin "*-form-behavior.html"!');
+                            }
+
+                            // Wenn das Objekt erfolgreich gespeichert wurde, dann
+                            // kann es gleich in die Auswahlliste gepusht werden.    
+                            response.json().then((data) => {
+                                this.push('data.' + this._entity + 's', data);
+                            })
+                        } else {
+                            // Wenn ein Fehler aufgetreten ist, dann wird dieser 
+                            // über einen Toast dem nutzer mitgeteilt.
+                            if(typeof this._error === "function") {
+                                this._error(response.status);
+                            } else {
+                                console.warn('Cannot find mixin "*-form-behavior.html"!');
+                                console.error('Cannot call ' + this._newUrl + '. Error Code: ' + response.status);
+                            }
+                        }
+                    })
+            }
             
         }
 
