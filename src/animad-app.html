@@ -78,7 +78,7 @@
             }
         </style>
 
-        <app-location route="{{route}}" url-space-regex="^[[rootPath]]">
+        <app-location route="{{route}}" url-space-regex="^[[rootPath]]" use-hash-as-path>
         </app-location>
 
         <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}">
@@ -116,23 +116,23 @@
                             <!-- GENERATOR TODO - der Name und Icon sollte aus einer i18n Liste kommen -->
                             <paper-item>
                                 <iron-icon icon="animad-icons:face"></iron-icon>
-                                <a name="keepers-view" href="[[rootPath]]keepers-view">Keepers</a>
+                                <a name="keepers-view" href="#[[rootPath]]keepers-view">Keepers</a>
                             </paper-item>
                             <paper-item>
                                 <iron-icon icon="animad-icons:panda"></iron-icon>
-                                <a name="animals-view" href="[[rootPath]]animals-view">Animals</a>
+                                <a name="animals-view" href="#[[rootPath]]animals-view">Animals</a>
                             </paper-item>
                             <paper-item>
                                 <iron-icon icon="animad-icons:basecamp"></iron-icon>
-                                <a name="enclosures-view" href="[[rootPath]]enclosures-view">Enclosures</a>
+                                <a name="enclosures-view" href="#[[rootPath]]enclosures-view">Enclosures</a>
                             </paper-item>
                             <paper-item>
                                 <iron-icon icon="animad-icons:basecamp"></iron-icon>
-                                <a name="security-view" href="[[rootPath]]security-view">Security</a>
+                                <a name="security-view" href="#[[rootPath]]security-view">Security</a>
                             </paper-item>
                             <paper-item>
                                 <iron-icon icon="animad-icons:lightbulb-on"></iron-icon>
-                                <a name="security-view" href="[[rootPath]]keepers-formsamples-view">Keepers Forms</a>
+                                <a name="security-view" href="#[[rootPath]]keepers-formsamples-view">Keepers Forms</a>
                             </paper-item>            
                         </iron-selector>
                     </div>
@@ -181,6 +181,20 @@
                 return [
                     '_routePageChanged(routeData.page)',
                 ];
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+                
+                //functionality to toggle the menu on and off
+                var drawerLayout = this.$.drawerLayout;
+                this.$.toggle.addEventListener('click', function () {
+                    if (drawerLayout.forceNarrow || !drawerLayout.narrow) {
+                        drawerLayout.forceNarrow = !drawerLayout.forceNarrow;
+                    } else {
+                        drawerLayout.drawer.toggle();
+                    }
+                });
             }
 
             _routePageChanged(page) {
