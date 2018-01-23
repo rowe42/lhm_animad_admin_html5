@@ -1,5 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
 <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
@@ -40,81 +41,85 @@
             }
         </style>
         <div class="animad-keeper-form">
-            <paper-input 
-                class="animad-keeper-firstName-field"
-                id="keeper-firstName"
-                type="text" 
-                name="firstName" 
-                label="[[t('firstName')]]" 
-                value="{{data.firstName}}"
-                auto-validate="[[autoValidate]]"
-                error-message="[[t('firstName_error')]]"
-                minlength="3" 
-                maxlength="30" 
-                required>
-            </paper-input>
-            <paper-input 
-                class="animad-keeper-lastName-field"
-                id="keeper-lastName"
-                type="text" 
-                name="lastName" 
-                label="[[t('lastName')]]" 
-                value="{{data.lastName}}" 
-                auto-validate="[[autoValidate]]"
-                error-message="[[t('lastName_error')]]"
-                minlength="3" 
-                maxlength="30" 
-                required>
-            </paper-input>
-            <paper-input
-                class="animad-keeper-employmentDate-field"
-                id="keeper-employmentDate"
-                type="date" 
-                name="employmentDate"  
-                label="[[t('employmentDate')]]" 
-                value="{{data.employmentDate}}" 
-                auto-validate="[[autoValidate]]"
-                error-message="[[t('employmentDate_error')]]"
-                pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" 
-                required>
-            </paper-input>
-            <paper-dropdown-menu 
-                class="animad-keeper-skill-field"
-                id="keeper-skill" 
-                label="[[t('skill')]]" 
-                value="{{data.skill}}" 
-                required>
-                <paper-listbox slot="dropdown-content">
-                    <paper-item>Putzen</paper-item>
-                    <paper-item>Füttern</paper-item>
-                    <paper-item>Verwaltung</paper-item>
-                </paper-listbox>
-            </paper-dropdown-menu>
-            <paper-input
-                class="animad-keeper-birthday-field" 
-                id="keeper-birthday"
-                type="date" 
-                name="birthday" 
-                label="[[t('birthday')]]" 
-                value="{{data.birthday}}" 
-                auto-validate="[[autoValidate]]"
-                error-message="[[t('birthday_error')]]"
-                pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" 
-                required>
-            </paper-input>
-            <paper-input
-                class="animad-keeper-salary-field" 
-                id="keeper-salary"
-                type="number" 
-                name="salary" 
-                label="[[t('salary')]]" 
-                value="{{data.salary}}" 
-                auto-validate="[[autoValidate]]"
-                error-message="[[t('salary_error')]]"
-                step="0.01" 
-                min="0"
-                required>
-            </paper-input>
+            <iron-form id="iform">
+                <form>
+                    <paper-input 
+                        class="animad-keeper-firstName-field"
+                        id="keeper-firstName"
+                        type="text" 
+                        name="firstName" 
+                        label="[[t('firstName')]]" 
+                        value="{{data.firstName}}"
+                        auto-validate="[[autoValidate]]"
+                        error-message="[[t('firstName_error')]]"
+                        minlength="3" 
+                        maxlength="30" 
+                        required>
+                    </paper-input>
+                    <paper-input <link rel="import" href="../../bower_components/iron-form/iron-form.html"></paper-input>
+                        class="animad-keeper-lastName-field"
+                        id="keeper-lastName"
+                        type="text" 
+                        name="lastName" 
+                        label="[[t('lastName')]]" 
+                        value="{{data.lastName}}" 
+                        auto-validate="[[autoValidate]]"
+                        error-message="[[t('lastName_error')]]"
+                        minlength="3" 
+                        maxlength="30" 
+                        required>
+                    </paper-input>
+                    <paper-input
+                        class="animad-keeper-employmentDate-field"
+                        id="keeper-employmentDate"
+                        type="date" 
+                        name="employmentDate"  
+                        label="[[t('employmentDate')]]" 
+                        value="{{data.employmentDate}}" 
+                        auto-validate="[[autoValidate]]"
+                        error-message="[[t('employmentDate_error')]]"
+                        pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" 
+                        required>
+                    </paper-input>
+                    <paper-dropdown-menu 
+                        class="animad-keeper-skill-field"
+                        id="keeper-skill" 
+                        label="[[t('skill')]]" 
+                        value="{{data.skill}}" 
+                        required>
+                        <paper-listbox slot="dropdown-content">
+                            <paper-item>Putzen</paper-item>
+                            <paper-item>Füttern</paper-item>
+                            <paper-item>Verwaltung</paper-item>
+                        </paper-listbox>
+                    </paper-dropdown-menu>
+                    <paper-input
+                        class="animad-keeper-birthday-field" 
+                        id="keeper-birthday"
+                        type="date" 
+                        name="birthday" 
+                        label="[[t('birthday')]]" 
+                        value="{{data.birthday}}" 
+                        auto-validate="[[autoValidate]]"
+                        error-message="[[t('birthday_error')]]"
+                        pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" 
+                        required>
+                    </paper-input>
+                    <paper-input
+                        class="animad-keeper-salary-field" 
+                        id="keeper-salary"
+                        type="number" 
+                        name="salary" 
+                        label="[[t('salary')]]" 
+                        value="{{data.salary}}" 
+                        auto-validate="[[autoValidate]]"
+                        error-message="[[t('salary_error')]]"
+                        step="0.01" 
+                        min="0"
+                        required>
+                    </paper-input>
+                </form>
+            </iron-form>
         </div>
     </template>
     <script>
@@ -185,6 +190,15 @@
                         value: 'keeper'
                     }
                 }
+            }
+
+            /*
+             * Diese Methode validiert das Formular. Sie kann von
+             * 'aussen' aufgerufen werden. 
+             */
+             validate() {
+                var valid = this.shadowRoot.querySelector('#iform').validate();
+                return valid;
             }
         }
 

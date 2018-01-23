@@ -1,7 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="../../bower_components/iron-form/iron-form.html">
 <link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
@@ -38,12 +37,10 @@
         <!--
             Das Formular.
         -->
-        <iron-form id="iform">
-            <form class="animad-keeper-form">
-                <animad-keeper-form data="{{data}}" readonly="[[readform]]" auto-validate></animad-keeper-form>
-                <!-- GENERATOR hier kommen die Templates für die Relationen hin -->
-            </form>
-        </iron-form>
+        <form class="animad-keeper-form">
+            <animad-keeper-form data="{{data}}" readonly="[[readform]]" auto-validate></animad-keeper-form>
+            <!-- GENERATOR hier kommen die Templates für die Relationen hin -->
+        </form>
         <!-- 
             buttons
         -->
