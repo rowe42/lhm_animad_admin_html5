@@ -1,6 +1,212 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../bower_components/nebula-i18n/nebula-i18n.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/custom-style.html">
+<link rel="import" href="../../bower_components/shadycss/apply-shim.html">
+
+<link rel="import" href="../behaviors/animad-i18n-behavior.html">
+<link rel="import" href="../behaviors/mixin.html">
+
 <dom-module id="animad-animal-form">
     <template>
-        <style></style>
-        
+        <style is="custom-style">
+            .animad-animal-form {
+                @apply --animad-animal-form;
+            }
+
+            .animad-animal-name-field {
+                @apply --animad-animal-name-field;
+            }
+
+            .animad-animal-species-field {
+                @apply --animad-animal-species-field;
+            }
+
+            .animad-animal-gender-field {
+                @apply --animad-animal-gender-field;
+            }
+
+            .animad-animal-birthDate-field {
+                @apply --animad-animal-birthDate-field;
+            }
+
+            .animad-animal-weight-field {
+                padding-bottom: 20px;
+                @apply --animad-animal-weight-field;
+            }
+
+            .animad-animal-alive-field {
+                @apply --animad-animal-alive-field;
+            }
+        </style>
+        <div class="animad-animal-form">
+            <!-- Animal Name -->
+            <paper-input 
+                class="animad-animal-name-field" 
+                id="animal-name" 
+                type="text" 
+                name="name" 
+                label="[[t('name')]]"
+                value="{{data.name}}"
+                readonly="[[readonly]]" 
+                auto-validate="[[autoValidate]]" 
+                error-message="[[t('name_error')]]" 
+                minlength="3" 
+                maxlength="30"
+                required>
+            </paper-input>
+            <!-- Animal Species -->
+            <paper-dropdown-menu 
+                class="animad-animal-species-field" 
+                id="animal-species" 
+                name="species" 
+                label="[[t('species')]]*" 
+                required>
+                <paper-listbox 
+                    slot="dropdown-content">
+                    <!-- 
+                        TODO: hier die Werte über die URL (siehe properties) holen und dann 
+                        per dom repeat hier anzeigen.
+                        TODO: Vorselektion
+                    -->
+                    <paper-item>Barrakuda</paper-item>
+                    <paper-item>Elephant</paper-item>
+                    <paper-item>Pinguin</paper-item>
+                </paper-listbox>
+            </paper-dropdown-menu>
+            <!-- Animal Birthdate -->
+            <paper-input 
+                class="animad-animal-birthDate-field" 
+                id="animal-birthDate" 
+                type="date" step="1" 
+                name="birthDate" 
+                label="[[t('birthDate')]]"
+                value="{{data.birthday}}" 
+                readonly="[[readonly]]" 
+                auto-validate="[[autoValidate]]" 
+                error-message="[[t('birthDate_error')]]"
+                required>
+            </paper-input>
+            <!-- Animal Gender -->
+            <paper-dropdown-menu 
+                class="animad-animal-gender-field" 
+                id="animal-gender"
+                name="gender" 
+                label="[[t('gender')]]*" 
+                required>
+                <paper-listbox 
+                    slot="dropdown-content">
+                    <!-- 
+                        TODO: hier die Werte über die URL (siehe properties) holen und dann 
+                        per dom repeat hier anzeigen.
+                        TODO: Vorselektion
+                    -->
+                    <paper-item>female</paper-item>
+                    <paper-item>male</paper-item>
+                </paper-listbox>
+            </paper-dropdown-menu>
+            <!-- Animal Weight -->
+            <paper-input
+                class="animad-animal-weight-field"
+                id="animal-weight" 
+                type="number" 
+                name="weight" 
+                label="[[t('weight')]]" 
+                value="{{data.weight}}"
+                readonly="[[readonly]]" 
+                auto-validate="[[autoValidate]]" 
+                error-message="[[t('weight_error')]]" 
+                min="1" 
+                max="50000"
+                required>
+                <div slot="suffix">KG</div>
+            </paper-input>
+            <!-- Animal Alive -->
+            <paper-checkbox 
+                class="animad-animal-alive-field" 
+                id="animal-alive" 
+                name="alive" 
+                checked="{{data.alive}}">
+            [[t('alive')]]
+            </paper-checkbox>
+        </div>
     </template>
+    <script>
+        /**
+         * # Formular für die Entität 'Animal'
+         * `<animad-anclosure-form>` stellt alle einfachen Attribute zur Verfügung, die man für das Bearbeiten  eines
+         * 'Animal' benötigt.
+         * ## Anwendung in der Applikation
+         * ```html
+         * <link rel="import" href="[Pfad zu meinen Abhängigkeiten]/animad-animal/animad-animal-form.html">
+         * ...
+         * <animad-animal-form id="updateform" data="{{data}}" auto-validate></animad-animal-form>
+         * ...
+         * ```
+         * 
+         * @customElement
+         * @polymer
+         *
+         */
+        class AnimadAnimalForm extends mix(Polymer.Element).with(AnimadI18nBehavior) {
+            static get is() { return 'animad-animal-form'; }
+
+            static get properties() {
+                return {
+                    /*
+                     * Das Nutzdatenobjekt.
+                     */
+                    data: {
+                        type: Object,
+                        value() {
+                            return {}
+                        }
+                    },
+                    /*
+                     * Soll das Formular automatisch validiert werden?
+                     */
+                    autoValidate: {
+                        type: Boolean,
+                        value: false
+                    },
+                    /*
+                     * Soll das Formular nur lesend dargestellt werden?
+                     */
+                    readonly: {
+                        type: Boolean,
+                        value: false
+                    },
+                    /*
+                     * Das '_domain' property wird benötigt, um den richtigen Pfad 
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * benötigt, in dem die I18nBehavior verwendet wird.
+                     *
+                     * GENERATOR das Attribute value generieren
+                     */
+                    _domain: {
+                        type: String,
+                        value: 'animad'
+                    },
+                    /*
+                     * Das '_entity' property wird benötigt, um den richtigen Pfad 
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * benötigt, in dem die I18nBehavior verwendet wird.
+                     *
+                     * GENERATOR das Attribute value generieren
+                     */
+                    _entity: {
+                        type: String,
+                        value: 'animal'
+                    }
+                }
+            }
+        }
+
+        customElements.define(AnimadAnimalForm.is, AnimadAnimalForm);
+    </script>
 </dom-module>
