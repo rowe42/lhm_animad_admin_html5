@@ -124,7 +124,10 @@
         "filter_salary_less_1000": "less than 1000",
         "filter_salary_1000_2000": "from 1000 to 2000",
         "filter_salary_2000_3000": "from 2000 to 3000",
-        "filter_salary_more_3000": "more than 3000"
+        "filter_salary_more_3000": "more than 3000",
+        "relation_dialog_title": "Add new Keeper",
+        "relation_dialog_cancel": "Cancel",
+        "relation_dialog_save": "Save"
       }
     }
   },
@@ -259,7 +262,10 @@
         "filter_salary_less_1000": "weniger als 1000",
         "filter_salary_1000_2000": "von 1000 bis 2000",
         "filter_salary_2000_3000": "von 2000 bis 3000",
-        "filter_salary_more_3000": "mehr als 3000"
+        "filter_salary_more_3000": "mehr als 3000",
+        "relation_dialog_title": "Neuen Wärter anlegen",
+        "relation_dialog_cancel": "Abbrechen",
+        "relation_dialog_save": "Speichern"
       }
     }
   }

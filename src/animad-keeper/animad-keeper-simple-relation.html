@@ -26,7 +26,7 @@
             }
         </style>
         <paper-dialog>
-            <h2>Dialog Title</h2>
+            <h2>[[t('relation_dialog_title')]]</h2>
             <paper-dialog-scrollable>
                 <iron-form id="iform">
                     <form class="animad-keeper-create-dialog-form">
@@ -35,8 +35,8 @@
                 </iron-form>
             </paper-dialog-scrollable>
             <div class="buttons">
-                <paper-button dialog-dismiss on-tap="_resetForm">cancel</paper-button>
-                <paper-button dialog-confirm on-tap="_saveDialog">save</paper-button>
+                <paper-button dialog-dismiss on-tap="_resetForm">[[t('relation_dialog_cancel')]]</paper-button>
+                <paper-button dialog-confirm on-tap="_saveDialog">[[t('relation_dialog_save')]]</paper-button>
             </div>
         </paper-dialog>
         <paper-autocomplete 
