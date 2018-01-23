@@ -38,9 +38,9 @@
         <!--
             Das vorgefertigte Formular.
         -->
-        <iron-form id="iform">
+        <!--<iron-form id="iform">-->
             <form class="animad-enclosure-create-form">
-                <animad-enclosure-form data="{{data}}" auto-validate></animad-enclosure-form>
+                <animad-enclosure-form id="customform" data="{{data}}" auto-validate></animad-enclosure-form>
                 <!-- GENERATOR hier kommen die Templates für die Relationen hin -->
                 <template is="dom-if" if="{{keepers}}">
                     <animad-keeper-simple-relation
@@ -49,7 +49,7 @@
                     preload></animad-keeper-relation>
                 </template>
             </form>
-        </iron-form>
+        <!--</iron-form>-->
         <!-- 
             buttons
         -->

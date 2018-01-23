@@ -88,7 +88,7 @@
          */
         _send(verb, url, payload) {
             // check if the form content is valid against the defined rules
-            var valid = this.shadowRoot.querySelector('#iform').validate();
+            var valid = this.shadowRoot.querySelector('#customform').validate();
 
             if (valid) {
                 
@@ -112,7 +112,7 @@
                         }
                     })
             } else {
-                console.log("form is not valid...");
+                console.warn("form is not valid...");
                 this._warningToast.text = this.t('form_validation');
                 this._warningToast.open();
             }

@@ -39,17 +39,15 @@
         <!--
             Das Formular.
         -->
-        <iron-form id="iform">
-            <form class="animad-enclosure-form">
-                <animad-enclosure-form data="{{data}}" readonly="[[readform]]" auto-validate></animad-enclosure-form>
-                <template is="dom-if" if="[[keepers]]">
-                    <animad-keeper-simple-relation
-                    data="{{data}}"
-                    traversal="{{_traversal}}"
-                    preload></animad-keeper-relation>
-                </template>
-            </form>
-        </iron-form>
+        <form class="animad-enclosure-update-form">
+            <animad-enclosure-form id="customform" data="{{data}}" readonly="[[readform]]" auto-validate></animad-enclosure-form>
+            <template is="dom-if" if="[[keepers]]">
+                <animad-keeper-simple-relation
+                data="{{data}}"
+                traversal="{{_traversal}}"
+                preload></animad-keeper-relation>
+            </template>
+        </form>
         <!-- 
             buttons
         -->
