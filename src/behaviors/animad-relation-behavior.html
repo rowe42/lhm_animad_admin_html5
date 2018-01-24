@@ -1,5 +1,4 @@
-<link rel="import" href="../common-libs/traverson.html">
-<link rel="import" href="../common-libs/traverson-hal.html">
+<link rel="import" href="../common-libs/halson.html">
 
 <script>
     /**
@@ -54,13 +53,7 @@
                  */
                 data: {
                     type: Object,
-                    notify: true
-                },
-                /*
-                 * Das Traversal Objekt um die Daten initial zu laden.
-                 */
-                traversal: {
-                    type: Object,
+                    notify: true,
                     observer: '_loadRelationData'
                 },
                 /*
@@ -118,13 +111,9 @@
          * @param   das neue Traversal Objekt
          * @param   der bisherige Wert des Propeties (wird nicht benötigt)
          */
-        _loadRelationData(traversal, oldV) {
+        _loadRelationData(data, oldV) {
 
-            if (traversal) {
-
-                // register HAL adapter in Traverson's media type registry
-                traverson.registerMediaType(TraversonJsonHalAdapter.mediaType,
-                    TraversonJsonHalAdapter);
+            if (data) {
 
                 // Der Link Alias hat immer die Form
                 // '[Name der Entity]List'. Dabei ist
@@ -136,60 +125,75 @@
                 // in das 'data' Property gehängt.
                 var path = 'data.' + this._entity + 's';
 
+                // Das HAL Objekt wird eingelesen.
+                var hal = halson(data);
+
                 // Die bereits verknüpften Relationen 
-                // werden geladen.
-                traversal
-                    .continue()
-                    .follow(link)
-                    .getResource((error, resource) => {
-                        if (error) {
-                            console.warn('No luck with ' + link);
-                        } else {
-                            var array = resource._embedded[this._entity + 's'];
-                            this.set(path, array);
-                        }
-                    });
+                // werden geladen. Wenn sie vorhanden sind.
+                var entityRelations = hal.getLink(this._entity + 'List');
+                if (entityRelations) {
+                    var init = {
+                        method: 'GET',
+                        mode: 'cors'
+                    }
+
+                    var request = new Request(entityRelations.href, init);
+
+                    fetch(request)
+                        .then(response => {
+                            if (response.ok) {
+                                response.json().then((data) => {
+                                    var array = data._embedded[this._entity + 's'];
+                                    this.set(path, array);
+                                });
+                            } else {
+                                this._error(response.status);
+                            }
+                        })
+                }
 
                 // Es wird initial geprüft, ob in der Payload ein Link
                 // vorhanden ist, der es ermöglicht Relationsobjekte
                 // 'on the fly' zu erstellen.
-                traversal
-                    .continue()
-                    .follow(this._entity + 's')
-                    .getUrl((error, url) => {
-                        if(error) {
-                            console.warn('cannot find alias: ' + this._entity + 's');
-                        } else {
-                            this._new = true;
-                            this._newUrl = url;
+                var allRelations = hal.getLink(this._entity + 's');
+                if (allRelations) {
+                    var url = allRelations.href;
+                    this.set('_new', true);
+                    this.set('_newUrl', url);
+
+                    // Wenn die Auswahlliste vorgeladen werden soll, dann
+                    // kann dies über den '[Name der Entity]s' Link gemacht 
+                    // werden. 
+                    if (this.preload) {
+                        var init = {
+                            method: 'GET',
+                            mode: 'cors'
                         }
-                    });
 
-                // Wenn die Auswahlliste vorgeladen werden soll, dann
-                // kann dies über den '[Name der Entity]s' Link gemacht 
-                // werden. 
-                if (this.preload) {
-                    traversal
-                        .continue()
-                        .follow(this._entity + 's')
-                        .getResource((error, resource) => {
-                            if (error) {
-                                console.error('No luck with ' + this._entity + 's');
-                            } else {
-                                var array = resource._embedded[this._entity + 's'];
-                                array.forEach((element) => {
-                                    // der formatierte Text zur Auswahl
-                                    var text = this._formatSuggester(element);
-                                    // die id
-                                    var value = element._links.self.href;
+                        var request = new Request(url, init);
 
-                                    // Die beiden Werte als Objekt in das 'source' Array 
-                                    // speichern. Dieses Array ist Quelle für die 
-                                    // Autocomplete Componente.
-                                    this.push('source', { "text": text, "value": value, "entity": element })
-                                });
-                            }
-                        });
+                        fetch(request)
+                            .then(response => {
+                                if (response.ok) {
+                                    response.json().then((data) => {
+                                        var array = data._embedded[this._entity + 's'];
+                                        array.forEach((element) => {
+                                            // der formatierte Text zur Auswahl
+                                            var text = this._formatSuggester(element);
+                                            // die id
+                                            var value = element._links.self.href;
+
+                                            // Die beiden Werte als Objekt in das 'source' Array 
+                                            // speichern. Dieses Array ist Quelle für die 
+                                            // Autocomplete Componente.
+                                            this.push('source', { "text": text, "value": value, "entity": element })
+                                        });
+                                    });
+                                } else {
+                                    this._error(response.status);
+                                }
+                            })
+                    }
                 }
             }
         }
@@ -213,7 +217,7 @@
             // check if the form content is valid against the defined rules
             var valid = this.shadowRoot.querySelector('#iform').validate();
 
-            if(valid) {            
+            if (valid) {
                 // prepare request
                 var init = {
                     method: 'POST',
@@ -223,18 +227,20 @@
 
                 var request = new Request(this._newUrl, init);
 
+                
+
                 fetch(request)
                     .then(response => {
                         if (response.ok) {
                             // Formular zurücksetzen
-                            if(typeof this._resetForm === "function") {
-                                this._resetForm();
+                            if (typeof this._resetForm === "function") {
+                                //this._resetForm();
                             } else {
                                 console.warn('Cannot find mixin "*-form-behavior.html"!');
                             }
 
                             // 'Erfolgs' Toast öffnen    
-                            if(typeof this._success === "function") {
+                            if (typeof this._success === "function") {
                                 this._success();
                             } else {
                                 console.warn('Cannot find mixin "*-form-behavior.html"!');
@@ -242,13 +248,19 @@
 
                             // Wenn das Objekt erfolgreich gespeichert wurde, dann
                             // kann es gleich in die Auswahlliste gepusht werden.    
-                            response.json().then((data) => {
-                                this.push('data.' + this._entity + 's', data);
+                            response.json().then((d) => {
+                                // Wenn noch nicht vorhanden, dann leeres Array erzeugen
+                                if(!this.data[this._entity + 's']) {
+                                    this.set('data.' + this._entity + 's', []);
+                                }
+                                // Relation speichern
+                                this.push('data.' + this._entity + 's', d);
                             })
+                            
                         } else {
                             // Wenn ein Fehler aufgetreten ist, dann wird dieser 
                             // über einen Toast dem nutzer mitgeteilt.
-                            if(typeof this._error === "function") {
+                            if (typeof this._error === "function") {
                                 this._error(response.status);
                             } else {
                                 console.warn('Cannot find mixin "*-form-behavior.html"!');
@@ -257,7 +269,7 @@
                         }
                     })
             }
-            
+
         }
 
         /*
