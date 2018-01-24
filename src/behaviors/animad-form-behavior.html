@@ -17,9 +17,16 @@
                 /**
                  * Url um die Formulardaten zu laden.
                  */
-                url: {
+                loadUrl: {
                     type: String,
                     observer: '_loadFormData'
+                },
+                /**
+                 * Url um die Formulardaten zu speichern.
+                 */
+                saveUrl: {
+                    type: String,
+                    observer: '_loadOptions'
                 },
                 /**
                  * Das leere Objekt.
@@ -71,7 +78,7 @@
          * zu speichern.
          */
         _saveEntity() {
-            this._send('POST', this.url, this.data);
+            this._send('POST', this.saveUrl, this.data);
         }
 
         /*
@@ -79,7 +86,7 @@
          * bestehende Entität zu aktualisieren.
          */
         _updateEntity() {
-            this._send('PUT', this.url, this.data);
+            this._send('PUT', this.saveUrl, this.data);
         }
 
         /**
@@ -91,7 +98,7 @@
             var valid = this.shadowRoot.querySelector('#customform').validate();
 
             if (valid) {
-                
+
                 // prepare request
                 var init = {
                     method: verb,
@@ -125,16 +132,16 @@
          * Property gespeichert. Danach werden alle benötigten Links 
          * aufgelöst.
          */
-        _loadFormData(url, oldV) {
+        _loadFormData(loadUrl, oldV) {
 
-            if (url) {
+            if (loadUrl) {
 
                 // register HAL adapter in Traverson's media type registry
                 traverson.registerMediaType(TraversonJsonHalAdapter.mediaType,
                     TraversonJsonHalAdapter);
 
                 traverson
-                    .from(url)
+                    .from(loadUrl)
                     .jsonHal()
                     .get((error, document, traversal) => {
                         if (error) {
@@ -152,16 +159,40 @@
             }
         }
 
+        _loadOptions(saveUrl, oldV) {
+            // prepare request
+            var init = {
+                method: 'OPTIONS',
+                mode: 'cors'
+            }
+
+            console.log("the url -> " + saveUrl);
+
+            var request = new Request(saveUrl, init);
+
+            fetch(request)
+                .then(response => {
+                    if (response.ok) {
+                        response.json().then((data) => {
+                            console.log("url -> " + JSON.stringify(data._links));
+                            console.log("data -> " + JSON.stringify(data)); 
+                            //this.set('_traversal', JSON.stringify(data));
+                        });
+                    } else {
+                        this._error(response.status);
+                    }
+                })
+        }
+
         _reloadForm() {
-            this._loadFormData(this.url, null);
+            this._loadFormData(this.loadUrl, null);
         }
 
         /**
          * Setzt das Formular zurück.
          */
         _resetForm() {
-            this.shadowRoot.querySelector('#iform').reset();
-            this._reloadForm();
+            this.set('data', {});
         }
 
         /**

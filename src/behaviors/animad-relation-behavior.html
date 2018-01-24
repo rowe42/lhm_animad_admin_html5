@@ -155,10 +155,10 @@
                 // 'on the fly' zu erstellen.
                 traversal
                     .continue()
-                    .follow(this._entity + 'New')
+                    .follow(this._entity + 's')
                     .getUrl((error, url) => {
                         if(error) {
-                            console.warn('cannot find alias: ' + this._entity + 'New');
+                            console.warn('cannot find alias: ' + this._entity + 's');
                         } else {
                             this._new = true;
                             this._newUrl = url;

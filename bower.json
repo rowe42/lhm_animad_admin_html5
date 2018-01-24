@@ -35,7 +35,8 @@
     "traverson": "^6.0.3",
     "web-animations-js": "^2.3.1",
     "paper-dialog": "PolymerElements/paper-dialog#^2.0.1",
-    "paper-dialog-scrollable": "PolymerElements/paper-dialog-scrollable#^2.1.0"
+    "paper-dialog-scrollable": "PolymerElements/paper-dialog-scrollable#^2.1.0",
+    "halson": "^3.0.0"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0",
