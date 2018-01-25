@@ -166,6 +166,17 @@
             </paper-icon-button>
           </template>
         </vaadin-grid-column>
+
+        <vaadin-grid-column>
+          <template>
+            <paper-icon-button
+              icon="animad-icons:mode-edit"
+              id="[[item.id]]"
+              hidden="[[hideEdit]]"
+              on-click="_editRow">
+            </paper-icon-button>
+          </template>
+        </vaadin-grid-column>
       </vaadin-grid>
 
     </template>
@@ -263,8 +274,16 @@
         }
 
         // proteceted methods
-        _handleNew() {
-          console.log("_handleNew");
+        _handleNew(event) {
+          console.log("_handleNew", event);
+          window.location = '/keepers-view/create'
+          // TBD
+        }
+
+        _editRow(event){
+          console.log('_editRow', event.target.id);
+          window.location = '/keepers-view/edit/'+event.target.id
+
           // TBD
         }
 

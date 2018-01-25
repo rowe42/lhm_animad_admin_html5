@@ -2,7 +2,7 @@
 
 <script>
     /**
-     * Behavior, um einem Relation Element mit den notwendigen Eigenschaften 
+     * Behavior, um einem Relation Element mit den notwendigen Eigenschaften
      * auszustatten, um Relationen zu einem Zielobjekt hinzu zu fügen und
      * wieder zu entfernen. Um korrekt funktionieren zu können,
      * muss das Element die Properties 'domain' und 'entity' setzen:
@@ -17,9 +17,9 @@
      *    value: 'enclosure'
      *  }
      * ```
-     * 
+     *
      * Eingebunden wird das Mixin auf Klassenebene.
-     * 
+     *
      * @polymerMixinClass
      */
     /* @polymerMixin */
@@ -39,8 +39,8 @@
                 /*
                  * Legt fest, ob die Daten vorab in den Speicher
                  * geladen werden. Dies ist bei kleinen Datenmengen
-                 * durchaus sinnvoll. Die Daten werden in dem 
-                 * Augenblick geladen, in dem die Komponente 
+                 * durchaus sinnvoll. Die Daten werden in dem
+                 * Augenblick geladen, in dem die Komponente
                  * gerendert wird.
                  */
                 preload: {
@@ -57,10 +57,10 @@
                     observer: '_loadRelationData'
                 },
                 /*
-                 * Wenn in der HAL Nachricht ein Link vorhanden ist, der 
-                 * es ermöglicht ein neues Objekt für die Relation zu 
+                 * Wenn in der HAL Nachricht ein Link vorhanden ist, der
+                 * es ermöglicht ein neues Objekt für die Relation zu
                  * erstellen, dann wird dieses Property auf 'true' gesetzt.
-                 * Dadurch wird ein 'new' Button neben dem Suchfeld 
+                 * Dadurch wird ein 'new' Button neben dem Suchfeld
                  * dargestellt.
                  */
                 _new: {
@@ -75,7 +75,7 @@
                     type: String
                 },
                 /*
-                 * Das Formularobjekt für den Dialog um Relationen 'on the fly' 
+                 * Das Formularobjekt für den Dialog um Relationen 'on the fly'
                  * erstellen zu können.
                  */
                 _dialogdata: {
@@ -97,14 +97,14 @@
 
 
             // Die generische Query Methode muss
-            // durch eine eigene Methode überschrieben 
+            // durch eine eigene Methode überschrieben
             // werden.
             e.queryFn = this._querySimple;
         }
 
         /*
-         * Wird ein Traversal Objekt übergeben, dann werden automatisch 
-         * die vorhandenen Daten geladen. Dies sind einerseits die zur 
+         * Wird ein Traversal Objekt übergeben, dann werden automatisch
+         * die vorhandenen Daten geladen. Dies sind einerseits die zur
          * Entität gehörenden Relationen, andererseits werden die möglichen
          * Relationen vorgeladen (sofern das 'preload' Attribut gesetzt ist).
          *
@@ -121,14 +121,14 @@
                 // und singular.
                 var link = this._entity + 'List';
 
-                // Bereits vorhandene Relationen werden 
+                // Bereits vorhandene Relationen werden
                 // in das 'data' Property gehängt.
                 var path = 'data.' + this._entity + 's';
 
                 // Das HAL Objekt wird eingelesen.
                 var hal = halson(data);
 
-                // Die bereits verknüpften Relationen 
+                // Die bereits verknüpften Relationen
                 // werden geladen. Wenn sie vorhanden sind.
                 var entityRelations = hal.getLink(this._entity + 'List');
                 if (entityRelations) {
@@ -162,8 +162,8 @@
                     this.set('_newUrl', url);
 
                     // Wenn die Auswahlliste vorgeladen werden soll, dann
-                    // kann dies über den '[Name der Entity]s' Link gemacht 
-                    // werden. 
+                    // kann dies über den '[Name der Entity]s' Link gemacht
+                    // werden.
                     if (this.preload) {
                         var init = {
                             method: 'GET',
@@ -183,8 +183,8 @@
                                             // die id
                                             var value = element._links.self.href;
 
-                                            // Die beiden Werte als Objekt in das 'source' Array 
-                                            // speichern. Dieses Array ist Quelle für die 
+                                            // Die beiden Werte als Objekt in das 'source' Array
+                                            // speichern. Dieses Array ist Quelle für die
                                             // Autocomplete Componente.
                                             this.push('source', { "text": text, "value": value, "entity": element })
                                         });
@@ -199,7 +199,7 @@
         }
 
         /*
-         * Öffnet den Dialog um ein neues Relationsobjekt 
+         * Öffnet den Dialog um ein neues Relationsobjekt
          * 'on the fly' anlegen zu können.
          */
         _showDialog() {
@@ -208,9 +208,9 @@
         }
 
         /*
-         * Schließt das Dialogfenster und versucht den inhalt des Formulares 
+         * Schließt das Dialogfenster und versucht den inhalt des Formulares
          * zu speichern. Gelingt dies, so wird das Objekt sofort der Relationen
-         * Liste hinzugefügt. 
+         * Liste hinzugefügt.
          */
         _saveDialog() {
 
@@ -227,7 +227,7 @@
 
                 var request = new Request(this._newUrl, init);
 
-                
+
 
                 fetch(request)
                     .then(response => {
@@ -239,7 +239,7 @@
                                 console.warn('Cannot find mixin "*-form-behavior.html"!');
                             }
 
-                            // 'Erfolgs' Toast öffnen    
+                            // 'Erfolgs' Toast öffnen
                             if (typeof this._success === "function") {
                                 this._success();
                             } else {
@@ -247,7 +247,7 @@
                             }
 
                             // Wenn das Objekt erfolgreich gespeichert wurde, dann
-                            // kann es gleich in die Auswahlliste gepusht werden.    
+                            // kann es gleich in die Auswahlliste gepusht werden.
                             response.json().then((d) => {
                                 // Wenn noch nicht vorhanden, dann leeres Array erzeugen
                                 if(!this.data[this._entity + 's']) {
@@ -256,9 +256,9 @@
                                 // Relation speichern
                                 this.push('data.' + this._entity + 's', d);
                             })
-                            
+
                         } else {
-                            // Wenn ein Fehler aufgetreten ist, dann wird dieser 
+                            // Wenn ein Fehler aufgetreten ist, dann wird dieser
                             // über einen Toast dem nutzer mitgeteilt.
                             if (typeof this._error === "function") {
                                 this._error(response.status);
@@ -273,23 +273,23 @@
         }
 
         /*
-         * Sucht in einer vorgeladenen Quelle (Property preload 
+         * Sucht in einer vorgeladenen Quelle (Property preload
          * ist auf 'true' gesetzt) nach Vorkommen einer Zeichenkette
          * im Attribut, dass im Property 'textProperty' angegeben wurde.
          *
          * @param die Auswahlliste Liste
          * @param die Such-Zeichenkette
-         * @return ein Array der selektierten Elemente 
+         * @return ein Array der selektierten Elemente
          */
         _querySimple(datasource, query) {
             return datasource.filter(x => x[this.textProperty].toLowerCase().indexOf(query) != -1);
         }
 
         /*
-         * Listener Methode, um ein ausgewähltes Element der 
+         * Listener Methode, um ein ausgewähltes Element der
          * Zielstruktur hinzu zu fügen.
-         * 
-         * @param Event mit den notwendigen Daten 
+         *
+         * @param Event mit den notwendigen Daten
          */
         _appendItem(event) {
 
@@ -301,7 +301,7 @@
             var id = event.detail.value;
 
             // Wenn noch kein Attribut vorhanden ist, um
-            // die Referenz zu speichern, so muss eines 
+            // die Referenz zu speichern, so muss eines
             // mit einem leeren Array erzeugt werden.
             if (!h.get(name)) {
                 h.set(name, []);
@@ -326,7 +326,7 @@
          * Entfernt bereits ausgewähltes Element aus
          * der Zieldatenstruktur.
          *
-         * @param Event mit den notwendigen Daten 
+         * @param Event mit den notwendigen Daten
          */
         _removeItem(event) {
             var name = 'data.' + this._entity + 's';
