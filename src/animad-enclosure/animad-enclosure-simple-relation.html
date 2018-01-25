@@ -1,74 +1,56 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/paper-autocomplete/paper-autocomplete.html">
-<link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item-body.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
-
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+ 
 <link rel="import" href="../animad-icons.html">
 <link rel="import" href="../behaviors/animad-form-behavior.html">
 <link rel="import" href="../behaviors/animad-i18n-behavior.html">
 <link rel="import" href="../behaviors/animad-relation-behavior.html">
 <link rel="import" href="../behaviors/mixin.html">
 
+<link rel="import" href="animad-enclosure-create-form.html">
+
 <dom-module id="animad-enclosure-simple-relation">
     <template>
         <style>
+            .animad-enclosure-create-dialog-form {
+                @apply --animad-enclosure-create-dialog-form;
+            }
         </style>
+        <paper-dialog>
+            <h2>Dialog Title</h2>
+            <paper-dialog-scrollable>
+                <iron-form id="iform">
+                    <form class="animad-enclosure-create-dialog-form">
+                        <animad-enclosure-form data="{{_dialogdata}}" auto-validate></animad-enclosure-form>
+                    </form>
+                </iron-form>
+            </paper-dialog-scrollable>
+            <div class="buttons">
+                <paper-button dialog-dismiss on-tap="_resetForm">cancel</paper-button>
+                <paper-button dialog-confirm on-tap="_saveDialog">save</paper-button>
+            </div>
+        </paper-dialog>
         <paper-autocomplete 
             label="[[t('relation_name')]]"
-            source="[[source]]"
-            text-property="[[textProperty]]"
-            value-property="[[valueProperty]]">
-            <template slot="autocomplete-custom-template">
-                <!-- NOTICE: Due to shadow-dom, custom template styles need to be included with the template in Polymer 2.x -->
-                <style>
-                  :host {
-                    display: block;
-                  }
-                  paper-item.account-item {
-                    padding: 8px 16px;
-                  }
-                  .enclosure-name {
-                    color: #333;
-                  }
-                  .enclosure-id, .enclosure-cleaningTime {
-                    margin-top: 4px;
-                    color: #999;
-                  }
-                  .enclosure-cleaningTime {
-                    font-size: small;
-                  }
-                  /**
-                   * IE11 paper-item min-height bug: https://github.com/PolymerElements/paper-item/issues/35
-                   * If you are running on IE11, add this lines to reset min-height on IE11
-                   */
-                  @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
-                    paper-item.account-item {
-                      min-height: 100% !important;
-                      height: auto !important;
-                      /**
-                       * If you are experimenting that some CSS properties for paper-item are not overriden in Polymer 2.x with IE11,
-                       * please add !important to ensure the shadow-dom v1 polyfill works properly
-                       */
-                      padding: 8px 16px !important;
-                    }
-                  }
-                </style>
-                <paper-item class="account-item" on-tap="_onSelect" id$="[[_getSuggestionId(index)]]" role="option" aria-selected="false">
-                  <div>
-                    <div class="enclosure-name">[[item.name]]</div>
-                    <div class="enclosure-id">[[item.id]]</div>
-                    <div class="enclosure-cleaningTime">[[item.cleaningTime]]</div>
-                  </div>
-                  <paper-ripple></paper-ripple>
-                </paper-item>
-              </template>
+            source="[[source]]">
+            <paper-icon-button slot="prefix" prefix icon="animad-icons:magnify"></paper-icon-button>
+            <template is="dom-if" if="[[_new]]">
+                <paper-icon-button slot="suffix" icon="animad-icons:plus-box" on-tap="_showDialog"></paper-icon-button>
+            </template>            
         </paper-autocomplete>
         <paper-listbox>
             <template is="dom-repeat" items="{{data.enclosures}}">
                 <paper-item>
+                    <!-- TODO Hier ist noch ein Bug drin. Die Operation wir nicht aufgerufen, 
+                         wenn aus der Liste gelöscht wird. -->
                     <paper-item-body>[[_format(index)]]</paper-item-body>
                     <paper-icon-button icon="animad-icons:link-off" data-item$="[[index]]" on-tap="_removeItem"></paper-icon-button>
                 </paper-item>
@@ -100,7 +82,7 @@
          * @polymer
          *
          */
-      class AnimadEnclosureSimpleRelation extends mix(Polymer.Element).with(AnimadI18nBehavior, AnimadRelationBehavior) {
+      class AnimadEnclosureSimpleRelation extends mix(Polymer.Element).with(AnimadI18nBehavior, AnimadRelationBehavior, AnimadFormBehavior) {
             static get is() { return 'animad-enclosure-simple-relation'; }
 
             static get properties() {
@@ -140,14 +122,27 @@
              * ist notwendig, weil man im HTML Bereich Databinding
              * nicht schachteln kann.
              * 
-             * @param index des jeweiligen Elements
-             * @return formatierter Text
+             * @param   index des jeweiligen Elements
+             * @return  formatierter Text
              */
             _format(index) {
                 var name = 'data.' + this._entity + 's';
                 var items = this.get(name);
                 var item = items[index];
-                return this.t('relation_list', {id: item.id, name: item.name, cleaningTime: item.cleaningTime});
+                return this.t('relation_list', {firstName: item.firstName, lastName: item.lastName, birthday: item.birthday, employmentDate: item.employmentDate, skill: item.skill});
+            }
+
+            /*
+             * Formatiert die Ausgaben für den Suggester vor. 
+             * Wie die Ausgabe formatiert wird (welche Werte 
+             * gezeigt werden), kann in der i18n Datei definiert 
+             * werden.
+             * 
+             * @param   die jeweilige Entität
+             * @return  den formatierten Text für den Suggester
+             */
+            _formatSuggester(item) {
+                return this.t('relation_suggest', {firstName: item.firstName, lastName: item.lastName, birthday: item.birthday, employmentDate: item.employmentDate, skill: item.skill})
             }
         }
 
