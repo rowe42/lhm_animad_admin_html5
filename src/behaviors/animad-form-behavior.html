@@ -6,7 +6,6 @@
      * 
      * @polymerMixinClass
      */
-    /* @polymerMixin */
     let AnimadFormBehavior = (superClass) => class extends superClass {
 
         static get properties() {
@@ -31,6 +30,24 @@
                 data: {
                     type: Object,
                     notify: true
+                },
+                /**
+                 * Über dieses Property wird gesteuert, ob im Formular eine 
+                 * 'Cancel' Schalfläche angezeigt werden soll. 'Cancel' macht 
+                 * nur Sinn, wenn man dann auch aus der View weg navigieren 
+                 * will. Deshalb nimmt dieses Property den Navigationspfad auf.  
+                 */ 
+                cancelPath: {
+                    type: String
+                },
+                /**
+                 * Wenn dieses Property gesetzt ist, dann wird unter dem Formular 
+                 * eine 'Reset' Schaltfläche angezeigt, mit der man das Formular
+                 * (und ggf. die Relationen) löschen kann. 
+                 */ 
+                reset: {
+                    type: Boolean,
+                    value: false
                 },
                 /**
                  *
@@ -66,6 +83,13 @@
                     }
                 }
             }
+        }
+
+        /**
+         * TODO implementieren
+         */
+        _navigateTo() {
+            console.warn("method 'navigateTo' not implemeneted, yet...");
         }
 
         /*
