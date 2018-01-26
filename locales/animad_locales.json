@@ -47,6 +47,7 @@
         "button_reset": "reset",
         "button_reload": "reload",
         "button_edit": "edit",
+        "button_cancel": "cancel",
         "relation_list": "%{name} (ID: %{id})"
       },
       "enclosure": {
@@ -182,6 +183,7 @@
         "button_reset": "zurücksetzen",
         "button_reload": "neu laden",
         "button_edit": "bearbeiten",
+        "button_cancel": "abbrechen",
         "relation_list": "%{name} (ID: %{id})"
       },
       "enclosure": {
@@ -240,7 +242,7 @@
         "button_reset": "zurücksetzen",
         "button_reload": "neu laden",
         "button_edit": "bearbeiten",
-        "button_cancel": "cancel",
+        "button_cancel": "abbrechen",
         "relation_list": "%{firstName} %{lastName}",
         "relation_suggest": "%{firstName} %{lastName}",
         "filter_placeholder": "Filter",
