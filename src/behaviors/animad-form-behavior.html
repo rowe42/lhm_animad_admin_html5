@@ -81,7 +81,7 @@
          * bestehende Entität zu aktualisieren.
          */
         _updateEntity() {
-            this._send('PUT', this.saveUrl, this.data);
+            this._send('PUT', this.loadUrl, this.data);
         }
 
         /**
@@ -108,7 +108,6 @@
                         if (response.ok) {
                             this._resetForm();
                             this._success();
-                            console.log(response.json());
                         } else {
                             this._error(response.status);
                         }
