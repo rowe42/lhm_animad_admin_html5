@@ -39,27 +39,33 @@
             Das vorgefertigte Formular.
         -->
         <!--<iron-form id="iform">-->
-            <form class="animad-enclosure-create-form">
-                <animad-enclosure-form id="customform" data="{{data}}" auto-validate></animad-enclosure-form>
-                <!-- GENERATOR hier kommen die Templates für die Relationen hin -->
-                <template is="dom-if" if="{{keepers}}">
-                    <animad-keeper-simple-relation
-                    data="{{data}}"
-                    preload></animad-keeper-simple-relation>
-                </template>
-            </form>
+        <form class="animad-enclosure-create-form">
+            <animad-enclosure-form id="customform" data="{{data}}" auto-validate></animad-enclosure-form>
+            <!-- GENERATOR hier kommen die Templates für die Relationen hin -->
+            <template is="dom-if" if="{{keepers}}">
+                <animad-keeper-simple-relation data="{{data}}" preload></animad-keeper-simple-relation>
+            </template>
+        </form>
         <!--</iron-form>-->
         <!-- 
             buttons
         -->
+        <template is="dom-if" if="{{reset}}">
+            <paper-button class="reset" on-tap="_resetForm" raised>
+                <iron-icon icon="animad-icons:erase"></iron-icon>
+                [[t('button_reset')]]
+            </paper-button>
+        </template>
+        <template is="dom-if" if="{{cancelPath}}">
+            <paper-button class="cancel" on-tap="_navigateTo" raised>
+                <iron-icon icon="animad-icons:close-circle"></iron-icon>
+                [[t('button_cancel')]]
+            </paper-button>
+        </template>
         <paper-button class="send" on-tap="_saveEntity" raised>
             <iron-icon icon="animad-icons:send"></iron-icon>
-             [[t('button_save')]]
+            [[t('button_save')]]
         </paper-button>
-        <paper-button class="reset" on-tap="_resetForm" raised>
-            <iron-icon icon="animad-icons:erase"></iron-icon>
-             [[t('button_reset')]]
-        </paper-button>      
     </template>
     <script>
         /**
@@ -88,7 +94,7 @@
                      * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
                      * benötigt, in dem die I18nBehavior verwendet wird.
                      */
-                     _domain: {
+                    _domain: {
                         type: String,
                         value: 'animad'
                     },

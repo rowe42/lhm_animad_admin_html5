@@ -6,7 +6,9 @@
         "create_sample_heading": "'Create' Form Sample",
         "create_with_relation_sample_heading": "'Create' Form Sample with Relation",
         "update_sample_heading": "'Update' Form Sample",
-        "read_sample_heading": "'Read' Form sample"
+        "read_sample_heading": "'Read' Form sample",
+        "update_sample_heading_with_relation": "Sample with HAL source",
+        "create_sample_heading_cancel": "'Create' sample with cancel button" 
       },
       "animad-enclosures": {
         "main_heading": "Enclosures View",
@@ -62,7 +64,8 @@
         "button_reset": "reset",
         "button_reload": "reload",
         "button_edit": "edit",
-        "relation_list": "%{name} (ID: %{id})"
+        "button_cancel": "cancel",
+        "relation_list": "%{name} %{firstName}"
       },
       "keeper":{
         "firstName": "Firstname",
@@ -144,7 +147,8 @@
         "create_with_relation_sample_heading": "Beispiel für ein 'create' Formular mit Relation zu Wärtern",
         "update_sample_heading": "Beispiel für ein 'update' Formular",
         "read_sample_heading": "Beispiel für ein 'read' Formular",
-        "update_sample_heading_with_relation": "Beispiel für update Formular mit Relation aus einer HAL Quelle"
+        "update_sample_heading_with_relation": "Beispiel für update Formular mit Relation aus einer HAL Quelle",
+        "create_sample_heading_cancel": "Beispiel 'create' Formular mit Cancel" 
       },
       "animad-keepers-formsamples": {
         "main_heading": "Übersicht Wärter",
@@ -196,7 +200,8 @@
         "button_reset": "zurücksetzen",
         "button_reload": "neu laden",
         "button_edit": "bearbeiten",
-        "relation_list": "%{name} (ID: %{id})"
+        "button_cancel": "abbrechen",
+        "relation_list": "%{name} %{firstName}"
       },
       "keeper":{
         "firstName": "Vorname",
