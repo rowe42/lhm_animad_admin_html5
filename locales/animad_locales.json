@@ -65,7 +65,7 @@
         "button_reload": "reload",
         "button_edit": "edit",
         "button_cancel": "cancel",
-        "relation_list": "%{name} %{firstName}"
+        "relation_list": "%{name}"
       },
       "keeper":{
         "firstName": "Firstname",
@@ -201,7 +201,7 @@
         "button_reload": "neu laden",
         "button_edit": "bearbeiten",
         "button_cancel": "abbrechen",
-        "relation_list": "%{name} %{firstName}"
+        "relation_list": "%{name}"
       },
       "keeper":{
         "firstName": "Vorname",
@@ -239,7 +239,7 @@
         "button_reset": "zurücksetzen",
         "button_reload": "neu laden",
         "button_edit": "bearbeiten",
-        "relation_list": "%{firstName} %{lastName} (ID: %{id})",
+        "relation_list": "%{firstName} %{lastName}",
         "relation_suggest": "%{firstName} %{lastName}",
         "filter_placeholder": "Filter",
         "search_placeholder": "Suche",
