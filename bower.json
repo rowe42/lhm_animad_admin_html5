@@ -30,7 +30,9 @@
     "fetch": "^2.0.3",
     "vaadin-grid": "vaadin/vaadin-grid#^4.0.0",
     "vaadin-material-theme": "vaadin/vaadin-material-theme#^0.3.0",
-    "paper-autocomplete": "ellipticaljs/paper-autocomplete#^3.4.0"
+    "paper-autocomplete": "ellipticaljs/paper-autocomplete#^3.4.0",
+    "iron-component-page": "^3.0.1",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0",
