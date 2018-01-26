@@ -1,6 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="animad-keeper/animad-keeper-create-form.html">
+<link rel="import" href="animad-keeper/animad-keeper-update-form.html">
 <link rel="import" href="animad-keeper/animad-keepers-list.html">
 <link rel="import" href="animad-icons.html">
 
@@ -23,7 +24,18 @@
       }
     </style>
 
-    <div class="card">
+    <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}">
+    </app-route>
+
+    <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404">
+        <animad-keepers-list name="" url="http://localhost:39146/keepers" default-search='vorname:"hans"'></animad-keepers-list>
+<!--        <animad-keepers-list name="list" url="http://localhost:39146/keepers" default-search='vorname:"hans"'></animad-keepers-list>-->
+        <animad-keeper-create-form name="create" url="http://demo6512140.mockable.io/keepers/new"></animad-keeper-create-form>
+        <animad-keeper-update-form name="edit" load-url="http://localhost:39146/keepers{{subroute.path}}"></animad-keeper-update-form>
+        <animad-keepers-list name="filterexample" url="http://localhost:39146/keepers" load-complete-data="true"></animad-keepers-list>
+    </iron-pages>
+
+<!--    <div class="card">
       <div class="circle"><iron-icon icon="animad-icons:basecamp"></iron-icon></div>
       <h1>Keepers view</h1>
       <div class="animad-keeper-view-content">
@@ -38,7 +50,8 @@
         <animad-keeper-create-form></animad-keeper-create-form>
       </div>
 
-      </div>
+    </div>
+  -->
   </template>
 
   <script>
@@ -46,6 +59,34 @@
     class AnimadKeepersView extends Polymer.Element {
       // GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-view
       static get is() { return 'animad-keepers-view'; }
+
+      static get properties() {
+          return {
+              route: {
+                  type: String,
+                  reflectToAttribute: true
+              },
+              page: {
+                  type: String,
+                  reflectToAttribute: true
+              },
+              routeData: Object,
+              subroute: String,
+              // This shouldn't be neccessary, but the Analyzer isn't picking up
+              // Polymer.Element#rootPath
+              rootPath: String,
+          }
+
+        }
+
+        static get observers() {
+            return [
+                '_routePageChanged(routeData.page)',
+            ];
+        }
+        _routePageChanged(page) {
+            this.page = page || '';
+        }
     }
 
     // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]View
