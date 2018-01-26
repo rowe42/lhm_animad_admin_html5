@@ -1,11 +1,21 @@
 #!/bin/bash
 
 npm install -g polymer-cli
+if [ $? -eq 0 ]; then
+        echo "--> polymer-cli installed"
+fi
+
 # install bower
 npm install -g bower
 if [ $? -eq 0 ]; then
-	echo "bower installed"
+	echo "--> bower installed"
 fi
 bower install bower.json
+if [ $? -eq 0 ]; then
+        echo "--> bower build finished"
+fi
 polymer build
+if [ $? -eq 0 ]; then
+	echo "--> polymer build finished"
+fi
 /usr/libexec/s2i/assemble
