@@ -10,7 +10,7 @@ npm install -g bower
 if [ $? -eq 0 ]; then
 	echo "--> bower installed"
 fi
-bower install bower.json
+bower -g install bower.json
 if [ $? -eq 0 ]; then
         echo "--> bower build finished"
 fi
