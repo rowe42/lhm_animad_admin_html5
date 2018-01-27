@@ -26,13 +26,6 @@
             // properties
             static get properties() {
                 return {
-                    /**
-                     * Url um die Permissions abzurufen.
-                     */
-                    permissionsUrl: {
-                        type: String,
-                        value: "http://localhost:8870/getPermissionsDummy"
-                    },
                     _permissions: {
                         type: Object,
                         value: [],
@@ -73,10 +66,6 @@
             }
 
 
-            _changed() {
-                console.log('changed!');
-            }
-            
             _dataUpdated() {
                 console.log('data updated: ' + this.data._embedded.permissions);
                 this._permissions = this.data._embedded.permissions;
