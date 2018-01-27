@@ -31,11 +31,10 @@
     "vaadin-grid": "vaadin/vaadin-grid#^4.0.0",
     "vaadin-material-theme": "vaadin/vaadin-material-theme#^0.3.0",
     "paper-autocomplete": "ellipticaljs/paper-autocomplete#^3.4.0",
-    "traverson-hal": "^6.0.0",
-    "traverson": "^6.0.3",
     "web-animations-js": "^2.3.1",
     "paper-dialog": "PolymerElements/paper-dialog#^2.0.1",
-    "paper-dialog-scrollable": "PolymerElements/paper-dialog-scrollable#^2.1.0"
+    "paper-dialog-scrollable": "PolymerElements/paper-dialog-scrollable#^2.1.0",
+    "halson": "^3.0.0"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0",
