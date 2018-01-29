@@ -21,6 +21,11 @@
 <!-- Polyfill for dropdowns -->
 <link rel="import" href="../bower_components/neon-animation/web-animations.html">
 
+<link rel="import" href="common-security/common-security-init.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+
+
+
 <!-- GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-view.html -->
 <!-- GENERATOR hier müssen alle modellierten views rein-->
 <link rel="lazy-import" href="animad-keepers-view.html">
@@ -76,7 +81,31 @@
                 color: #aa00ff;
                 font-weight: bold;
             }
+
+
+            #global_error_toast {
+                --paper-toast-background-color: red;
+            }
+
         </style>
+
+        <common-security-init id="animad_security" load-url="http://demo7906595.mockable.io/permissions"></common-security-init>
+
+        <!-- TODO add toasts for error, warning, success -->
+        <paper-toast 
+            id="global_success_toast" 
+            always-on-top>
+        </paper-toast>
+        <paper-toast 
+            id="global_warning_toast" 
+            always-on-top>
+        </paper-toast>
+        <paper-toast 
+            id="global_error_toast"
+            duration=10000 
+            always-on-top>
+        </paper-toast>
+
 
         <app-location route="{{route}}" url-space-regex="^[[rootPath]]">
         </app-location>
@@ -185,7 +214,7 @@
 
             connectedCallback() {
                 super.connectedCallback();
-                
+
                 //functionality to toggle the menu on and off
                 var drawerLayout = this.$.drawerLayout;
                 this.$.toggle.addEventListener('click', function () {

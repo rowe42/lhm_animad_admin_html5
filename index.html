@@ -89,10 +89,6 @@
     <!-- GENERATOR pattern: src/[DOMAINNAME]-app.html -->
     <link rel="import" href="src/animad-app.html">
 
-    <!-- load additional components -->
-    <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
-    <link rel="import" href="src/common-security/common-security-init.html">
-
     <!-- Add any global styles for body, document, etc. -->
     <style>
       body {
@@ -103,28 +99,9 @@
         background-color: #eeeeee;
       }
 
-      #global_error_toast {
-        --paper-toast-background-color: red;
-      }
-
     </style>
   </head>
   <body>
-    <!-- TODO add toasts for error, warning, success -->
-    <paper-toast 
-        id="global_success_toast" 
-        always-on-top>
-    </paper-toast>
-    <paper-toast 
-        id="global_warning_toast" 
-        always-on-top>
-    </paper-toast>
-    <paper-toast 
-        id="global_error_toast"
-        duration=10000 
-        always-on-top>
-    </paper-toast>
-    <common-security-init id="animad_security" load-url="http://demo7906595.mockable.io/permissions"></common-security-init>
     <!-- GENERATOR pattern: <[DOMAINNAME]-app> -->
     <animad-app></animad-app>
     <noscript>
