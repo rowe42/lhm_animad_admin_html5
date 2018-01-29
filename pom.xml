@@ -58,7 +58,7 @@
 
         <resources>
             <resource>
-                <directory>build/es6-bundled</directory>
+                <directory>build/es5-bundled</directory>
                 <targetPath>static</targetPath>
             </resource>
         </resources>
