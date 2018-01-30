@@ -27,31 +27,20 @@
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}">
     </app-route>
 
-    <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404">
-        <animad-keepers-list name="" url="http://localhost:39146/keepers" default-search='vorname:"hans"'></animad-keepers-list>
-<!--        <animad-keepers-list name="list" url="http://localhost:39146/keepers" default-search='vorname:"hans"'></animad-keepers-list>-->
-        <animad-keeper-create-form name="create" url="http://demo6512140.mockable.io/keepers/new"></animad-keeper-create-form>
-        <animad-keeper-update-form name="edit" load-url="http://localhost:39146/keepers{{subroute.path}}"></animad-keeper-update-form>
-        <animad-keepers-list name="filterexample" url="http://localhost:39146/keepers" load-complete-data="true"></animad-keepers-list>
-    </iron-pages>
 
-<!--    <div class="card">
-      <div class="circle"><iron-icon icon="animad-icons:basecamp"></iron-icon></div>
-      <h1>Keepers view</h1>
-      <div class="animad-keeper-view-content">
-	       <h2>Beispiel für Suche (Default)</h2>
-        <animad-keepers-list url="http://localhost:39146/keepers" default-search='vorname:"hans"'></animad-keepers-list>
-        <h2>Beispiel für Filtern </h2>
-        <animad-keepers-list url="http://localhost:39146/keepers" load-complete-data="true"></animad-keepers-list>
-        <h2>Beispiel Filtern ohne Buttons Neu und Löschen</h2>
-        <animad-keepers-list hide-new="true" hide-delete="true" url="http://localhost:39146/keepers" load-complete-data="true"></animad-keepers-list>
-        <h2>Beispiel Filtern ohne Tabellenbearbeitungs-Header</h2>
-        <animad-keepers-list hide-header="true" url="http://localhost:39146/keepers" load-complete-data="true"></animad-keepers-list>
-        <animad-keeper-create-form></animad-keeper-create-form>
+      <div class="card">
+        <div class="circle"><iron-icon icon="animad-icons:basecamp"></iron-icon></div>
+        <h1>Keepers view</h1>
+        <div class="animad-keeper-view-content">
+          <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" route="{{subroute}}">
+              <animad-keepers-list name="" url="http://localhost:39146/keepers" default-search='vorname:"hans"' route="{{subroute}}"></animad-keepers-list>
+              <animad-keeper-create-form name="create" load-url="http://localhost:39146/keepers"></animad-keeper-create-form>
+              <animad-keeper-update-form name="edit" load-url="http://localhost:39146/keepers{{subroute.path}}"></animad-keeper-update-form>
+              <animad-keepers-list name="filterexample" url="http://localhost:39146/keepers" load-complete-data="true"></animad-keepers-list>
+          </iron-pages>
+        </div>
       </div>
 
-    </div>
-  -->
   </template>
 
   <script>

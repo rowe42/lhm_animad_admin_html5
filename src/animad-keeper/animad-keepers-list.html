@@ -240,19 +240,16 @@
                 ]
               }
             },
-         }
+          }
         }
-
 
         // Observers
         // proteceted methods
         _handleNew(event) {
-          console.log("_handleNew", event);
           window.location = '/keepers-view/create'
         }
 
         _editRow(event){
-          console.log('_editRow', event.target.id);
           window.location = '/keepers-view/edit/'+event.target.id
 
           // TBD
