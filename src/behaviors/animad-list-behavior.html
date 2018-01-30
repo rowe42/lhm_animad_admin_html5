@@ -150,6 +150,13 @@
                 value: false
                },
                /**
+          			 * Whether to hide the Edit buttons in list rows. Set attribute "hide-edit" to do so.
+          			 */
+               hideEdit: {
+                type: Boolean,
+                value: false
+               },
+               /**
          			 * Whether to hide the Filter button. Set attribute "hide-filter" to do so.
          			 */
          			hideFilter: {
@@ -267,7 +274,7 @@
 
         _deselectItems(items){
           this._selectedItems = [];
-          
+
           // this is necessary as vaadin-grid doesn't unselect itself
           // when selected-items is assigned to an empty array...
           for (var item of items) {

@@ -166,6 +166,17 @@
             </paper-icon-button>
           </template>
         </vaadin-grid-column>
+
+        <vaadin-grid-column>
+          <template>
+            <paper-icon-button
+              icon="animad-icons:mode-edit"
+              id="[[item.id]]"
+              hidden="[[hideEdit]]"
+              on-click="_editRow">
+            </paper-icon-button>
+          </template>
+        </vaadin-grid-column>
       </vaadin-grid>
 
     </template>
@@ -229,9 +240,8 @@
                 ]
               }
             },
-         }
+          }
         }
-
 
         // Observers
         // Override super._backendDataChanged for correct assignment of backendData to data
@@ -263,8 +273,13 @@
         }
 
         // proteceted methods
-        _handleNew() {
-          console.log("_handleNew");
+        _handleNew(event) {
+          window.location = '/keepers-view/create'
+        }
+
+        _editRow(event){
+          window.location = '/keepers-view/edit/'+event.target.id
+
           // TBD
         }
 
