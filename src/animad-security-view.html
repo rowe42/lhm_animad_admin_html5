@@ -7,7 +7,6 @@
 
 <link rel="import" href="common-security/common-security-authorize.html">
 <link rel="import" href="common-security/common-security-check.html">
-<link rel="import" href="common-security/secure-paper-input.html">
 
 <link rel="import" href="shared-styles.html">
 
@@ -40,12 +39,6 @@
                     <common-security-check permission="RESOURCE2" allowed="{{allowed}}"></common-security-check>
                     <paper-input id="prefill-change-example" label="Bei diesem Feld ändert sich die Vorbefüllung von (keine Angabe) zu (berechtigt) bei Permission=RESOURCE2" 
                                  value="{{prefill}}"></paper-input>
-                    </p>
-                    
-                    <!-- Beispiel 3-->
-                    <p>
-                    <secure-paper-input id="readonly-example" permission="RESOURCE3" label="Feld ist readonly, außer bei Permission=RESOURCE3" 
-                                        value="Vorbefüllung"></secure-paper-input>
                     </p>
                     
                     <br>

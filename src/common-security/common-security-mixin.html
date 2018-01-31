@@ -11,9 +11,6 @@
                     },
                     _security: {
                         type: Object,
-                        value() {
-                            return document.querySelector('#animad_security');
-                        },
                         notify: true
                     },
                     allowed: {
@@ -32,6 +29,7 @@
 
             connectedCallback() {
                 super.connectedCallback();
+                this._security = document.querySelector('animad-app').$.animad_security;
                 this.checkPermissions();
                 window.addEventListener('permissionsReceived', this._boundListener);
             }
@@ -44,7 +42,6 @@
             }
 
             _customeventlistener() {
-                console.log('Custom Event Listener in Security-Mixin called.');
                 this.notifyPath('_security.permissions');
                 this.checkPermissions();
             }

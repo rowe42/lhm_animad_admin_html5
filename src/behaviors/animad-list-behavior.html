@@ -223,10 +223,7 @@
                *
                */
               _errorToast: {
-                  type: Object,
-                  value() {
-                      return document.querySelector('#global_error_toast');
-                  }
+                  type: Object
               },
             }
         }
@@ -238,6 +235,12 @@
             '_dataChanged(data.length)',
             '_initLocalizedFilter(allFilters)'
           ]
+        }
+        
+        
+        connectedCallback() {
+            super.connectedCallback();
+            this._errorToast = document.querySelector('animad-app').$.global_error_toast;
         }
 
         // refresh view and reset any delete information
