@@ -294,10 +294,25 @@
           this._disableDeleteButton = this.disableDelete || (nrSelectedItems === 0);
         }
 
-        // Override to handle backendData individually
+        // Assign data to data array
         _backendDataChanged(backendData, backendDataOld){
-          // Assignmetn triggers observer _dataChanged
-          this.data = backendData;
+          var items = [];
+          if (backendData._embedded) {
+            var backendItems = backendData._embedded.keepers;
+            for (var item of backendItems) {
+              // get id
+              var href = item._links.self.href;
+              var index = href.lastIndexOf('/') + 1;
+              var itemId = href.substring(index);
+
+              // Add id to item and then push item to items-array
+              item["id"] = itemId;
+              items.push(item);
+            }
+          }
+
+          // Assignment triggers observer _dataChanged
+          this.data = items;
         }
 
         // Callback methods
@@ -305,7 +320,8 @@
           super.ready();
           this._search = this.defaultSearch;
           if (this.loadCompleteData){
-            this._loadData();
+            this._loadHalData(this.url, 'GET');
+//            this._loadData();
           }
         }
 
@@ -388,22 +404,27 @@
 
         // Backend methods
         // Search
-        _loadData(){
-          // TBD: error handling
+        _loadHalData(url, verb) {
           this._hasSearched = true;
-          this._deselectItems(this._selectedItems);
 
-          fetch(this.url, {
-              method: 'GET',
-              headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-              }
-            }).then(response => response.json()).then(data => {
-              this._backendData = data;
-            }).catch(error => {
-              this._error(this.t('list_action_search'), error.message);
-            });;
+            // prepare request
+            var init = {
+                method: verb,
+                mode: 'cors'
+            }
+
+            var request = new Request(url, init);
+
+            fetch(request)
+                .then(response => {
+                    if (response.ok) {
+                        response.json().then((data) => {
+                            this.set('_backendData', data);
+                        });
+                    } else {
+                        this._error(response.status);
+                    }
+                })
         }
 
         _transferCellnameToFieldname(phrasesString, search) {
@@ -437,32 +458,21 @@
           var phrasesString = JSON.stringify(this._polyglot.phrases);
           var searchStr = this._transferCellnameToFieldname(phrasesString, search);
           var fuzzyUrl=this.url+"/search/findFullTextFuzzy?q='"+searchStr+"'";
-          // TBD: error handling
-          fetch(fuzzyUrl, {
-              method: 'GET',
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-              }
-            }
-          ).then(response => response.json()
-          ).then(data => {
-            this._backendData = data;
-          }).catch(error => {
-            this._error(this.t('list_action_search'), error.message);
-          });
+          this._loadHalData(fuzzyUrl, 'GET');
         }
 
         // Delete
         _deleteData(item) {
           var url = this.url+'/'+item.id;
-          fetch(url, {
-            method: 'DELETE',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            }
-          }).then(response => {
+          // prepare request
+          var init = {
+              method: 'DELETE',
+              mode: 'cors'
+          }
+
+          var request = new Request(url, init);
+          fetch(request)
+          .then(response => {
             var index = response.url.lastIndexOf('/') + 1;
             var itemId = response.url.substring(index);
 

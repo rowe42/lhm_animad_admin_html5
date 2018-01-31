@@ -244,34 +244,6 @@
         }
 
         // Observers
-        // Override super._backendDataChanged for correct assignment of backendData to data
-        _backendDataChanged(backendData, backendDataOld){
-          var items = [];
-          if (backendData._embedded) {
-            var backendItems = backendData._embedded.keepers;
-            for (var item of backendItems) {
-              // get id
-              var href = item._links.self.href;
-              var index = href.lastIndexOf('/') + 1;
-              var itemId = href.substring(index);
-
-              // Convert skill-array into String
-              var skills = item.skill;
-              var skill = "";
-              if (skills) {
-                skill = skills.toString();
-              }
-
-              // Push item to items-array
-              var uiItem = {id: itemId, firstName: item.firstName, lastName: item.lastName, employmentDate: item.employmentDate, skill: skill,   birthday: item.birthday,  salary: item.salary};
-              items.push(uiItem);
-            }
-          }
-
-          // Assignment triggers observer _dataChanged
-          this.data = items;
-        }
-
         // proteceted methods
         _handleNew(event) {
           window.location = '/keepers-view/create'
@@ -314,7 +286,7 @@
                 keeper.firstName.toLowerCase().includes(this._filterString) ||
                 keeper.lastName.toLowerCase().includes(this._filterString) ||
                 keeper.employmentDate.toLowerCase().includes(this._filterString) ||
-                keeper.skill.toLowerCase().includes(this._filterString) ||
+                keeper.skill.toString().toLowerCase().includes(this._filterString) ||
                 keeper.birthday.toLowerCase().includes(this._filterString) ||
                 new String(keeper.salary).toLowerCase().includes(this._filterString));
           this._filteredData = this._filteredData.filter(this._useSelectedFilters, this);
