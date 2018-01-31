@@ -3,22 +3,10 @@
 <link rel="import" href="../../bower_components/iron-meta/iron-meta.html">
 <link rel="import" href="../animad-icons.html">
 
+<link rel="import" href="../behaviors/animad-form-behavior.html">
+<link rel="import" href="../behaviors/mixin.html">
+
 <dom-module id="common-security-init">
-    <template>
-        <style>
-        </style>
-
-        <iron-ajax
-            auto
-            url="[[permissionsUrl]]"
-            id="perms"
-            handle-as="json"
-            last-response="{{_permissions}}"
-            on-response="_setPermissions"
-            >
-        </iron-ajax>    
-
-    </template>
     <script>
         /**
          * # Element zum initialen Abrufen der Rechte des aktuellen Users.
@@ -29,7 +17,7 @@
          * @polymer
          *
          */
-        class CommonSecurityInit extends Polymer.Element {
+        class CommonSecurityInit extends mix(Polymer.Element).with(AnimadFormBehavior) {
 
             static get is() {
                 return 'common-security-init';
@@ -38,18 +26,18 @@
             // properties
             static get properties() {
                 return {
-                    /**
-                     * Url um die Permissions abzurufen.
-                     */
-                    permissionsUrl: {
-                        type: String,
-                        value: "http://localhost:8870/getPermissionsDummy"
-                    },
                     _permissions: {
                         type: Object,
                         value: [],
                         notify: true
-                    }
+                    },
+                    //inherited from AnimadFormBehaviour (kann man auch ohne das einen 
+                    //observer registrieren?
+                    data: {
+                        type: Object,
+                        notify: true,
+                        observer: '_dataUpdated'
+                    },
                 }
             }
 
@@ -59,10 +47,8 @@
 
             connectedCallback() {
                 super.connectedCallback();
-//                this._fetchPermissionsSynchronously();
 
             }
-
 
             // methods
 
@@ -79,25 +65,11 @@
                 return this._permissions;
             }
 
-            _setPermissions() {
-                console.log('setPermissions called');
+
+            _dataUpdated() {
+                console.log('data updated: ' + this.data._embedded.permissions);
+                this._permissions = this.data._embedded.permissions;
                 window.dispatchEvent(new CustomEvent('permissionsReceived', {detail: {kicked: true}}));
-            }
-
-            _fetchPermissionsSynchronously() {
-                var url = permissionsUrl;
-                var request = new XMLHttpRequest();
-                request.open('GET', url, false);  // `false` makes the request synchronous
-                request.send(null);
-
-                if (request.status === 200) {
-                    console.log(request.responseText);
-                    this._permissions = JSON.parse(request.responseText);
-                }
-            }
-
-            _changed() {
-                console.log('changed!');
             }
 
         }

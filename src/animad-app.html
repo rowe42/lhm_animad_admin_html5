@@ -21,6 +21,11 @@
 <!-- Polyfill for dropdowns -->
 <link rel="import" href="../bower_components/neon-animation/web-animations.html">
 
+<link rel="import" href="common-security/common-security-init.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+
+
+
 <!-- GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-view.html -->
 <!-- GENERATOR hier müssen alle modellierten views rein-->
 <link rel="lazy-import" href="animad-keepers-view.html">
@@ -76,9 +81,33 @@
                 color: #aa00ff;
                 font-weight: bold;
             }
+
+
+            #global_error_toast {
+                --paper-toast-background-color: red;
+            }
+
         </style>
 
-        <app-location route="{{route}}" url-space-regex="^[[rootPath]]">
+        <common-security-init id="animad_security" load-url="http://demo7906595.mockable.io/permissions"></common-security-init>
+
+        <!-- TODO add toasts for error, warning, success -->
+        <paper-toast 
+            id="global_success_toast" 
+            always-on-top>
+        </paper-toast>
+        <paper-toast 
+            id="global_warning_toast" 
+            always-on-top>
+        </paper-toast>
+        <paper-toast 
+            id="global_error_toast"
+            duration=10000 
+            always-on-top>
+        </paper-toast>
+
+
+        <app-location route="{{route}}" url-space-regex="^[[rootPath]]" use-hash-as-path>
         </app-location>
 
         <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}">
@@ -94,6 +123,7 @@
             id="locales"
             file="animad_locales"
             path="/locales"
+            send-cookies="true"
             resources="{{resources}}">
         </nebula-resources>
 
@@ -117,22 +147,23 @@
                             <paper-item>
                                 <iron-icon icon="animad-icons:face"></iron-icon>
                                 <a name="keepers-view" href="[[rootPath]]keepers-view">Keepers</a>
+<!--                                <a name="keepers-view" href="[[rootPath]]keepers-view/list">Keepers</a>-->
                             </paper-item>
                             <paper-item>
                                 <iron-icon icon="animad-icons:panda"></iron-icon>
-                                <a name="animals-view" href="[[rootPath]]animals-view">Animals</a>
+                                <a name="animals-view" href="#[[rootPath]]animals-view">Animals</a>
                             </paper-item>
                             <paper-item>
                                 <iron-icon icon="animad-icons:basecamp"></iron-icon>
-                                <a name="enclosures-view" href="[[rootPath]]enclosures-view">Enclosures</a>
+                                <a name="enclosures-view" href="#[[rootPath]]enclosures-view">Enclosures</a>
                             </paper-item>
                             <paper-item>
                                 <iron-icon icon="animad-icons:basecamp"></iron-icon>
-                                <a name="security-view" href="[[rootPath]]security-view">Security</a>
+                                <a name="security-view" href="#[[rootPath]]security-view">Security</a>
                             </paper-item>
                             <paper-item>
                                 <iron-icon icon="animad-icons:lightbulb-on"></iron-icon>
-                                <a name="security-view" href="[[rootPath]]keepers-formsamples-view">Keepers Forms</a>
+                                <a name="keepers-formsamples-view" href="#[[rootPath]]keepers-formsamples-view">Keepers Forms</a>
                             </paper-item>            
                         </iron-selector>
                     </div>
@@ -140,7 +171,7 @@
 
                 <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
                     <!-- GENERATOR pattern: <[DOMAINNAME][ENTITYNAME]-view name="[ENTITYNAME]-view"></[DOMAINNAME][ENTITYNAME]-view> -->
-                    <animad-keepers-view name="keepers-view"></animad-keepers-view>
+                    <animad-keepers-view name="keepers-view" route="{{subroute}}"></animad-keepers-view>
                     <animad-animals-view name="animals-view"></animad-animals-view>
                     <animad-enclosures-view name="enclosures-view"></animad-enclosures-view>
                     <animad-security-view name="security-view"></animad-security-view>
@@ -185,7 +216,7 @@
 
             connectedCallback() {
                 super.connectedCallback();
-                
+
                 //functionality to toggle the menu on and off
                 var drawerLayout = this.$.drawerLayout;
                 this.$.toggle.addEventListener('click', function () {

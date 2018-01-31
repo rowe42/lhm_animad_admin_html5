@@ -6,205 +6,225 @@
      * 
      * @polymerMixinClass
      */
-    /* @polymerMixin */
     let AnimadFormBehavior = (superClass) => class extends superClass {
 
-        static get properties() {
-            return {
-                /**
-                 * Url um die Formulardaten zu laden.
-                 */
-                loadUrl: {
-                    type: String,
-                    observer: '_loadFormData'
-                },
-                /**
-                 * Url um die Formulardaten zu speichern.
-                 */
-                saveUrl: {
-                    type: String,
-                    observer: '_loadOptions'
-                },
-                /**
-                 * Das leere Objekt.
-                 */
-                data: {
-                    type: Object,
-                    notify: true
-                },
-                /**
-                 *
-                 */
-                _error: {
-                    type: String
-                },
-                /**
-                 *
-                 */
-                _errorToast: {
-                    type: Object,
-                    value() {
-                        return document.querySelector('#global_error_toast');
-                    }
-                },
-                /**
-                 *
-                 */
-                _successToast: {
-                    type: Object,
-                    value() {
-                        return document.querySelector('#global_success_toast');
-                    }
-                },
-                /**
-                 *
-                 */
-                _warningToast: {
-                    type: Object,
-                    value() {
-                        return document.querySelector('#global_warning_toast');
+            static get properties() {
+                return {
+                    /**
+                     * Url um die Formulardaten zu laden.
+                     */
+                    loadUrl: {
+                        type: String,
+                        observer: '_loadFormData'
+                    },
+                    /**
+                     * Url um die Formulardaten zu speichern.
+                     */
+                    saveUrl: {
+                        type: String,
+                        observer: '_loadOptions'
+                    },
+                    /**
+                     * Das leere Objekt.
+                     */
+                    data: {
+                        type: Object,
+                        notify: true
+                    },
+                    /**
+                     * Über dieses Property wird gesteuert, ob im Formular eine 
+                     * 'Cancel' Schalfläche angezeigt werden soll. 'Cancel' macht 
+                     * nur Sinn, wenn man dann auch aus der View weg navigieren 
+                     * will. Deshalb nimmt dieses Property den Navigationspfad auf.  
+                     */
+                    cancelPath: {
+                        type: String
+                    },
+                    /**
+                     * Wenn dieses Property gesetzt ist, dann wird unter dem Formular 
+                     * eine 'Reset' Schaltfläche angezeigt, mit der man das Formular
+                     * (und ggf. die Relationen) löschen kann. 
+                     */
+                    reset: {
+                        type: Boolean,
+                        value: false
+                    },
+                    /**
+                     *
+                     */
+                    _error: {
+                        type: String
+                    },
+                    /**
+                     *
+                     */
+                    _errorToast: {
+                        type: Object
+                    },
+                    /**
+                     *
+                     */
+                    _successToast: {
+                        type: Object
+                    },
+                    /**
+                     *
+                     */
+                    _warningToast: {
+                        type: Object
                     }
                 }
             }
-        }
 
-        /*
-         * Wird von 'create' Formularen aufgerufen, um eine neue Entität
-         * zu speichern.
-         */
-        _saveEntity() {
-            this._send('POST', this.saveUrl, this.data);
-        }
+            connectedCallback() {
+                super.connectedCallback();
+                this._errorToast = document.querySelector('animad-app').$.global_error_toast;
+                this._successToast = document.querySelector('animad-app').$.global_success_toast;
+                this._warningToast = document.querySelector('animad-app').$.global_warning_toast;
+            }
 
-        /*
-         * Wird von 'update' Formularen aufgerufen, um eine bereits
-         * bestehende Entität zu aktualisieren.
-         */
-        _updateEntity() {
-            this._send('PUT', this.saveUrl, this.data);
-        }
+            /**
+             * TODO implementieren
+             */
+            _navigateTo() {
+                console.warn("method 'navigateTo' not implemeneted, yet...");
+            }
 
-        /**
-         * Validiert die Formulardaten. Danach werden sie an die angegebene
-         * URL als JSON Objekt gesendet.
-         */
-        _send(verb, url, payload) {
-            // check if the form content is valid against the defined rules
-            var valid = this.shadowRoot.querySelector('#customform').validate();
+            /*
+             * Wird von 'create' Formularen aufgerufen, um eine neue Entität
+             * zu speichern.
+             */
+            _saveEntity() {
+                this._send('POST', this.saveUrl, this.data);
+            }
 
-            if (valid) {
+            /*
+             * Wird von 'update' Formularen aufgerufen, um eine bereits
+             * bestehende Entität zu aktualisieren.
+             */
+            _updateEntity() {
+                this._send('PUT', this.loadUrl, this.data);
+            }
 
+            /**
+             * Validiert die Formulardaten. Danach werden sie an die angegebene
+             * URL als JSON Objekt gesendet.
+             */
+            _send(verb, url, payload) {
+                // check if the form content is valid against the defined rules
+                var valid = this.shadowRoot.querySelector('#customform').validate();
+
+                if (valid) {
+
+                    // prepare request
+                    var init = {
+                        method: verb,
+                        mode: 'cors',
+                        body: JSON.stringify(payload)
+                    }
+
+                    var request = new Request(url, init);
+
+                    fetch(request)
+                            .then(response => {
+                                if (response.ok) {
+                                    this._resetForm();
+                                    this._success();
+                                } else {
+                                    this._error(response.status);
+                                }
+                            })
+                } else {
+                    console.warn("form is not valid...");
+                    this._warningToast.text = this.t('form_validation');
+                    this._warningToast.open();
+                }
+
+            }
+
+            /*
+             * Holt sich eine HAL Resource über die URL, die im Property 
+             * 'loadUrl' gespeichert ist. Die Nutzdaten werden im 'data' 
+             * Property gespeichert. Danach werden alle benötigten Links 
+             * aufgelöst.
+             * 
+             * Das Property 'loadUrl' wird ausschließlich von update und read 
+             * Formularen verwendet.
+             */
+            _loadFormData(loadUrl, oldV) {
+                if (loadUrl)
+                    this._loadHalData(loadUrl, 'GET');
+            }
+
+            /**
+             * Holt sich eine HAL Resource per OPTIONS Verb.
+             * In dieser Ressource sind bei einem create 
+             * Formular die Links zu den Ressourcen Objekten 
+             * gespeichert.
+             * 
+             * Das Property '_loadOptions' wird ausschließlich 
+             * von create Formularen verwendet. 
+             */
+            _loadOptions(saveUrl, oldV) {
+                if (saveUrl)
+                    this._loadHalData(saveUrl, 'OPTIONS');
+            }
+
+            _loadHalData(url, verb) {
                 // prepare request
                 var init = {
                     method: verb,
-                    mode: 'cors',
-                    body: JSON.stringify(payload)
+                    mode: 'cors'
                 }
 
                 var request = new Request(url, init);
 
                 fetch(request)
-                    .then(response => {
-                        if (response.ok) {
-                            this._resetForm();
-                            this._success();
-                            console.log(response.json());
-                        } else {
-                            this._error(response.status);
-                        }
-                    })
-            } else {
-                console.warn("form is not valid...");
-                this._warningToast.text = this.t('form_validation');
-                this._warningToast.open();
+                        .then(response => {
+                            if (response.ok) {
+                                response.json().then((data) => {
+                                    this.set('data', data);
+                                });
+                            } else {
+                                this._error(response.status);
+                            }
+                        })
             }
 
-        }
-
-        /*
-         * Holt sich eine HAL Resource über die URL, die im Property 
-         * 'loadUrl' gespeichert ist. Die Nutzdaten werden im 'data' 
-         * Property gespeichert. Danach werden alle benötigten Links 
-         * aufgelöst.
-         * 
-         * Das Property 'loadUrl' wird ausschließlich von update und read 
-         * Formularen verwendet.
-         */
-        _loadFormData(loadUrl, oldV) {
-            if (loadUrl)
-                this._loadHalData(loadUrl, 'GET');
-        }
-
-        /**
-         * Holt sich eine HAL Resource per OPTIONS Verb.
-         * In dieser Ressource sind bei einem create 
-         * Formular die Links zu den Ressourcen Objekten 
-         * gespeichert.
-         * 
-         * Das Property '_loadOptions' wird ausschließlich 
-         * von create Formularen verwendet. 
-         */
-        _loadOptions(saveUrl, oldV) {
-            if(saveUrl)
-                this._loadHalData(saveUrl, 'OPTIONS');
-        }
-
-        
-        _loadHalData(url, verb) {
-            // prepare request
-            var init = {
-                method: verb,
-                mode: 'cors'
+            _reloadForm() {
+                this._loadFormData(this.loadUrl, null);
             }
 
-            var request = new Request(url, init);
-
-            fetch(request)
-                .then(response => {
-                    if (response.ok) {
-                        response.json().then((data) => {
-                            this.set('data', data);
-                        });
-                    } else {
-                        this._error(response.status);
-                    }
-                })
-        }
-
-        _reloadForm() {
-            this._loadFormData(this.loadUrl, null);
-        }
-
-        /**
-         * Setzt das Formular zurück.
-         */
-        _resetForm() {
-            this.set('data', {});
-        }
-
-        /**
-         * Macht ein 'readonly' Formular editierbar.
-         */
-        _editForm() {
-            if (this.readform) {
-                this.set('readform', false);
+            /**
+             * Setzt das Formular zurück.
+             */
+            _resetForm() {
+                this.set('data', {});
             }
-        }
 
-        /**
-         * Der 'Toast', der bei Erfolg angezeigt wird.
-         */
-        _success() {
-            this._successToast.text = this.t('form_success');
-            this._successToast.open();
-        }
+            /**
+             * Macht ein 'readonly' Formular editierbar.
+             */
+            _editForm() {
+                if (this.readform) {
+                    this.set('readform', false);
+                }
+            }
 
-        /**
-         * Der 'Toast', der bei Fehlern angezeigt wird.
-         */
-        _error(status) {
-            this._errorToast.text = this.t('form_error', { code: status });
-            this._errorToast.open();
-        }
-    };
+            /**
+             * Der 'Toast', der bei Erfolg angezeigt wird.
+             */
+            _success() {
+                this._successToast.text = this.t('form_success');
+                this._successToast.open();
+            }
+
+            /**
+             * Der 'Toast', der bei Fehlern angezeigt wird.
+             */
+            _error(status) {
+                this._errorToast.text = this.t('form_error', {code: status});
+                this._errorToast.open();
+            }
+        };
 </script>
