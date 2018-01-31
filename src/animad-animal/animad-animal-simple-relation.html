@@ -1,24 +1,50 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/paper-autocomplete/paper-autocomplete.html">
-<link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item-body.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
-
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+ 
 <link rel="import" href="../animad-icons.html">
 <link rel="import" href="../behaviors/animad-form-behavior.html">
 <link rel="import" href="../behaviors/animad-i18n-behavior.html">
 <link rel="import" href="../behaviors/animad-relation-behavior.html">
 <link rel="import" href="../behaviors/mixin.html">
 
+<link rel="import" href="animad-animal-create-form.html">
+
 <dom-module id="animad-animal-simple-relation">
     <template>
         <style>
+            .animad-animal-create-dialog-form {
+                @apply --animad-animal-create-dialog-form;
+            }
         </style>
-        <paper-autocomplete label="[[t('relation_name')]]" source="[[source]]">
-            <paper-icon-button slot="suffix" suffix icon="animad-icons:magnify"></paper-icon-button>
+        <paper-dialog>
+            <h2>Dialog Title</h2>
+            <paper-dialog-scrollable>
+                <iron-form id="iform">
+                    <form class="animad-animal-create-dialog-form">
+                        <animad-animal-form data="{{_dialogdata}}" auto-validate></animad-animal-form>
+                    </form>
+                </iron-form>
+            </paper-dialog-scrollable>
+            <div class="buttons">
+                <paper-button dialog-dismiss on-tap="_resetForm">cancel</paper-button>
+                <paper-button dialog-confirm on-tap="_saveDialog">save</paper-button>
+            </div>
+        </paper-dialog>
+        <paper-autocomplete 
+            label="[[t('relation_name')]]"
+            source="[[source]]">
+            <paper-icon-button slot="prefix" prefix icon="animad-icons:magnify"></paper-icon-button>
+            <template is="dom-if" if="[[_new]]">
+                <paper-icon-button slot="suffix" icon="animad-icons:plus-box" on-tap="_showDialog"></paper-icon-button>
+            </template>            
         </paper-autocomplete>
         <paper-listbox>
             <template is="dom-repeat" items="{{data.animals}}">
@@ -31,6 +57,7 @@
             </template>
         </paper-listbox>
     </template>
+
     <script>
         /**
          * # Formular zum Erstellen einer Relation zu einem 'Animal'.
