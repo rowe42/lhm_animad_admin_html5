@@ -119,7 +119,8 @@
                     // prepare request
                     var init = {
                         method: verb,
-                        mode: 'cors',
+                        mode: 'no-cors',
+                        credentials: 'include',
                         body: JSON.stringify(payload)
                     }
 
@@ -174,7 +175,8 @@
                 // prepare request
                 var init = {
                     method: verb,
-                    mode: 'cors'
+                    mode: 'no-cors',
+                    credentials: 'include'
                 }
 
                 var request = new Request(url, init);

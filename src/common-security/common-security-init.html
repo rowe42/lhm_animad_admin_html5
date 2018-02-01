@@ -67,8 +67,8 @@
 
 
             _dataUpdated() {
-                console.log('data updated: ' + this.data._embedded.permissions);
-                this._permissions = this.data._embedded.permissions;
+                console.log('data updated: ' + this.data.permissions);
+                this._permissions = this.data.permissions;
                 window.dispatchEvent(new CustomEvent('permissionsReceived', {detail: {kicked: true}}));
             }
 
