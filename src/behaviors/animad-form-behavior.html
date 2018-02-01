@@ -33,11 +33,18 @@
                     },
                     /**
                      * Über dieses Property wird gesteuert, ob im Formular eine 
-                     * 'Cancel' Schalfläche angezeigt werden soll. 'Cancel' macht 
-                     * nur Sinn, wenn man dann auch aus der View weg navigieren 
-                     * will. Deshalb nimmt dieses Property den Navigationspfad auf.  
+                     * 'Cancel' Schalfläche angezeigt werden soll.
+                     * Nach Anklicken der Schaltfläche 'Cancel' wird zum Wert von cancelPath 
+                     * navigiert.
                      */
                     cancelPath: {
+                        type: String
+                    },
+                    /**
+                     * Nach Anklicken der Schaltfläche 'Save' wird zum Wert von savePath 
+                     * navigiert.
+                     */
+                     savePath: {
                         type: String
                     },
                     /**
@@ -82,20 +89,30 @@
                 this._successToast = document.querySelector('animad-app').$.global_success_toast;
                 this._warningToast = document.querySelector('animad-app').$.global_warning_toast;
             }
-
+            
             /**
-             * TODO implementieren
+             * Wird von Formularen in Buttons aufgerufen.
+               Navigiert zum Attribut "data-routePath" wenn der Button gedrückt wird.
              */
-            _navigateTo() {
-                console.warn("method 'navigateTo' not implemeneted, yet...");
+             _navigateTo(e) {
+                var routePath = e.target.dataset.routepath;
+                console.log("navigiere zu:" + routePath);
+                this.set("route.path", routePath);
+            }
+
+            /*
+             * Wird von 'cancel' in Formularen aufgerufen.
+             */
+             _cancelEntity(e) {
+                this._navigateTo(e);
             }
 
             /*
              * Wird von 'create' Formularen aufgerufen, um eine neue Entität
              * zu speichern.
              */
-            _saveEntity() {
-                this._send('POST', this.saveUrl, this.data);
+            _saveEntity(e) {
+                this._send('POST', this.saveUrl, this.data, e);
             }
 
             /*
@@ -110,7 +127,7 @@
              * Validiert die Formulardaten. Danach werden sie an die angegebene
              * URL als JSON Objekt gesendet.
              */
-            _send(verb, url, payload) {
+            _send(verb, url, payload, e) {
                 // check if the form content is valid against the defined rules
                 var valid = this.shadowRoot.querySelector('#customform').validate();
 
@@ -135,12 +152,13 @@
                                     this._error(response.status);
                                 }
                             })
+                    // navigiere zu data-routePath wenn form o.k.
+                    this._navigateTo(e);
                 } else {
                     console.warn("form is not valid...");
                     this._warningToast.text = this.t('form_validation');
                     this._warningToast.open();
                 }
-
             }
 
             /*

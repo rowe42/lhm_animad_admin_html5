@@ -9,6 +9,8 @@
 <link rel="import" href="../../bower_components/polymer/lib/elements/custom-style.html">
 <link rel="import" href="../../bower_components/shadycss/apply-shim.html">
 <link rel="import" href="../../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
 
 <!-- animad elements -->
 <link rel="import" href="animad-animal-form.html">
@@ -35,6 +37,21 @@
                 @apply --animad-animal-create-form;
             }
         </style>
+
+        <!-- Routing Support -->
+        <app-location
+            route="{{route}}"
+            url-space-regex="^[[rootPath]]"
+            use-hash-as-path>
+        </app-location>
+        <app-route
+            route="{{route}}"
+            pattern="[[rootPath]]:page"
+            data="{{routeData}}"
+            active="{{active}}"
+            tail="{{subroute}}">
+        </app-route>
+
         <!--
             Das vorgefertigte Formular.
         -->
@@ -57,12 +74,12 @@
             </paper-button>
         </template>
         <template is="dom-if" if="{{cancelPath}}">
-            <paper-button class="cancel" on-tap="_navigateTo" raised>
+            <paper-button class="cancel" on-tap="_cancelEntity" data-routePath$="[[cancelPath]]" raised>
                 <iron-icon icon="animad-icons:close-circle"></iron-icon>
                 [[t('button_cancel')]]
             </paper-button>
         </template>
-        <paper-button class="send" on-tap="_saveEntity" raised>
+        <paper-button class="send" on-tap="_saveEntity" data-routePath$="[[savePath]]" raised>
             <iron-icon icon="animad-icons:send"></iron-icon>
             [[t('button_save')]]
         </paper-button>
@@ -70,7 +87,7 @@
     <script>
         /**
          * # Formular zum Erstellen von einem 'Animal'
-         * `<animad-anclosure-create-form>` stellt ein Formular zur Verfügung, über das man ein
+         * `<animad-animal-create-form>` stellt ein Formular zur Verfügung, über das man ein
          * neues 'Animal' mit all seinen Attributen erstellen kann.
          * ## Anwendung in der Applikation
          * ```html
