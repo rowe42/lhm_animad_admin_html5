@@ -57,14 +57,14 @@
                 _search enthält den String, der im Eingabe-Feld zum Suche eingegeben wurde.
               */
               _search: {
-                type: String,
-                value: ""
+                type: String
               },
               /**
               * Predefined search string. Will be shown in search field after page loading.
               */
               defaultSearch: {
-                type: String
+                type: String,
+                value: ""
               },
               /*
                 _search enthält den String, der im Eingabe-Feld zum Filtern eingegeben wurde.
@@ -236,8 +236,8 @@
             '_initLocalizedFilter(allFilters)'
           ]
         }
-        
-        
+
+
         connectedCallback() {
             super.connectedCallback();
             this._errorToast = document.querySelector('animad-app').$.global_error_toast;
@@ -321,7 +321,12 @@
           this._search = this.defaultSearch;
           if (this.loadCompleteData){
             this._loadHalData(this.url, 'GET');
-//            this._loadData();
+            var animadListHeaderFilter =this.shadowRoot.querySelector('#animad-list-header-filter');
+            animadListHeaderFilter.focus();
+          }
+          else {
+            var animadListHeaderSearch =this.shadowRoot.querySelector('#animad-list-header-search');
+            animadListHeaderSearch.focus();
           }
         }
 
@@ -427,38 +432,31 @@
                 })
         }
 
-        _transferCellnameToFieldname(phrasesString, search) {
-          var phrases = phrasesString.split(',');
-          var start = search.length;
-          var end = search.length;
-          while (start >= 0 && end > -1) {
-            var end = search.lastIndexOf(":", start);
-            if (end > -1) {
-              var start = search.lastIndexOf(" ", end);
-              var oldsearch = search.substring(start, end).trim();
-              var newsearch = oldsearch;
-              for (var phrase of phrases) {
-                phrase = phrase.replace(/"/g, '');
-                var s = phrase.split(":");
-                if(s.length > 1 && s[1].toLowerCase() == newsearch) {
-                  newsearch = s[0];
+        _transferCellnameToFieldname(phrases, search) {
+          var searches = search.split(" ");
+          for (var searchEntry of searches) {
+            var searchSplitted = searchEntry.split(':');
+            if (searchSplitted.length > 1) {
+              for (var phrase of phrases){
+                if (phrase[1].toLowerCase() === searchSplitted[0].toLowerCase()){
+                  search = search.replace(searchSplitted[0], phrase[0]);
+                  break;
                 }
               }
-              search = search.replace(oldsearch, newsearch);
             }
           }
-
           return search;
         }
 
-        _fetchFuzzyData(search){
+        _fetchData(search){
           this._hasSearched = true;
           this._deselectItems(this._selectedItems);
 
-          var phrasesString = JSON.stringify(this._polyglot.phrases);
-          var searchStr = this._transferCellnameToFieldname(phrasesString, search);
-          var fuzzyUrl=this.url+"/search/findFullTextFuzzy?q='"+searchStr+"'";
-          this._loadHalData(fuzzyUrl, 'GET');
+          var phrases = Object.entries(this._polyglot.phrases);
+
+          var searchStr = this._transferCellnameToFieldname(phrases, search);
+          var searchUrl=this.url+"/search/findFullTextJunction?q="+searchStr;
+          this._loadHalData(searchUrl, 'GET');
         }
 
         // Delete
