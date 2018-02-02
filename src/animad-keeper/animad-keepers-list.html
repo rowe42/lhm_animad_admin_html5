@@ -246,11 +246,13 @@
         // Observers
         // proteceted methods
         _handleNew(event) {
-          window.location = '/#/keepers-view/create'
+          console.log('/#'+this.createPath);
+          window.location = '/#'+this.createPath;
         }
 
         _editRow(event){
-          window.location = '/#/keepers-view/edit/'+event.target.id
+          console.log('/#'+this.editPath+'/'+event.target.id);
+          window.location = '/#'+this.editPath+'/'+event.target.id
 
           // TBD
         }

@@ -184,6 +184,12 @@
          				type: Boolean,
          				value: false
          			},
+              createPath: {
+                type: String
+              },
+              editPath: {
+                type: String
+              },
          			/**
          			 * Icon shown in the search background
          			 */
@@ -236,8 +242,8 @@
             '_initLocalizedFilter(allFilters)'
           ]
         }
-        
-        
+
+
         connectedCallback() {
             super.connectedCallback();
             this._errorToast = document.querySelector('animad-app').$.global_error_toast;

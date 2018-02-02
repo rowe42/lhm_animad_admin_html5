@@ -33,7 +33,13 @@
         <h1>Keepers view</h1>
         <div class="animad-keeper-view-content">
           <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" route="{{subroute}}">
-              <animad-keepers-list name="" url="http://localhost:39146/keepers" default-search='hans' route="{{subroute}}"></animad-keepers-list>
+              <animad-keepers-list name=""
+                url="http://localhost:39146/keepers"
+                default-search='hans'
+                route="{{subroute}}"
+                edit-path="/keepers-view/edit"
+                create-path="/keepers-view/create">
+              </animad-keepers-list>
               <animad-keeper-create-form name="create" load-url="http://localhost:39146/keepers"></animad-keeper-create-form>
               <animad-keeper-update-form name="edit" load-url="http://localhost:39146/keepers{{subroute.path}}"></animad-keeper-update-form>
               <animad-keepers-list name="filterexample" url="http://localhost:39146/keepers" load-complete-data="true"></animad-keepers-list>
