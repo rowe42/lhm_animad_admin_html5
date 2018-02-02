@@ -25,6 +25,20 @@
       <style>
       </style>
 
+      <!-- Routing Support -->
+      <app-location
+          route="{{route}}"
+          url-space-regex="^[[rootPath]]"
+          use-hash-as-path>
+      </app-location>
+      <app-route
+          route="{{route}}"
+          pattern="[[rootPath]]:page"
+          data="{{routeData}}"
+          active="{{active}}"
+          tail="{{subroute}}">
+      </app-route>
+
       <animad-list-header
           placeholder-search="[[_setSearchText('search_placeholder')]]"
           placeholder-delete="Löschen"
@@ -246,15 +260,13 @@
         // Observers
         // proteceted methods
         _handleNew(event) {
-          console.log('/#'+this.createPath);
-          window.location = '/#'+this.createPath;
+          var routePath = this.createPath;
+          this.set("route.path", routePath);
         }
 
         _editRow(event){
-          console.log('/#'+this.editPath+'/'+event.target.id);
-          window.location = '/#'+this.editPath+'/'+event.target.id
-
-          // TBD
+          var routePath = this.editPath+'/'+event.target.id;
+          this.set("route.path", routePath);
         }
 
         _confirmDeleteRow(e) {
