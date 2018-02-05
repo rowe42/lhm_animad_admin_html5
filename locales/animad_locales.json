@@ -8,7 +8,7 @@
         "update_sample_heading": "'Update' Form Sample",
         "read_sample_heading": "'Read' Form sample",
         "update_sample_heading_with_relation": "Sample with HAL source",
-        "create_sample_heading_cancel": "'Create' sample with cancel button" 
+        "create_sample_heading_cancel": "'Create' sample with cancel button"
       },
       "animad-enclosures": {
         "main_heading": "Enclosures View",
@@ -124,14 +124,7 @@
         "list_error": "An error occured while %{action}.",
         "list_too_many_results": "More than %{results} results found. Please narrow your search.",
         "list_action_search": "searching",
-        "list_action_delete": "deleting",
-        "filter_birthday_before_1980": "before 1990",
-        "filter_birthday_1980_1990": "from 1980 to 1990",
-        "filter_birthday_after_1990": "after 1990",
-        "filter_salary_less_1000": "less than 1000",
-        "filter_salary_1000_2000": "from 1000 to 2000",
-        "filter_salary_2000_3000": "from 2000 to 3000",
-        "filter_salary_more_3000": "more than 3000"
+        "list_action_delete": "deleting"
       }
     }
   },
@@ -152,7 +145,7 @@
         "update_sample_heading": "Beispiel für ein 'update' Formular",
         "read_sample_heading": "Beispiel für ein 'read' Formular",
         "update_sample_heading_with_relation": "Beispiel für update Formular mit Relation aus einer HAL Quelle",
-        "create_sample_heading_cancel": "Beispiel 'create' Formular mit Cancel" 
+        "create_sample_heading_cancel": "Beispiel 'create' Formular mit Cancel"
       },
       "animad-keepers-formsamples": {
         "main_heading": "Übersicht Wärter",
@@ -265,14 +258,7 @@
         "list_error": "Es ist ein Fehler %{action} aufgetreten.",
         "list_error_too_many_results": "Mehr als %{results} Ergebnisse gefunden. Bitte die Suche verfeinern und erneut suchen!",
         "list_action_search": "bei der Suche",
-        "list_action_delete": "beim Löschen",
-        "filter_birthday_before_1980": "vor 1990",
-        "filter_birthday_1980_1990": "von 1980 bis 1990",
-        "filter_birthday_after_1990": "nach 1990",
-        "filter_salary_less_1000": "weniger als 1000",
-        "filter_salary_1000_2000": "von 1000 bis 2000",
-        "filter_salary_2000_3000": "von 2000 bis 3000",
-        "filter_salary_more_3000": "mehr als 3000"
+        "list_action_delete": "beim Löschen"
       }
     }
   }
