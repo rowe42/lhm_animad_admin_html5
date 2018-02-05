@@ -25,6 +25,20 @@
       <style>
       </style>
 
+      <!-- Routing Support -->
+      <app-location
+          route="{{route}}"
+          url-space-regex="^[[rootPath]]"
+          use-hash-as-path>
+      </app-location>
+      <app-route
+          route="{{route}}"
+          pattern="[[rootPath]]:page"
+          data="{{routeData}}"
+          active="{{active}}"
+          tail="{{subroute}}">
+      </app-route>
+
       <animad-list-header
           placeholder-search="[[_setSearchText('search_placeholder')]]"
           placeholder-delete="Löschen"
@@ -211,48 +225,19 @@
               type: String,
               value: 'keeper'
             },
-            /*
-              allFilters sind optionale (leeres Array), selektierbare Filter. Sie werden über ein Array definiert, Das
-              die Struktur [{id, [{id, label}, {id2, label2}, ...}, {id2, [{id, label}, ...]}, ...] einhalten muss.
-              GENERATOR: allFilters kann auch ein leeres Array [] enthalten. Dann wird der Filter-Button im search-panel nicht angezeigt.
-            */
-            allFilters: {
-              type: Array,
-              value() {
-                return [
-                  {
-                    id: "birthday",
-                    filters: [
-                      {id: "0", label: "filter_birthday_before_1980"},
-                      {id: "1", label: "filter_birthday_1980_1990"},
-                      {id: "2", label: "filter_birthday_after_1990"}
-                    ]
-                  },
-                  {
-                    id: "salary",
-                    filters: [
-                      {id: "0", label: "filter_salary_less_1000"},
-                      {id: "1", label: "filter_salary_1000_2000"},
-                      {id: "2", label: "filter_salary_2000_3000"},
-                      {id: "3", label: "filter_salary_more_3000"}
-                    ]
-                  }
-                ]
-              }
-            },
           }
         }
 
         // Observers
         // proteceted methods
         _handleNew(event) {
-          window.location = '/#/keepers-view/create'
+          var routePath = this.createPath;
+          this.set("route.path", routePath);
         }
 
         _editRow(event){
-          window.location = '/#/keepers-view/edit/'+event.target.id
-
-          // TBD
+          var routePath = this.editPath+'/'+event.target.id;
+          this.set("route.path", routePath);
         }
 
         _confirmDeleteRow(e) {
@@ -292,52 +277,12 @@
           this._filteredData = this._filteredData.filter(this._useSelectedFilters, this);
         }
 
-        _useSelectedFilters(keeper) {
+        _useSelectedFilters(keeper, event) {
           var isIncluded = true;
-          for (var filterObject of this._selectedFilters) {
-            switch (filterObject.type) {
-              case this.allFilters[0].id: // for the example: birthday
-                switch (filterObject.filter.id) {
-                  case this.allFilters[0].filters[0].id:
-                    console.log("Implementation for "+ this.allFilters[0].id + "," + this.allFilters[0].filters[0].label);
-                    break;
-                  case this.allFilters[0].filters[1].id:
-                    console.log("Implementation for "+ this.allFilters[0].id + "," + this.allFilters[0].filters[1].label);
-                    break;
-                  case this.allFilters[0].filters[2].id:
-                    console.log("Implementation for "+ this.allFilters[0].id + "," + this.allFilters[0].filters[2].label);
-                    break;
-                  default:
-                    console.log("Filter not defined");
-                    break;
-                }
-                break;
-              case this.allFilters[1].id: // for the example: salary
-                switch (filterObject.filter.id) {
-                  case this.allFilters[1].filters[0].id:
-                    console.log("Implementation for "+ this.allFilters[1].id + "," + this.allFilters[1].filters[0].label);
-                    isIncluded = isIncluded && keeper.salary <= 1000;
-                    break;
-                  case this.allFilters[1].filters[1].id:
-                    console.log("Implementation for "+ this.allFilters[1].id + "," + this.allFilters[1].filters[1].label);
-                    break;
-                  case this.allFilters[1].filters[2].id:
-                    console.log("Implementation for "+ this.allFilters[1].id + "," + this.allFilters[1].filters[2].label);
-                    break;
-                  case this.allFilters[1].filters[3].id:
-                    console.log("Implementation for "+ this.allFilters[1].id + "," + this.allFilters[1].filters[3].label);
-                    break;
-                  default:
-                    console.log("Filter not defined");
-                    break;
-                }
-                break;
-              default:
-                console.log("Filter not defined");
-                return true;
-            }
+          console.log("Methode _useSelectedFilters ist nicht implementiert!");
+          
+          /* Filtern für selektierbare Filter muss manuell implementiert werden */
 
-          }
           return isIncluded;
         }
 

@@ -28,18 +28,47 @@
                 }
               },
               /*
-                allFilters sind optionale (leeres Array), selektierbare Filter. Sie werden über ein Array definiert, Das
-                die Struktur [{id, [{id, label}, {id2, label2}, ...}, {id2, [{id, label}, ...]}, ...] einhalten muss.
-                GENERATOR: allFilters kann auch ein leeres Array [] enthalten. Dann wird der Filter-Button im search-panel nicht angezeigt.
+                _allFilters sind selektierbare Filter, die über eine REST-Schnittstelle (url: allFiltersUrl) geladen werden können.
+                Das REST-Objekt muss die folgeende Struktur einhalten:
+                {"filters": [{id, [{id, label}, {id2, label2}, ...}, {id2, [{id, label}, ...]}, ...]}.
+                filters.id und filters.filters.label können lokalisiert werden. Beispiel für ein allFilters Objekt:
+
+                _allFilters: {
+                   "filters" : [
+                        {
+                          "id": "birthday",
+                          "filters": [
+                            {"id": "0", "label": "filter_birthday_before_1980"},
+                            {"id": "1", "label": "filter_birthday_1980_1990"},
+                            {"id": "2", "label": "filter_birthday_after_1990"}
+                          ]
+                        },
+                        {
+                          "id": "salary",
+                          "filters": [
+                            {"id": "0", "label": "filter_salary_less_1000"},
+                            {"id": "1", "label": "filter_salary_1000_2000"},
+                            {"id": "2", "label": "filter_salary_2000_3000"},
+                            {"id": "3", "label": "filter_salary_more_3000"}
+                          ]
+                        }
+                      ]
+                  }
+
+                GENERATOR: _allFilters kann auch ein leeres Array [] enthalten. Dann wird der Filter-Button im search-panel nicht angezeigt.
+
               */
-              allFilters: {
+              _allFilters: {
                 type: Array,
                 value() {
                   return [];
                 }
               },
+              allFiltersUrl: {
+                type: String
+              },
               /*
-                _localizedFilters entspricht allFilters, aber die Werte in 'id' und 'label' sind durch lokalisierte Werte ersetzt worden.
+                _localizedFilters entspricht _allFilters, aber die Werte in 'id' und 'label' sind durch lokalisierte Werte ersetzt worden.
               */
               _localizedFilters: {
                 type: Array
@@ -184,6 +213,12 @@
          				type: Boolean,
          				value: false
          			},
+              createPath: {
+                type: String
+              },
+              editPath: {
+                type: String
+              },
          			/**
          			 * Icon shown in the search background
          			 */
@@ -231,13 +266,14 @@
         // Observers
         static get observers() {
           return [
+            '_loadAllFilters(allFiltersUrl)',
             '_selectionChanged(_selectedItems.length)',
             '_dataChanged(data.length)',
-            '_initLocalizedFilter(allFilters)'
+            '_initLocalizedFilter(_allFilters)'
           ]
         }
-        
-        
+
+
         connectedCallback() {
             super.connectedCallback();
             this._errorToast = document.querySelector('animad-app').$.global_error_toast;
@@ -334,19 +370,53 @@
         }
 
         // Protected methods
-        // localize all allFilters.filters.label
-        _initLocalizedFilter(allFilters){
-          if (allFilters) {
-            for (var i in allFilters){
-              allFilters[i].id = this.t(allFilters[i].id);
-              var filters = allFilters[i].filters;
-              for (var j in filters){
-                filters[j].label = this.t(filters[j].label);
-              }
+        // localize all _allFilters.filters.label
+        _loadAllFilters(url) {
+          if (url) {
+            // prepare request
+            var init = {
+                method: 'GET',
+                mode: 'cors'
             }
-            this._localizedFilters = allFilters;
+
+            var request = new Request(url, init);
+
+            fetch(request)
+              .then(response => {
+                if (response.ok) {
+                  response.json().then((data) => {
+                      this.set('_allFilters', data);
+                  });
+                } else {
+
+                  this._localizedFilters=[];
+                  this._error(response.status);
+                }
+              });
           }
         }
+
+        _initLocalizedFilter(allFiltersObject){
+          if (this.allFiltersUrl) {
+            if (allFiltersObject && allFiltersObject.filters){
+              var allFiltersArr = Object.entries(allFiltersObject.filters);
+              var allFilters = [];
+              for (var i in allFiltersArr){
+                allFilters.push(allFiltersArr[i][1]);
+                allFilters[i].id = this.t(allFilters[i].id);
+                var filters = allFilters[i].filters;
+                for (var j in filters){
+                  filters[j].label = this.t(filters[j].label);
+                }
+              }
+              this._localizedFilters = allFilters;
+            }
+          }
+          else {
+            this._localizedFilters=[];
+          }
+        }
+
 
         // opens Dialog to confirm Deletion of selected rows
         _confirmDeleteSelected() {
