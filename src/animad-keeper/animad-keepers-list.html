@@ -40,6 +40,7 @@
       </app-route>
 
       <animad-list-header
+          id="animad-list-header-search"
           placeholder-search="[[_setSearchText('search_placeholder')]]"
           placeholder-delete="Löschen"
           placeholder-new="Neu"
@@ -62,6 +63,7 @@
       </animad-list-header>
 
       <animad-list-header
+          id="animad-list-header-filter"
           placeholder-search="[[t('filter_placeholder')]]"
           placeholder-delete="Löschen"
           placeholder-new="Neu"
@@ -251,7 +253,7 @@
 
         _searchData(event) {
           this._search = event.target.search.toLowerCase();
-          super._fetchFuzzyData(this._search);
+          super._fetchData(this._search);
         }
 
         // Filter selection changed
@@ -280,7 +282,7 @@
         _useSelectedFilters(keeper, event) {
           var isIncluded = true;
           console.log("Methode _useSelectedFilters ist nicht implementiert!");
-          
+
           /* Filtern für selektierbare Filter muss manuell implementiert werden */
 
           return isIncluded;
