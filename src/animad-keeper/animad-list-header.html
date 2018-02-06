@@ -7,6 +7,8 @@
 <link rel="import" href="../../bower_components/paper-search/paper-search-bar.html">
 <link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
 
+<!-- GENERATOR for all lists the same -->
+
 <dom-module id="animad-list-header">
     <template>
       <style></style>
@@ -62,13 +64,75 @@
       </div>
     </template>
     <script>
+
+      /**
+       * `animad-list-header` wird in den Listen als Header der Animad-Applikation angezeigt.
+       *
+       * Das Element bietet die Möglichkeit Suche- und Filter-Eingaben für die Liste zu setzen,
+       * selektierbare Filter anzuzeigen und
+       * Events zur Navigation auf Formular-Seiten und zur Ausführung von Lösch- und Suchfunktionen anzustossen.
+       *
+       * #### Beispiel:
+       *
+       *     <animad-list-header
+       *         id="animad-list-header-filter"
+       *         placeholder-search="[[t('filter_placeholder')]]"
+       *         placeholder-delete="Löschen"
+       *         placeholder-new="Neu"
+       *         all-filters="[[_localizedFilters]]"
+       *         selected-filters = "{{_selectedFilters}}"
+       *         search="{{_filterString}}"
+       *         on-filter="_filterData"
+       *         on-filter-selection="_filterSelectionData"
+       *         on-delete="_confirmDeleteSelected"
+       *         on-new="_handleNew"
+       *         disable-delete-button="[[_disableDeleteButton]]"
+       *         hide-header="[[_hideFilterHeader(hideHeader)]]"
+       *         hide-new-button="[[hideNew]]"
+       *         hide-delete-button="[[hideDelete]]"
+       *         hide-filter-button="[[hideFilter]]"
+       *         disable-filter-button="[[disableFilter]]"
+       *         disable-new-button="[[disableNew]]"
+       *         show-results="[[showResults]]"
+       *         results-text="[[_resultsText]]"
+       *         icon="[[icon]]">
+       *     </animad-list-header>
+       *
+       * @customElement
+       * @polymer
+       **/
         class AnimadListHeader extends Polymer.Element {
             static get is() { return 'animad-list-header'; }
 
+            /**
+            * @event delete
+            *
+            * Ausgelöst, wenn der Löschen-Button geklickt wird.
+            */
+            /**
+            * @event new
+            *
+            * Ausgelöst, wenn der Neu-Button geklickt wird.
+            */
+            /**
+            * @event search
+            *
+            * Ausgelöst, wenn im Suche-Feld die Enter-Taste betätigt wird.
+            */
+            /**
+            * @event filter
+            *
+            * Ausgelöst, wenn im Filter-Feld eine Eingabe gemacht wird.
+            */
+            /**
+            * @event filter-selection
+            *
+            * Ausgelöst, wenn ein selektierbarer Filter selektiert oder deselektiert wird.
+            */
             static get properties() {
                 return {
-									/**
-				    			 * Query for which the user was searching
+									/*
+				    			 * Eingabewert im Suche-Feld
 				    			 */
 				    			search: {
 				    				type: String,
@@ -76,7 +140,7 @@
 				    				notify: true
 				    			},
 				          /*
-				            selectedFilters enthält die Information über alle ausgewählten Filter.
+				          * `selectedFilters` enthält die Information über alle ausgewählten selektierbaren Filter.
 				          */
 				          selectedFilters: {
 				            type: Array,
@@ -84,101 +148,108 @@
 				              return [];
 				            }
 				          },
-				    			/**
-				    			 * All filters from which the user can choose
+				    			/*
+				    			 * Alle selektierbaren Filter, die ausgewählt werden können.
 				    			 */
 				    			allFilters: Object,
                   /*
-                  * Wether to hide the whole list header. Set attribute "hide-header" to do so.
+                  * Gibt an, ob der Header angezeigt werden soll oder nicht.
+                  * Ist das Attribut "hide-header" gesetzt, wird der Header nicht angezeigt.
                   */
                   hideHeader: Boolean,
-				          /**
-				    			 * Whether to hide the Filter button. Set attribute "hide-filter-button" to do so.
-				    			 */
+                  /*
+                  * Gibt an, ob der Filter-Button angezeigt werden soll oder nicht.
+                  * Ist das Attribut "hide-filter-button" gesetzt, wird der Filter-Button nicht angezeigt.
+                  */
 				    			hideFilterButton: {
 				    				type: Boolean,
 				    				value: false
 				    			},
-                  /**
-				    			 * Whether to hide the Delete button. Set attribute "hide-delete-button" to do so.
-				    			 */
+                  /*
+                  * Gibt an, ob der Löschen-Button angezeigt werden soll oder nicht.
+                  * Ist das Attribut "hide-delete-button" gesetzt, wird der Löschen-Button nicht angezeigt.
+                  */
 				    			hideDeleteButton: {
 				    				type: Boolean,
 				    				value: false
 				    			},
-                  /**
-				    			 * Whether to hide the New button. Set attribute "hide-new-button" to do so.
-				    			 */
+                  /*
+                  * Gibt an, ob der Neu-Button angezeigt werden soll oder nicht.
+                  * Ist das Attribut "hide-new-button" gesetzt, wird der Neu-Button nicht angezeigt.
+                  */
 				    			hideNewButton: {
 				    				type: Boolean,
 				    				value: false
 				    			},
-				          /**
-				    			 * Whether to disable the Filter button. Set attribute "disable-filter-button" to do so.
-				    			 */
+                  /*
+                  * Gibt an, ob der Filter-Button aktiviert oder deaktiviert werden soll.
+                  * Ist das Attribut "disable-filter-button" gesetzt, wird der Filter-Button deaktiviert.
+                  */
 				    			disableFilterButton: {
 				    				type: Boolean,
 				    				value: false
 				    			},
-				          /**
-				    			 * Whether to disable the Delete button. Set attribute "disable-delete-button" to do so.
-				    			 */
+                  /*
+                  * Gibt an, ob der Löschen-Button aktiviert oder deaktiviert werden soll.
+                  * Ist das Attribut "disable-delete-button" gesetzt, wird der Löschen-Button deaktiviert.
+                  */
 				    			disableDeleteButton: {
 				    				type: Boolean,
 				    				value: false
 				    			},
-                  /**
-				    			 * Whether to disable the New button. Set attribute "disable-new-button" to do so.
-				    			 */
+                  /*
+                  * Gibt an, ob der Neu-Button aktiviert oder deaktiviert werden soll.
+                  * Ist das Attribut "disable-new-button" gesetzt, wird der Neu-Button deaktiviert.
+                  */
 				    			disableNewButton: {
 				    				type: Boolean,
 				    				value: false
 				    			},
-				    			/**
-				    			 * Icon shown in the search background
-				    			 */
+                  /*
+                  * Gibt an welches Icon im Suche-Hintergrund angezeigt werden soll.
+                  */
 				    			icon: {
 				    				type: String,
 				    				value: 'search'
 				    			},
-				    			/**
-				    			 * Text shown in the search box if the user didn't enter any query
+				    			/*
+				    			 * Gibt den Text an, der im Suche-Feld angezeigt werden soll, solange dort keine Eingabe gemacht wurde.
 				    			 */
 				    			placeholderSearch: {
 				    				type: String,
 				    				value: 'Search'
 				    			},
-				    			/**
-				    			 * Text for Delete button if the user didn't enter any query
+				    			/*
+				    			 * Gibt den Text an, der auf dem Löschen-Button angezeigt wird.
 				    			 */
 				    			placeholderDelete: {
 				    				type: String,
 				    				value: 'Delete'
 				    			},
-				    			/**
-				    			 * Text for New button if the user didn't enter any query
+                  /*
+				    			 * Gibt den Text an, der auf dem Neu-Button angezeigt wird.
 				    			 */
 				    			placeholderNew: {
 				    				type: String,
 				    				value: 'New'
 				    			},
-                  /**
-                   * Toggles visibility of collapsable element for filter selection
+                  /*
+                   * Wechselt die Sichtbarkeit des zusammenklappbaren Elements für die Filter-Selektion
                    */
 				          _isFilterSelectionOpen: {
 				            type: Boolean,
 				            value: false
 				          },
-                  /**
-                   * Toggles visibility of collapsable element for filter selection
+                  /*
+                   * Gibt an, ob die Anzahl der gefundenen Datensätze angezeigt werden soll.
                    */
 				          showResults: {
 				            type: Boolean,
 				            value: true
 				          },
-                  /**
-                   * Toggles visibility of collapsable element for filter selection
-                   */
+                  /*
+                  * Gibt den Text an, der für die Anzahl der gefundenen Datensätze verwendet werden soll.
+                  */
 				          resultsText: {
 				            type: String,
 				            value: ''
@@ -191,11 +262,17 @@
               searchBar.focus();
             }
 
-						// Private methods
+						// protected methods
+            /*
+            * Löst den Event `search` aus.
+            */
             _onSearchRequest(event){
               this.dispatchEvent(new CustomEvent('search', {bubbles: true, composed: true}));
             }
 
+            /*
+            * Löst den Event `filter` aus.
+            */
 			  		_onChangeRequest(newValue, oldValue) {
 			  			// Ignore initial setting of properties (caller is supposed to trigger this call automatically)
 			  			if (typeof oldValue !== 'undefined') {
@@ -203,6 +280,9 @@
 			  			}
 			  		}
 
+            /*
+            * Setzt die selektierten Filter und löst den Event `filter-selection` aus
+            */
 			      _onFilter(event) {
 			        // get attribute ('data-') values from tapped checkbox
 			        var filtertype = event.target.dataset.filtertype;
@@ -234,18 +314,33 @@
               this.dispatchEvent(new CustomEvent('filter-selection', {bubbles: true, composed: true}));
 			      }
 
+            /*
+            * Löst den Event `delete` aus.
+            */
 			      _onDelete(event){
               this.dispatchEvent(new CustomEvent('delete', {bubbles: true, composed: true}));
 			      }
+            /*
+            * Löst den Event `new` aus.
+            */
 			      _onNew(event) {
               this.dispatchEvent(new CustomEvent('new', {bubbles: true, composed: true}));
 			      }
+            /*
+            * Wechselt die Sichtbarkeit des Elements zur Anzeige der selektierbaren Filter.
+            */
 			      _toggleFilterSelectionOpen() {
 			  			this._isFilterSelectionOpen = !this._isFilterSelectionOpen;
 			  		}
+            /*
+            * Setzt die Sichtbarkeit des Filter-Buttons
+            */
 			      _hideFilterButton(filters) {
 			  			return this.hideFilterButton || !filters || filters.length === 0;
 			  		}
+            /*
+            * Setzt die Aktivierung / Deaktivierung des Filter-Buttons
+            */
 			  		_disableFilterButton(filters) {
 			        return this.disableFilterButton || !filters || filters.length === 0;
 			  		}
