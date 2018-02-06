@@ -20,7 +20,7 @@
 <link rel="import" href="./animad-list-header.html">
 
 <!-- GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-list -->
-<dom-module id="animad-animals-list">
+<dom-module id="animad-enclosures-list">
     <template>
       <style>
       </style>
@@ -137,39 +137,11 @@
           <template>[[item.name]]</template>
         </vaadin-grid-column>
 
-        <vaadin-grid-column >
-          <template class="header">
-            <vaadin-grid-sorter path="lastName">[[t('species')]]</vaadin-grid-sorter>
-          </template>
-          <template>[[item.species]]</template>
-        </vaadin-grid-column>
-
         <vaadin-grid-column>
           <template class="header">
-            <vaadin-grid-sorter path="employmentDate">[[t('birthDate')]]</vaadin-grid-sorter>
+            <vaadin-grid-sorter path="cleaningTime">[[t('cleaningTime')]]</vaadin-grid-sorter>
           </template>
-          <template>[[item.birthDate]]</template>
-        </vaadin-grid-column>
-
-        <vaadin-grid-column>
-          <template class="header">
-            <vaadin-grid-sorter path="gender">[[t('gender')]]</vaadin-grid-sorter>
-          </template>
-          <template>[[item.gender]]</template>
-        </vaadin-grid-column>
-
-        <vaadin-grid-column>
-          <template class="header">
-            <vaadin-grid-sorter path="weight">[[t('weight')]]</vaadin-grid-sorter>
-          </template>
-          <template>[[item.weight]]</template>
-        </vaadin-grid-column>
-
-        <vaadin-grid-column>
-          <template class="header">
-            <vaadin-grid-sorter path="alive">[[t('alive')]]</vaadin-grid-sorter>
-          </template>
-          <template>[[item.alive]]</template>
+          <template>[[item.cleaningTime]]</template>
         </vaadin-grid-column>
 
         <vaadin-grid-column>
@@ -199,9 +171,9 @@
 
     <script>
       // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]List
-      class AnimadAnimalsList extends mix(Polymer.Element).with(AnimadListBehavior, AnimadI18nBehavior) {
+      class AnimadEnclosuresList extends mix(Polymer.Element).with(AnimadListBehavior, AnimadI18nBehavior) {
 
-        static get is() { return 'animad-animals-list'; }
+        static get is() { return 'animad-enclosures-list'; }
 
         static get properties() {
           return {
@@ -225,7 +197,7 @@
              */
             _entity: {
               type: String,
-              value: 'animal'
+              value: 'enclosure'
             },
           }
         }
@@ -246,7 +218,7 @@
           // this is optional. If not implemented will only ask question (translated): Do you really want to delete this item?
           var index = this._filteredData.findIndex(item => item.id == e.target.id);
           var item = this._filteredData[index];
-          this._deleteInfo = this.t('modal_deleteinfo', {name: item.name, species: item.species, birthDate: item.birthDate, gender: item.gender, alive: item.alive});
+          this._deleteInfo = this.t('modal_deleteinfo', {name: item.name, cleaningtime: item.cleaningTime});
 
           super._confirmDeleteRow(e);
         }
@@ -269,16 +241,13 @@
 
         _filter(){
           this._filteredData =
-            this.data.filter(animal =>
-                animal.name.toLowerCase().includes(this._filterString) ||
-                animal.species.toLowerCase().includes(this._filterString) ||
-                animal.birthDate.toLowerCase().includes(this._filterString) ||
-                animal.gender.toString().toLowerCase().includes(this._filterString) ||
-                animal.alive.toLowerCase().includes(this._filterString));
+            this.data.filter(enclosure =>
+                enclosure.name.toLowerCase().includes(this._filterString) ||
+                enclosure.cleaningtime.toLowerCase().includes(this._filterString));
           this._filteredData = this._filteredData.filter(this._useSelectedFilters, this);
         }
 
-        _useSelectedFilters(animal, event) {
+        _useSelectedFilters(enclosure, event) {
           var isIncluded = true;
           console.log("Methode _useSelectedFilters ist nicht implementiert!");
           
@@ -289,7 +258,7 @@
 
       }
 
-      customElements.define(AnimadAnimalsList.is, AnimadAnimalsList);
+      customElements.define(AnimadEnclosuresList.is, AnimadEnclosuresList);
     </script>
 
   </dom-module>

@@ -1,586 +1,633 @@
 <script>
-  /**
-   * Behavior, um einer beliebigen Liste (Read, Delete) alle Eigenschaften
-   * wie Properties und Methoden zu geben, die es benötigt um mit dem Server zu
-   * kommunizieren.
-   *
-   * @polymerMixinClass
-   */
-  /* @polymerMixin */
-  let AnimadListBehavior = (superClass) => class extends superClass {
+    /**
+     * Behavior, um einer beliebigen Liste (Read, Delete) alle Eigenschaften
+     * wie Properties und Methoden zu geben, die es benötigt um mit dem Server zu
+     * kommunizieren.
+     *
+     * @polymerMixinClass
+     */
+    /* @polymerMixin */
+    let AnimadListBehavior = (superClass) => class extends superClass {
 
-    static get properties() {
-      return {
-        data: {
-          type: Array,
-          value() {
-            return [];
-          }
-        },
-        /*
-          _filteredData enthält alle Objekte, die auf angegebene oder ausgewählte Filter zutreffen.
-          Die Liste zeigt die Einträge aus _filteredData an.
-        */
-        _filteredData: {
-          type: Array,
-          value() {
-            return this.data;
-          }
-        },
-        /*
-          _allFilters sind selektierbare Filter, die über eine REST-Schnittstelle (url: allFiltersUrl) geladen werden können.
-          Das REST-Objekt muss die folgeende Struktur einhalten:
-          {"filters": [{id, [{id, label}, {id2, label2}, ...}, {id2, [{id, label}, ...]}, ...]}.
-          filters.id und filters.filters.label können lokalisiert werden. Beispiel für ein allFilters Objekt:
+        static get properties() {
+            return {
+              data: {
+                type: Array,
+                value() {
+                  return [];
+                }
+              },
+              /*
+                _filteredData enthält alle Objekte, die auf angegebene oder ausgewählte Filter zutreffen.
+                Die Liste zeigt die Einträge aus _filteredData an.
+              */
+              _filteredData: {
+                type: Array,
+                value() {
+                  return this.data;
+                }
+              },
+              /*
+                _allFilters sind selektierbare Filter, die über eine REST-Schnittstelle (url: allFiltersUrl) geladen werden können.
+                Das REST-Objekt muss die folgeende Struktur einhalten:
+                {"filters": [{id, [{id, label}, {id2, label2}, ...}, {id2, [{id, label}, ...]}, ...]}.
+                filters.id und filters.filters.label können lokalisiert werden. Beispiel für ein allFilters Objekt:
 
-          _allFilters: {
-             "filters" : [
-                  {
-                    "id": "birthday",
-                    "filters": [
-                      {"id": "0", "label": "filter_birthday_before_1980"},
-                      {"id": "1", "label": "filter_birthday_1980_1990"},
-                      {"id": "2", "label": "filter_birthday_after_1990"}
-                    ]
-                  },
-                  {
-                    "id": "salary",
-                    "filters": [
-                      {"id": "0", "label": "filter_salary_less_1000"},
-                      {"id": "1", "label": "filter_salary_1000_2000"},
-                      {"id": "2", "label": "filter_salary_2000_3000"},
-                      {"id": "3", "label": "filter_salary_more_3000"}
-                    ]
+                _allFilters: {
+                   "filters" : [
+                        {
+                          "id": "birthday",
+                          "filters": [
+                            {"id": "0", "label": "filter_birthday_before_1980"},
+                            {"id": "1", "label": "filter_birthday_1980_1990"},
+                            {"id": "2", "label": "filter_birthday_after_1990"}
+                          ]
+                        },
+                        {
+                          "id": "salary",
+                          "filters": [
+                            {"id": "0", "label": "filter_salary_less_1000"},
+                            {"id": "1", "label": "filter_salary_1000_2000"},
+                            {"id": "2", "label": "filter_salary_2000_3000"},
+                            {"id": "3", "label": "filter_salary_more_3000"}
+                          ]
+                        }
+                      ]
                   }
-                ]
+
+                GENERATOR: _allFilters kann auch ein leeres Array [] enthalten. Dann wird der Filter-Button im search-panel nicht angezeigt.
+
+              */
+              _allFilters: {
+                type: Array,
+                value() {
+                  return [];
+                }
+              },
+              allFiltersUrl: {
+                type: String
+              },
+              /*
+                _localizedFilters entspricht _allFilters, aber die Werte in 'id' und 'label' sind durch lokalisierte Werte ersetzt worden.
+              */
+              _localizedFilters: {
+                type: Array
+              },
+              /*
+                _selectedFilters enthält die Information über alle ausgewählten Filter.
+              */
+              _selectedFilters: {
+                type: Array,
+                value() {
+                  return [];
+                }
+              },
+              /*
+                _search enthält den String, der im Eingabe-Feld zum Suche eingegeben wurde.
+              */
+              _search: {
+                type: String
+              },
+              /**
+              * Predefined search string. Will be shown in search field after page loading.
+              */
+              defaultSearch: {
+                type: String,
+                value: ""
+              },
+              /*
+                _search enthält den String, der im Eingabe-Feld zum Filtern eingegeben wurde.
+              */
+              _filterString: {
+                type: String,
+                value: ""
+              },
+              /*
+                _disableDeleteButton deaktiviert (true) oder aktiviert (false) den Delete-Button
+              */
+              _disableDeleteButton: {
+                type: Boolean,
+                value: true
+              },
+              /*
+               _deleteInfo enthält beim Löschen über Papierkorb die Information über den zu
+               löschenden Datensatz. Nach Bestätigung oder Abbruch des Löschvorgangs wird
+               die Information aus _deleteInfo wieder gelöscht.
+              */
+              _deleteInfo: {
+                type: String,
+                value: ""
+              },
+              /*
+               _deleteItem enthält beim Löschen über Papierkorb den zu löschenden Datensatz.
+               Nach Bestätigung oder Abbruch des Löschvorgangs wird _deleteItem wieder
+               in den Initial-Zustand zurückgesetzt.
+              */
+              _deleteItems: {
+                type: Array,
+                value: []
+              },
+              /*
+                _selectedItems enthält alle in der Liste selektierten Datensätze
+              */
+              _selectedItems: {
+                type: Array,
+                value() {
+                  return [];
+                }
+              },
+              /* _backendData enthält die Antwort des Backend-Aufrufs als JSON String*/
+              _backendData: {
+                type: Object,
+                observer: '_backendDataChanged'
+              },
+              // backend stuff
+              /*
+                 die URL zum Backend
+              */
+               url: {
+                 type: String,
+                 value: ""
+               },
+               /*
+                 multiSort gibt an, ob in der Tabelle nach mehreren Feldern sortiert
+                 werden kann (multiSort = true) oder nicht (multiSort = false)
+               */
+               multiSort: {
+                type: Boolean,
+                value: false
+               },
+               /*
+               * Wether to hide the whole list header. Set attribute "hide-header" to do so.
+               */
+               hideHeader: {
+                type: Boolean,
+                value: false
+               },
+               /**
+          			 * Whether to hide the New button in header. Set attribute "hide-new" to do so.
+          			 */
+               hideNew: {
+                type: Boolean,
+                value: false
+               },
+               /**
+          			 * Whether to hide the Delete buttons in header and list rows. Set attribute "hide-delete" to do so.
+          			 */
+               hideDelete: {
+                type: Boolean,
+                value: false
+               },
+               /**
+          			 * Whether to hide the Edit buttons in list rows. Set attribute "hide-edit" to do so.
+          			 */
+               hideEdit: {
+                type: Boolean,
+                value: false
+               },
+               /**
+         			 * Whether to hide the Filter button. Set attribute "hide-filter" to do so.
+         			 */
+         			hideFilter: {
+         				type: Boolean,
+         				value: false
+         			},
+               /**
+         			 * Whether to disable the Filter button. Set attribute "disable-filter" to do so.
+         			 */
+         			disableFilter: {
+         				type: Boolean,
+         				value: false
+         			},
+               /**
+         			 * Whether to disable the Delete button. Set attribute "disable-delete" to do so.
+         			 */
+         			disableDelete: {
+         				type: Boolean,
+         				value: false
+         			},
+              /**
+         			 * Whether to disable the New button. Set attribute "disable-new" to do so.
+         			 */
+         			disableNew: {
+         				type: Boolean,
+         				value: false
+         			},
+              createPath: {
+                type: String
+              },
+              editPath: {
+                type: String
+              },
+         			/**
+         			 * Icon shown in the search background
+         			 */
+         			icon: {
+         				type: String,
+         				value: 'search'
+         			},
+              /**
+               * Whether to search data without filtering while loading or if user has to enter
+               * search string before searching for data.
+              */
+              loadCompleteData: {
+                type: Boolean,
+                value: false
+              },
+              /**
+               * Whether to show results text (e.g. 30 results found.) or not.
+               */
+              showResults: {
+                type: Boolean,
+                value: true
+              },
+              /**
+               * String to show if 'showResults' is set to true.
+               */
+              _resultsText:{
+                type: String
+              },
+              /**
+               * Set to true as soon as data was searched.
+               */
+              _hasSearched: {
+                type: Boolean,
+                value: false
+              },
+              /**
+               * Set to true as soon as too many results were found.
+               */
+              _tooManyResults: {
+                type: Boolean,
+                value: false
+              },
+              _maxResults: {
+                  type: Number,
+                  value: 0
+              },
+              /**
+               *
+               */
+              _errorToast: {
+                  type: Object
+              },
             }
-
-          GENERATOR: _allFilters kann auch ein leeres Array [] enthalten. Dann wird der Filter-Button im search-panel nicht angezeigt.
-
-        */
-        _allFilters: {
-          type: Array,
-          value() {
-            return [];
-          }
-        },
-        allFiltersUrl: {
-          type: String
-        },
-        /*
-          _localizedFilters entspricht _allFilters, aber die Werte in 'id' und 'label' sind durch lokalisierte Werte ersetzt worden.
-        */
-        _localizedFilters: {
-          type: Array
-        },
-        /*
-          _selectedFilters enthält die Information über alle ausgewählten Filter.
-        */
-        _selectedFilters: {
-          type: Array,
-          value() {
-            return [];
-          }
-        },
-        /*
-          _search enthält den String, der im Eingabe-Feld zum Suche eingegeben wurde.
-        */
-        _search: {
-          type: String,
-          value: ""
-        },
-        /**
-        * Predefined search string. Will be shown in search field after page loading.
-        */
-        defaultSearch: {
-          type: String
-        },
-        /*
-          _search enthält den String, der im Eingabe-Feld zum Filtern eingegeben wurde.
-        */
-        _filterString: {
-          type: String,
-          value: ""
-        },
-        /*
-          _disableDeleteButton deaktiviert (true) oder aktiviert (false) den Delete-Button
-        */
-        _disableDeleteButton: {
-          type: Boolean,
-          value: true
-        },
-        /*
-         _deleteInfo enthält beim Löschen über Papierkorb die Information über den zu
-         löschenden Datensatz. Nach Bestätigung oder Abbruch des Löschvorgangs wird
-         die Information aus _deleteInfo wieder gelöscht.
-        */
-        _deleteInfo: {
-          type: String,
-          value: ""
-        },
-        /*
-         _deleteItem enthält beim Löschen über Papierkorb den zu löschenden Datensatz.
-         Nach Bestätigung oder Abbruch des Löschvorgangs wird _deleteItem wieder
-         in den Initial-Zustand zurückgesetzt.
-        */
-        _deleteItems: {
-          type: Array,
-          value: []
-        },
-        /*
-          _selectedItems enthält alle in der Liste selektierten Datensätze
-        */
-        _selectedItems: {
-          type: Array,
-          value() {
-            return [];
-          }
-        },
-        /* _backendData enthält die Antwort des Backend-Aufrufs als JSON String*/
-        _backendData: {
-          type: Object,
-          observer: '_backendDataChanged'
-        },
-        // backend stuff
-        /*
-           die URL zum Backend
-        */
-        url: {
-          type: String,
-          value: ""
-        },
-        /*
-          multiSort gibt an, ob in der Tabelle nach mehreren Feldern sortiert
-          werden kann (multiSort = true) oder nicht (multiSort = false)
-        */
-        multiSort: {
-          type: Boolean,
-          value: false
-        },
-        /*
-        * Wether to hide the whole list header. Set attribute "hide-header" to do so.
-        */
-        hideHeader: {
-          type: Boolean,
-          value: false
-        },
-        /**
-          * Whether to hide the New button in header. Set attribute "hide-new" to do so.
-          */
-        hideNew: {
-          type: Boolean,
-          value: false
-        },
-        /**
-          * Whether to hide the Delete buttons in header and list rows. Set attribute "hide-delete" to do so.
-          */
-        hideDelete: {
-          type: Boolean,
-          value: false
-        },
-        /**
-          * Whether to hide the Edit buttons in list rows. Set attribute "hide-edit" to do so.
-          */
-        hideEdit: {
-          type: Boolean,
-          value: false
-        },
-        /**
-          * Whether to hide the Filter button. Set attribute "hide-filter" to do so.
-          */
-        hideFilter: {
-          type: Boolean,
-          value: false
-        },
-        /**
-          * Whether to disable the Filter button. Set attribute "disable-filter" to do so.
-          */
-        disableFilter: {
-          type: Boolean,
-          value: false
-        },
-        /**
-          * Whether to disable the Delete button. Set attribute "disable-delete" to do so.
-          */
-        disableDelete: {
-          type: Boolean,
-          value: false
-        },
-        /**
-           * Whether to disable the New button. Set attribute "disable-new" to do so.
-           */
-        disableNew: {
-          type: Boolean,
-          value: false
-        },
-        createPath: {
-          type: String
-        },
-        editPath: {
-          type: String
-        },
-        /**
-         * Icon shown in the search background
-         */
-        icon: {
-          type: String,
-          value: 'search'
-        },
-        /**
-         * Whether to search data without filtering while loading or if user has to enter
-         * search string before searching for data.
-        */
-        loadCompleteData: {
-          type: Boolean,
-          value: false
-        },
-        /**
-         * Whether to show results text (e.g. 30 results found.) or not.
-         */
-        showResults: {
-          type: Boolean,
-          value: true
-        },
-        /**
-         * String to show if 'showResults' is set to true.
-         */
-        _resultsText: {
-          type: String
-        },
-        /**
-         * Set to true as soon as data was searched.
-         */
-        _hasSearched: {
-          type: Boolean,
-          value: false
-        },
-        /**
-         *
-         */
-        _errorToast: {
-          type: Object
-        },
-      }
-    }
-
-    // Observers
-    static get observers() {
-      return [
-        '_loadAllFilters(allFiltersUrl)',
-        '_selectionChanged(_selectedItems.length)',
-        '_dataChanged(data.length)',
-        '_initLocalizedFilter(_allFilters)'
-      ]
-    }
-
-
-    connectedCallback() {
-      super.connectedCallback();
-      this._errorToast = document.querySelector('animad-app').$.global_error_toast;
-    }
-
-    // refresh view and reset any delete information
-    _dataChanged(dataLength) {
-      // refresh list data
-      this._filteredData = this.data;
-      this._filter();
-
-      // unselect all deleted items
-      this._deselectItems(this._deleteItems);
-      //          for (var item of this._deleteItems) {
-      //            this.shadowRoot.querySelector('#animad-list').deselectItem(item);
-      //          }
-
-      this._deleteItems = [];
-      this._deleteInfos = "";
-
-      if (this._hasSearched) {
-        // set results text
-        if (dataLength > 1) {
-          this._resultsText = dataLength + this.t('results_found_text');
-        }
-        else if (dataLength == 1) {
-          this._resultsText = dataLength + this.t('results_one_found_text');
-        }
-        else {
-          this._resultsText = this.t('no_results_found_text');
-        }
-      }
-    }
-
-    _deselectItems(items) {
-      this._selectedItems = [];
-
-      // this is necessary as vaadin-grid doesn't unselect itself
-      // when selected-items is assigned to an empty array...
-      for (var item of items) {
-        this.shadowRoot.querySelector('#animad-list').deselectItem(item);
-      }
-    }
-
-    _hideSearchHeader(hideHeader) {
-      return hideHeader || this.loadCompleteData;
-    }
-
-    _hideFilterHeader(hideHeader) {
-      return hideHeader || !this.loadCompleteData;
-    }
-    // Selected/Unselected items in list
-    _selectionChanged(nrSelectedItems) {
-      this._disableDeleteButton = this.disableDelete || (nrSelectedItems === 0);
-    }
-
-    // Assign data to data array
-    _backendDataChanged(backendData, backendDataOld) {
-      var items = [];
-      if (backendData._embedded) {
-        var backendItems = [];
-        var entityName = Object.getOwnPropertyNames(backendData._embedded);
-        //console.log("entityName: " + entityName);
-        if (entityName) {
-          backendItems = backendData._embedded[entityName];
-        }
-        for (var item of backendItems) {
-          // get id
-          var href = item._links.self.href;
-          var index = href.lastIndexOf('/') + 1;
-          var itemId = href.substring(index);
-
-          // Add id to item and then push item to items-array
-          item["id"] = itemId;
-          items.push(item);
         }
 
-      }
-      // Assignment triggers observer _dataChanged
-      this.data = items;
-    }
-
-    // Callback methods
-    ready() {
-      super.ready();
-      this._search = this.defaultSearch;
-      if (this.loadCompleteData) {
-        this._loadHalData(this.url, 'GET');
-        //            this._loadData();
-      }
-    }
-
-    // Set text to show in search field
-    _setSearchText(placeholder) {
-      if (this._search && this._search.length > 0) {
-        return this.defaultSearch;
-      }
-      return this.t(placeholder);
-    }
-
-    // Protected methods
-    // localize all _allFilters.filters.label
-    _loadAllFilters(url) {
-      if (url) {
-        // prepare request
-        var init = {
-          method: 'GET',
-          mode: 'cors'
+        // Observers
+        static get observers() {
+          return [
+            '_loadAllFilters(allFiltersUrl)',
+            '_selectionChanged(_selectedItems.length)',
+            '_dataChanged(data.length)',
+            '_initLocalizedFilter(_allFilters)'
+          ]
         }
 
-        var request = new Request(url, init);
 
-        fetch(request)
-          .then(response => {
-            if (response.ok) {
-              response.json().then((data) => {
-                this.set('_allFilters', data);
-              });
-            } else {
+        connectedCallback() {
+            super.connectedCallback();
+            this._errorToast = document.querySelector('animad-app').$.global_error_toast;
+        }
 
-              this._localizedFilters = [];
-              this._error(response.status);
+        // refresh view and reset any delete information
+        _dataChanged(dataLength) {
+          // refresh list data
+          this._filteredData = this.data;
+          this._filter();
+
+          // unselect all deleted items
+          this._deselectItems(this._deleteItems);
+//          for (var item of this._deleteItems) {
+//            this.shadowRoot.querySelector('#animad-list').deselectItem(item);
+//          }
+
+          this._deleteItems = [];
+          this._deleteInfos = "";
+
+          if (this._hasSearched){
+            // set results text
+            if (dataLength > 1) {
+              this._resultsText = dataLength+this.t('results_found_text');
             }
-          });
-      }
-    }
-
-    _initLocalizedFilter(allFiltersObject) {
-      if (this.allFiltersUrl) {
-        if (allFiltersObject && allFiltersObject.filters) {
-          var allFiltersArr = Object.entries(allFiltersObject.filters);
-          var allFilters = [];
-          for (var i in allFiltersArr) {
-            allFilters.push(allFiltersArr[i][1]);
-            allFilters[i].id = this.t(allFilters[i].id);
-            var filters = allFilters[i].filters;
-            for (var j in filters) {
-              filters[j].label = this.t(filters[j].label);
+            else if (dataLength == 1) {
+              this._resultsText = dataLength+this.t('results_one_found_text');
+            }
+            else if (dataLength == 0) {
+                if (this._tooManyResults) {
+                    this._resultsText = this.t('too_many_results_found_text', {results: this._maxResults});
+                } else {
+                    this._resultsText = this.t('no_results_found_text');
+                }
             }
           }
-          this._localizedFilters = allFilters;
         }
-      }
-      else {
-        this._localizedFilters = [];
-      }
-    }
 
+        _deselectItems(items){
+          this._selectedItems = [];
 
-    // opens Dialog to confirm Deletion of selected rows
-    _confirmDeleteSelected() {
-      this._deleteItems = [];
-      // loop over all items to delete
-      for (var item of this._selectedItems) {
-        // check if _filteredData contains selected item
-        var index = this._filteredData.indexOf(item);
-
-        if (index >= 0) {
-          // yes: add it to deletedItems
-          this._deleteItems.push(item);
-        }
-      }
-
-      // check if selected item should be deleted
-      // attention: this.$ necessary to enable it for Opera (https://github.com/PolymerElements/paper-dialog/issues/128)
-      this.$.dialogDeleteSelected.open();
-    }
-
-    // opens Dialog to confirm Deletion of selected item (paper basket)
-    _confirmDeleteRow(e) {
-      // find clicked item by id in _filteredData
-      var index = this._filteredData.findIndex(item => item.id == e.target.id);
-
-      // get item of row where delete button was clicked
-      //var item = this._filteredData[e.target.id];
-      var item = this._filteredData[index];
-
-      // set temporary delete information
-      this._deleteItems = [item];
-
-      // user must confirm that item should be deleted
-      // attention: this.$ necessary to enable it for Opera (https://github.com/PolymerElements/paper-dialog/issues/128)
-      this.$.dialogDeleteItem.open();
-    }
-
-    // Deletes all data that is contained in array _deleteItems
-    _deleteSelectedRows() {
-      var items = this._deleteItems;
-
-      // loop over all items to delete
-      for (var i in items) {
-        var j = this.data.indexOf(items[i]);
-        // Backend Call
-        this._deleteData(this.data[j]);
-      }
-    }
-
-    // reset any delete information
-    _unsetTemporaryDeleteInfo() {
-      this._deleteItem = [];
-      this._deleteInfo = "";
-    }
-
-    // Backend methods
-    // Search
-    _loadHalData(url, verb) {
-      this._hasSearched = true;
-
-      // prepare request
-      var init = {
-        method: verb,
-        mode: 'cors'
-      }
-
-      var request = new Request(url, init);
-
-      fetch(request)
-        .then(response => {
-          if (response.ok) {
-            response.json().then((data) => {
-              this.set('_backendData', data);
-            });
-          } else {
-            this._error(response.status);
+          // this is necessary as vaadin-grid doesn't unselect itself
+          // when selected-items is assigned to an empty array...
+          for (var item of items) {
+            this.shadowRoot.querySelector('#animad-list').deselectItem(item);
           }
-        })
-    }
+        }
 
-    _transferCellnameToFieldname(phrasesString, search) {
-      var phrases = phrasesString.split(',');
-      var start = search.length;
-      var end = search.length;
-      while (start >= 0 && end > -1) {
-        var end = search.lastIndexOf(":", start);
-        if (end > -1) {
-          var start = search.lastIndexOf(" ", end);
-          var oldsearch = search.substring(start, end).trim();
-          var newsearch = oldsearch;
-          for (var phrase of phrases) {
-            phrase = phrase.replace(/"/g, '');
-            var s = phrase.split(":");
-            if (s.length > 1 && s[1].toLowerCase() == newsearch) {
-              newsearch = s[0];
+        _hideSearchHeader(hideHeader){
+          return hideHeader || this.loadCompleteData;
+        }
+
+        _hideFilterHeader(hideHeader){
+          return hideHeader || !this.loadCompleteData;
+        }
+        // Selected/Unselected items in list
+        _selectionChanged(nrSelectedItems) {
+          this._disableDeleteButton = this.disableDelete || (nrSelectedItems === 0);
+        }
+
+        // Assign data to data array
+        _backendDataChanged(backendData, backendDataOld){
+          var items = [];
+          if (backendData._embedded) {
+            var backendItems = [];
+            var entityName = Object.getOwnPropertyNames(backendData._embedded);
+            //console.log("entityName: " + entityName);
+            if (entityName) {
+              backendItems = backendData._embedded[entityName];
+            }
+            for (var item of backendItems) {
+              // get id
+              var href = item._links.self.href;
+              var index = href.lastIndexOf('/') + 1;
+              var itemId = href.substring(index);
+
+              // Add id to item and then push item to items-array
+              item["id"] = itemId;
+              items.push(item);
             }
           }
-          search = search.replace(oldsearch, newsearch);
+
+          // Assignment triggers observer _dataChanged
+          this.data = items;
         }
-      }
 
-      return search;
-    }
-
-    _fetchFuzzyData(search) {
-      this._hasSearched = true;
-      this._deselectItems(this._selectedItems);
-
-      var phrasesString = JSON.stringify(this._polyglot.phrases);
-      var searchStr = this._transferCellnameToFieldname(phrasesString, search);
-      var fuzzyUrl = this.url + "/search/findFullTextFuzzy?q='" + searchStr + "'";
-      this._loadHalData(fuzzyUrl, 'GET');
-    }
-
-    // Delete
-    _deleteData(item) {
-      var url = this.url + '/' + item.id;
-      // prepare request
-      var init = {
-        method: 'DELETE',
-        mode: 'cors'
-      }
-
-      var request = new Request(url, init);
-      fetch(request)
-        .then(response => {
-          var index = response.url.lastIndexOf('/') + 1;
-          var itemId = response.url.substring(index);
-
-          if (response.ok) {
-            // refresh view
-            index = this.data.findIndex(item => item.id == itemId);
-            this.splice('data', index, 1);
+        // Callback methods
+        ready() {
+          super.ready();
+          this._search = this.defaultSearch;
+          if (this.loadCompleteData){
+            this._loadHalData(this.url, 'GET');
+            var animadListHeaderFilter =this.shadowRoot.querySelector('#animad-list-header-filter');
+            animadListHeaderFilter.focus();
           }
           else {
-            // notify user about error
-            this._errorDelete(response.status, itemId);
+            var animadListHeaderSearch =this.shadowRoot.querySelector('#animad-list-header-search');
+            animadListHeaderSearch.focus();
           }
-        }).catch(error => {
-          this._error(this.t('list_action_delete'), error.message);
-        });
-    }
+        }
 
-    /**
-     * Der 'Toast', der bei Fehlern beim Löschen angezeigt wird.
-     */
-    _errorDelete(status, id) {
-      this._errorToast.text = this.t('list_delete_error', { code: status, id: id });
-      console.error(this._errorToast.text);
-      this._errorToast.open();
-    }
+        // Set text to show in search field
+        _setSearchText(placeholder) {
+          if (this._search && this._search.length > 0) {
+            return this.defaultSearch;
+          }
+          return this.t(placeholder);
+        }
 
-    /**
-     * Der 'Toast', der bei Fehlern (allgemein) angezeigt wird.
-     */
-    _error(action, msg) {
-      this._errorToast.text = this.t('list_error', { action: action });
-      console.error(this._errorToast.text + "(" + msg + ")");
-      this._errorToast.open();
-    }
-  };
+        // Protected methods
+        // localize all _allFilters.filters.label
+        _loadAllFilters(url) {
+          if (url) {
+            // prepare request
+            var init = {
+                method: 'GET',
+                mode: 'cors'
+            }
+
+            var request = new Request(url, init);
+
+            fetch(request)
+              .then(response => {
+                if (response.ok) {
+                  response.json().then((data) => {
+                      this.set('_allFilters', data);
+                  });
+                } else {
+
+                  this._localizedFilters=[];
+                  this._error(response.status);
+                }
+              });
+          }
+        }
+
+        _initLocalizedFilter(allFiltersObject){
+          if (this.allFiltersUrl) {
+            if (allFiltersObject && allFiltersObject.filters){
+              var allFiltersArr = Object.entries(allFiltersObject.filters);
+              var allFilters = [];
+              for (var i in allFiltersArr){
+                allFilters.push(allFiltersArr[i][1]);
+                allFilters[i].id = this.t(allFilters[i].id);
+                var filters = allFilters[i].filters;
+                for (var j in filters){
+                  filters[j].label = this.t(filters[j].label);
+                }
+              }
+              this._localizedFilters = allFilters;
+            }
+          }
+          else {
+            this._localizedFilters=[];
+          }
+        }
+
+
+        // opens Dialog to confirm Deletion of selected rows
+        _confirmDeleteSelected() {
+          this._deleteItems = [];
+          // loop over all items to delete
+          for (var item of this._selectedItems) {
+            // check if _filteredData contains selected item
+            var index = this._filteredData.indexOf(item);
+
+            if (index >= 0) {
+              // yes: add it to deletedItems
+              this._deleteItems.push(item);
+            }
+          }
+
+          // check if selected item should be deleted
+          // attention: this.$ necessary to enable it for Opera (https://github.com/PolymerElements/paper-dialog/issues/128)
+          this.$.dialogDeleteSelected.open();
+        }
+
+        // opens Dialog to confirm Deletion of selected item (paper basket)
+        _confirmDeleteRow(e) {
+          // find clicked item by id in _filteredData
+          var index = this._filteredData.findIndex(item => item.id == e.target.id);
+
+          // get item of row where delete button was clicked
+          //var item = this._filteredData[e.target.id];
+          var item = this._filteredData[index];
+
+          // set temporary delete information
+          this._deleteItems = [item];
+
+          // user must confirm that item should be deleted
+          // attention: this.$ necessary to enable it for Opera (https://github.com/PolymerElements/paper-dialog/issues/128)
+          this.$.dialogDeleteItem.open();
+        }
+
+        // Deletes all data that is contained in array _deleteItems
+        _deleteSelectedRows() {
+          var items = this._deleteItems;
+
+          // loop over all items to delete
+          for (var i in items) {
+            var j = this.data.indexOf(items[i]);
+            // Backend Call
+            this._deleteData(this.data[j]);
+          }
+        }
+
+        // reset any delete information
+        _unsetTemporaryDeleteInfo() {
+          this._deleteItem = [];
+          this._deleteInfo = "";
+        }
+
+        // Backend methods
+        // Search
+        _loadHalData(url, verb) {
+          this._hasSearched = true;
+          this._tooManyResults = false;
+
+            // prepare request
+            var init = {
+                method: verb,
+                mode: 'cors'
+            }
+
+            var request = new Request(url, init);
+
+            fetch(request)
+                .then(response => {
+                    if (response.ok) {
+                        response.json().then((data) => {
+                            this.set('_backendData', data);
+                        });
+                    } else if (response.status == 413) {
+                        response.json().then((data) => {
+                            this._maxResults = data.maxResults;
+                            this._tooManyResults = true;
+                            this.set('_backendData', {});
+                            this._errorTooManyResults(this._maxResults, 'too many results');
+                        });
+                    } else {
+                        this._error(response.status);
+                    }
+                })
+        }
+
+        _transferCellnameToFieldname(phrases, search) {
+          var searches = search.split(" ");
+          for (var searchEntry of searches) {
+            var searchSplitted = searchEntry.split(':');
+            if (searchSplitted.length > 1 && searchSplitted[1] != "") {
+              for (var phrase of phrases){
+                if (phrase[1].toLowerCase() === searchSplitted[0].toLowerCase()){
+                  search = search.replace(searchSplitted[0], phrase[0]);
+                  break;
+                }
+              }
+            }
+            else {
+              if (!searchEntry.startsWith('"')) {
+                search = search.replace(searchEntry, '"'+searchEntry);
+              }
+              if (!searchEntry.endsWith('"')) {
+                search = search.replace(searchEntry, searchEntry+'"');
+              }
+            }
+          }
+          return search;
+        }
+
+        _fetchData(search){
+          this._hasSearched = true;
+          this._deselectItems(this._selectedItems);
+
+          var phrases = Object.entries(this._polyglot.phrases);
+
+          var searchStr = this._transferCellnameToFieldname(phrases, search);
+          var searchUrl=this.url+"/search/findFullTextJunction?q="+searchStr;
+          this._loadHalData(searchUrl, 'GET');
+        }
+
+        // Delete
+        _deleteData(item) {
+          var url = this.url+'/'+item.id;
+          // prepare request
+          var init = {
+              method: 'DELETE',
+              mode: 'cors'
+          }
+
+          var request = new Request(url, init);
+          fetch(request)
+          .then(response => {
+            var index = response.url.lastIndexOf('/') + 1;
+            var itemId = response.url.substring(index);
+
+            if (response.ok) {
+              // refresh view
+              index = this.data.findIndex(item => item.id == itemId);
+              this.splice('data', index, 1);
+            }
+            else {
+              // notify user about error
+              this._errorDelete(response.status, itemId);
+            }
+          }).catch(error => {
+            this._error(this.t('list_action_delete'), error.message);
+          });
+        }
+
+        /**
+         * Der 'Toast', der bei Fehlern beim Löschen angezeigt wird.
+         */
+        _errorDelete(status, id) {
+            this._errorToast.text = this.t('list_delete_error', { code: status, id: id });
+            console.error(this._errorToast.text);
+            this._errorToast.open();
+        }
+
+        /**
+         * Der 'Toast', der bei Fehlern beim Löschen angezeigt wird.
+         */
+        _errorDelete(status, id) {
+            this._errorToast.text = this.t('list_delete_error', { code: status, id: id });
+            console.error(this._errorToast.text);
+            this._errorToast.open();
+        }
+
+        /**
+         * Der 'Toast', der bei zu vielen Ergebnissen angezeigt wird.
+         */
+        _errorTooManyResults(results, msg) {
+            this._errorToast.text = this.t('list_error_too_many_results', { results: results });
+            console.error(this._errorToast.text+"("+msg+")");
+            this._errorToast.open();
+        }
+
+        /**
+         * Der 'Toast', der bei Fehlern (allgemein) angezeigt wird.
+         */
+        _error(action, msg) {
+            this._errorToast.text = this.t('list_error', { action: action });
+            console.error(this._errorToast.text+"("+msg+")");
+            this._errorToast.open();
+        }
+    };
 </script>
