@@ -1,7 +1,9 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/nebula-i18n/nebula-i18n.html">
+
 <!-- custom components -->
+<link rel="import" href="animad-animal/animad-animals-list.html">
 <link rel="import" href="animad-animal/animad-animal-update-form.html">
 <link rel="import" href="animad-animal/animad-animal-create-form.html">
 
@@ -22,34 +24,65 @@
         display: block;
         padding: 10px;
       }
+      .animad-animal-view-content {
+        display: grid;
+        grid-row-gap: 3em;
+      }
     </style>
+
     <div id="view" class="card">
       <div class="circle">
         <iron-icon icon="animad-icons:basecamp"></iron-icon>
       </div>
       <h1>[[t('main_heading')]]</h1>
+      <h2>[[t('table_sample_heading')]]</h2>
+      <div class="animad-animal-view-content">
+        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" route="{{subroute}}">
+          <animad-animals-list
+            name=""
+            url="http://demo7841195.mockable.io/animals"
+            default-search='name:Dumbo'
+            route="{{subroute}}"
+            edit-path="/animals-view/edit"
+            create-path="/animals-view/create">
+          </animad-animals-list>
+          <animad-animal-create-form name="create" load-url="http://localhost:39146/animals"></animad-animal-create-form>
+          <animad-animal-update-form name="edit" load-url="http://localhost:39146/animals{{subroute.path}}"></animad-animal-update-form>
+          <animad-animals-list name="filterexample" url="http://localhost:39146/keepers" load-complete-data="true"></animad-animals-list>
+        </iron-pages>
+      </div>
+
+      <br />
+      <br />
+      <hr>
       <h2>[[t('create_sample_heading')]]</h2>
-      <animad-animal-create-form save-url="http://demo7841195.mockable.io/animals" save-path="/keepers-view" cancel-path="/keepers-view" reset>
+      <animad-animal-create-form save-url="http://demo7841195.mockable.io/animals" save-path="/keepers-view" cancel-path="/keepers-view"
+        reset>
       </animad-animal-create-form>
       <br />
       <br />
+      <hr>
       <h2>[[t('create_with_relation_sample_heading')]]</h2>
       <animad-animal-create-form save-url="http://demo7841195.mockable.io/animals" keepers>
       </animad-animal-create-form>
       <br />
       <br />
+      <hr>
       <h2>[[t('update_sample_heading')]]</h2>
       <animad-animal-update-form load-url="http://demo7841195.mockable.io/animals/abe9cdbf-03c7-4b86-8e95-9a27f473a345">
       </animad-animal-update-form>
       <br />
       <br />
+      <hr>
       <h2>[[t('read_sample_heading')]]</h2>
       <animad-animal-update-form load-url="http://demo7841195.mockable.io/animals/abe9cdbf-03c7-4b86-8e95-9a27f473a345" readform>
       </animad-animal-update-form>
       <br />
       <br />
+      <hr>
       <h2>[[t('update_sample_heading_with_relation')]]</h2>
-      <animad-animal-update-form load-url="http://demo7841195.mockable.io/animals/abe9cdbf-03c7-4b86-8e95-9a27f473a345" save-path="/keepers-view" cancel-path="/keepers-view" reset keepers>
+      <animad-animal-update-form load-url="http://demo7841195.mockable.io/animals/abe9cdbf-03c7-4b86-8e95-9a27f473a345" save-path="/keepers-view"
+        cancel-path="/keepers-view" reset keepers>
       </animad-animal-update-form>
     </div>
   </template>

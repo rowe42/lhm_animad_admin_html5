@@ -186,9 +186,9 @@
                 }
             }
 
-            attached() {
-              super.attached();
-              console.log("attached");
+            focus(){
+              var searchBar =this.shadowRoot.querySelector('#search-bar');
+              searchBar.focus();
             }
 
 						// Private methods
