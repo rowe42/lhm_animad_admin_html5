@@ -529,12 +529,20 @@
           var searches = search.split(" ");
           for (var searchEntry of searches) {
             var searchSplitted = searchEntry.split(':');
-            if (searchSplitted.length > 1) {
+            if (searchSplitted.length > 1 && searchSplitted[1] != "") {
               for (var phrase of phrases){
                 if (phrase[1].toLowerCase() === searchSplitted[0].toLowerCase()){
                   search = search.replace(searchSplitted[0], phrase[0]);
                   break;
                 }
+              }
+            }
+            else {
+              if (!searchEntry.startsWith('"')) {
+                search = search.replace(searchEntry, '"'+searchEntry);
+              }
+              if (!searchEntry.endsWith('"')) {
+                search = search.replace(searchEntry, searchEntry+'"');
               }
             }
           }
@@ -545,10 +553,11 @@
           this._hasSearched = true;
           this._deselectItems(this._selectedItems);
 
-          var phrasesString = JSON.stringify(this._polyglot.phrases);
-          var searchStr = this._transferCellnameToFieldname(phrasesString, search);
-          var fuzzyUrl=this.url+"/search/findFullTextJunction?q='"+searchStr+"'";
-          this._loadHalData(fuzzyUrl, 'GET');
+          var phrases = Object.entries(this._polyglot.phrases);
+
+          var searchStr = this._transferCellnameToFieldname(phrases, search);
+          var searchUrl=this.url+"/search/findFullTextJunction?q="+searchStr;
+          this._loadHalData(searchUrl, 'GET');
         }
 
         // Delete
@@ -597,7 +606,7 @@
             console.error(this._errorToast.text);
             this._errorToast.open();
         }
-        
+
         /**
          * Der 'Toast', der bei zu vielen Ergebnissen angezeigt wird.
          */
@@ -606,7 +615,7 @@
             console.error(this._errorToast.text+"("+msg+")");
             this._errorToast.open();
         }
-        
+
         /**
          * Der 'Toast', der bei Fehlern (allgemein) angezeigt wird.
          */
