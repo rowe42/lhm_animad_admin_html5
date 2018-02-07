@@ -411,7 +411,12 @@
         _backendDataChanged(backendData, backendDataOld){
           var items = [];
           if (backendData._embedded) {
-            var backendItems = backendData._embedded.keepers;
+            var backendItems = [];
+            var entityName = Object.getOwnPropertyNames(backendData._embedded);
+            //console.log("entityName: " + entityName);
+            if (entityName) {
+              backendItems = backendData._embedded[entityName];
+            }
             for (var item of backendItems) {
               // get id
               var href = item._links.self.href;
@@ -617,12 +622,20 @@
           var searches = search.split(" ");
           for (var searchEntry of searches) {
             var searchSplitted = searchEntry.split(':');
-            if (searchSplitted.length > 1) {
+            if (searchSplitted.length > 1 && searchSplitted[1] != "") {
               for (var phrase of phrases){
                 if (phrase[1].toLowerCase() === searchSplitted[0].toLowerCase()){
                   search = search.replace(searchSplitted[0], phrase[0]);
                   break;
                 }
+              }
+            }
+            else {
+              if (!searchEntry.startsWith('"')) {
+                search = search.replace(searchEntry, '"'+searchEntry);
+              }
+              if (!searchEntry.endsWith('"')) {
+                search = search.replace(searchEntry, searchEntry+'"');
               }
             }
           }
@@ -637,10 +650,11 @@
           this._hasSearched = true;
           this._deselectItems(this._selectedItems);
 
-          var phrasesString = JSON.stringify(this._polyglot.phrases);
-          var searchStr = this._transferCellnameToFieldname(phrasesString, search);
-          var fuzzyUrl=this.url+"/search/findFullTextJunction?q='"+searchStr+"'";
-          this._loadHalData(fuzzyUrl, 'GET');
+          var phrases = Object.entries(this._polyglot.phrases);
+
+          var searchStr = this._transferCellnameToFieldname(phrases, search);
+          var searchUrl=this.url+"/search/findFullTextJunction?q="+searchStr;
+          this._loadHalData(searchUrl, 'GET');
         }
 
         /*

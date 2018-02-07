@@ -1,7 +1,9 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/nebula-i18n/nebula-i18n.html">
+
 <!-- custom components -->
+<link rel="import" href="animad-enclosure/animad-enclosures-list.html">
 <link rel="import" href="animad-enclosure/animad-enclosure-update-form.html">
 <link rel="import" href="animad-enclosure/animad-enclosure-create-form.html">
 
@@ -22,40 +24,69 @@
         display: block;
         padding: 10px;
       }
+      .animad-enclosure-view-content {
+        display: grid;
+        grid-row-gap: 3em;
+      }
     </style>
+
     <div id="view" class="card">
-      <div class="circle"><iron-icon icon="animad-icons:basecamp"></iron-icon></div>
+      <div class="circle">
+        <iron-icon icon="animad-icons:basecamp"></iron-icon>
+      </div>
       <h1>[[t('main_heading')]]</h1>
+      <h2>[[t('table_sample_heading')]]</h2>
+      <div class="animad-enclosure-view-content">
+            <animad-enclosures-list
+              name=""
+              url="http://demo7841195.mockable.io/enclosures"
+              default-search='name:Elefantenparadies'
+              route="{{subroute}}"
+              edit-path="/enclosures-view"
+              create-path="/enclosures-view">
+            </animad-enclosures-list>
+      </div>
+      <br />
+      <br />
+      <hr>
       <h2>[[t('create_sample_heading')]]</h2>
       <animad-enclosure-create-form save-url="http://animad.mocklab.io/enclosures" reset>
       </animad-enclosure-create-form>      
       <br />
       <br />
+      <hr>
       <h2>[[t('create_sample_heading_cancel')]]</h2>
       <animad-enclosure-create-form save-url="http://animad.mocklab.io/enclosures" cancel-path="go/anywhere">
       </animad-enclosure-create-form>      
       <br />
       <br />
+      <hr>
       <h2>[[t('create_with_relation_sample_heading')]]</h2>
       <animad-enclosure-create-form save-url="http://animad.mocklab.io/enclosures" cancel-path="go/anywhere" reset keepers>
       </animad-enclosure-create-form>      
       <br />
       <br />
+      <hr>
       <h2>[[t('update_sample_heading')]]</h2>
       <animad-enclosure-update-form load-url="http://demo6512140.mockable.io/enclosures/3bca5b38-13be-4fd3-b656-fa79a639ddd5">
       </animad-enclosure-update-form>
       <br />
       <br />
+      <hr>
       <h2>[[t('read_sample_heading')]]</h2>
       <animad-enclosure-update-form load-url="http://demo6512140.mockable.io/enclosures/3bca5b38-13be-4fd3-b656-fa79a639ddd5" reset readform>
       </animad-enclosure-update-form>
       <br />
       <br />
+      <hr>
       <h2>[[t('update_sample_heading_with_relation')]]</h2>
       <animad-enclosure-update-form 
         load-url="http://demo6512140.mockable.io/enclosures/3bca5b38-13be-4fd3-b656-fa79a639ddd5" cancel-path="go/anywhere" reset keepers>
       </animad-enclosure-update-form>
-      </div>
+      <br />
+      <br />
+      <hr>
+    </div>
   </template>
 
   <script>
