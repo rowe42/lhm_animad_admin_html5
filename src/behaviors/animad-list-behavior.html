@@ -349,7 +349,12 @@
         _backendDataChanged(backendData, backendDataOld){
           var items = [];
           if (backendData._embedded) {
-            var backendItems = backendData._embedded.keepers;
+            var backendItems = [];
+            var entityName = Object.getOwnPropertyNames(backendData._embedded);
+            //console.log("entityName: " + entityName);
+            if (entityName) {
+              backendItems = backendData._embedded[entityName];
+            }
             for (var item of backendItems) {
               // get id
               var href = item._links.self.href;

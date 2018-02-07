@@ -1,0 +1,264 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/nebula-i18n/nebula-i18n.html">
+<link rel="import" href="../../bower_components/vaadin-material-theme/vaadin-grid.html">
+<link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-column.html">
+<link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-selection-column.html">
+<link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-filter.html">
+
+<link rel="import" href="../animad-icons.html">
+<link rel="import" href="../behaviors/animad-list-behavior.html">
+<link rel="import" href="../behaviors/animad-i18n-behavior.html">
+<link rel="import" href="../behaviors/mixin.html">
+<link rel="import" href="./animad-list-header.html">
+
+<!-- GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-list -->
+<dom-module id="animad-enclosures-list">
+    <template>
+      <style>
+      </style>
+
+      <!-- Routing Support -->
+      <app-location
+          route="{{route}}"
+          url-space-regex="^[[rootPath]]"
+          use-hash-as-path>
+      </app-location>
+      <app-route
+          route="{{route}}"
+          pattern="[[rootPath]]:page"
+          data="{{routeData}}"
+          active="{{active}}"
+          tail="{{subroute}}">
+      </app-route>
+
+      <animad-list-header
+          id="animad-list-header-search"
+          placeholder-search="[[_setSearchText('search_placeholder')]]"
+          placeholder-delete="Löschen"
+          placeholder-new="Neu"
+          all-filters="[[_localizedFilters]]"
+          selected-filters = "{{_selectedFilters}}"
+          search="{{_search}}"
+          on-search="_searchData"
+          on-filter-selection="_filterSelectionData"
+          on-delete="_confirmDeleteSelected"
+          on-new="_handleNew"
+          disable-delete-button="[[_disableDeleteButton]]"
+          hide-header="[[_hideSearchHeader(hideHeader)]]"
+          hide-new-button="[[hideNew]]"
+          hide-delete-button="[[hideDelete]]"
+          hide-filter-button="[[hideFilter]]"
+          disable-new-button="[[disableNew]]"
+          show-results="[[showResults]]"
+          results-text="[[_resultsText]]"
+          icon="[[icon]]">
+      </animad-list-header>
+
+      <animad-list-header
+          id="animad-list-header-filter"
+          placeholder-search="[[t('filter_placeholder')]]"
+          placeholder-delete="Löschen"
+          placeholder-new="Neu"
+          all-filters="[[_localizedFilters]]"
+          selected-filters = "{{_selectedFilters}}"
+          search="{{_filterString}}"
+          on-filter="_filterData"
+          on-filter-selection="_filterSelectionData"
+          on-delete="_confirmDeleteSelected"
+          on-new="_handleNew"
+          disable-delete-button="[[_disableDeleteButton]]"
+          hide-header="[[_hideFilterHeader(hideHeader)]]"
+          hide-new-button="[[hideNew]]"
+          hide-delete-button="[[hideDelete]]"
+          hide-filter-button="[[hideFilter]]"
+          disable-filter-button="[[disableFilter]]"
+          disable-new-button="[[disableNew]]"
+          show-results="[[showResults]]"
+          results-text="[[_resultsText]]"
+          icon="[[icon]]">
+      </animad-list-header>
+
+
+      <!--
+        Modaler Dialog zur Abfrage vor dem Löschen von in der Liste über Checkboxen selektierten Datensätze
+      -->
+      <paper-dialog id="dialogDeleteSelected">
+        <h2>[[t('modal_delete_header')]]</h2>
+        <p>[[t('modal_delete_text_multi')]]</p>
+        <paper-item>
+          <paper-button raised dialog-confirm on-click="_deleteSelectedRows">[[t('modal_delete_button_yes')]]</paper-button>
+          <paper-button raised dialog-dismiss on-click="_unsetTemporaryDeleteInfo" autofocus>[[t('modal_delete_button_no')]]</paper-button>
+        </paper-item>
+      </paper-dialog>
+
+      <!--
+        Modaler Dialog zur Abfrage vor dem Löschen eines Datensatzes über Papierkorb
+      -->
+      <paper-dialog id="dialogDeleteItem">
+        <h2>[[t('modal_delete_header')]]</h2>
+        <p>[[t('modal_delete_text_single')]] [[_deleteInfo]]</p>
+        <paper-item>
+          <paper-button raised dialog-confirm on-click="_deleteSelectedRows">[[t('modal_delete_button_yes')]]</paper-button>
+          <paper-button raised dialog-dismiss on-click="_unsetTemporaryDeleteInfo" autofocus>[[t('modal_delete_button_no')]]</paper-button>
+        </paper-item>
+      </paper-dialog>
+
+<!-- Für Suche über Lazy Loading:
+     <vaadin-grid id="animad-list" data-provider="[[dataProvider]]"  size="200" multi-sort="[[multiSort]]" selected-items="{{_selectedItems}}"> -->
+
+     <vaadin-grid id="animad-list" items="[[_filteredData]]"  multi-sort="[[multiSort]]" selected-items="{{_selectedItems}}">
+        <vaadin-grid-selection-column auto-select>
+        </vaadin-grid-selection-column>
+
+        <vaadin-grid-column width="50px" flex-grow="0" >
+          <template class="header">#</template>
+          <template>[[index]]</template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column >
+          <template class="header">
+            <vaadin-grid-sorter path="id">[[t('id')]]</vaadin-grid-sorter>
+          </template>
+          <template>[[item.id]]</template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column>
+          <template class="header">
+            <vaadin-grid-sorter path="name">[[t('name')]]</vaadin-grid-sorter>
+          </template>
+          <template>[[item.name]]</template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column>
+          <template class="header">
+            <vaadin-grid-sorter path="cleaningTime">[[t('cleaningTime')]]</vaadin-grid-sorter>
+          </template>
+          <template>[[item.cleaningTime]]</template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column>
+          <template>
+            <paper-icon-button
+              icon="animad-icons:delete"
+              id="[[item.id]]"
+              hidden="[[hideDelete]]"
+              on-click="_confirmDeleteRow">
+            </paper-icon-button>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column>
+          <template>
+            <paper-icon-button
+              icon="animad-icons:mode-edit"
+              id="[[item.id]]"
+              hidden="[[hideEdit]]"
+              on-click="_editRow">
+            </paper-icon-button>
+          </template>
+        </vaadin-grid-column>
+      </vaadin-grid>
+
+    </template>
+
+    <script>
+      // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]List
+      class AnimadEnclosuresList extends mix(Polymer.Element).with(AnimadListBehavior, AnimadI18nBehavior) {
+
+        static get is() { return 'animad-enclosures-list'; }
+
+        static get properties() {
+          return {
+            /*
+             * Das '_domain' property wird benötigt, um" den richtigen Pfad
+             * zu den i18n Werten zu erzeugen. Es wird in jedem Element
+             * benötigt, in dem die I18nBehavior verwendet wird. Im Falle
+             * einer view ist der Wert IMMER 'view'.
+             */
+            _domain: {
+              type: String,
+              value: 'animad'
+            },
+            /*
+             * Das '_entity' property wird benötigt, um den richtigen Pfad
+             * zu den i18n Werten zu erzeugen. Es wird in jedem Element
+             * benötigt, in dem die I18nBehavior verwendet wird. Im Falle
+             * einer view ist der Wert immer der Präfix, der im Namen der view
+             * vor '*-view' steht. Bei animad-enclosures-view.html also
+             * 'animad-enclosures'.
+             */
+            _entity: {
+              type: String,
+              value: 'enclosure'
+            },
+          }
+        }
+
+        // Observers
+        // proteceted methods
+        _handleNew(event) {
+          var routePath = this.createPath;
+          this.set("route.path", routePath);
+        }
+
+        _editRow(event){
+          var routePath = this.editPath+'/'+event.target.id;
+          this.set("route.path", routePath);
+        }
+
+        _confirmDeleteRow(e) {
+          // this is optional. If not implemented will only ask question (translated): Do you really want to delete this item?
+          var index = this._filteredData.findIndex(item => item.id == e.target.id);
+          var item = this._filteredData[index];
+          this._deleteInfo = this.t('modal_deleteinfo', {name: item.name, cleaningtime: item.cleaningTime});
+
+          super._confirmDeleteRow(e);
+        }
+
+        _searchData(event) {
+          this._search = event.target.search.toLowerCase();
+          super._fetchData(this._search);
+        }
+
+        // Filter selection changed
+        _filterSelectionData() {
+          this._filter();
+        }
+
+        // Input in search field changed
+        _filterData(event) {
+          this._filterString = event.target.search.toLowerCase();
+          this._filter();
+        }
+
+        _filter(){
+          this._filteredData =
+            this.data.filter(enclosure =>
+                enclosure.name.toLowerCase().includes(this._filterString) ||
+                enclosure.cleaningtime.toLowerCase().includes(this._filterString));
+          this._filteredData = this._filteredData.filter(this._useSelectedFilters, this);
+        }
+
+        _useSelectedFilters(enclosure, event) {
+          var isIncluded = true;
+          console.log("Methode _useSelectedFilters ist nicht implementiert!");
+          
+          /* Filtern für selektierbare Filter muss manuell implementiert werden */
+
+          return isIncluded;
+        }
+
+      }
+
+      customElements.define(AnimadEnclosuresList.is, AnimadEnclosuresList);
+    </script>
+
+  </dom-module>
