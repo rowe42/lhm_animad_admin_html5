@@ -137,7 +137,7 @@
                     var init = {
                         method: verb,
                         mode: 'cors',
-                        credentials: 'include',
+//                        credentials: 'include',
                         body: JSON.stringify(payload)
                     }
 
@@ -186,7 +186,8 @@
              */
             _loadOptions(saveUrl, oldV) {
                 if (saveUrl)
-                    this._loadHalData(saveUrl, 'OPTIONS');
+                    //this._loadHalData(saveUrl, 'OPTIONS');
+                    this._loadHalData(saveUrl, 'GET');
             }
 
             _loadHalData(url, verb) {
@@ -194,7 +195,7 @@
                 var init = {
                     method: verb,
                     mode: 'cors',
-                    credentials: 'include'
+//                    credentials: 'include'
                 }
 
                 var request = new Request(url, init);
