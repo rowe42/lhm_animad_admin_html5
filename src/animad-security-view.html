@@ -30,14 +30,14 @@
                     
                     <!-- Beispiel 1-->
                     <p>
-                        Der folgende Text ist nur zu sehen, wenn der aktuelle User Permission=RESOURCE1 hat:
-                    <common-security-authorize permission="RESOURCE1">Text für RESOURCE1</common-security-authorize>
+                        Der folgende Text ist nur zu sehen, wenn der aktuelle User Permission=administration_READ_Keeper hat:
+                    <common-security-authorize permission="administration_READ_Keeper">Text für administration_READ_Keeper</common-security-authorize>
                     </p>
                     
                     <!-- Beispiel 2-->
                     <p>
-                    <common-security-check permission="RESOURCE2" allowed="{{allowed}}"></common-security-check>
-                    <paper-input id="prefill-change-example" label="Bei diesem Feld ändert sich die Vorbefüllung von (keine Angabe) zu (berechtigt) bei Permission=RESOURCE2" 
+                    <common-security-check permission="administration_DELETE_Keeper" allowed="{{allowed}}"></common-security-check>
+                    <paper-input id="prefill-change-example" label="Bei diesem Feld ändert sich die Vorbefüllung von (keine Angabe) zu (berechtigt) bei Permission=administration_DELETE_Keeper" 
                                  value="{{prefill}}"></paper-input>
                     </p>
                     

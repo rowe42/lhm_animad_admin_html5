@@ -45,9 +45,12 @@
               url="[[backendUrl]]/api/admin_service/animals"
               default-search='name:Dumbo'
               route="{{subroute}}"
-              edit-path="/animals-view"
-              create-path="/animals-view">
-            </animad-animals-list>
+              edit-path="/animals-view/edit"
+              create-path="/animals-view/create">
+            </animad-animals-list>          
+            <animad-animal-create-form name="create" load-url="[[backendUrl]]/api/admin_service/animals"></animad-animal-create-form>            
+            <animad-animal-update-form name="edit" load-url="[[backendUrl]]/api/admin_service/animals{{subroute.path}}"></animad-animal-update-form>
+            <animad-animals-list name="filterexample" url="[[backendUrl]]/api/admin_service/animals" load-complete-data="true"></animad-animals-list>
       </div>
       <br />
       <br />
@@ -65,24 +68,24 @@
       <br />
       <br />
       <hr>
-      <h2>[[t('update_sample_heading')]]</h2>
-      <animad-animal-update-form load-url="[[backendUrl]]/api/admin_service/animals/1a7c45ad-3cfe-4ef8-a0eb-ce434bf18985">
+<!--      <h2>[[t('update_sample_heading')]]</h2>
+      <animad-animal-update-form load-url="[[backendUrl]]/api/admin_service/animals/92cbbfb9-1bab-485e-8230-066f82287c2f">
       </animad-animal-update-form>
       <br />
       <br />
       <hr>
       <h2>[[t('read_sample_heading')]]</h2>
-      <animad-animal-update-form load-url="[[backendUrl]]/api/admin_service/animals/1a7c45ad-3cfe-4ef8-a0eb-ce434bf18985" readform>
+      <animad-animal-update-form load-url="[[backendUrl]]/api/admin_service/animals/92cbbfb9-1bab-485e-8230-066f82287c2f" readform>
       </animad-animal-update-form>
       <br />
       <br />
       <hr>
       <h2>[[t('update_sample_heading_with_relation')]]</h2>
-      <animad-animal-update-form load-url="[[backendUrl]]/api/admin_service/animals/1a7c45ad-3cfe-4ef8-a0eb-ce434bf18985" save-path="/animals-view"
+      <animad-animal-update-form load-url="[[backendUrl]]/api/admin_service/animals/92cbbfb9-1bab-485e-8230-066f82287c2f" save-path="/animals-view"
         cancel-path="/animals-view" reset keepers>
       </animad-animal-update-form>
       <br />
-      <br />
+      <br />-->
       <hr>
     </div>
   </template>

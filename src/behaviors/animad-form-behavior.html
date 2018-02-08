@@ -130,7 +130,6 @@
             _send(verb, url, payload, e) {
                 // check if the form content is valid against the defined rules
                 var valid = this.shadowRoot.querySelector('#customform').validate();
-
                 if (valid) {
 
                     // prepare request
@@ -138,7 +137,10 @@
                         method: verb,
                         mode: 'cors',
 //                        credentials: 'include',
-                        body: JSON.stringify(payload)
+                        body: JSON.stringify(payload),
+                        headers: new Headers({
+                            'Content-Type': 'application/json'
+                        })
                     }
 
                     var request = new Request(url, init);
@@ -186,8 +188,8 @@
              */
             _loadOptions(saveUrl, oldV) {
                 if (saveUrl)
-                    //this._loadHalData(saveUrl, 'OPTIONS');
-                    this._loadHalData(saveUrl, 'GET');
+                    this._loadHalData(saveUrl, 'OPTIONS');
+//                    this._loadHalData(saveUrl, 'GET');
             }
 
             _loadHalData(url, verb) {

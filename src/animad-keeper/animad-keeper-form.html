@@ -151,7 +151,8 @@
                         type: Object,
                         value() {
                             return {}
-                        }
+                        },
+                        notify: true
                     },
                     /*
                      * Soll das Formular automatisch validiert werden?
@@ -197,9 +198,11 @@
              * 'aussen' aufgerufen werden. 
              */
              validate() {
+                 //HACK in order to get the keeper saved. Fixme!!!
+                this.data.skill = ['cleaning'];
                 var valid = this.shadowRoot.querySelector('#iform').validate();
                 return valid;
-            }
+            }            
         }
 
         customElements.define(AnimadKeeperForm.is, AnimadKeeperForm);
