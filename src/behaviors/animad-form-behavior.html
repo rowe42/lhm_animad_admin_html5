@@ -188,8 +188,9 @@
              */
             _loadOptions(saveUrl, oldV) {
                 if (saveUrl)
-                    this._loadHalData(saveUrl, 'OPTIONS');
-//                    this._loadHalData(saveUrl, 'GET');
+//                    this._loadHalData(saveUrl, 'OPTIONS');
+                //HACK: Fetching GET instead of OPTIONS until OPTIONS are implemented
+                    this._loadHalData(saveUrl, 'GET');
             }
 
             _loadHalData(url, verb) {
