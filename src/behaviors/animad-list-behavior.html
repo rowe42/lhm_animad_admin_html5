@@ -530,7 +530,34 @@
                 })
         }
 
+        _splitIntoQueries(search){
+          var search = 'nachname:"van der Damme" hans vorname:hans "de Blanc"';
+          //search="hans";
+          var myRe = /(.+:\"[^\"]")(?:\s*)|(\"[^\"]+\")(?:\s*)/g;
+
+          myRe=/([^\"]\w*[^\"])|(\w*:[^\"\s]*)|(\"[^\"]*\")|(\w*:\"[^\"]*\")/g
+          myRe=/^|\s([^\"]\S*[^\"])\s|$/g
+          var myArray;
+          while ((myArray = myRe.exec(search)) !== null) {
+            var msg = 'Found ' + myArray[0] + '. ';
+            msg += 'Next match starts at ' + myRe.lastIndex;
+            console.log(msg);
+          }
+          /*
+          var regexStr = "(\b.*:.*\b)/g";
+          //  var regexStr = "(\\S*:\".+\"|\"[^\"]+\"|\\S*)(?:\\s*)/g";
+            var regex = RegExp(regexStr);
+            var myArray;
+            while ((myArray = regex.exec(search)) !== null) {
+              var msg = 'Found ' + myArray[0] + '. ';
+              msg += 'Next match starts at ' + regex.lastIndex;
+              console.log(msg);
+            }
+            */
+        }
+
         _transferCellnameToFieldname(phrases, search) {
+          this._splitIntoQueries(search);
           var searches = search.split(" ");
           for (var searchEntry of searches) {
             var searchSplitted = searchEntry.split(':');
