@@ -1,9 +1,9 @@
 <script>
     /**
      * Behavior, um einem beliebigen Formular (Update, Create, Read) alle Eigenschaften
-     * wie Properties und Methoden zu geben, die es benötigt um mit dem Server zu 
+     * wie Properties und Methoden zu geben, die es benötigt um mit dem Server zu
      * kommunizieren.
-     * 
+     *
      * @polymerMixinClass
      */
     let AnimadFormBehavior = (superClass) => class extends superClass {
@@ -32,25 +32,25 @@
                         notify: true
                     },
                     /**
-                     * Über dieses Property wird gesteuert, ob im Formular eine 
+                     * Über dieses Property wird gesteuert, ob im Formular eine
                      * 'Cancel' Schalfläche angezeigt werden soll.
-                     * Nach Anklicken der Schaltfläche 'Cancel' wird zum Wert von cancelPath 
+                     * Nach Anklicken der Schaltfläche 'Cancel' wird zum Wert von cancelPath
                      * navigiert.
                      */
                     cancelPath: {
                         type: String
                     },
                     /**
-                     * Nach Anklicken der Schaltfläche 'Save' wird zum Wert von savePath 
+                     * Nach Anklicken der Schaltfläche 'Save' wird zum Wert von savePath
                      * navigiert.
                      */
                      savePath: {
                         type: String
                     },
                     /**
-                     * Wenn dieses Property gesetzt ist, dann wird unter dem Formular 
+                     * Wenn dieses Property gesetzt ist, dann wird unter dem Formular
                      * eine 'Reset' Schaltfläche angezeigt, mit der man das Formular
-                     * (und ggf. die Relationen) löschen kann. 
+                     * (und ggf. die Relationen) löschen kann.
                      */
                     reset: {
                         type: Boolean,
@@ -89,7 +89,7 @@
                 this._successToast = document.querySelector('animad-app').$.global_success_toast;
                 this._warningToast = document.querySelector('animad-app').$.global_warning_toast;
             }
-            
+
             /**
              * Wird von Formularen in Buttons aufgerufen.
                Navigiert zum Attribut "data-routePath" wenn der Button gedrückt wird.
@@ -164,12 +164,12 @@
             }
 
             /*
-             * Holt sich eine HAL Resource über die URL, die im Property 
-             * 'loadUrl' gespeichert ist. Die Nutzdaten werden im 'data' 
-             * Property gespeichert. Danach werden alle benötigten Links 
+             * Holt sich eine HAL Resource über die URL, die im Property
+             * 'loadUrl' gespeichert ist. Die Nutzdaten werden im 'data'
+             * Property gespeichert. Danach werden alle benötigten Links
              * aufgelöst.
-             * 
-             * Das Property 'loadUrl' wird ausschließlich von update und read 
+             *
+             * Das Property 'loadUrl' wird ausschließlich von update und read
              * Formularen verwendet.
              */
             _loadFormData(loadUrl, oldV) {
@@ -179,12 +179,12 @@
 
             /**
              * Holt sich eine HAL Resource per OPTIONS Verb.
-             * In dieser Ressource sind bei einem create 
-             * Formular die Links zu den Ressourcen Objekten 
+             * In dieser Ressource sind bei einem create
+             * Formular die Links zu den Ressourcen Objekten
              * gespeichert.
-             * 
-             * Das Property '_loadOptions' wird ausschließlich 
-             * von create Formularen verwendet. 
+             *
+             * Das Property '_loadOptions' wird ausschließlich
+             * von create Formularen verwendet.
              */
             _loadOptions(saveUrl, oldV) {
                 if (saveUrl)

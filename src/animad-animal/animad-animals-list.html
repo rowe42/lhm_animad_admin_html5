@@ -199,6 +199,35 @@
 
     <script>
       // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]List
+      // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]List
+      /**
+       * `animad-animals-list` ist eine Liste zur Anzeige von Tieren, die über die angegebene [url](#/elements/animad-animals-list#property-url)
+       * gesucht werden.
+       *
+       * Zur Suche können Suchbegriffe eingegeben werden, um die Anzahl der gefundenen Datensätze zu begrenzen. Diese Suchbegriffe können
+       * auch als Standard für die Liste festgelegt werden.
+       *
+       * Die gefundenen Datensätze können sortiert, selektiert und gelöscht werden.
+       *
+       * Die Navigation auf die Forms [`<animad-animal-create-form>`](#/elements/animad-animal-create-form)
+       * und [`<animad-animal-update-form>`](#/elements/animad-animal-update-form)
+       * zur Neuanlage bzw. zum Editieren eines Datensatzes ist möglich.
+       *
+       * #### Beispiel:
+       *
+       *     <animad-animals-list name=""
+       *       url="http://localhost:39146/animals"
+       *       default-search='name:Benjamin'
+       *       route="{{subroute}}"
+       *       edit-path="/animal-view/edit"
+       *       create-path="/animal-view/create">
+       *     </animad-animals-list>
+       *
+       * @polymer
+       * @customElement
+       * @appliesMixin AnimadListBehavior
+       * @appliesMixin AnimadI18nBehavior
+       **/
       class AnimadAnimalsList extends mix(Polymer.Element).with(AnimadListBehavior, AnimadI18nBehavior) {
 
         static get is() { return 'animad-animals-list'; }
@@ -231,12 +260,17 @@
         }
 
         // Observers
-        // proteceted methods
+        /**
+         * Wechselt auf die unter [`createPath`](#/elements/animad-animals-list#property-createPath) angegebene Form.
+         */
         _handleNew(event) {
           var routePath = this.createPath;
           this.set("route.path", routePath);
         }
 
+        /**
+         * Wechselt auf die unter [`editPath`](#/elements/animad-animals-list#property-editPath) angegebene Form.
+         */
         _editRow(event){
           var routePath = this.editPath+'/'+event.target.id;
           this.set("route.path", routePath);
@@ -251,22 +285,32 @@
           super._confirmDeleteRow(e);
         }
 
+        /**
+         * Führt die Suche im Backend bei der unter [`url`](#/elements/animad-animals-list#property-url) angegebenen URL aus.
+         */
         _searchData(event) {
           this._search = event.target.search.toLowerCase();
           super._fetchData(this._search);
         }
 
-        // Filter selection changed
+        /**
+         * Filtert die gefundenen Datensätze neu, wenn die Filter-Selektion geändert wurde.
+         */
         _filterSelectionData() {
           this._filter();
         }
 
-        // Input in search field changed
+        /**
+         * Filtert die gefundenen Datensätze neu, wenn im Filter-Feld eine Änderung durchgeführt wurde.
+         */
         _filterData(event) {
           this._filterString = event.target.search.toLowerCase();
           this._filter();
         }
 
+        /**
+         * Filtert die gefundenen Datensätze nach dem eingegebenen String im Filter-Feld.
+         */
         _filter(){
           this._filteredData =
             this.data.filter(animal =>
@@ -278,10 +322,13 @@
           this._filteredData = this._filteredData.filter(this._useSelectedFilters, this);
         }
 
+        /**
+         * Filtert die gefundenen Datensätze nach den ausgewählten, selektierbaren Filtern.
+         */
         _useSelectedFilters(animal, event) {
           var isIncluded = true;
           console.log("Methode _useSelectedFilters ist nicht implementiert!");
-          
+
           /* Filtern für selektierbare Filter muss manuell implementiert werden */
 
           return isIncluded;
