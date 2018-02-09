@@ -615,30 +615,25 @@
                 })
         }
 
-        /*
-        * Wandelt den tabellennamen in den korrespondierenden Backend-Feldnamen um
-        */
-        _transferCellnameToFieldname(phrases, search) {
-          var searches = search.split(" ");
-          for (var searchEntry of searches) {
+        _transferCellnameToFieldname(phrases, search){
+          var tmpsearch = search;
+
+          var myRe =/(\w+:\w+)|(\w+:\"[^\"]*\")/g;
+          var searchArray;
+          while ((searchArray = myRe.exec(search)) !== null) {
+            var searchEntry = searchArray[0];
             var searchSplitted = searchEntry.split(':');
-            if (searchSplitted.length > 1 && searchSplitted[1] != "") {
+            if (searchSplitted.length > 1 && searchSplitted[1] != '') {
               for (var phrase of phrases){
                 if (phrase[1].toLowerCase() === searchSplitted[0].toLowerCase()){
-                  search = search.replace(searchSplitted[0], phrase[0]);
+                  tmpsearch = tmpsearch.replace(searchSplitted[0], phrase[0]);
                   break;
                 }
               }
             }
-            else {
-              if (!searchEntry.startsWith('"')) {
-                search = search.replace(searchEntry, '"'+searchEntry);
-              }
-              if (!searchEntry.endsWith('"')) {
-                search = search.replace(searchEntry, searchEntry+'"');
-              }
-            }
           }
+
+          search = tmpsearch;
           return search;
         }
 
@@ -654,6 +649,7 @@
 
           var searchStr = this._transferCellnameToFieldname(phrases, search);
           var searchUrl=this.url+"/search/findFullTextJunction?q="+searchStr;
+          console.log(searchUrl);
           this._loadHalData(searchUrl, 'GET');
         }
 
