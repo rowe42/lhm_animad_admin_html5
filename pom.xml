@@ -26,7 +26,7 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <executions>
-                    <execution>
+<!--                    <execution>
                         <id>exec-bower-install</id>
                         <phase>generate-sources</phase>
                         <configuration>
@@ -38,7 +38,7 @@
                         <goals>
                             <goal>exec</goal>
                         </goals>
-                    </execution>
+                    </execution>-->
                     <execution>
                         <id>exec-polymer-build</id>
                         <phase>generate-sources</phase>

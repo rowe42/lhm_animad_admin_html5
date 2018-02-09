@@ -136,7 +136,7 @@
                     var init = {
                         method: verb,
                         mode: 'cors',
-//                        credentials: 'include',
+                        credentials: 'include',
                         body: JSON.stringify(payload),
                         headers: new Headers({
                             'Content-Type': 'application/json'
@@ -198,7 +198,7 @@
                 var init = {
                     method: verb,
                     mode: 'cors',
-//                    credentials: 'include'
+                    credentials: 'include'
                 }
 
                 var request = new Request(url, init);
