@@ -1,16 +1,19 @@
 <script>
     /**
-     * Behavior, um einer beliebigen Liste (Read, Delete) alle Eigenschaften
+     * Behavior, um einer beliebigen Liste alle Eigenschaften
      * wie Properties und Methoden zu geben, die es benötigt um mit dem Server zu
-     * kommunizieren.
+     * kommunizieren und Benutzerinteraktionen (Suchen, Filtern, Sortieren, Löschen, Navigation zur Neuanlage
+     * oder zum Editieren von Datensätzen) auszuführen.
      *
-     * @polymerMixinClass
+     * @polymerMixin
      */
-    /* @polymerMixin */
     let AnimadListBehavior = (superClass) => class extends superClass {
 
         static get properties() {
             return {
+              /*
+               * `data` enthält die ungefilterten, gefundenen Datensätze als Array.
+               */
               data: {
                 type: Array,
                 value() {
@@ -18,8 +21,8 @@
                 }
               },
               /*
-                _filteredData enthält alle Objekte, die auf angegebene oder ausgewählte Filter zutreffen.
-                Die Liste zeigt die Einträge aus _filteredData an.
+              *  _filteredData enthält alle Objekte, die auf angegebene oder ausgewählte Filter zutreffen.
+              *  Die Liste zeigt die Einträge aus _filteredData an.
               */
               _filteredData: {
                 type: Array,
@@ -28,35 +31,8 @@
                 }
               },
               /*
-                _allFilters sind selektierbare Filter, die über eine REST-Schnittstelle (url: allFiltersUrl) geladen werden können.
-                Das REST-Objekt muss die folgeende Struktur einhalten:
-                {"filters": [{id, [{id, label}, {id2, label2}, ...}, {id2, [{id, label}, ...]}, ...]}.
-                filters.id und filters.filters.label können lokalisiert werden. Beispiel für ein allFilters Objekt:
-
-                _allFilters: {
-                   "filters" : [
-                        {
-                          "id": "birthday",
-                          "filters": [
-                            {"id": "0", "label": "filter_birthday_before_1980"},
-                            {"id": "1", "label": "filter_birthday_1980_1990"},
-                            {"id": "2", "label": "filter_birthday_after_1990"}
-                          ]
-                        },
-                        {
-                          "id": "salary",
-                          "filters": [
-                            {"id": "0", "label": "filter_salary_less_1000"},
-                            {"id": "1", "label": "filter_salary_1000_2000"},
-                            {"id": "2", "label": "filter_salary_2000_3000"},
-                            {"id": "3", "label": "filter_salary_more_3000"}
-                          ]
-                        }
-                      ]
-                  }
-
-                GENERATOR: _allFilters kann auch ein leeres Array [] enthalten. Dann wird der Filter-Button im search-panel nicht angezeigt.
-
+              * _allFilters sind selektierbare Filter, die über eine REST-Schnittstelle (url: [`allFiltersUrl`](#/elements/animad-keepers-list#property-allFiltersUrl))
+              *  geladen werden können.
               */
               _allFilters: {
                 type: Array,
@@ -64,17 +40,50 @@
                   return [];
                 }
               },
+              /*
+              * Das `allFiltersUrl` property gibt an, über welche URL selektierbare Filter geladen werden können.
+              * Die Antwort muss ein REST-Objekt mit folgender Struktur sein:
+
+              * `{"filters": [{id, [{id, label}, {id2, label2}, ...}, {id2, [{id, label}, ...]}, ...]}`
+              *
+              * Ist `allFiltersUrl` nicht gesetzt, so wird der Filter-Button im Suche- bzw. Filter-Feld nicht angezeigt.
+              *
+              * `filters.id` und `filters.filters.label` können lokalisiert werden. Beispiel für ein allFilters Objekt:
+              *
+              *     { "filters" : [
+              *          {
+              *            "id": "birthday",
+              *            "filters": [
+              *              {"id": "0", "label": "filter_birthday_before_1980"},
+              *              {"id": "1", "label": "filter_birthday_1980_1990"},
+              *              {"id": "2", "label": "filter_birthday_after_1990"}
+              *            ]
+              *          },
+              *          {
+              *            "id": "salary",
+              *            "filters": [
+              *              {"id": "0", "label": "filter_salary_less_1000"},
+              *              {"id": "1", "label": "filter_salary_1000_2000"},
+              *              {"id": "2", "label": "filter_salary_2000_3000"},
+              *              {"id": "3", "label": "filter_salary_more_3000"}
+              *            ]
+              *          }
+              *        ] }
+              *
+              * Werden selektierbare Filter verwendet, so muss die Methode
+              * [`_useSelectedFilters`](#/elements/animad-keepers-list#method-_useSelectedFilters) implementiert werden.
+              */
               allFiltersUrl: {
                 type: String
               },
               /*
-                _localizedFilters entspricht _allFilters, aber die Werte in 'id' und 'label' sind durch lokalisierte Werte ersetzt worden.
+              *  _localizedFilters entspricht _allFilters, aber die Werte in 'id' und 'label' sind durch lokalisierte Werte ersetzt worden.
               */
               _localizedFilters: {
                 type: Array
               },
               /*
-                _selectedFilters enthält die Information über alle ausgewählten Filter.
+              *  _selectedFilters enthält die Information über alle ausgewählten Filter.
               */
               _selectedFilters: {
                 type: Array,
@@ -83,52 +92,52 @@
                 }
               },
               /*
-                _search enthält den String, der im Eingabe-Feld zum Suche eingegeben wurde.
+              *  _search enthält den String, der im Eingabe-Feld zum Suche eingegeben wurde.
               */
               _search: {
                 type: String
               },
-              /**
-              * Predefined search string. Will be shown in search field after page loading.
+              /*
+              * `defaultSearch` enthält die Vorbelegung für den Suche-String, der im Suche-Feld beim Öffnen der Liste angezeigt wird.
               */
               defaultSearch: {
                 type: String,
                 value: ""
               },
               /*
-                _search enthält den String, der im Eingabe-Feld zum Filtern eingegeben wurde.
+              *  `_filterString` enthält den String, der im Eingabe-Feld zum Filtern eingegeben wurde.
               */
               _filterString: {
                 type: String,
                 value: ""
               },
               /*
-                _disableDeleteButton deaktiviert (true) oder aktiviert (false) den Delete-Button
+              *  `_disableDeleteButton` deaktiviert (true) oder aktiviert (false) den Delete-Button
               */
               _disableDeleteButton: {
                 type: Boolean,
                 value: true
               },
               /*
-               _deleteInfo enthält beim Löschen über Papierkorb die Information über den zu
-               löschenden Datensatz. Nach Bestätigung oder Abbruch des Löschvorgangs wird
-               die Information aus _deleteInfo wieder gelöscht.
+              * `_deleteInfo` enthält beim Löschen über Papierkorb die Information über den zu
+              * löschenden Datensatz. Nach Bestätigung oder Abbruch des Löschvorgangs wird
+              * die Information aus _deleteInfo wieder gelöscht.
               */
               _deleteInfo: {
                 type: String,
                 value: ""
               },
               /*
-               _deleteItem enthält beim Löschen über Papierkorb den zu löschenden Datensatz.
-               Nach Bestätigung oder Abbruch des Löschvorgangs wird _deleteItem wieder
-               in den Initial-Zustand zurückgesetzt.
+              * `_deleteItems` enthält beim Löschen die zu löschenden Datensätze.
+              * Nach Bestätigung oder Abbruch des Löschvorgangs wird `_deleteItems` wieder
+              * in den Initial-Zustand zurückgesetzt.
               */
               _deleteItems: {
                 type: Array,
                 value: []
               },
               /*
-                _selectedItems enthält alle in der Liste selektierten Datensätze
+              * `_selectedItems` enthält alle in der Liste selektierten Datensätze
               */
               _selectedItems: {
                 type: Array,
@@ -136,137 +145,168 @@
                   return [];
                 }
               },
-              /* _backendData enthält die Antwort des Backend-Aufrufs als JSON String*/
+              /* `_backendData` enthält die Antwort des Backend-Aufrufs als JSON String */
               _backendData: {
                 type: Object,
                 observer: '_backendDataChanged'
               },
               // backend stuff
               /*
-                 die URL zum Backend
+              *   `url` ist die URL zur Backend-Suche
               */
                url: {
                  type: String,
                  value: ""
                },
                /*
-                 multiSort gibt an, ob in der Tabelle nach mehreren Feldern sortiert
-                 werden kann (multiSort = true) oder nicht (multiSort = false)
+                *`multiSort` gibt an, ob in der Tabelle nach mehreren Feldern sortiert
+                * werden kann (multi-sort = "true") oder nicht (multi-sort = "false").
+                * Standard: `false`
                */
                multiSort: {
                 type: Boolean,
                 value: false
                },
                /*
-               * Wether to hide the whole list header. Set attribute "hide-header" to do so.
+               * `hideHeader` gibt an, ob der Listen-Header angezeigt werden soll oder nicht.
+               * Beim Setzen des Attributs "hide-header" wird der Header nicht angezeigt.
                */
                hideHeader: {
                 type: Boolean,
                 value: false
                },
-               /**
-          			 * Whether to hide the New button in header. Set attribute "hide-new" to do so.
-          			 */
+               /*
+               * `hideNew` gibt an, ob der Neu-Button angezeigt werden soll oder nicht.
+               * Beim Setzen des Attributs "hide-new" wird der Button nicht angezeigt.
+               */
                hideNew: {
                 type: Boolean,
                 value: false
                },
-               /**
-          			 * Whether to hide the Delete buttons in header and list rows. Set attribute "hide-delete" to do so.
-          			 */
+               /*
+               * `hideDelete` gibt an, ob die Löschen-Buttons im Listen-Header und in den Listen-Zeilen
+               * angezeigt werden sollen oder nicht.
+               * Beim Setzen des Attributs "hide-delete" werden die Buttons nicht angezeigt.
+               */
                hideDelete: {
                 type: Boolean,
                 value: false
                },
-               /**
-          			 * Whether to hide the Edit buttons in list rows. Set attribute "hide-edit" to do so.
-          			 */
+               /*
+               * `hideEdit` gibt an, ob die Edit-Buttons in den Listen-Zeilen
+               * angezeigt werden sollen oder nicht.
+               * Beim Setzen des Attributs "hide-edit" werden die Buttons nicht angezeigt.
+               */
                hideEdit: {
                 type: Boolean,
                 value: false
                },
-               /**
-         			 * Whether to hide the Filter button. Set attribute "hide-filter" to do so.
-         			 */
+               /*
+               * `hideFilter` gibt an, ob der Filter-Button im Listen-Header
+               * angezeigt werden soll oder nicht.
+               * Beim Setzen des Attributs "hide-filter" wird der Button nicht angezeigt.
+               */
          			hideFilter: {
          				type: Boolean,
          				value: false
          			},
-               /**
-         			 * Whether to disable the Filter button. Set attribute "disable-filter" to do so.
-         			 */
+              /*
+              * `disableFilter` gibt an, ob der Filter-Button im Listen-Header
+              * deaktiviert werden soll oder nicht.
+              * Beim Setzen des Attributs "disable-filter" wird der Button deaktiviert.
+              */
          			disableFilter: {
          				type: Boolean,
          				value: false
          			},
-               /**
-         			 * Whether to disable the Delete button. Set attribute "disable-delete" to do so.
-         			 */
+              /*
+               * `disableDelete` gibt an, ob die Löschen-Buttons im Listen-Header und in den Listen-Zeilen
+               * deaktiviert werden sollen oder nicht.
+               * Beim Setzen des Attributs "disable-delete" werden die Buttons deaktiviert.
+               */
          			disableDelete: {
          				type: Boolean,
          				value: false
          			},
-              /**
-         			 * Whether to disable the New button. Set attribute "disable-new" to do so.
-         			 */
+              /*
+              * `disableNew` gibt an, ob der Neu-Button im Listen-Header
+              * deaktiviert werden soll oder nicht.
+              * Beim Setzen des Attributs "disable-new" wird der Button deaktiviert.
+              */
          			disableNew: {
          				type: Boolean,
          				value: false
          			},
+              /*
+              * `createPath` gibt an, auf welche Seite die Navigation wechseln soll, wenn der Neu-Button geklickt wurde.
+              */
               createPath: {
                 type: String
               },
+              /*
+              * `editPath` gibt an, auf welche Seite die Navigation wechseln soll, wenn der Edit-Button zu einem Datensatz geklickt wurde.
+              */
               editPath: {
                 type: String
               },
-         			/**
-         			 * Icon shown in the search background
+         			/*
+         			 * `icon` gibt an, welcher Icon im Suche-Hintergrund angezeigt werden soll.
          			 */
          			icon: {
          				type: String,
          				value: 'search'
          			},
-              /**
-               * Whether to search data without filtering while loading or if user has to enter
-               * search string before searching for data.
+              /*
+               * `loadCompleteData` gibt an, ob beim Öffnen der Liste sofort alle Datensätze gesucht werden sollen
+               * (Attribut load-complete-data="true") oder nicht (Standard). Ist `loadCompleteData` auf false gesetzt,
+               * dann kann vor der Suche im Suche-Feld ein Wert mit folgenden Patterns eingegeben werden:
+               *
+               * "<wert>": Das Backend sucht in allen mit in der Barrakuda DSL "searchable" markierten Feldern nach dem eingegebenen <wert>.
+               * "<tabellenname>:<wert>": Der `<tabellenname>` wird auf den entsprechenden Feldnamen im Backend gemappt und das Backend sucht den <wert> im entsprechenden Feld.
+               *
               */
               loadCompleteData: {
                 type: Boolean,
                 value: false
               },
-              /**
-               * Whether to show results text (e.g. 30 results found.) or not.
-               */
+              /*
+              * `showResults` gibt an, ob angezeigt werden soll, wieviele Datensätze gefunden wurden.
+              */
               showResults: {
                 type: Boolean,
                 value: true
               },
-              /**
-               * String to show if 'showResults' is set to true.
-               */
+              /*
+              * Der Text der angezeigt wird, um die Anzahl der gefundenen Datensätze anzuzeigen.
+              * Kann zur Lokalisierung verwendet werden.
+              */
               _resultsText:{
                 type: String
               },
-              /**
-               * Set to true as soon as data was searched.
+              /*
+               * Hilfsvariable, die auf `true` gesetzt wird, sobald eine Suche beim Backend durchgeführt wurde.
                */
               _hasSearched: {
                 type: Boolean,
                 value: false
               },
-              /**
-               * Set to true as soon as too many results were found.
+              /*
+               * `tooManyResults` wird auf `true` gesetzt, wenn die Anzahl gefundener Datensätze der erlaubten maximalen Anzahl
+               * anzuzeigender Datensätze überschritten wurde.
                */
               _tooManyResults: {
                 type: Boolean,
                 value: false
               },
+              /*
+              * Der Wert der maximal erlaubten Anzahl anzuzeigender Datensätze. Wird vom Backend geliefert.
+              */
               _maxResults: {
                   type: Number,
                   value: 0
               },
-              /**
-               *
+              /*
+               * Das Objekt, das im Fehlerfall angezeigt wird.
                */
               _errorToast: {
                   type: Object
@@ -284,13 +324,16 @@
           ]
         }
 
-
         connectedCallback() {
             super.connectedCallback();
             this._errorToast = document.querySelector('animad-app').$.global_error_toast;
         }
 
         // refresh view and reset any delete information
+        /*
+        * Wird bei Änderung der Länge des Arrays [`data`](#TBD) aufgerufen.
+        * Führt einen Refresh der Anzeige aus und setzt jegliche Lösch-Informationen auf den Intialwert.
+        */
         _dataChanged(dataLength) {
           // refresh list data
           this._filteredData = this.data;
@@ -323,6 +366,9 @@
           }
         }
 
+        /*
+        * Deselektiert alle Datensätze
+        */
         _deselectItems(items){
           this._selectedItems = [];
 
@@ -333,19 +379,35 @@
           }
         }
 
+        /*
+        * Versteckt die Suchanzeige, wenn Attribut `hide-header` gesetzt ist oder
+        * wenn Attribut `load-complete-data` den Wert `true` hat.
+        */
         _hideSearchHeader(hideHeader){
           return hideHeader || this.loadCompleteData;
         }
 
+        /*
+        * Versteckt die Filteranzeige, wenn Attribut `hide-header` gesetzt ist oder
+        * wenn Attribut `load-complete-data` den Wert `false` hat.
+        */
         _hideFilterHeader(hideHeader){
           return hideHeader || !this.loadCompleteData;
         }
-        // Selected/Unselected items in list
+
+        /*
+        * Wird aufgerufen, wenn sich die Anzahl selektierter Datensätze geändert hat.
+        * Aktiviert (Anzahl selektierter Datensätze > 0) oder deaktiviert (Anzahl selektierter Datensätze = 0) den Löschen-Button,
+        * wenn `disable-delete-button` nicht gesetzt ist.
+        */
         _selectionChanged(nrSelectedItems) {
           this._disableDeleteButton = this.disableDelete || (nrSelectedItems === 0);
         }
 
-        // Assign data to data array
+        /*
+        * Wird aufgerufen, wenn eine Suche durchgeführt wurde.
+        * Wandelt den vom Backend gelieferten JSON-String in ein Array um.
+        */
         _backendDataChanged(backendData, backendDataOld){
           var items = [];
           if (backendData._embedded) {
@@ -372,6 +434,10 @@
         }
 
         // Callback methods
+
+        /*
+        * Hat `loadCompleteData` den Wert `true` wird im Backend die Suche aufgerufen.
+        */
         ready() {
           super.ready();
           this._search = this.defaultSearch;
@@ -386,7 +452,9 @@
           }
         }
 
-        // Set text to show in search field
+        /*
+        * Setzt den Platzhalter für das Suche-Feld, sofern kein Suchbegriff vorbelegt wurde.
+        */
         _setSearchText(placeholder) {
           if (this._search && this._search.length > 0) {
             return this.defaultSearch;
@@ -395,7 +463,10 @@
         }
 
         // Protected methods
-        // localize all _allFilters.filters.label
+        /*
+        * Wird aufgerufen, wenn `allFiltersUrl` nicht leer ist.
+        * Sucht die unter der durch `allFiltersUrl` angegebenen URL die selektierbaren Filter
+        */
         _loadAllFilters(url) {
           if (url) {
             // prepare request
@@ -421,6 +492,10 @@
           }
         }
 
+        /*
+        * Wird aufgerufen, wenn über die Methode [`_loadAllFilters`](#TBD) selektierbare Filter gefunden wurden.
+        * Lokalisiert `id` und `label` der gefundenen Filter.
+        */
         _initLocalizedFilter(allFiltersObject){
           if (this.allFiltersUrl) {
             if (allFiltersObject && allFiltersObject.filters){
@@ -443,7 +518,9 @@
         }
 
 
-        // opens Dialog to confirm Deletion of selected rows
+        /*
+        * Öffnet den Dialog zur Bestätigung, dass die selektierten Datensätze gelöscht werden sollen.
+        */
         _confirmDeleteSelected() {
           this._deleteItems = [];
           // loop over all items to delete
@@ -462,7 +539,9 @@
           this.$.dialogDeleteSelected.open();
         }
 
-        // opens Dialog to confirm Deletion of selected item (paper basket)
+        /*
+        * Öffnet den Dialog zur Bestätigung, dass der über den Papierkorb selektierte Datensatz gelöscht werden soll.
+        */
         _confirmDeleteRow(e) {
           // find clicked item by id in _filteredData
           var index = this._filteredData.findIndex(item => item.id == e.target.id);
@@ -479,7 +558,9 @@
           this.$.dialogDeleteItem.open();
         }
 
-        // Deletes all data that is contained in array _deleteItems
+        /*
+        * Löscht alle selektierten Datensätze.
+        */
         _deleteSelectedRows() {
           var items = this._deleteItems;
 
@@ -491,14 +572,18 @@
           }
         }
 
-        // reset any delete information
+        /*
+        * Setzt temporäre Löschinfirmationen auf Initialwerte.
+        */
         _unsetTemporaryDeleteInfo() {
           this._deleteItem = [];
           this._deleteInfo = "";
         }
 
         // Backend methods
-        // Search
+        /*
+        * Führt die Suche im Backend durch.
+        */
         _loadHalData(url, verb) {
           this._hasSearched = true;
           this._tooManyResults = false;
@@ -552,6 +637,10 @@
           return search;
         }
 
+        /*
+        * Generiert URL für die Suche aus dem eingegebenen Wert des Suche-Felds und führt
+        * anschließend die Suche im Backend durch.
+        */
         _fetchData(search){
           this._hasSearched = true;
           this._deselectItems(this._selectedItems);
@@ -564,7 +653,9 @@
           this._loadHalData(searchUrl, 'GET');
         }
 
-        // Delete
+        /*
+        * Löscht den über `item` identifizierten Datensatz im Backend.
+        */
         _deleteData(item) {
           var url = this.url+'/'+item.id;
           // prepare request
