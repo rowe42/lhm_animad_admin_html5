@@ -166,6 +166,9 @@
   },
   "de": {
     "view": {
+      "animad-keepers": {
+        "main_heading": "Keepers view"
+      },
       "animad-animals": {
         "main_heading": "Übersicht Tiere",
         "table_sample_heading": "Beispiel für eine Tabelle",

@@ -6,7 +6,9 @@
 <link rel="import" href="animad-icons.html">
 
 <link rel="import" href="shared-styles.html">
+<link rel="import" href="behaviors/nebula-polyglot-behavior.html">
 
+<link rel="import" href="behaviors/mixin.html">
 
 <!-- GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-view -->
 <dom-module id="animad-keepers-view">
@@ -30,7 +32,7 @@
 
       <div class="card">
         <div class="circle"><iron-icon icon="animad-icons:basecamp"></iron-icon></div>
-        <h1>Keepers view</h1>
+        <h1>[[$t('main_heading')]]</h1>
         <div class="animad-keeper-view-content">
           <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" route="{{subroute}}">
               <animad-keepers-list name=""
@@ -38,11 +40,14 @@
                 default-search='vorname:hans nachname:dampf'
                 route="{{subroute}}"
                 edit-path="/keepers-view/edit"
-                create-path="/keepers-view/create">
+                create-path="/keepers-view/create"
+                resources="[[resources]]"
+                lang="[[lang]]">
               </animad-keepers-list>
-              <animad-keeper-create-form name="create" save-url="[[backendUrl]]/api/admin_service/keepers"></animad-keeper-create-form>
-              <animad-keeper-update-form name="edit" load-url="[[backendUrl]]/api/admin_service/keepers{{subroute.path}}"></animad-keeper-update-form>
-              <animad-keepers-list name="filterexample" url="[[backendUrl]]/api/admin_service/keepers" load-complete-data="true"></animad-keepers-list>
+
+              <animad-keeper-create-form name="create" save-url="[[backendUrl]]/api/admin_service/keepers" resources="[[resources]]" lang="[[lang]]"></animad-keeper-create-form>
+              <animad-keeper-update-form name="edit" load-url="[[backendUrl]]/api/admin_service/keepers{{subroute.path}}"  resources="[[resources]]" lang="[[lang]]"></animad-keeper-update-form>
+              <animad-keepers-list name="filterexample" url="[[backendUrl]]/api/admin_service/keepers" load-complete-data="true"  resources="[[resources]]" lang="[[lang]]"></animad-keepers-list>
           </iron-pages>
         </div>
       </div>
@@ -51,7 +56,7 @@
 
   <script>
     // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]View
-    class AnimadKeepersView extends Polymer.Element {
+    class AnimadKeepersView extends mix(Polymer.Element).with(Nebula.PolyglotBehavior) {
       // GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-view
       static get is() { return 'animad-keepers-view'; }
 
@@ -72,6 +77,14 @@
               rootPath: String,
               backendUrl: {
                   type: String
+              },
+            _domain: {
+                type: String,
+                value: 'view'
+              },
+              _entity: {
+                type: String,
+                value: 'animad-keepers'
               }
           }
 
