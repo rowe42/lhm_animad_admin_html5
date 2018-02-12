@@ -85,12 +85,13 @@
                         class="animad-keeper-skill-field"
                         id="keeper-skill" 
                         label="[[t('skill')]]" 
-                        value="{{data.skill}}" 
                         required>
-                        <paper-listbox slot="dropdown-content">
-                            <paper-item>Putzen</paper-item>
-                            <paper-item>Füttern</paper-item>
-                            <paper-item>Verwaltung</paper-item>
+                        <!--FIXME multi-select-->
+                        <!--<paper-listbox multi attr-for-selected="key" selected-values="{{data.skill}}" slot="dropdown-content">-->
+                        <paper-listbox attr-for-selected="key" selected="{{data.skill}}" slot="dropdown-content">
+                             <template is="dom-repeat" items="{{lists.skill}}">
+                                 <paper-item key="[[item]]">[[translate('skill',item)]]</paper-item>
+                            </template>
                         </paper-listbox>
                     </paper-dropdown-menu>
                     <paper-input
@@ -154,6 +155,10 @@
                         },
                         notify: true
                     },
+                    lists: {
+                        type: Object,
+                        notify: true
+                    },
                     /*
                      * Soll das Formular automatisch validiert werden?
                      */
@@ -189,6 +194,9 @@
                     _entity: {
                         type: String,
                         value: 'keeper'
+                    },
+                    profile: {
+                        type: String
                     }
                 }
             }
@@ -198,11 +206,19 @@
              * 'aussen' aufgerufen werden. 
              */
              validate() {
-                 //HACK in order to get the keeper saved. Fixme!!!
-                this.data.skill = ['cleaning'];
                 var valid = this.shadowRoot.querySelector('#iform').validate();
+                 //HACK in order to get the keeper saved. Fixme!!!
+                if (valid) {
+                    this.data.skill = [this.data.skill];
+                }
                 return valid;
             }            
+            
+            translate() {
+              var joined =  Array.prototype.join.call(arguments, '.');
+              return this.t(joined);
+            }
+            
         }
 
         customElements.define(AnimadKeeperForm.is, AnimadKeeperForm);

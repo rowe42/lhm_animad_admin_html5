@@ -1,3 +1,4 @@
+<link rel="import" href="../common-libs/common-utils.html">
 <script>
     /**
      * Behavior, um einem beliebigen Formular (Update, Create, Read) alle Eigenschaften
@@ -24,11 +25,24 @@
                         type: String,
                         observer: '_loadOptions'
                     },
+                    profileUrl: {
+                        type: String,
+                        observer: '_loadProfile'
+                    },
                     /**
                      * Das leere Objekt.
                      */
                     data: {
                         type: Object,
+                        notify: true
+                    },
+                    profile: {
+                        type: Object,
+                        notify: true
+                    },
+                    lists: {
+                        type: Object,
+                        value: {},
                         notify: true
                     },
                     /**
@@ -44,7 +58,7 @@
                      * Nach Anklicken der Schaltfläche 'Save' wird zum Wert von savePath
                      * navigiert.
                      */
-                     savePath: {
+                    savePath: {
                         type: String
                     },
                     /**
@@ -92,9 +106,9 @@
 
             /**
              * Wird von Formularen in Buttons aufgerufen.
-               Navigiert zum Attribut "data-routePath" wenn der Button gedrückt wird.
+             Navigiert zum Attribut "data-routePath" wenn der Button gedrückt wird.
              */
-             _navigateTo(e) {
+            _navigateTo(e) {
                 var routePath = e.target.dataset.routepath;
                 console.log("navigiere zu:" + routePath);
                 this.set("route.path", routePath);
@@ -103,7 +117,7 @@
             /*
              * Wird von 'cancel' in Formularen aufgerufen.
              */
-             _cancelEntity(e) {
+            _cancelEntity(e) {
                 this._navigateTo(e);
             }
 
@@ -174,7 +188,7 @@
              */
             _loadFormData(loadUrl, oldV) {
                 if (loadUrl)
-                    this._loadHalData(loadUrl, 'GET');
+                    this._loadHalData(loadUrl, 'GET', 'data');
             }
 
             /**
@@ -188,12 +202,49 @@
              */
             _loadOptions(saveUrl, oldV) {
                 if (saveUrl)
-//                    this._loadHalData(saveUrl, 'OPTIONS');
-                //HACK: Fetching GET instead of OPTIONS until OPTIONS are implemented
-                    this._loadHalData(saveUrl, 'GET');
+//                    this._loadHalData(saveUrl, 'OPTIONS', 'data');
+                    //HACK: Fetching GET instead of OPTIONS until OPTIONS are implemented
+                    this._loadHalData(saveUrl, 'GET', 'data');
             }
 
-            _loadHalData(url, verb) {
+            _loadProfile(profileUrl, oldV) {
+                var lhd = this._loadHalData(profileUrl, 'GET', 'profile')
+                        .then(function () {
+                            this._parseProfile(this.profile);
+                        }.bind(this));
+            }
+
+            _parseProfile(profile) {
+                console.log('called parseProfile ' + profile);
+                if (profile) {
+                    var descriptors = profile.alps.descriptors;
+//                    console.log('Iterating ' + descriptors.length + ' descs');
+                    for (var i = 0; i < descriptors.length; i++) {
+                        var descriptor = descriptors[i];
+                        //TODO hier wirklich die _entity aus i18n verwenden?
+                        var expectedId = this._entity + '_-representation';
+//                        console.log('Looking for expectedId ' + expectedId);
+                        if (descriptor.id === expectedId) {
+                            var innerDescriptors = descriptor.descriptors;
+//                            console.log('Iterating ' + innerDescriptors.length + ' inner-descs');
+                            for (var j = 0; j < innerDescriptors.length; j++) {
+                                var entry = innerDescriptors[j];
+                                if (entry.doc) {
+                                    //doc existiert
+                                    var value = entry.doc.value;
+                                    this.lists[entry.name] = CommonUtils.csvToArray(value);
+                                    this.notifyPath('lists.'+entry.name);
+                                    console.log('Setting key ' + entry.name + ' to ' + value);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            
+            _loadHalData(url, verb, target) {
                 // prepare request
                 var init = {
                     method: verb,
@@ -203,11 +254,11 @@
 
                 var request = new Request(url, init);
 
-                fetch(request)
+                return fetch(request)
                         .then(response => {
                             if (response.ok) {
                                 response.json().then((data) => {
-                                    this.set('data', data);
+                                    this.set(target, data);
                                 });
                             } else {
                                 this._error(response.status);
