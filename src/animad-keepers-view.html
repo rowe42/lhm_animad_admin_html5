@@ -42,9 +42,14 @@
               </animad-keepers-list>
               <animad-keeper-create-form name="create" 
                 save-url="[[backendUrl]]/api/admin_service/keepers"
-                profile-url="[[backendUrl]]/api/admin_service/profile/keepers">
+                profile-url="[[backendUrl]]/api/admin_service/profile/keepers"
+                save-path="/keepers-view/"
+                cancel-path="/keepers-view/">
               </animad-keeper-create-form>
-              <animad-keeper-update-form name="edit" load-url="[[backendUrl]]/api/admin_service/keepers{{subroute.path}}"></animad-keeper-update-form>
+              <animad-keeper-update-form name="edit" load-url="[[backendUrl]]/api/admin_service/keepers{{subroute.path}}"
+                 profile-url="[[backendUrl]]/api/admin_service/profile/keepers"
+                 save-path="/keepers-view/"
+                 cancel-path="/keepers-view/"></animad-keeper-update-form>
               <animad-keepers-list name="filterexample" url="[[backendUrl]]/api/admin_service/keepers" load-complete-data="true"></animad-keepers-list>
           </iron-pages>
         </div>

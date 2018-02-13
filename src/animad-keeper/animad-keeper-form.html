@@ -4,6 +4,7 @@
 <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-dropdown/paper-dropdown.html">
 
 <!-- custom behaviors -->
 <link rel="import" href="../behaviors/animad-i18n-behavior.html">
@@ -15,27 +16,27 @@
             .animad-keeper-form {
                 @apply --animad-keeper-form;
             }
-    
+
             .animad-keeper-firstName-field {
                 @apply --animad-keeper-firstName-field;
             }
-    
+
             .animad-keeper-lastName-field {
                 @apply --animad-keeper-lastName-field;
             }
-    
+
             .animad-keeper-employmentDate-field {
                 @apply --animad-keeper-employmentDate-field;
             }
-    
+
             .animad-keeper-skill-field {
                 @apply --animad-keeper-skill-field;
             }
-    
+
             .animad-keeper-birthday-field {
                 @apply --animad-keeper-birthday-field;
             }
-    
+
             .animad-keeper-salary-field {
                 @apply --animad-keeper-salary-field;
             }
@@ -81,19 +82,27 @@
                         pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" 
                         required>
                     </paper-input>
-                    <paper-dropdown-menu 
+                    <paper-dropdown class="animad-keeper-skill-field"
+                        id="keeper-skill" 
+                        label="[[t('skill')]]" value="{{data.skill}}" searchable="true" multi="true">
+                        <template is="dom-repeat" items="{{lists.skill}}">
+                            <paper-item value$="[[item]]">[[translate('skill',item)]]</paper-item>
+                            <!--<paper-item value$="{{item}}">{{item}}</paper-item>-->
+                        </template>
+                    </paper-dropdown>
+                     <!--Alternative mit Paper-Dropdown-Menu; Problem: man kann nur immer 1 Element anwählen, dann schließt das Dropdown; nur das erste Element wird dann angezeigt-->
+<!--                    <paper-dropdown-menu 
                         class="animad-keeper-skill-field"
                         id="keeper-skill" 
                         label="[[t('skill')]]" 
                         required>
-                        <!--FIXME multi-select-->
-                        <!--<paper-listbox multi attr-for-selected="key" selected-values="{{data.skill}}" slot="dropdown-content">-->
-                        <paper-listbox attr-for-selected="key" selected="{{data.skill}}" slot="dropdown-content">
-                             <template is="dom-repeat" items="{{lists.skill}}">
-                                 <paper-item key="[[item]]">[[translate('skill',item)]]</paper-item>
+                        <paper-listbox multi attr-for-selected="key" selected-values="{{data.skill}}" slot="dropdown-content">
+                            <template is="dom-repeat" items="{{lists.skill}}">
+                                <paper-item key="[[item]]">[[translate('skill',item)]]</paper-item>
                             </template>
                         </paper-listbox>
-                    </paper-dropdown-menu>
+                    </paper-dropdown-menu>-->
+
                     <paper-input
                         class="animad-keeper-birthday-field" 
                         id="keeper-birthday"
@@ -141,7 +150,9 @@
          *
          */
         class AnimadKeeperForm extends mix(Polymer.Element).with(AnimadI18nBehavior) {
-            static get is() { return 'animad-keeper-form'; }
+            static get is() {
+                return 'animad-keeper-form';
+            }
 
             static get properties() {
                 return {
@@ -150,10 +161,8 @@
                      */
                     data: {
                         type: Object,
-                        value() {
-                            return {}
-                        },
-                        notify: true
+                        notify: true,
+                        observer: '_setListObjects'
                     },
                     lists: {
                         type: Object,
@@ -163,8 +172,8 @@
                      * Soll das Formular automatisch validiert werden?
                      */
                     autoValidate: {
-                       type:  Boolean,
-                       value: false
+                        type: Boolean,
+                        value: false
                     },
                     /*
                      * Soll das Formular nur lesend dargestellt werden?
@@ -194,10 +203,19 @@
                     _entity: {
                         type: String,
                         value: 'keeper'
-                    },
-                    profile: {
-                        type: String
                     }
+                }
+            }
+
+            _setListObjects(data) {
+                if (!data) {
+                    data = {}
+                }
+                
+                //Leere Liste für Skills anlegen
+                if (!data.skill) {
+                    data.skill = [];
+                    this.notifyPath('data.skill');
                 }
             }
 
@@ -205,20 +223,20 @@
              * Diese Methode validiert das Formular. Sie kann von
              * 'aussen' aufgerufen werden. 
              */
-             validate() {
+            validate() {
                 var valid = this.shadowRoot.querySelector('#iform').validate();
-                 //HACK in order to get the keeper saved. Fixme!!!
-                if (valid) {
-                    this.data.skill = [this.data.skill];
-                }
                 return valid;
-            }            
-            
-            translate() {
-              var joined =  Array.prototype.join.call(arguments, '.');
-              return this.t(joined);
             }
-            
+
+            /**
+             * Methode ist nötig, da im Text Binding keine String-Concatenation möglich ist.
+             * @returns die übergebenen Parameter werden konkateniert und dann als Key für die Übersetzung genommen
+             */
+            translate() {
+                var joined = Array.prototype.join.call(arguments, '.');
+                return this.t(joined);
+            }
+
         }
 
         customElements.define(AnimadKeeperForm.is, AnimadKeeperForm);

@@ -118,6 +118,7 @@
              * Wird von 'cancel' in Formularen aufgerufen.
              */
             _cancelEntity(e) {
+                e.target.dataset.routepath = this.cancelPath;
                 this._navigateTo(e);
             }
 
@@ -126,6 +127,7 @@
              * zu speichern.
              */
             _saveEntity(e) {
+                e.target.dataset.routepath = this.savePath;
                 this._send('POST', this.saveUrl, this.data, e);
             }
 
@@ -133,8 +135,9 @@
              * Wird von 'update' Formularen aufgerufen, um eine bereits
              * bestehende Entität zu aktualisieren.
              */
-            _updateEntity() {
-                this._send('PUT', this.loadUrl, this.data);
+            _updateEntity(e) {
+                e.target.dataset.routepath = this.savePath;
+                this._send('PUT', this.loadUrl, this.data, e);
             }
 
             /**
