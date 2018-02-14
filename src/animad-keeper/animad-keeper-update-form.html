@@ -34,12 +34,25 @@
                 @apply --animad-keeper-update-form;
             }
         </style>
+       <!-- Routing Support -->
+        <app-location
+          route="{{route}}"
+          url-space-regex="^[[rootPath]]"
+          use-hash-as-path>
+      </app-location>
+      <app-route
+          route="{{route}}"
+          pattern="[[rootPath]]:page"
+          data="{{routeData}}"
+          active="{{active}}"
+          tail="{{subroute}}">
+      </app-route>        
         <!--
             Das Formular.
         -->
         <form class="animad-keeper-form">
-            <animad-keeper-form data="{{data}}" readonly="[[readform]]" 
-                resources="[[resources]]" lang="[[lang]]"auto-validate></animad-keeper-form>
+            <animad-keeper-form id="customform" data="{{data}}" readonly="[[readform]]" 
+                resources="[[resources]]" lang="[[lang]]"  lists="[[lists]]" auto-validate></animad-keeper-form>
             <!-- GENERATOR hier kommen die Templates für die Relationen hin -->
         </form>
         <!-- 
@@ -59,7 +72,7 @@
                 </paper-button>
             </template>
             <template is="dom-if" if="{{cancelPath}}">
-                <paper-button class="cancel" on-tap="_navigateTo" raised>
+                <paper-button class="cancel" on-tap="_cancelEntity" raised>
                     <iron-icon icon="animad-icons:close-circle"></iron-icon>
                     [[$t('button_cancel')]]
                 </paper-button>
