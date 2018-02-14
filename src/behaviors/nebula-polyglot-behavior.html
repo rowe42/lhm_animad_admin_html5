@@ -30,7 +30,6 @@
        */
       static get properties() {
         return {
-          x: {String, value:'y'},
           lang: {
             type: String,
             reflectToAttribute: true,
@@ -42,6 +41,12 @@
           },
           $t: {
             type: Function
+          },
+          /*
+           * Die Instanz von polyglot.js (eine i18n lib von airnb)
+           */
+          _polyglot: {
+              type: Object,
           }
         }
       }
@@ -65,7 +70,8 @@
         if (lang && resources && subtree) {
           const polyglot = new Polyglot({
             phrases: subtree
-          })
+          });
+          this._polyglot = polyglot;
           polyglot.locale(lang)
           return polyglot.t.bind(polyglot)
         } else {
