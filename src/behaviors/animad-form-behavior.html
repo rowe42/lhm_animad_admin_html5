@@ -38,7 +38,8 @@
                     },
                     profile: {
                         type: Object,
-                        notify: true
+                        notify: true,
+                        observer: '_parseProfile'
                     },
                     lists: {
                         type: Object,
@@ -211,10 +212,7 @@
             }
 
             _loadProfile(profileUrl, oldV) {
-                var lhd = this._loadHalData(profileUrl, 'GET', 'profile')
-                        .then(function () {
-                            this._parseProfile(this.profile);
-                        }.bind(this));
+                var lhd = this._loadHalData(profileUrl, 'GET', 'profile');
             }
 
             _parseProfile(profile) {
