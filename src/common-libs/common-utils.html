@@ -1,5 +1,11 @@
 <script>
 class CommonUtils {
+    /**
+     * Parst den angebenen Text als CSV und liefert ein Array.
+     * Fullblown-Version - alle Spezialfälle, dafür langsamer.
+     * @param {type} text als CSV
+     * @return Array als Ergebnis
+     */
     static csvToArray(text) {
         var re_valid = /^\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^,'"\s\\]*(?:\s+[^,'"\s\\]+)*)\s*(?:,\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^,'"\s\\]*(?:\s+[^,'"\s\\]+)*)\s*)*$/;
         var re_value = /(?!\s*$)\s*(?:'([^'\\]*(?:\\[\S\s][^'\\]*)*)'|"([^"\\]*(?:\\[\S\s][^"\\]*)*)"|([^,'"\s\\]*(?:\s+[^,'"\s\\]+)*))\s*(?:,|$)/g;
@@ -23,6 +29,18 @@ class CommonUtils {
         if (/,\s*$/.test(text))
             a.push('');
         return a;
+    }
+    
+    /**
+     * Parst den angebenen Text als CSV und liefert ein Array. Entfernt leading und 
+     * trailing spaces.
+     * Simple Version - schneller aber keine Spezialfälle (z.B. Anführungszeichen o.ä.).
+     * @param {type} text als CSV
+     * @return Array als Ergebnis
+     */
+    static simpleCsvToArray(text) {
+        var result = text.split(',').map(item => item.trim());
+        return result;
     }
 }
 </script>

@@ -218,30 +218,40 @@
             }
 
             _parseProfile(profile) {
-                console.log('called parseProfile ' + profile);
                 if (profile) {
                     var descriptors = profile.alps.descriptors;
-//                    console.log('Iterating ' + descriptors.length + ' descs');
+                    if (descriptors.length === 0) {
+                        console.warn('No descriptors found in profile!');
+                    }
                     for (var i = 0; i < descriptors.length; i++) {
                         var descriptor = descriptors[i];
                         //TODO hier wirklich die _entity aus i18n verwenden?
                         var expectedId = this._entity + '_-representation';
-//                        console.log('Looking for expectedId ' + expectedId);
                         if (descriptor.id === expectedId) {
                             var innerDescriptors = descriptor.descriptors;
-//                            console.log('Iterating ' + innerDescriptors.length + ' inner-descs');
+                            if (descriptors.length === 0) {
+                                console.warn('No inner descriptors found in profile!');
+                            }
                             for (var j = 0; j < innerDescriptors.length; j++) {
                                 var entry = innerDescriptors[j];
                                 if (entry.doc) {
                                     //doc existiert
                                     var value = entry.doc.value;
-                                    this.lists[entry.name] = CommonUtils.csvToArray(value);
+                                    //hier sollte die simpleCsvToArray-Version ausreichen
+                                    this.lists[entry.name] = CommonUtils.simpleCsvToArray(value);
                                     this.notifyPath('lists.'+entry.name);
-                                    console.log('Setting key ' + entry.name + ' to ' + value);
+                                    console.log('Setting list ' + entry.name + ' to ' + value);
                                 }
                             }
+                            //Optimierung: Es gibt nur ein ..._representation Element
+                            break;
                         }
                     }
+                    if (this.lists.length === 0) {
+                        console.warn('Profile was parsed, but no lists found! Maybe profile-parsing can be avoided here?');
+                    }
+                } else {
+                    console.warn('Called _parseProfile, but with no profile provided!');
                 }
             }
 

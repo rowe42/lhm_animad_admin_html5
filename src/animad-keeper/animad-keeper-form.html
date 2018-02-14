@@ -84,10 +84,13 @@
                     </paper-input>
                     <paper-dropdown class="animad-keeper-skill-field"
                         id="keeper-skill" 
-                        label="[[t('skill')]]" value="{{data.skill}}" searchable="true" multi="true">
+                        label="[[t('skill')]]" value="{{data.skill}}" 
+                        searchable="true" multi="true"
+                        > 
+                        <!--in paper-dropdown ergänzen, sobald pull request durch ist-->
+                        <!--multi-label="[[t('items-selected')]]"-->
                         <template is="dom-repeat" items="{{lists.skill}}">
                             <paper-item value$="[[item]]">[[translate('skill',item)]]</paper-item>
-                            <!--<paper-item value$="{{item}}">{{item}}</paper-item>-->
                         </template>
                     </paper-dropdown>
                      <!--Alternative mit Paper-Dropdown-Menu; Problem: man kann nur immer 1 Element anwählen, dann schließt das Dropdown; nur das erste Element wird dann angezeigt-->
