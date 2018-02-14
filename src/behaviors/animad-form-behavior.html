@@ -1,3 +1,4 @@
+<link rel="import" href="../common-libs/common-utils.html">
 <script>
     /**
      * Behavior, um einem beliebigen Formular (Update, Create, Read) alle Eigenschaften
@@ -24,11 +25,25 @@
                         type: String,
                         observer: '_loadOptions'
                     },
+                    profileUrl: {
+                        type: String,
+                        observer: '_loadProfile'
+                    },
                     /**
                      * Das leere Objekt.
                      */
                     data: {
                         type: Object,
+                        notify: true
+                    },
+                    profile: {
+                        type: Object,
+                        notify: true,
+                        observer: '_parseProfile'
+                    },
+                    lists: {
+                        type: Object,
+                        value: {},
                         notify: true
                     },
                     /**
@@ -44,7 +59,7 @@
                      * Nach Anklicken der Schaltfläche 'Save' wird zum Wert von savePath
                      * navigiert.
                      */
-                     savePath: {
+                    savePath: {
                         type: String
                     },
                     /**
@@ -92,9 +107,9 @@
 
             /**
              * Wird von Formularen in Buttons aufgerufen.
-               Navigiert zum Attribut "data-routePath" wenn der Button gedrückt wird.
+             Navigiert zum Attribut "data-routePath" wenn der Button gedrückt wird.
              */
-             _navigateTo(e) {
+            _navigateTo(e) {
                 var routePath = e.target.dataset.routepath;
                 console.log("navigiere zu:" + routePath);
                 this.set("route.path", routePath);
@@ -103,7 +118,8 @@
             /*
              * Wird von 'cancel' in Formularen aufgerufen.
              */
-             _cancelEntity(e) {
+            _cancelEntity(e) {
+                e.target.dataset.routepath = this.cancelPath;
                 this._navigateTo(e);
             }
 
@@ -112,6 +128,7 @@
              * zu speichern.
              */
             _saveEntity(e) {
+                e.target.dataset.routepath = this.savePath;
                 this._send('POST', this.saveUrl, this.data, e);
             }
 
@@ -119,8 +136,9 @@
              * Wird von 'update' Formularen aufgerufen, um eine bereits
              * bestehende Entität zu aktualisieren.
              */
-            _updateEntity() {
-                this._send('PUT', this.loadUrl, this.data);
+            _updateEntity(e) {
+                e.target.dataset.routepath = this.savePath;
+                this._send('PUT', this.loadUrl, this.data, e);
             }
 
             /**
@@ -174,7 +192,7 @@
              */
             _loadFormData(loadUrl, oldV) {
                 if (loadUrl)
-                    this._loadHalData(loadUrl, 'GET');
+                    this._loadHalData(loadUrl, 'GET', 'data');
             }
 
             /**
@@ -188,12 +206,56 @@
              */
             _loadOptions(saveUrl, oldV) {
                 if (saveUrl)
-//                    this._loadHalData(saveUrl, 'OPTIONS');
-                //HACK: Fetching GET instead of OPTIONS until OPTIONS are implemented
-                    this._loadHalData(saveUrl, 'GET');
+//                    this._loadHalData(saveUrl, 'OPTIONS', 'data');
+                    //HACK: Fetching GET instead of OPTIONS until OPTIONS are implemented
+                    this._loadHalData(saveUrl, 'GET', 'data');
             }
 
-            _loadHalData(url, verb) {
+            _loadProfile(profileUrl, oldV) {
+                var lhd = this._loadHalData(profileUrl, 'GET', 'profile');
+            }
+
+            _parseProfile(profile) {
+                if (profile) {
+                    var descriptors = profile.alps.descriptors;
+                    if (descriptors.length === 0) {
+                        console.warn('No descriptors found in profile!');
+                    }
+                    for (var i = 0; i < descriptors.length; i++) {
+                        var descriptor = descriptors[i];
+                        //TODO hier wirklich die _entity aus i18n verwenden?
+                        var expectedId = this._entity + '_-representation';
+                        if (descriptor.id === expectedId) {
+                            var innerDescriptors = descriptor.descriptors;
+                            if (descriptors.length === 0) {
+                                console.warn('No inner descriptors found in profile!');
+                            }
+                            for (var j = 0; j < innerDescriptors.length; j++) {
+                                var entry = innerDescriptors[j];
+                                if (entry.doc) {
+                                    //doc existiert
+                                    var value = entry.doc.value;
+                                    //hier sollte die simpleCsvToArray-Version ausreichen
+                                    this.lists[entry.name] = CommonUtils.simpleCsvToArray(value);
+                                    this.notifyPath('lists.'+entry.name);
+                                    console.log('Setting list ' + entry.name + ' to ' + value);
+                                }
+                            }
+                            //Optimierung: Es gibt nur ein ..._representation Element
+                            break;
+                        }
+                    }
+                    if (this.lists.length === 0) {
+                        console.warn('Profile was parsed, but no lists found! Maybe profile-parsing can be avoided here?');
+                    }
+                } else {
+                    console.warn('Called _parseProfile, but with no profile provided!');
+                }
+            }
+
+
+            
+            _loadHalData(url, verb, target) {
                 // prepare request
                 var init = {
                     method: verb,
@@ -203,11 +265,11 @@
 
                 var request = new Request(url, init);
 
-                fetch(request)
+                return fetch(request)
                         .then(response => {
                             if (response.ok) {
                                 response.json().then((data) => {
-                                    this.set('data', data);
+                                    this.set(target, data);
                                 });
                             } else {
                                 this._error(response.status);
