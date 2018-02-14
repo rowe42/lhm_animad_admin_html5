@@ -82,7 +82,7 @@
          * @polymer
          *
          */
-      class AnimadKeeperSimpleRelation extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadRelationBehavior, AnimadFormBehavior) {
+      class AnimadKeeperSimpleRelation extends mix(Polymer.Element).with(AnimadRelationBehavior, AnimadFormBehavior, Nebula.PolyglotBehavior) {
             static get is() { return 'animad-keeper-simple-relation'; }
 
             static get properties() {
@@ -104,6 +104,9 @@
                     _entity: {
                         type: String,
                         value: 'keeper'
+                    },
+                    $t: {
+                         type: Function
                     }
                 }
             }

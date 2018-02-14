@@ -176,7 +176,7 @@
                     this._navigateTo(e);
                 } else {
                     console.warn("form is not valid...");
-                    this._warningToast.text = this.t('form_validation');
+                    this._warningToast.text = this.$t('form_validation');
                     this._warningToast.open();
                 }
             }
@@ -208,7 +208,14 @@
                 if (saveUrl)
 //                    this._loadHalData(saveUrl, 'OPTIONS', 'data');
                     //HACK: Fetching GET instead of OPTIONS until OPTIONS are implemented
-                    this._loadHalData(saveUrl, 'GET', 'data');
+                    var hackSaveUrl = saveUrl;
+                    if (this._entity === 'animal') {
+                        hackSaveUrl += '/search/findByName?name=Benjamin';
+                    } else if (this._entity === 'keeper') {
+                        hackSaveUrl += '/search//findByLastName?lastName=Bla';
+                    }
+                    this._loadHalData(hackSaveUrl, 'GET', 'data');
+                    
             }
 
             _loadProfile(profileUrl, oldV) {
@@ -301,7 +308,7 @@
              * Der 'Toast', der bei Erfolg angezeigt wird.
              */
             _success() {
-                this._successToast.text = this.t('form_success');
+                this._successToast.text = this.$t('form_success');
                 this._successToast.open();
             }
 
@@ -309,7 +316,7 @@
              * Der 'Toast', der bei Fehlern angezeigt wird.
              */
             _error(status) {
-                this._errorToast.text = this.t('form_error', {code: status});
+                this._errorToast.text = this.$t('form_error', {code: status});
                 this._errorToast.open();
             }
         };

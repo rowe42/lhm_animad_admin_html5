@@ -1,5 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/nebula-i18n/nebula-i18n.html">
 
 <!-- custom components -->
@@ -8,7 +9,7 @@
 <link rel="import" href="animad-animal/animad-animal-create-form.html">
 
 <!-- custom behaviors -->
-<link rel="import" href="behaviors/animad-i18n-behavior.html">
+<link rel="import" href="behaviors/nebula-polyglot-behavior.html">
 <link rel="import" href="behaviors/mixin.html">
 
 <!-- custom iconset -->
@@ -37,67 +38,100 @@
       <div class="circle">
         <iron-icon icon="animad-icons:basecamp"></iron-icon>
       </div>
-      <h1>[[t('main_heading')]]</h1>
-      <h2>[[t('table_sample_heading')]]</h2>
+      <h1>[[$t('main_heading')]]</h1>
+      <h2>[[$t('table_sample_heading')]]</h2>
       <div class="animad-animal-view-content">
+          <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" route="{{subroute}}">
             <animad-animals-list
               name=""
               url="[[backendUrl]]/api/admin_service/animals"
               default-search='name:Dumbo'
               route="{{subroute}}"
               edit-path="/animals-view/edit"
-              create-path="/animals-view/create">
+              create-path="/animals-view/create"
+              resources="[[resources]]" lang="[[lang]]">
             </animad-animals-list>          
-            <animad-animal-create-form name="create" load-url="[[backendUrl]]/api/admin_service/animals"></animad-animal-create-form>            
-            <animad-animal-update-form name="edit" load-url="[[backendUrl]]/api/admin_service/animals{{subroute.path}}"></animad-animal-update-form>
-            <animad-animals-list name="filterexample" url="[[backendUrl]]/api/admin_service/animals" load-complete-data="true"></animad-animals-list>
+            <animad-animal-create-form name="create" 
+              save-url="[[backendUrl]]/api/admin_service/animals"
+              save-path="/animals-view/"
+              cancel-path="/animals-view/"
+              resources="[[resources]]" lang="[[lang]]">                  
+            </animad-animal-create-form>            
+            <animad-animal-update-form name="edit" 
+              load-url="[[backendUrl]]/api/admin_service/animals{{subroute.path}}"
+              save-path="/animals-view/"
+              cancel-path="/animals-view/"
+              resources="[[resources]]" lang="[[lang]]">
+            </animad-animal-update-form>
+            <animad-animals-list name="filterexample" 
+              url="[[backendUrl]]/api/admin_service/animals" load-complete-data="true"
+              resources="[[resources]]" lang="[[lang]]">
+            </animad-animals-list>
+          </iron-pages> 
       </div>
       <br />
       <br />
       <hr>
-      <h2>[[t('create_sample_heading')]]</h2>
-      <animad-animal-create-form save-url="[[backendUrl]]/api/admin_service/animals" save-path="/animals-view" cancel-path="/animals-view"
+      <h2>[[$t('create_sample_heading')]]</h2>
+      <animad-animal-create-form save-url="[[backendUrl]]/api/admin_service/animals" 
+        save-path="/animals-view" cancel-path="/animals-view"
+        resources="[[resources]]" lang="[[lang]]"
         reset>
       </animad-animal-create-form>
       <br />
       <br />
       <hr>
-      <h2>[[t('create_with_relation_sample_heading')]]</h2>
-      <animad-animal-create-form save-url="[[backendUrl]]/api/admin_service/animals" keepers>
+      <h2>[[$t('create_with_relation_sample_heading')]]</h2>
+      <animad-animal-create-form save-url="[[backendUrl]]/api/admin_service/animals" 
+        resources="[[resources]]" lang="[[lang]]"
+        keepers>
       </animad-animal-create-form>
       <br />
       <br />
-      <hr>
-<!--      <h2>[[t('update_sample_heading')]]</h2>
+<!--      <hr>
+      <h2>[[$t('update_sample_heading')]]</h2>
       <animad-animal-update-form load-url="[[backendUrl]]/api/admin_service/animals/92cbbfb9-1bab-485e-8230-066f82287c2f">
       </animad-animal-update-form>
       <br />
       <br />
       <hr>
-      <h2>[[t('read_sample_heading')]]</h2>
+      <h2>[[$t('read_sample_heading')]]</h2>
       <animad-animal-update-form load-url="[[backendUrl]]/api/admin_service/animals/92cbbfb9-1bab-485e-8230-066f82287c2f" readform>
       </animad-animal-update-form>
       <br />
       <br />
       <hr>
-      <h2>[[t('update_sample_heading_with_relation')]]</h2>
+      <h2>[[$t('update_sample_heading_with_relation')]]</h2>
       <animad-animal-update-form load-url="[[backendUrl]]/api/admin_service/animals/92cbbfb9-1bab-485e-8230-066f82287c2f" save-path="/animals-view"
         cancel-path="/animals-view" reset keepers>
       </animad-animal-update-form>
       <br />
-      <br />-->
-      <hr>
+      <br />
+      <hr>-->
     </div>
   </template>
 
   <script>
     // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]View
-    class AnimadAnimalsView extends mix(Polymer.Element).with(AnimadI18nBehavior) {
+    class AnimadAnimalsView extends mix(Polymer.Element).with(Nebula.PolyglotBehavior) {
       // GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-view
       static get is() { return 'animad-animals-view'; }
 
       static get properties() {
         return {
+          route: {
+            type: String,
+            reflectToAttribute: true
+          },
+          page: {
+            type: String,
+            reflectToAttribute: true
+          },
+          routeData: Object,
+          rootPath: String,
+          backendUrl: {
+            type: String
+          },
           /*
            * Das '_domain' property wird benötigt, um" den richtigen Pfad 
            * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
@@ -119,11 +153,19 @@
           _entity: {
             type: String,
             value: 'animad-animals'
-          },
-          backendUrl: {
-              type: String,
           }
         }
+      }
+      
+                  
+      static get observers() {
+          return [
+              '_routePageChanged(routeData.page)',
+          ];
+      }
+      
+      _routePageChanged(page) {
+          this.page = page || '';
       }
     }
 

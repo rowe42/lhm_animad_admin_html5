@@ -3,84 +3,87 @@
 <link rel="import" href="../../bower_components/nebula-i18n/polyglot.html">
 
 <script>
-(function() {
-  'use strict'
-  window.Nebula = window.Nebula || {}
+    (function () {
+        'use strict'
+        window.Nebula = window.Nebula || {}
 
-  // symbols for private members
-  const computeTranslate = Symbol()
+        // symbols for private members
+        const computeTranslate = Symbol()
 
-  // symbols for protected members
-  const compute = Symbol.for('Nebula.ElementMixin.compute')
+        // symbols for protected members
+        const compute = Symbol.for('Nebula.ElementMixin.compute')
 
-  /**
-   * Class expression factory (mixin) to extend a custom element with utility methods.
-   * @param {Object} base - The base class to extend.
-   * @returns {class} - A class that extends from the base class argument.
-   */
-  Nebula.PolyglotBehavior = Polymer.dedupingMixin(function(base) {
-    return class extends Nebula.ElementMixin(base) {
+        /**
+         * Class expression factory (mixin) to extend a custom element with utility methods.
+         * @param {Object} base - The base class to extend.
+         * @returns {class} - A class that extends from the base class argument.
+         */
+        Nebula.PolyglotBehavior = Polymer.dedupingMixin(function (base) {
+            return class extends Nebula.ElementMixin(base) {
 
-      /**
-       * Gets the property definitions for data binding.
-       * @type {Object}
-       * @property {string} lang - The language code (BCP47) of the element.
-       * @property {Object} resources - The collection of localization string resources.
-       * @property {function(key)} $t - Gets a localized string resource for the specified key.
-       */
-      static get properties() {
-        return {
-          lang: {
-            type: String,
-            reflectToAttribute: true,
-            notify: true
-          },
-          resources: {
-            type: Object,
-            notify: true
-          },
-          $t: {
-            type: Function
-          },
-          /*
-           * Die Instanz von polyglot.js (eine i18n lib von airnb)
-           */
-          _polyglot: {
-              type: Object,
-          }
-        }
-      }
+                /**
+                 * Gets the property definitions for data binding.
+                 * @type {Object}
+                 * @property {string} lang - The language code (BCP47) of the element.
+                 * @property {Object} resources - The collection of localization string resources.
+                 * @property {function(key)} $t - Gets a localized string resource for the specified key.
+                 */
+                static get properties() {
+                    return {
+                        lang: {
+                            type: String,
+                            reflectToAttribute: true,
+                            notify: true
+                        },
+                        resources: {
+                            type: Object,
+                            notify: true
+                        },
+                        $t: {
+                            type: Function
+                        },
+                        /*
+                         * Die Instanz von polyglot.js (eine i18n lib von airnb)
+                         */
+                        _polyglot: {
+                            type: Object,
+                        }
+                    }
+                }
 
-      /**
-       * Creates a new class.
-       * @constructor
-       */
-      constructor() {
-        super()
-        this[compute]('$t', 'lang, resources', this[computeTranslate])
-      }
+                /**
+                 * Creates a new class.
+                 * @constructor
+                 */
+                constructor() {
+                    super();
+                    this[compute]('$t', 'lang, resources', this[computeTranslate]);
+                }
 
-      /**
-      * Generates a computed binding function for getting localized resources.
-      */
-      [computeTranslate](lang, resources) {
-        if (resources) {
-          var subtree = resources[lang][this._domain][this._entity];
-        }
-        if (lang && resources && subtree) {
-          const polyglot = new Polyglot({
-            phrases: subtree
-          });
-          this._polyglot = polyglot;
-          polyglot.locale(lang)
-          return polyglot.t.bind(polyglot)
-        } else {
-          return function(key) {
-            return key
-          }
-        }
-      }
-    }    
-  })
-}())
+                /**
+                 * Generates a computed binding function for getting localized resources.
+                 */
+                [computeTranslate] (lang, resources) {
+                    if (!lang || !resources || !this._domain || !this._entity) {
+                        console.warn("WARNING: there is an error in your properties.\n lang -> " + lang + "\n resources -> " + resources + "\n domain -> " + this._domain + "\n entity -> " + this._entity);
+                    }
+                    if (resources) {
+                        var subtree = resources[lang][this._domain][this._entity];
+                    }
+                    if (lang && resources && subtree) {
+                        const polyglot = new Polyglot({
+                            phrases: subtree
+                        });
+                        this._polyglot = polyglot;
+                        polyglot.locale(lang);
+                        return polyglot.t.bind(polyglot);
+                    } else {
+                        return function (key) {
+                            return key
+                        }
+                    }
+                }
+            }
+        })
+    }())
 </script>

@@ -6,7 +6,7 @@
 <link rel="import" href="animad-keeper/animad-keeper-create-form.html">
 
 <!-- custom behaviors -->
-<link rel="import" href="behaviors/animad-i18n-behavior.html">
+<link rel="import" href="behaviors/nebula-polyglot-behavior.html">
 <link rel="import" href="behaviors/mixin.html">
 
 <!-- custom iconset -->
@@ -26,38 +26,43 @@
     
     <div id="view" class="card">
       <div class="circle"><iron-icon icon="animad-icons:face"></iron-icon></div>
-      <h1>[[t('main_heading')]]</h1>
-      <h2>[[t('create_sample_heading')]]</h2>
-      <animad-keeper-create-form url="[[backendUrl]]/api/admin_service/keepers/new" cancel-path="/go/here" reset>
+      <h1>[[$t('main_heading')]]</h1>
+      <h2>[[$t('create_sample_heading')]]</h2>
+      <animad-keeper-create-form url="[[backendUrl]]/api/admin_service/keepers/new" 
+         resources="[[resources]]" lang="[[lang]]" cancel-path="/go/here" reset>
       </animad-keeper-create-form>      
       <br />
       <br />
-      <h2>[[t('create_with_relation_sample_heading')]]</h2>
-      <animad-keeper-create-form url="[[backendUrl]]/api/admin_service/keepers/new">
+      <h2>[[$t('create_with_relation_sample_heading')]]</h2>
+      <animad-keeper-create-form url="[[backendUrl]]/api/admin_service/keepers/new"
+         resources="[[resources]]" lang="[[lang]]">
       </animad-keeper-create-form>      
       <br />
       <br />
-      <h2>[[t('update_sample_heading')]]</h2>
-      <animad-keeper-update-form url="[[backendUrl]]/api/admin_service/keepers/fbd234e5-93d5-44d8-886c-ec4ddbd3f4bb">
+      <h2>[[$t('update_sample_heading')]]</h2>
+      <animad-keeper-update-form url="[[backendUrl]]/api/admin_service/keepers/fbd234e5-93d5-44d8-886c-ec4ddbd3f4bb"
+         resources="[[resources]]" lang="[[lang]]">
       </animad-keeper-update-form>
       <br />
       <br />
-      <h2>[[t('read_sample_heading')]]</h2>
-      <animad-keeper-update-form url="[[backendUrl]]/api/admin_service/keepers/fbd234e5-93d5-44d8-886c-ec4ddbd3f4bb" readform>
+      <h2>[[$t('read_sample_heading')]]</h2>
+      <animad-keeper-update-form url="[[backendUrl]]/api/admin_service/keepers/fbd234e5-93d5-44d8-886c-ec4ddbd3f4bb" 
+        resources="[[resources]]" lang="[[lang]]" readform>
       </animad-keeper-update-form>
       <br />
       <br />
-      <h2>[[t('update_sample_heading_with_relation')]]</h2>
+      <h2>[[$t('update_sample_heading_with_relation')]]</h2>
       <animad-keeper-update-form 
         url="[[backendUrl]]/api/admin_service/keepers/fbd234e5-93d5-44d8-886c-ec4ddbd3f4bb" 
-        cancel-path="/go/there" keepers reset>
+        cancel-path="/go/there" keepers reset
+        resources="[[resources]]" lang="[[lang]]">
       </animad-keeper-update-form>
       </div>
   </template>
 
   <script>
     // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]View
-    class AnimadKeepersFormsamplesView extends mix(Polymer.Element).with(AnimadI18nBehavior) {
+    class AnimadKeepersFormsamplesView extends mix(Polymer.Element).with(Nebula.PolyglotBehavior) {
       // GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-view
       static get is() { return 'animad-keepers-formsamples-view'; }
 
