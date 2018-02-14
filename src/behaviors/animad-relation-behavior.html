@@ -134,7 +134,8 @@
                 if (entityRelations) {
                     var init = {
                         method: 'GET',
-                        mode: 'cors'
+                        mode: 'cors',
+                        credentials: 'include'
                     }
 
                     var request = new Request(entityRelations.href, init);
@@ -167,7 +168,8 @@
                     if (this.preload) {
                         var init = {
                             method: 'GET',
-                            mode: 'cors'
+                            mode: 'cors',
+                            credentials: 'include'
                         }
 
                         var request = new Request(url, init);
@@ -222,7 +224,11 @@
                 var init = {
                     method: 'POST',
                     mode: 'cors',
-                    body: JSON.stringify(this._dialogdata)
+                    credentials: 'include',
+                    body: JSON.stringify(this._dialogdata),
+                    headers: new Headers({
+                        'Content-Type': 'application/json'
+                    })                    
                 }
 
                 var request = new Request(this._newUrl, init);

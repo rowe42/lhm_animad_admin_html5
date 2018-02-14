@@ -472,7 +472,8 @@
             // prepare request
             var init = {
                 method: 'GET',
-                mode: 'cors'
+                mode: 'cors',
+                credentials: 'include'
             }
 
             var request = new Request(url, init);
@@ -591,7 +592,8 @@
             // prepare request
             var init = {
                 method: verb,
-                mode: 'cors'
+                mode: 'cors',
+                credentials: 'include'
             }
 
             var request = new Request(url, init);
@@ -661,7 +663,8 @@
           // prepare request
           var init = {
               method: 'DELETE',
-              mode: 'cors'
+              mode: 'cors',
+              credentials: 'include'
           }
 
           var request = new Request(url, init);
