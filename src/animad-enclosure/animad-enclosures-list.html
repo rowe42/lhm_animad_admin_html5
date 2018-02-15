@@ -15,7 +15,7 @@
 
 <link rel="import" href="../animad-icons.html">
 <link rel="import" href="../behaviors/animad-list-behavior.html">
-<link rel="import" href="../behaviors/animad-i18n-behavior.html">
+<link rel="import" href="../behaviors/nebula-polyglot-behavior.html">
 <link rel="import" href="../behaviors/mixin.html">
 <link rel="import" href="../common-libs/animad-list-header.html">
 
@@ -64,7 +64,7 @@
 
       <animad-list-header
           id="animad-list-header-filter"
-          placeholder-search="[[t('filter_placeholder')]]"
+          placeholder-search="[[$t('filter_placeholder')]]"
           placeholder-delete="Löschen"
           placeholder-new="Neu"
           all-filters="[[_localizedFilters]]"
@@ -91,11 +91,11 @@
         Modaler Dialog zur Abfrage vor dem Löschen von in der Liste über Checkboxen selektierten Datensätze
       -->
       <paper-dialog id="dialogDeleteSelected">
-        <h2>[[t('modal_delete_header')]]</h2>
-        <p>[[t('modal_delete_text_multi')]]</p>
+        <h2>[[$t('modal_delete_header')]]</h2>
+        <p>[[$t('modal_delete_text_multi')]]</p>
         <paper-item>
-          <paper-button raised dialog-confirm on-click="_deleteSelectedRows">[[t('modal_delete_button_yes')]]</paper-button>
-          <paper-button raised dialog-dismiss on-click="_unsetTemporaryDeleteInfo" autofocus>[[t('modal_delete_button_no')]]</paper-button>
+          <paper-button raised dialog-confirm on-click="_deleteSelectedRows">[[$t('modal_delete_button_yes')]]</paper-button>
+          <paper-button raised dialog-dismiss on-click="_unsetTemporaryDeleteInfo" autofocus>[[$t('modal_delete_button_no')]]</paper-button>
         </paper-item>
       </paper-dialog>
 
@@ -103,11 +103,11 @@
         Modaler Dialog zur Abfrage vor dem Löschen eines Datensatzes über Papierkorb
       -->
       <paper-dialog id="dialogDeleteItem">
-        <h2>[[t('modal_delete_header')]]</h2>
-        <p>[[t('modal_delete_text_single')]] [[_deleteInfo]]</p>
+        <h2>[[$t('modal_delete_header')]]</h2>
+        <p>[[$t('modal_delete_text_single')]] [[_deleteInfo]]</p>
         <paper-item>
-          <paper-button raised dialog-confirm on-click="_deleteSelectedRows">[[t('modal_delete_button_yes')]]</paper-button>
-          <paper-button raised dialog-dismiss on-click="_unsetTemporaryDeleteInfo" autofocus>[[t('modal_delete_button_no')]]</paper-button>
+          <paper-button raised dialog-confirm on-click="_deleteSelectedRows">[[$t('modal_delete_button_yes')]]</paper-button>
+          <paper-button raised dialog-dismiss on-click="_unsetTemporaryDeleteInfo" autofocus>[[$t('modal_delete_button_no')]]</paper-button>
         </paper-item>
       </paper-dialog>
 
@@ -125,21 +125,21 @@
 
         <vaadin-grid-column >
           <template class="header">
-            <vaadin-grid-sorter path="id">[[t('id')]]</vaadin-grid-sorter>
+            <vaadin-grid-sorter path="id">[[$t('id')]]</vaadin-grid-sorter>
           </template>
           <template>[[item.id]]</template>
         </vaadin-grid-column>
 
         <vaadin-grid-column>
           <template class="header">
-            <vaadin-grid-sorter path="name">[[t('name')]]</vaadin-grid-sorter>
+            <vaadin-grid-sorter path="name">[[$t('name')]]</vaadin-grid-sorter>
           </template>
           <template>[[item.name]]</template>
         </vaadin-grid-column>
 
         <vaadin-grid-column>
           <template class="header">
-            <vaadin-grid-sorter path="cleaningTime">[[t('cleaningTime')]]</vaadin-grid-sorter>
+            <vaadin-grid-sorter path="cleaningTime">[[$t('cleaningTime')]]</vaadin-grid-sorter>
           </template>
           <template>[[item.cleaningTime]]</template>
         </vaadin-grid-column>
@@ -199,7 +199,7 @@
        * @appliesMixin AnimadListBehavior
        * @appliesMixin AnimadI18nBehavior
        **/
-      class AnimadEnclosuresList extends mix(Polymer.Element).with(AnimadListBehavior, AnimadI18nBehavior) {
+      class AnimadEnclosuresList extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadListBehavior) {
 
         static get is() { return 'animad-enclosures-list'; }
 
@@ -251,7 +251,7 @@
           // this is optional. If not implemented will only ask question (translated): Do you really want to delete this item?
           var index = this._filteredData.findIndex(item => item.id == e.target.id);
           var item = this._filteredData[index];
-          this._deleteInfo = this.t('modal_deleteinfo', {name: item.name, cleaningtime: item.cleaningTime});
+          this._deleteInfo = this.$t('modal_deleteinfo', {name: item.name, cleaningtime: item.cleaningTime});
 
           super._confirmDeleteRow(e);
         }

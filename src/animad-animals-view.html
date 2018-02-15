@@ -31,7 +31,8 @@
       }
     </style>
     
-    <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}">
+  
+    <app-route route="{{route}}" pattern="/animals-view/:page" data="{{routeData}}" tail="{{subroute}}">
     </app-route>
 
     <div id="view" class="card">
@@ -59,7 +60,7 @@
               resources="[[resources]]" lang="[[lang]]" keepers reset>                  
             </animad-animal-create-form>            
             <animad-animal-update-form name="edit" 
-              load-url="[[_loadSingleAnimalUrl]]"
+              load-url="{{_loadSingleAnimalUrl}}"
               profile-url="[[backendUrl]]/api/admin_service/profile/animals"
               save-path="/animals-view/"
               cancel-path="/animals-view/"

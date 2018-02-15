@@ -367,10 +367,13 @@
          * @param Event mit den notwendigen Daten
          */
         _removeItem(event) {
-            var name = 'data.' + this._entity + 's';
+            var name = 'data._embedded.' + this._entity + 's';
             var index = event.target.dataset.item;
             console.log("index -> " + index);
             this.splice(name, index, 1);
+            
+            //TODO irgendwie müssen wir uns dieses entfernen merken, damit wir
+            //es beim Speichern auch durchführen können
         }
     }
 </script>

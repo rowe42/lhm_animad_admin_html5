@@ -28,7 +28,7 @@
       }
     </style>
 
-    <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}">
+    <app-route route="{{route}}" pattern="/keepers-view/:page" data="{{routeData}}" tail="{{subroute}}">
     </app-route>
 
 
@@ -52,7 +52,7 @@
                 cancel-path="/keepers-view/"
                 resources="[[resources]]" lang="[[lang]]">
               </animad-keeper-create-form>
-              <animad-keeper-update-form name="edit" load-url="[[_loadSingleKeeperUrl]]"
+              <animad-keeper-update-form name="edit" load-url="{{_loadSingleKeeperUrl}}"
                  profile-url="[[backendUrl]]/api/admin_service/profile/keepers"
                  save-path="/keepers-view/"
                  cancel-path="/keepers-view/"
