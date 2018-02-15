@@ -114,7 +114,7 @@
 <!-- Für Suche über Lazy Loading:
      <vaadin-grid id="animad-list" data-provider="[[dataProvider]]"  size="200" multi-sort="[[multiSort]]" selected-items="{{_selectedItems}}"> -->
 
-     <vaadin-grid id="animad-list" items="[[_filteredData]]"  multi-sort="[[multiSort]]" selected-items="{{_selectedItems}}">
+     <vaadin-grid id="animad-list" items="[[filteredData]]"  multi-sort="[[multiSort]]" selected-items="{{_selectedItems}}">
         <vaadin-grid-selection-column auto-select>
         </vaadin-grid-selection-column>
 
@@ -249,8 +249,8 @@
 
         _confirmDeleteRow(e) {
           // this is optional. If not implemented will only ask question (translated): Do you really want to delete this item?
-          var index = this._filteredData.findIndex(item => item.id == e.target.id);
-          var item = this._filteredData[index];
+          var index = this.filteredData.findIndex(item => item.id == e.target.id);
+          var item = this.filteredData[index];
           this._deleteInfo = this.t('modal_deleteinfo', {name: item.name, cleaningtime: item.cleaningTime});
 
           super._confirmDeleteRow(e);
@@ -268,7 +268,7 @@
          * Filtert die gefundenen Datensätze neu, wenn die Filter-Selektion geändert wurde.
          */
         _filterSelectionData() {
-          this._filter();
+          this._onFilter();
         }
 
         /**
@@ -276,30 +276,7 @@
          */
         _filterData(event) {
           this._filterString = event.target.search.toLowerCase();
-          this._filter();
-        }
-
-        /**
-         * Filtert die gefundenen Datensätze nach dem eingegebenen String im Filter-Feld.
-         */
-        _filter(){
-          this._filteredData =
-            this.data.filter(enclosure =>
-                enclosure.name.toLowerCase().includes(this._filterString) ||
-                enclosure.cleaningtime.toLowerCase().includes(this._filterString));
-          this._filteredData = this._filteredData.filter(this._useSelectedFilters, this);
-        }
-
-        /**
-         * Filtert die gefundenen Datensätze nach den ausgewählten, selektierbaren Filtern.
-         */
-        _useSelectedFilters(enclosure, event) {
-          var isIncluded = true;
-          console.log("Methode _useSelectedFilters ist nicht implementiert!");
-
-          /* Filtern für selektierbare Filter muss manuell implementiert werden */
-
-          return isIncluded;
+          this._onFilter();
         }
 
       }
