@@ -53,18 +53,22 @@
             </animad-animals-list>          
             <animad-animal-create-form name="create" 
               save-url="[[backendUrl]]/api/admin_service/animals"
+              profile-url="[[backendUrl]]/api/admin_service/profile/animals"
               save-path="/animals-view/"
               cancel-path="/animals-view/"
-              resources="[[resources]]" lang="[[lang]]">                  
+              resources="[[resources]]" lang="[[lang]]" keepers reset>                  
             </animad-animal-create-form>            
             <animad-animal-update-form name="edit" 
-              load-url="[[backendUrl]]/api/admin_service/animals{{subroute.path}}"
+              load-url="[[_loadSingleAnimalUrl]]"
+              profile-url="[[backendUrl]]/api/admin_service/profile/animals"
               save-path="/animals-view/"
               cancel-path="/animals-view/"
-              resources="[[resources]]" lang="[[lang]]">
+              resources="[[resources]]" lang="[[lang]]" keepers>
             </animad-animal-update-form>
             <animad-animals-list name="filterexample" 
-              url="[[backendUrl]]/api/admin_service/animals" load-complete-data="true"
+              url="[[backendUrl]]/api/admin_service/animals" 
+              profile-url="[[backendUrl]]/api/admin_service/profile/animals"
+              load-complete-data="true"
               resources="[[resources]]" lang="[[lang]]">
             </animad-animals-list>
           </iron-pages> 
@@ -73,7 +77,8 @@
       <br />
       <hr>
       <h2>[[$t('create_sample_heading')]]</h2>
-      <animad-animal-create-form save-url="[[backendUrl]]/api/admin_service/animals" 
+      <animad-animal-create-form save-url="[[backendUrl]]/api/admin_service/animals"
+        profile-url="[[backendUrl]]/api/admin_service/profile/animals"
         save-path="/animals-view" cancel-path="/animals-view"
         resources="[[resources]]" lang="[[lang]]"
         reset>
@@ -83,6 +88,7 @@
       <hr>
       <h2>[[$t('create_with_relation_sample_heading')]]</h2>
       <animad-animal-create-form save-url="[[backendUrl]]/api/admin_service/animals" 
+        profile-url="[[backendUrl]]/api/admin_service/profile/animals"
         resources="[[resources]]" lang="[[lang]]"
         keepers>
       </animad-animal-create-form>
@@ -132,6 +138,9 @@
           backendUrl: {
             type: String
           },
+          _loadSingleAnimalUrl: {
+              type: String
+          },          
           /*
            * Das '_domain' property wird benötigt, um" den richtigen Pfad 
            * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
@@ -166,7 +175,14 @@
       
       _routePageChanged(page) {
           this.page = page || '';
+          this.composeLoadUrl();          
       }
+      
+      composeLoadUrl() {
+            if (this.subroute && this.subroute.path) {
+                this._loadSingleAnimalUrl = this.backendUrl + '/api/admin_service/animals' + this.subroute.path;
+            }
+        }
     }
 
     // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]View

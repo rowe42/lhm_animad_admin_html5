@@ -228,15 +228,6 @@
                 return valid;
             }
 
-            /**
-             * Methode ist nötig, da im Text Binding keine String-Concatenation möglich ist.
-             * @returns die übergebenen Parameter werden konkateniert und dann als Key für die Übersetzung genommen
-             */
-            translate() {
-                var joined = Array.prototype.join.call(arguments, '.');
-                return this.$t(joined);
-            }
-
         }
 
         customElements.define(AnimadKeeperForm.is, AnimadKeeperForm);

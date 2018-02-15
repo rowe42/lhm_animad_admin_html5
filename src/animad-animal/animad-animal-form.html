@@ -69,16 +69,11 @@
                         name="species" 
                         label="[[$t('species')]]*" 
                         required>
-                        <paper-listbox 
+                        <paper-listbox attr-for-selected="key" selected="{{data.species}}"
                             slot="dropdown-content">
-                            <!-- 
-                                TODO: hier die Werte über die URL (siehe properties) holen und dann 
-                                per dom repeat hier anzeigen.
-                                TODO: Vorselektion
-                            -->
-                            <paper-item>Barrakuda</paper-item>
-                            <paper-item>Elephant</paper-item>
-                            <paper-item>Pinguin</paper-item>
+                            <template is="dom-repeat" items="{{lists.species}}">
+                                <paper-item key="[[item]]">[[translate('species',item)]]</paper-item>
+                            </template>
                         </paper-listbox>
                     </paper-dropdown-menu>
                     <!-- Animal Birthdate -->
@@ -101,15 +96,11 @@
                         name="gender" 
                         label="[[$t('gender')]]*" 
                         required>
-                        <paper-listbox 
+                        <paper-listbox attr-for-selected="key" selected="{{data.gender}}"
                             slot="dropdown-content">
-                            <!-- 
-                                TODO: hier die Werte über die URL (siehe properties) holen und dann 
-                                per dom repeat hier anzeigen.
-                                TODO: Vorselektion
-                            -->
-                            <paper-item>female</paper-item>
-                            <paper-item>male</paper-item>
+                            <template is="dom-repeat" items="{{lists.gender}}">
+                                <paper-item key="[[item]]">[[translate('gender',item)]]</paper-item>
+                            </template>
                         </paper-listbox>
                     </paper-dropdown-menu>
                     <!-- Animal Weight -->

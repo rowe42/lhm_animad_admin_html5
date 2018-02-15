@@ -107,11 +107,13 @@
         </paper-toast>
 
 
-        <app-location route="{{route}}" url-space-regex="^[[rootPath]]" use-hash-as-path>
+
+        <app-location route="{{route}}" use-hash-as-path>
         </app-location>
 
-        <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}">
+        <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}">
         </app-route>
+
 
         <!-- i18n -->
         <nebula-language
@@ -133,7 +135,7 @@
                 <app-toolbar>
                     <paper-icon-button id="toggle" icon="animad-icons:menu"></paper-icon-button>
                     <div main-title>
-                        <b>Animad</b> App</div>
+                        <b>Animad</b> App </div>
                 </app-toolbar>
             </app-header>
 
@@ -171,8 +173,8 @@
 
                 <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
                     <!-- GENERATOR pattern: <[DOMAINNAME][ENTITYNAME]-view name="[ENTITYNAME]-view"></[DOMAINNAME][ENTITYNAME]-view> -->
-                    <animad-keepers-view name="keepers-view" route="{{subroute}}" 
-                       backend-url="[[backendUrl]]" resources="[[resources]]" lang="{{lang}}"></animad-keepers-view>
+                    <animad-keepers-view name="keepers-view" route="[[subroute]]" 
+                       backend-url="[[backendUrl]]" resources="[[resources]]" lang="[[lang]]"></animad-keepers-view>
                     <animad-animals-view name="animals-view" route="{{subroute}}"
                        backend-url="[[backendUrl]]" resources="[[resources]]" lang="{{lang}}"></animad-animals-view>
                     <animad-enclosures-view name="enclosures-view" route="{{subroute}}"

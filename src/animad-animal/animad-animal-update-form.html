@@ -39,25 +39,19 @@
         <!-- Routing Support -->
         <app-location
             route="{{route}}"
-            url-space-regex="^[[rootPath]]"
             use-hash-as-path>
         </app-location>
-        <app-route
-            route="{{route}}"
-            pattern="[[rootPath]]:page"
-            data="{{routeData}}"
-            active="{{active}}"
-            tail="{{subroute}}">
-        </app-route>
+
 
         <!--
             Das Formular.
         -->
         <form class="animad-animal-form">
-            <animad-animal-form id="customform" data="{{data}}" readonly="[[readform]]" 
+            <animad-animal-form id="customform" data="{{data}}" lists="[[lists]]" readonly="[[readform]]" 
                resources="[[resources]]" lang="[[lang]]" auto-validate></animad-animal-form>
             <template is="dom-if" if="[[keepers]]">
-                <animad-keeper-simple-relation data="{{data}}" preload></animad-keeper-simple-relation>
+                <animad-keeper-simple-relation data="{{data}}" 
+               resources="[[resources]]" lang="[[lang]]" preload></animad-keeper-simple-relation>
             </template>
         </form>
         <!-- 
@@ -105,7 +99,7 @@
          * @polymer
          *
          */
-        class AnimadAnimalUpdateForm extends mix(Polymer.Element).with(AnimadFormBehavior, Nebula.PolyglotBehavior) {
+        class AnimadAnimalUpdateForm extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadFormBehavior) {
             static get is() { return 'animad-animal-update-form'; }
 
             static get properties() {

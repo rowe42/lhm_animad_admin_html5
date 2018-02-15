@@ -39,16 +39,8 @@
        <!-- Routing Support -->
         <app-location
           route="{{route}}"
-          url-space-regex="^[[rootPath]]"
           use-hash-as-path>
       </app-location>
-      <app-route
-          route="{{route}}"
-          pattern="[[rootPath]]:page"
-          data="{{routeData}}"
-          active="{{active}}"
-          tail="{{subroute}}">
-      </app-route>
         
         <!--
             Das vorgefertigte Formular.
@@ -95,7 +87,7 @@
          * @polymer
          *
          */
-        class AnimadKeeperCreateForm extends mix(Polymer.Element).with(AnimadFormBehavior, Nebula.PolyglotBehavior) {
+        class AnimadKeeperCreateForm extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadFormBehavior) {
             static get is() { return 'animad-keeper-create-form'; }
 
             static get properties() {

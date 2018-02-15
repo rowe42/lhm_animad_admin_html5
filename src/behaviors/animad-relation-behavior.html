@@ -48,6 +48,14 @@
                     value: false
                 },
                 /*
+                 * Legt fest, ob eine neu hinzugefügte Relation per ID
+                 * oder als komplette eingebettete Entität angelegt wird.
+                 */
+                saveRelationById: {
+                    type: Boolean,
+                    value: true
+                },
+                /*
                  * Die übergeordnete Datenstruktur, um das Datenbinding
                  * durchgängig zu machen.
                  */
@@ -123,7 +131,11 @@
 
                 // Bereits vorhandene Relationen werden
                 // in das 'data' Property gehängt.
-                var path = 'data.' + this._entity + 's';
+                // Und zwar unter data._embedded.[entity]s
+                // Hinweis: Unter data.[entity]List sind die zugehörigen
+                // Links enthalten.
+//                var path = 'data.' + this._entity + 's';
+                var path = 'data._embedded.' + this._entity + 's';
 
                 // Das HAL Objekt wird eingelesen.
                 var hal = halson(data);
@@ -145,7 +157,14 @@
                             if (response.ok) {
                                 response.json().then((data) => {
                                     var array = data._embedded[this._entity + 's'];
+                                    var embedded = 'data._embedded';
+                                    if (!this.get(embedded)) {
+                                        this.set(embedded, {});
+                                    }
+
                                     this.set(path, array);
+                                    this.notifyPath('data._embedded.' + this._entity + 's');
+                                    console.log('data '+ this.data);
                                 });
                             } else {
                                 this._error(response.status);
@@ -303,7 +322,7 @@
             // um an die Properties zu kommen, da wir nicht
             // im 'this' scope sind.
             var h = this.parentNode.host;
-            var name = 'data.' + h._entity + 's';
+            var name = 'data.' + h._entity + 'List';
             var id = event.detail.value;
 
             // Wenn noch kein Attribut vorhanden ist, um
@@ -314,7 +333,7 @@
             }
 
             // Wenn das Property 'save-relation-by-id' gesetzt ist...
-            if (this.saveRelationById) {
+            if (h.saveRelationById) {
                 // Der key der ausgewählten Referenz wird
                 // im Array gespeichert.
                 h.push(name, id);
@@ -323,6 +342,19 @@
                 var item = this.source.find(x => x.value === id);
                 h.push(name, item.entity);
             }
+            
+            //Unter _embedded wird die Entität mit allen Feldern
+            //eingebettet, damit man sie im Formular darstellen kann
+            var embedded = 'data._embedded';
+            if (!h.get(embedded)) {
+                h.set(embedded, {});
+            }
+            var embeddedEntities = embedded + '.' + h._entity + 's';
+            if (!h.get(embeddedEntities)) {
+                h.set(embeddedEntities, []);
+            }            
+            var item = this.source.find(x => x.value === id);
+            h.push(embeddedEntities, item.entity);
             
             // Textfeld leeren
             event.currentTarget.clear();

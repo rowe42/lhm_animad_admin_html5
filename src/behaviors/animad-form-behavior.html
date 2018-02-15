@@ -208,12 +208,7 @@
                 if (saveUrl)
 //                    this._loadHalData(saveUrl, 'OPTIONS', 'data');
                     //HACK: Fetching GET instead of OPTIONS until OPTIONS are implemented
-                    var hackSaveUrl = saveUrl;
-                    if (this._entity === 'animal') {
-                        hackSaveUrl += '/search/findByName?name=Benjamin';
-                    } else if (this._entity === 'keeper') {
-                        hackSaveUrl += '/search//findByLastName?lastName=Bla';
-                    }
+                    var hackSaveUrl = saveUrl + 'Options';
                     this._loadHalData(hackSaveUrl, 'GET', 'data');
                     
             }
@@ -263,6 +258,10 @@
 
             
             _loadHalData(url, verb, target) {
+                if (!url || !verb || !target) {
+                    return;
+                }
+                
                 // prepare request
                 var init = {
                     method: verb,

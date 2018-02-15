@@ -34,19 +34,12 @@
                 @apply --animad-keeper-update-form;
             }
         </style>
-       <!-- Routing Support -->
+
+        <!-- Routing Support -->
         <app-location
           route="{{route}}"
-          url-space-regex="^[[rootPath]]"
           use-hash-as-path>
       </app-location>
-      <app-route
-          route="{{route}}"
-          pattern="[[rootPath]]:page"
-          data="{{routeData}}"
-          active="{{active}}"
-          tail="{{subroute}}">
-      </app-route>        
         <!--
             Das Formular.
         -->
@@ -100,7 +93,7 @@
          * @polymer
          *
          */
-        class AnimadKeeperUpdateForm extends mix(Polymer.Element).with(AnimadFormBehavior, Nebula.PolyglotBehavior) {
+        class AnimadKeeperUpdateForm extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadFormBehavior) {
             static get is() { return 'animad-keeper-update-form'; }
 
             static get properties() {
