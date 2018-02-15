@@ -6976,7 +6976,7 @@
         {
           "type": "CustomEvent",
           "name": "filter-data",
-          "description": "filter-data\n\nAusgelöst, wenn\n  1. die Daten neu gesucht wurden,\n  2. die Eingabe im Filter-Feld geändert wurde,\n  3. die Auswahl der selektierbaren Filter geändert wurde.",
+          "description": "filter-data\n\nAusgelöst, wenn\n  1. die Daten für die Liste neu gesucht wurden,\n  2. die Eingabe im Filter-Feld geändert wurde,\n  3. die Auswahl der selektierbaren Filter geändert wurde.",
           "metadata": {},
           "inheritedFrom": "AnimadListBehavior"
         }
@@ -9889,7 +9889,7 @@
         },
         {
           "name": "_filterData",
-          "description": "Wird ausgelöst durch den Event (TBD).\nFiltert die Daten der Liste. Der `event` enthält die folgenden Informationen:\nevent.detail.filteredData:    Die gefilterten Daten der Liste\nevent.detail.filtersSelected: Die selektierten Filter\nevent.detail.filterString:    Die Eingabe im Filter-Feld",
+          "description": "Wird ausgelöst durch den Event [`event-filter-data`](#/mixins/AnimadListBehavior#event-filter-data).\nFiltert die Daten der Liste. Der `event` enthält die folgenden Informationen:\nevent.detail.filteredData:    Die gefilterten Daten der Liste\nevent.detail.filtersSelected: Die selektierten Filter\nevent.detail.filterString:    Die Eingabe im Filter-Feld",
           "privacy": "protected",
           "sourceRange": {
             "start": {
@@ -12351,47 +12351,6 @@
               "name": "event"
             }
           ]
-        },
-        {
-          "name": "_filter",
-          "description": "Filtert die gefundenen Datensätze nach dem eingegebenen String im Filter-Feld.",
-          "privacy": "protected",
-          "sourceRange": {
-            "start": {
-              "line": 313,
-              "column": 8
-            },
-            "end": {
-              "line": 322,
-              "column": 9
-            }
-          },
-          "metadata": {},
-          "params": []
-        },
-        {
-          "name": "_useSelectedFilters",
-          "description": "Filtert die gefundenen Datensätze nach den ausgewählten, selektierbaren Filtern.",
-          "privacy": "protected",
-          "sourceRange": {
-            "start": {
-              "line": 327,
-              "column": 8
-            },
-            "end": {
-              "line": 334,
-              "column": 9
-            }
-          },
-          "metadata": {},
-          "params": [
-            {
-              "name": "animal"
-            },
-            {
-              "name": "event"
-            }
-          ]
         }
       ],
       "staticMethods": [],
@@ -12403,7 +12362,7 @@
           "column": 6
         },
         "end": {
-          "line": 336,
+          "line": 309,
           "column": 7
         }
       },
@@ -12794,7 +12753,7 @@
         {
           "type": "CustomEvent",
           "name": "filter-data",
-          "description": "filter-data\n\nAusgelöst, wenn\n  1. die Daten neu gesucht wurden,\n  2. die Eingabe im Filter-Feld geändert wurde,\n  3. die Auswahl der selektierbaren Filter geändert wurde.",
+          "description": "filter-data\n\nAusgelöst, wenn\n  1. die Daten für die Liste neu gesucht wurden,\n  2. die Eingabe im Filter-Feld geändert wurde,\n  3. die Auswahl der selektierbaren Filter geändert wurde.",
           "metadata": {},
           "inheritedFrom": "AnimadListBehavior"
         }
@@ -13410,15 +13369,15 @@
         {
           "name": "_domain",
           "type": "string",
-          "description": "Das '_domain' property wird benötigt, um\" den richtigen Pfad \nzu den i18n Werten zu erzeugen. Es wird in jedem Element \nbenötigt, in dem die I18nBehavior verwendet wird. Im Falle \neiner view ist der Wert IMMER 'view'.",
+          "description": "Das '_domain' property wird benötigt, um\" den richtigen Pfad\nzu den i18n Werten zu erzeugen. Es wird in jedem Element\nbenötigt, in dem die I18nBehavior verwendet wird. Im Falle\neiner view ist der Wert IMMER 'view'.",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 106,
+              "line": 108,
               "column": 10
             },
             "end": {
-              "line": 109,
+              "line": 111,
               "column": 11
             }
           },
@@ -13430,15 +13389,15 @@
         {
           "name": "_entity",
           "type": "string",
-          "description": "Das '_entity' property wird benötigt, um den richtigen Pfad \nzu den i18n Werten zu erzeugen. Es wird in jedem Element \nbenötigt, in dem die I18nBehavior verwendet wird. Im Falle \neiner view ist der Wert immer der Präfix, der im Namen der view\nvor '*-view' steht. Bei animad-animals-view.html also \n'animad-animals'.",
+          "description": "Das '_entity' property wird benötigt, um den richtigen Pfad\nzu den i18n Werten zu erzeugen. Es wird in jedem Element\nbenötigt, in dem die I18nBehavior verwendet wird. Im Falle\neiner view ist der Wert immer der Präfix, der im Namen der view\nvor '*-view' steht. Bei animad-animals-view.html also\n'animad-animals'.",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 118,
+              "line": 120,
               "column": 10
             },
             "end": {
-              "line": 121,
+              "line": 123,
               "column": 11
             }
           },
@@ -13454,30 +13413,72 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 122,
+              "line": 124,
               "column": 10
             },
             "end": {
-              "line": 124,
+              "line": 126,
               "column": 11
             }
           },
           "metadata": {
             "polymer": {}
           }
+        },
+        {
+          "name": "_filteredData",
+          "type": "Array",
+          "description": "_filteredData enthält alle Objekte, die auf eingegebene oder ausgewählte Filter zutreffen.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 130,
+              "column": 10
+            },
+            "end": {
+              "line": 135,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "[]"
         }
       ],
-      "methods": [],
+      "methods": [
+        {
+          "name": "_filterData",
+          "description": "Wird ausgelöst durch den Event [`event-filter-data`](#/mixins/AnimadListBehavior#event-filter-data).\nFiltert die Daten der Liste. Der `event` enthält die folgenden Informationen:\nevent.detail.filteredData:    Die gefilterten Daten der Liste\nevent.detail.filtersSelected: Die selektierten Filter\nevent.detail.filterString:    Die Eingabe im Filter-Feld",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 146,
+              "column": 6
+            },
+            "end": {
+              "line": 164,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "event"
+            }
+          ]
+        }
+      ],
       "staticMethods": [],
       "demos": [],
       "metadata": {},
       "sourceRange": {
         "start": {
-          "line": 94,
+          "line": 96,
           "column": 4
         },
         "end": {
-          "line": 127,
+          "line": 165,
           "column": 5
         }
       },
@@ -13490,11 +13491,11 @@
           "description": "",
           "sourceRange": {
             "start": {
-              "line": 122,
+              "line": 124,
               "column": 10
             },
             "end": {
-              "line": 124,
+              "line": 126,
               "column": 11
             }
           },
@@ -15035,47 +15036,6 @@
               "name": "event"
             }
           ]
-        },
-        {
-          "name": "_filter",
-          "description": "Filtert die gefundenen Datensätze nach dem eingegebenen String im Filter-Feld.",
-          "privacy": "protected",
-          "sourceRange": {
-            "start": {
-              "line": 284,
-              "column": 8
-            },
-            "end": {
-              "line": 290,
-              "column": 9
-            }
-          },
-          "metadata": {},
-          "params": []
-        },
-        {
-          "name": "_useSelectedFilters",
-          "description": "Filtert die gefundenen Datensätze nach den ausgewählten, selektierbaren Filtern.",
-          "privacy": "protected",
-          "sourceRange": {
-            "start": {
-              "line": 295,
-              "column": 8
-            },
-            "end": {
-              "line": 302,
-              "column": 9
-            }
-          },
-          "metadata": {},
-          "params": [
-            {
-              "name": "enclosure"
-            },
-            {
-              "name": "event"
-            }
-          ]
         }
       ],
       "staticMethods": [],
@@ -15087,7 +15047,7 @@
           "column": 6
         },
         "end": {
-          "line": 304,
+          "line": 281,
           "column": 7
         }
       },
@@ -15478,7 +15438,7 @@
         {
           "type": "CustomEvent",
           "name": "filter-data",
-          "description": "filter-data\n\nAusgelöst, wenn\n  1. die Daten neu gesucht wurden,\n  2. die Eingabe im Filter-Feld geändert wurde,\n  3. die Auswahl der selektierbaren Filter geändert wurde.",
+          "description": "filter-data\n\nAusgelöst, wenn\n  1. die Daten für die Liste neu gesucht wurden,\n  2. die Eingabe im Filter-Feld geändert wurde,\n  3. die Auswahl der selektierbaren Filter geändert wurde.",
           "metadata": {},
           "inheritedFrom": "AnimadListBehavior"
         }
@@ -16027,15 +15987,15 @@
         {
           "name": "_domain",
           "type": "string",
-          "description": "Das '_domain' property wird benötigt, um\" den richtigen Pfad \nzu den i18n Werten zu erzeugen. Es wird in jedem Element \nbenötigt, in dem die I18nBehavior verwendet wird. Im Falle \neiner view ist der Wert IMMER 'view'.",
+          "description": "Das '_domain' property wird benötigt, um\" den richtigen Pfad\nzu den i18n Werten zu erzeugen. Es wird in jedem Element\nbenötigt, in dem die I18nBehavior verwendet wird. Im Falle\neiner view ist der Wert IMMER 'view'.",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 105,
+              "line": 107,
               "column": 10
             },
             "end": {
-              "line": 108,
+              "line": 110,
               "column": 11
             }
           },
@@ -16047,15 +16007,15 @@
         {
           "name": "_entity",
           "type": "string",
-          "description": "Das '_entity' property wird benötigt, um den richtigen Pfad \nzu den i18n Werten zu erzeugen. Es wird in jedem Element \nbenötigt, in dem die I18nBehavior verwendet wird. Im Falle \neiner view ist der Wert immer der Präfix, der im Namen der view\nvor '*-view' steht. Bei animad-enclosures-view.html also \n'animad-enclosures'.",
+          "description": "Das '_entity' property wird benötigt, um den richtigen Pfad\nzu den i18n Werten zu erzeugen. Es wird in jedem Element\nbenötigt, in dem die I18nBehavior verwendet wird. Im Falle\neiner view ist der Wert immer der Präfix, der im Namen der view\nvor '*-view' steht. Bei animad-enclosures-view.html also\n'animad-enclosures'.",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 117,
+              "line": 119,
               "column": 10
             },
             "end": {
-              "line": 120,
+              "line": 122,
               "column": 11
             }
           },
@@ -16071,30 +16031,72 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 121,
+              "line": 123,
               "column": 10
             },
             "end": {
-              "line": 123,
+              "line": 125,
               "column": 11
             }
           },
           "metadata": {
             "polymer": {}
           }
+        },
+        {
+          "name": "_filteredData",
+          "type": "Array",
+          "description": "_filteredData enthält alle Objekte, die auf eingegebene oder ausgewählte Filter zutreffen.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 129,
+              "column": 10
+            },
+            "end": {
+              "line": 134,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "[]"
         }
       ],
-      "methods": [],
+      "methods": [
+        {
+          "name": "_filterData",
+          "description": "Wird ausgelöst durch den Event [`event-filter-data`](#/mixins/AnimadListBehavior#event-filter-data).\nFiltert die Daten der Liste. Der `event` enthält die folgenden Informationen:\nevent.detail.filteredData:    Die gefilterten Daten der Liste\nevent.detail.filtersSelected: Die selektierten Filter\nevent.detail.filterString:    Die Eingabe im Filter-Feld",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 146,
+              "column": 6
+            },
+            "end": {
+              "line": 161,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "event"
+            }
+          ]
+        }
+      ],
       "staticMethods": [],
       "demos": [],
       "metadata": {},
       "sourceRange": {
         "start": {
-          "line": 93,
+          "line": 95,
           "column": 4
         },
         "end": {
-          "line": 126,
+          "line": 162,
           "column": 5
         }
       },
@@ -16107,11 +16109,11 @@
           "description": "",
           "sourceRange": {
             "start": {
-              "line": 121,
+              "line": 123,
               "column": 10
             },
             "end": {
-              "line": 123,
+              "line": 125,
               "column": 11
             }
           },
@@ -49568,7 +49570,7 @@
         {
           "type": "CustomEvent",
           "name": "filter-data",
-          "description": "filter-data\n\nAusgelöst, wenn\n  1. die Daten neu gesucht wurden,\n  2. die Eingabe im Filter-Feld geändert wurde,\n  3. die Auswahl der selektierbaren Filter geändert wurde.",
+          "description": "filter-data\n\nAusgelöst, wenn\n  1. die Daten für die Liste neu gesucht wurden,\n  2. die Eingabe im Filter-Feld geändert wurde,\n  3. die Auswahl der selektierbaren Filter geändert wurde.",
           "metadata": {}
         }
       ],
