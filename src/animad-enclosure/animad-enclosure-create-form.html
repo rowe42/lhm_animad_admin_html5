@@ -18,7 +18,7 @@
 
 <link rel="import" href="../animad-icons.html">
 <link rel="import" href="../behaviors/animad-form-behavior.html">
-<link rel="import" href="../behaviors/animad-i18n-behavior.html">
+<link rel="import" href="../behaviors/nebula-polyglot-behavior.html">
 <link rel="import" href="../behaviors/mixin.html">
 
 <dom-module id="animad-enclosure-create-form">
@@ -40,10 +40,12 @@
         -->
         <!--<iron-form id="iform">-->
         <form class="animad-enclosure-create-form">
-            <animad-enclosure-form id="customform" data="{{data}}" auto-validate></animad-enclosure-form>
+            <animad-enclosure-form id="customform" data="{{data}}" 
+               resources="[[resources]]" lang="[[lang]]" auto-validate></animad-enclosure-form>
             <!-- GENERATOR hier kommen die Templates für die Relationen hin -->
             <template is="dom-if" if="{{keepers}}">
-                <animad-keeper-simple-relation data="{{data}}" preload></animad-keeper-simple-relation>
+                <animad-keeper-simple-relation data="{{data}}" 
+                   resources="[[resources]]" lang="[[lang]]" preload></animad-keeper-simple-relation>
             </template>
         </form>
         <!--</iron-form>-->
@@ -84,7 +86,7 @@
          * @polymer
          *
          */
-        class AnimadEnclosureCreateForm extends mix(Polymer.Element).with(AnimadFormBehavior, AnimadI18nBehavior) {
+        class AnimadEnclosureCreateForm extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadFormBehavior) {
             static get is() { return 'animad-enclosure-create-form'; }
 
             static get properties() {
