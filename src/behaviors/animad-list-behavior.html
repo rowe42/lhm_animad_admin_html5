@@ -9,6 +9,16 @@
      */
     let AnimadListBehavior = (superClass) => class extends superClass {
 
+      /**
+      * @event filter-data
+      *
+      * Ausgelöst, wenn
+      *   1. die Daten für die Liste neu gesucht wurden,
+      *   2. die Eingabe im Filter-Feld geändert wurde,
+      *   3. die Auswahl der selektierbaren Filter geändert wurde.
+      */
+
+
         static get properties() {
             return {
               /*
@@ -21,10 +31,10 @@
                 }
               },
               /*
-              *  _filteredData enthält alle Objekte, die auf angegebene oder ausgewählte Filter zutreffen.
-              *  Die Liste zeigt die Einträge aus _filteredData an.
+              *  filteredData enthält alle Objekte, die auf angegebene oder ausgewählte Filter zutreffen.
+              *  Die Liste zeigt die Einträge aus filteredData an.
               */
-              _filteredData: {
+              filteredData: {
                 type: Array,
                 value() {
                   return this.data;
@@ -336,8 +346,8 @@
         */
         _dataChanged(dataLength) {
           // refresh list data
-          this._filteredData = this.data;
-          this._filter();
+          this.filteredData = this.data;
+          this._onFilter();
 
           // unselect all deleted items
           this._deselectItems(this._deleteItems);
@@ -364,6 +374,29 @@
                 }
             }
           }
+        }
+
+        /**
+         * Filtert die gefundenen Datensätze neu, wenn die Filter-Selektion geändert wurde.
+         */
+        _filterSelectionData() {
+          this._onFilter();
+        }
+
+        /**
+         * Filtert die gefundenen Datensätze neu, wenn im Filter-Feld eine Änderung durchgeführt wurde.
+         */
+        _filterData(event) {
+          this._filterString = event.target.search.toLowerCase();
+          this._onFilter();
+        }
+
+        _onFilter() {
+          this.dispatchEvent(new CustomEvent('filter-data', {
+            bubbles: true,
+            composed: true,
+            detail: {filteredData: this.data, filtersSelected: this._selectedFilters, filterString: this._filterString}
+          }));
         }
 
         /*
@@ -526,8 +559,8 @@
           this._deleteItems = [];
           // loop over all items to delete
           for (var item of this._selectedItems) {
-            // check if _filteredData contains selected item
-            var index = this._filteredData.indexOf(item);
+            // check if filteredData contains selected item
+            var index = this.filteredData.indexOf(item);
 
             if (index >= 0) {
               // yes: add it to deletedItems
@@ -544,12 +577,12 @@
         * Öffnet den Dialog zur Bestätigung, dass der über den Papierkorb selektierte Datensatz gelöscht werden soll.
         */
         _confirmDeleteRow(e) {
-          // find clicked item by id in _filteredData
-          var index = this._filteredData.findIndex(item => item.id == e.target.id);
+          // find clicked item by id in filteredData
+          var index = this.filteredData.findIndex(item => item.id == e.target.id);
 
           // get item of row where delete button was clicked
-          //var item = this._filteredData[e.target.id];
-          var item = this._filteredData[index];
+          //var item = this.filteredData[e.target.id];
+          var item = this.filteredData[index];
 
           // set temporary delete information
           this._deleteItems = [item];
