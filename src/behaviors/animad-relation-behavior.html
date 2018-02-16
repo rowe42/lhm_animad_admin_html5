@@ -142,7 +142,7 @@
 
                 // Die bereits verknüpften Relationen
                 // werden geladen. Wenn sie vorhanden sind.
-                var entityRelations = hal.getLink(this._entity + 'List');
+                var entityRelations = hal.getLink(link);
                 if (entityRelations) {
                     var init = {
                         method: 'GET',
@@ -157,14 +157,21 @@
                             if (response.ok) {
                                 response.json().then((data) => {
                                     var array = data._embedded[this._entity + 's'];
+                                    var linkArray = array.map(entity => halson(entity).getLink('self').href);
+
+                                    //die Links auf die referenzierten Entities kommen nach [entity]List
+                                    var refName = 'data.' + this._entity + 'List';
+                                    this.set(refName, linkArray);
+                                    
+                                    //der eigentliche Content der referenzierten Entities kommt nach data._embedded
                                     var embedded = 'data._embedded';
                                     if (!this.get(embedded)) {
                                         this.set(embedded, {});
                                     }
-
                                     this.set(path, array);
+                                    
+                                    //für das Rendering der Relationen muss ein Update angestoßen werden
                                     this.notifyPath('data._embedded.' + this._entity + 's');
-                                    console.log('data '+ this.data);
                                 });
                             } else {
                                 this._error(response.status);
@@ -216,6 +223,66 @@
                             })
                     }
                 }
+            }
+        }
+
+
+        /*
+         * Wird ein Traversal Objekt übergeben, dann werden automatisch
+         * die Relationen zur aktuellen Entität gespeichert. Dazu wird
+         * ein separater PUT-Request an den unter _links verfügbaren [entity]Link
+         * geschickt.
+         * Achtung: Da ein PUT verwendet wird, werden alle bestehenden Relationen
+         * gelöscht. Man muss also darauf achten, auch die bestehenden Relationen,
+         * die man behalten will, mitzuschicken.
+         *
+         * @param   das neue Traversal Objekt
+         * @param   der bisherige Wert des Properties (wird nicht benötigt)
+         */
+        _saveRelationData(data, oldV) {
+            if (data) {
+
+                // Der Link Alias hat immer die Form
+                // '[Name der Entity]List'. Dabei ist
+                // [Name der Entity] klein geschrieben
+                // und singular.
+                var link = this._entity + 'List';
+                
+                // Das HAL Objekt wird eingelesen.
+                var hal = halson(data);
+                
+                //der Link, zu dem der PUT Request erfolgen soll
+                var entityRelationLink = hal.getLink(link).href;
+                
+                //die Relationen, die gespeichert werden sollen,
+                //liegen unter dem Property, das genauso heißt wie der Link
+                var relationsToSave = data[link];
+                
+                //wir erzeugen ein neues HAL Object                
+                var objectToSave = halson();
+                relationsToSave.forEach((relation, i) => objectToSave.addLink(i, relation));
+                
+                //und speichern
+                var init = {
+                        method: 'PUT',
+                        mode: 'cors',
+                        credentials: 'include',
+                        body: JSON.stringify(objectToSave),
+                        headers: new Headers({
+                            'Content-Type': 'application/json'
+                        })
+                    }
+                    
+                var request = new Request(entityRelationLink, init);
+
+                fetch(request)
+                        .then(response => {
+                            if (!response.ok) {
+                                this._error(response.status);
+                            }
+                        })
+                
+                
             }
         }
 
@@ -371,9 +438,14 @@
             var index = event.target.dataset.item;
             console.log("index -> " + index);
             this.splice(name, index, 1);
-            
-            //TODO irgendwie müssen wir uns dieses entfernen merken, damit wir
-            //es beim Speichern auch durchführen können
+
+            //das [entity]List Array neu setzen
+            var array = this.get(name);            
+            var linkArray = array.map(entity => halson(entity).getLink('self').href);
+            //die Links auf die referenzierten Entities kommen nach [entity]List
+            var refName = 'data.' + this._entity + 'List';
+            this.set(refName, linkArray);
         }
+        
     }
 </script>

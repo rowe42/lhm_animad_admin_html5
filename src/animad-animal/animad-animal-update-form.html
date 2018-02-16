@@ -50,7 +50,7 @@
             <animad-animal-form id="customform" data="{{data}}" lists="[[lists]]" readonly="[[readform]]" 
                resources="[[resources]]" lang="[[lang]]" auto-validate></animad-animal-form>
             <template is="dom-if" if="[[keepers]]">
-                <animad-keeper-simple-relation data="{{data}}" 
+                <animad-keeper-simple-relation id="keeperrelation" data="{{data}}" 
                resources="[[resources]]" lang="[[lang]]" preload></animad-keeper-simple-relation>
             </template>
         </form>
@@ -76,7 +76,7 @@
                     [[$t('button_cancel')]]
                 </paper-button>
             </template>
-            <paper-button class="send" on-tap="_updateEntity" data-routePath$="[[savePath]]" raised>
+            <paper-button class="send" on-tap="_updateForm" data-routePath$="[[savePath]]" raised>
                 <iron-icon icon="animad-icons:send"></iron-icon>
                 [[$t('button_save')]]
             </paper-button>
@@ -146,6 +146,13 @@
                         value: false
                     }
                 }
+            }
+            
+            _updateForm(e) {
+                var keeperrelation = this.shadowRoot.querySelector('#keeperrelation');
+                keeperrelation._saveRelationData(this.data);
+                this._updateEntity(e);
+                
             }
         }
 

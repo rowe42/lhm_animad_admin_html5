@@ -170,7 +170,7 @@
                             .then(response => {
                                 if (response.ok) {
                                     this._resetForm();
-                                    this._success();
+                                    this._success('form_success');
                                 } else {
                                     this._error(response.status);
                                 }
@@ -309,8 +309,8 @@
             /**
              * Der 'Toast', der bei Erfolg angezeigt wird.
              */
-            _success() {
-                this._successToast.text = this.$t('form_success');
+            _success(key) {
+                this._successToast.text = this.$t(key);
                 this._successToast.open();
             }
 
