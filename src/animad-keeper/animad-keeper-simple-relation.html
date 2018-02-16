@@ -11,7 +11,7 @@
  
 <link rel="import" href="../animad-icons.html">
 <link rel="import" href="../behaviors/animad-form-behavior.html">
-<link rel="import" href="../behaviors/animad-i18n-behavior.html">
+<link rel="import" href="../behaviors/nebula-polyglot-behavior.html">
 <link rel="import" href="../behaviors/animad-relation-behavior.html">
 <link rel="import" href="../behaviors/mixin.html">
 
@@ -39,7 +39,7 @@
             </div>
         </paper-dialog>
         <paper-autocomplete 
-            label="[[t('relation_name')]]"
+            label="[[$t('relation_name')]]"
             source="[[source]]">
             <paper-icon-button slot="prefix" prefix icon="animad-icons:magnify"></paper-icon-button>
             <template is="dom-if" if="[[_new]]">
@@ -47,7 +47,7 @@
             </template>            
         </paper-autocomplete>
         <paper-listbox>
-            <template is="dom-repeat" items="{{data.keepers}}">
+            <template is="dom-repeat" items="{{data._embedded.keepers}}">
                 <paper-item>
                     <!-- TODO Hier ist noch ein Bug drin. Die Operation wir nicht aufgerufen, 
                          wenn aus der Liste gelöscht wird. -->
@@ -82,7 +82,7 @@
          * @polymer
          *
          */
-      class AnimadKeeperSimpleRelation extends mix(Polymer.Element).with(AnimadI18nBehavior, AnimadRelationBehavior, AnimadFormBehavior) {
+      class AnimadKeeperSimpleRelation extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadRelationBehavior, AnimadFormBehavior) {
             static get is() { return 'animad-keeper-simple-relation'; }
 
             static get properties() {
@@ -104,6 +104,9 @@
                     _entity: {
                         type: String,
                         value: 'keeper'
+                    },
+                    $t: {
+                         type: Function
                     }
                 }
             }
@@ -126,10 +129,10 @@
              * @return  formatierter Text
              */
             _format(index) {
-                var name = 'data.' + this._entity + 's';
+                var name = 'data._embedded.' + this._entity + 's';
                 var items = this.get(name);
                 var item = items[index];
-                return this.t('relation_list', {firstName: item.firstName, lastName: item.lastName, birthday: item.birthday, employmentDate: item.employmentDate, skill: item.skill});
+                return this.$t('relation_list', {firstName: item.firstName, lastName: item.lastName, birthday: item.birthday, employmentDate: item.employmentDate, skill: item.skill});
             }
 
             /*
@@ -142,7 +145,7 @@
              * @return  den formatierten Text für den Suggester
              */
             _formatSuggester(item) {
-                return this.t('relation_suggest', {firstName: item.firstName, lastName: item.lastName, birthday: item.birthday, employmentDate: item.employmentDate, skill: item.skill})
+                return this.$t('relation_suggest', {firstName: item.firstName, lastName: item.lastName, birthday: item.birthday, employmentDate: item.employmentDate, skill: item.skill})
             }
         }
 

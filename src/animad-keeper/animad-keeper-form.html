@@ -7,7 +7,7 @@
 <link rel="import" href="../../bower_components/paper-dropdown/paper-dropdown.html">
 
 <!-- custom behaviors -->
-<link rel="import" href="../behaviors/animad-i18n-behavior.html">
+<link rel="import" href="../behaviors/nebula-polyglot-behavior.html">
 <link rel="import" href="../behaviors/mixin.html">
 
 <dom-module id="animad-keeper-form">
@@ -49,10 +49,10 @@
                         id="keeper-firstName"
                         type="text" 
                         name="firstName" 
-                        label="[[t('firstName')]]" 
+                        label="[[$t('firstName')]]" 
                         value="{{data.firstName}}"
                         auto-validate="[[autoValidate]]"
-                        error-message="[[t('firstName_error')]]"
+                        error-message="[[$t('firstName_error')]]"
                         minlength="3" 
                         maxlength="30" 
                         required>
@@ -62,10 +62,10 @@
                         id="keeper-lastName"
                         type="text" 
                         name="lastName" 
-                        label="[[t('lastName')]]" 
+                        label="[[$t('lastName')]]" 
                         value="{{data.lastName}}" 
                         auto-validate="[[autoValidate]]"
-                        error-message="[[t('lastName_error')]]"
+                        error-message="[[$t('lastName_error')]]"
                         minlength="3" 
                         maxlength="30" 
                         required>
@@ -75,10 +75,10 @@
                         id="keeper-employmentDate"
                         type="date" 
                         name="employmentDate"  
-                        label="[[t('employmentDate')]]" 
+                        label="[[$t('employmentDate')]]" 
                         value="{{data.employmentDate}}" 
                         auto-validate="[[autoValidate]]"
-                        error-message="[[t('employmentDate_error')]]"
+                        error-message="[[$t('employmentDate_error')]]"
                         pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" 
                         required>
                     </paper-input>
@@ -97,7 +97,7 @@
 <!--                    <paper-dropdown-menu 
                         class="animad-keeper-skill-field"
                         id="keeper-skill" 
-                        label="[[t('skill')]]" 
+                        label="[[$t('skill')]]" 
                         required>
                         <paper-listbox multi attr-for-selected="key" selected-values="{{data.skill}}" slot="dropdown-content">
                             <template is="dom-repeat" items="{{lists.skill}}">
@@ -111,10 +111,10 @@
                         id="keeper-birthday"
                         type="date" 
                         name="birthday" 
-                        label="[[t('birthday')]]" 
+                        label="[[$t('birthday')]]" 
                         value="{{data.birthday}}" 
                         auto-validate="[[autoValidate]]"
-                        error-message="[[t('birthday_error')]]"
+                        error-message="[[$t('birthday_error')]]"
                         pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" 
                         required>
                     </paper-input>
@@ -123,10 +123,10 @@
                         id="keeper-salary"
                         type="number" 
                         name="salary" 
-                        label="[[t('salary')]]" 
+                        label="[[$t('salary')]]" 
                         value="{{data.salary}}" 
                         auto-validate="[[autoValidate]]"
-                        error-message="[[t('salary_error')]]"
+                        error-message="[[$t('salary_error')]]"
                         step="0.01" 
                         min="0"
                         required>
@@ -152,11 +152,8 @@
          * @polymer
          *
          */
-        class AnimadKeeperForm extends mix(Polymer.Element).with(AnimadI18nBehavior) {
-            static get is() {
-                return 'animad-keeper-form';
-            }
-
+        class AnimadKeeperForm extends mix(Polymer.Element).with(Nebula.PolyglotBehavior) {
+            static get is() { return 'animad-keeper-form'; }
             static get properties() {
                 return {
                     /*
@@ -229,15 +226,6 @@
             validate() {
                 var valid = this.shadowRoot.querySelector('#iform').validate();
                 return valid;
-            }
-
-            /**
-             * Methode ist nötig, da im Text Binding keine String-Concatenation möglich ist.
-             * @returns die übergebenen Parameter werden konkateniert und dann als Key für die Übersetzung genommen
-             */
-            translate() {
-                var joined = Array.prototype.join.call(arguments, '.');
-                return this.t(joined);
             }
 
         }

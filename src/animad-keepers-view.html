@@ -1,11 +1,15 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="animad-keeper/animad-keeper-create-form.html">
-<link rel="import" href="animad-keeper/animad-keeper-update-form.html">
 <link rel="import" href="animad-keeper/animad-keepers-list.html">
 <link rel="import" href="animad-icons.html">
 
 <link rel="import" href="shared-styles.html">
+<link rel="import" href="behaviors/nebula-polyglot-behavior.html">
+
+<link rel="import" href="behaviors/mixin.html">
+
+<link rel="lazy-import" href="animad-keeper/animad-keeper-create-form.html">
+<link rel="lazy-import" href="animad-keeper/animad-keeper-update-form.html">
 
 
 <!-- GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-view -->
@@ -24,13 +28,13 @@
       }
     </style>
 
-    <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}">
+    <app-route route="{{route}}" pattern="/keepers-view/:page" data="{{routeData}}" tail="{{subroute}}">
     </app-route>
 
 
       <div class="card">
         <div class="circle"><iron-icon icon="animad-icons:basecamp"></iron-icon></div>
-        <h1>Keepers view</h1>
+        <h1>[[$t('main_heading')]]</h1>
         <div class="animad-keeper-view-content">
           <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" route="{{subroute}}">
               <animad-keepers-list name=""
@@ -40,18 +44,21 @@
                 edit-path="/keepers-view/edit"
                 create-path="/keepers-view/create"
                 on-filter-data="_filterData"
-                filtered-data="[[_filteredData]]">
+                filtered-data="[[_filteredData]]"
+                resources="[[resources]]" lang="[[lang]]">
               </animad-keepers-list>
               <animad-keeper-create-form name="create"
                 save-url="[[backendUrl]]/api/admin_service/keepers"
                 profile-url="[[backendUrl]]/api/admin_service/profile/keepers"
                 save-path="/keepers-view/"
-                cancel-path="/keepers-view/">
+                cancel-path="/keepers-view/"
+                resources="[[resources]]" lang="[[lang]]">
               </animad-keeper-create-form>
-              <animad-keeper-update-form name="edit" load-url="[[backendUrl]]/api/admin_service/keepers{{subroute.path}}"
+              <animad-keeper-update-form name="edit" load-url="{{_loadSingleKeeperUrl}}"
                  profile-url="[[backendUrl]]/api/admin_service/profile/keepers"
                  save-path="/keepers-view/"
-                 cancel-path="/keepers-view/"></animad-keeper-update-form>
+                 cancel-path="/keepers-view/"
+                 resources="[[resources]]" lang="[[lang]]"></animad-keeper-update-form>
           </iron-pages>
         </div>
       </div>
@@ -60,7 +67,7 @@
 
   <script>
     // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]View
-    class AnimadKeepersView extends Polymer.Element {
+    class AnimadKeepersView extends mix(Polymer.Element).with(Nebula.PolyglotBehavior) {
       // GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-view
       static get is() { return 'animad-keepers-view'; }
 
@@ -72,15 +79,27 @@
               },
               page: {
                   type: String,
-                  reflectToAttribute: true
+                  reflectToAttribute: true,
+                  observer: '_pageChanged',
               },
               routeData: Object,
               subroute: String,
               // This shouldn't be neccessary, but the Analyzer isn't picking up
               // Polymer.Element#rootPath
-              rootPath: String,
+//              rootPath: String,
               backendUrl: {
                   type: String
+              },
+              _loadSingleKeeperUrl: {
+                  type: String
+              },
+            _domain: {
+                type: String,
+                value: 'view'
+              },
+              _entity: {
+                type: String,
+                value: 'animad-keepers'
               },
               /*
               *  _filteredData enthält alle Objekte, die auf eingegebene oder ausgewählte Filter zutreffen.
@@ -90,19 +109,61 @@
                 value() {
                   return [];
                 }
-              },
+              }           
           }
 
         }
+        
+        /**
+         * Achtung: Es ist wichtig, die loadSingleKeeperUrl in dieser Methode zusammenzusetzen.
+         * Macht man das stattdessen direkt im Feld loadUrl im HTML, wird subroute.path erst im Nachhinein
+         * aufgerufen, was ein mehrmaliges Setzen der load-url in form-behavior bewirkt. Das bedeutet aber,
+         * dass erstmal alle keeper geholt werden und nicht nur einer (race condition).
+         * 
+         */
+        composeLoadUrl() {
+            if (this.subroute && this.subroute.path) {
+                this._loadSingleKeeperUrl = this.backendUrl + '/api/admin_service/keepers' + this.subroute.path;
+            }
+        }
+            
 
         static get observers() {
             return [
                 '_routePageChanged(routeData.page)',
             ];
         }
+
         _routePageChanged(page) {
             this.page = page || '';
+            this.composeLoadUrl();
         }
+        
+         _pageChanged(page) {
+                // Load page import on demand. Show 404 page if fails
+                // GENERATOR ------
+                // GENERATOR pattern (camel case): [DOMAINNAME]
+                console.log('page changed ' + page);
+                var resolvedPageUrl;
+                if (page === 'create') {
+                    resolvedPageUrl = this.resolveUrl('animad-keeper/animad-keeper-create-form.html');
+                } else if (page === 'edit') {
+                    resolvedPageUrl = this.resolveUrl('animad-keeper/animad-keeper-update-form.html');
+                } else {
+                    return;
+                } 
+                
+                
+                Polymer.importHref(
+                        resolvedPageUrl,
+                        null,
+                        this._showPage404.bind(this),
+                        true);
+            }
+            
+            _showPage404() {
+                this.page = 'view404';
+            }
 
         /**
         * Wird ausgelöst durch den Event [`event-filter-data`](#/mixins/AnimadListBehavior#event-filter-data).

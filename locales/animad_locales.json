@@ -36,7 +36,13 @@
         "name": "Name",
         "name_error": "Name with 3 letters required!",
         "species": "Species",
+        "species.Elephant": "Elephant",
+        "species.Giraffe": "Giraffe",
+        "species.Penguin": "Penguin",
+        "species.Barrakuda": "Barrakuda",
         "gender": "Gender",
+        "gender.male": "male",                
+        "gender.female": "female",                
         "birthDate": "Date of Birth",
         "birthDate_error": "Please give a past date!",
         "weight": "Weight",
@@ -172,6 +178,9 @@
   },
   "de": {
     "view": {
+      "animad-keepers": {
+        "main_heading": "Keepers view"
+      },
       "animad-animals": {
         "main_heading": "Übersicht Tiere",
         "table_sample_heading": "Beispiel für eine Tabelle",
@@ -208,7 +217,13 @@
         "name": "Name",
         "name_error": "Geben Sie bitte einen Namen für das Tier an, der mindestens 3 Buchstaben hat!",
         "species": "Art",
+        "species.Elephant": "Elefant",
+        "species.Giraffe": "Giraffe",
+        "species.Penguin": "Pinguin",
+        "species.Barrakuda": "Barrakuda",
         "gender": "Geschlecht",
+        "gender.male": "männlich",                
+        "gender.female": "weiblich",                
         "birthDate": "Geburtstag",
         "birthDate_error":  "Geben Sie bitte ein Geburtsdatum in der Vergangenheit an!",
         "weight": "Gewicht",

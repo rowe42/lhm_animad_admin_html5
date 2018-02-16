@@ -9,7 +9,7 @@
 <link rel="import" href="../../bower_components/polymer/lib/elements/custom-style.html">
 <link rel="import" href="../../bower_components/shadycss/apply-shim.html">
 
-<link rel="import" href="../behaviors/animad-i18n-behavior.html">
+<link rel="import" href="../behaviors/nebula-polyglot-behavior.html">
 <link rel="import" href="../behaviors/mixin.html">
 
 <dom-module id="animad-animal-form">
@@ -53,11 +53,11 @@
                         id="animal-name" 
                         type="text" 
                         name="name" 
-                        label="[[t('name')]]"
+                        label="[[$t('name')]]"
                         value="{{data.name}}"
                         readonly="[[readonly]]" 
                         auto-validate="[[autoValidate]]" 
-                        error-message="[[t('name_error')]]" 
+                        error-message="[[$t('name_error')]]" 
                         minlength="3" 
                         maxlength="30"
                         required>
@@ -67,18 +67,13 @@
                         class="animad-animal-species-field" 
                         id="animal-species" 
                         name="species" 
-                        label="[[t('species')]]*" 
+                        label="[[$t('species')]]*" 
                         required>
-                        <paper-listbox 
+                        <paper-listbox attr-for-selected="key" selected="{{data.species}}"
                             slot="dropdown-content">
-                            <!-- 
-                                TODO: hier die Werte über die URL (siehe properties) holen und dann 
-                                per dom repeat hier anzeigen.
-                                TODO: Vorselektion
-                            -->
-                            <paper-item>Barrakuda</paper-item>
-                            <paper-item>Elephant</paper-item>
-                            <paper-item>Pinguin</paper-item>
+                            <template is="dom-repeat" items="{{lists.species}}">
+                                <paper-item key="[[item]]">[[translate('species',item)]]</paper-item>
+                            </template>
                         </paper-listbox>
                     </paper-dropdown-menu>
                     <!-- Animal Birthdate -->
@@ -87,11 +82,11 @@
                         id="animal-birthDate" 
                         type="date" step="1" 
                         name="birthDate" 
-                        label="[[t('birthDate')]]"
+                        label="[[$t('birthDate')]]"
                         value="{{data.birthday}}" 
                         readonly="[[readonly]]" 
                         auto-validate="[[autoValidate]]" 
-                        error-message="[[t('birthDate_error')]]"
+                        error-message="[[$t('birthDate_error')]]"
                         required>
                     </paper-input>
                     <!-- Animal Gender -->
@@ -99,17 +94,13 @@
                         class="animad-animal-gender-field" 
                         id="animal-gender"
                         name="gender" 
-                        label="[[t('gender')]]*" 
+                        label="[[$t('gender')]]*" 
                         required>
-                        <paper-listbox 
+                        <paper-listbox attr-for-selected="key" selected="{{data.gender}}"
                             slot="dropdown-content">
-                            <!-- 
-                                TODO: hier die Werte über die URL (siehe properties) holen und dann 
-                                per dom repeat hier anzeigen.
-                                TODO: Vorselektion
-                            -->
-                            <paper-item>female</paper-item>
-                            <paper-item>male</paper-item>
+                            <template is="dom-repeat" items="{{lists.gender}}">
+                                <paper-item key="[[item]]">[[translate('gender',item)]]</paper-item>
+                            </template>
                         </paper-listbox>
                     </paper-dropdown-menu>
                     <!-- Animal Weight -->
@@ -118,11 +109,11 @@
                         id="animal-weight" 
                         type="number" 
                         name="weight" 
-                        label="[[t('weight')]]" 
+                        label="[[$t('weight')]]" 
                         value="{{data.weight}}"
                         readonly="[[readonly]]" 
                         auto-validate="[[autoValidate]]" 
-                        error-message="[[t('weight_error')]]" 
+                        error-message="[[$t('weight_error')]]" 
                         min="1" 
                         max="50000"
                         required>
@@ -134,7 +125,7 @@
                         id="animal-alive" 
                         name="alive" 
                         checked="{{data.alive}}">
-                    [[t('alive')]]
+                    [[$t('alive')]]
                     </paper-checkbox>
                 </form>
             </iron-form>
@@ -157,7 +148,7 @@
          * @polymer
          *
          */
-        class AnimadAnimalForm extends mix(Polymer.Element).with(AnimadI18nBehavior) {
+        class AnimadAnimalForm extends mix(Polymer.Element).with(Nebula.PolyglotBehavior) {
             static get is() { return 'animad-animal-form'; }
 
             static get properties() {

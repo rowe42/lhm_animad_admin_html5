@@ -5,7 +5,7 @@
 <link rel="import" href="../../bower_components/polymer/lib/elements/custom-style.html">
 <link rel="import" href="../../bower_components/shadycss/apply-shim.html">
 
-<link rel="import" href="../behaviors/animad-i18n-behavior.html">
+<link rel="import" href="../behaviors/nebula-polyglot-behavior.html">
 <link rel="import" href="../behaviors/mixin.html">
 
 <dom-module id="animad-enclosure-form">
@@ -32,11 +32,11 @@
                             id="enclosure-name" 
                             type="text" 
                             name="name" 
-                            label="[[t('name')]]" 
+                            label="[[$t('name')]]" 
                             value="{{data.name}}" 
                             readonly="[[readonly]]"
                             auto-validate="[[autoValidate]]" 
-                            error-message="[[t('name_error')]]"
+                            error-message="[[$t('name_error')]]"
                             minlength="3" 
                             maxlength="30" 
                             required>
@@ -47,11 +47,11 @@
                             type="time"
                             step="1"
                             name=cleaningTime 
-                            label="[[t('cleaningTime')]]" 
+                            label="[[$t('cleaningTime')]]" 
                             value="{{data.cleaningTime}}"
                             readonly="[[readonly]]" 
                             required auto-validate="[[autoValidate]]" 
-                            error-message="[[t('cleaningTime_error')]]">
+                            error-message="[[$t('cleaningTime_error')]]">
                         </paper-input>
                     </form>
                 </iron-form>
@@ -75,7 +75,7 @@
          * @polymer
          *
          */
-        class AnimadEnclosureForm extends mix(Polymer.Element).with(AnimadI18nBehavior) {
+        class AnimadEnclosureForm extends mix(Polymer.Element).with(Nebula.PolyglotBehavior) {
             static get is() { return 'animad-enclosure-form'; }
 
             static get properties() {

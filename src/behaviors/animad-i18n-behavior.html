@@ -124,6 +124,12 @@
 //                    console.log('initialized i18n');
 //                }
             } else {
+//                console.log('not found - waiting');
+//                    setTimeout(function () {
+//                        console.log('refetching');
+//                        this.refetchResources();
+//                        this._init();
+//                    }.bind(this), 1000);
                 this._polyglot = new Polyglot({
                     phrases: {}
                 });

@@ -16,6 +16,7 @@
                      */
                     loadUrl: {
                         type: String,
+                        notify: true,
                         observer: '_loadFormData'
                     },
                     /**
@@ -110,6 +111,8 @@
              Navigiert zum Attribut "data-routePath" wenn der Button gedrückt wird.
              */
             _navigateTo(e) {
+                //loadUrl zurücksetzen, damit beim Neueinstieg auf jeden Fall neu geladen wird
+                this.loadUrl = null;
                 var routePath = e.target.dataset.routepath;
                 console.log("navigiere zu:" + routePath);
                 this.set("route.path", routePath);
@@ -167,7 +170,7 @@
                             .then(response => {
                                 if (response.ok) {
                                     this._resetForm();
-                                    this._success();
+                                    this._success('form_success');
                                 } else {
                                     this._error(response.status);
                                 }
@@ -176,7 +179,7 @@
                     this._navigateTo(e);
                 } else {
                     console.warn("form is not valid...");
-                    this._warningToast.text = this.t('form_validation');
+                    this._warningToast.text = this.$t('form_validation');
                     this._warningToast.open();
                 }
             }
@@ -208,7 +211,9 @@
                 if (saveUrl)
 //                    this._loadHalData(saveUrl, 'OPTIONS', 'data');
                     //HACK: Fetching GET instead of OPTIONS until OPTIONS are implemented
-                    this._loadHalData(saveUrl, 'GET', 'data');
+                    var hackSaveUrl = saveUrl + 'Options';
+                    this._loadHalData(hackSaveUrl, 'GET', 'data');
+                    
             }
 
             _loadProfile(profileUrl, oldV) {
@@ -256,6 +261,10 @@
 
             
             _loadHalData(url, verb, target) {
+                if (!url || !verb || !target) {
+                    return;
+                }
+                
                 // prepare request
                 var init = {
                     method: verb,
@@ -300,8 +309,8 @@
             /**
              * Der 'Toast', der bei Erfolg angezeigt wird.
              */
-            _success() {
-                this._successToast.text = this.t('form_success');
+            _success(key) {
+                this._successToast.text = this.$t(key);
                 this._successToast.open();
             }
 
@@ -309,7 +318,7 @@
              * Der 'Toast', der bei Fehlern angezeigt wird.
              */
             _error(status) {
-                this._errorToast.text = this.t('form_error', {code: status});
+                this._errorToast.text = this.$t('form_error', {code: status});
                 this._errorToast.open();
             }
         };
