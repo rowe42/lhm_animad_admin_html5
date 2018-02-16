@@ -52,7 +52,9 @@
             </animad-animals-list>
             <animad-animal-create-form name="create" load-url="[[backendUrl]]/api/admin_service/animals"></animad-animal-create-form>
             <animad-animal-update-form name="edit" load-url="[[backendUrl]]/api/admin_service/animals{{subroute.path}}"></animad-animal-update-form>
-            <animad-animals-list name="filterexample" url="[[backendUrl]]/api/admin_service/animals" load-complete-data="true"></animad-animals-list>
+            <animad-animals-list name="filterexample" url="[[backendUrl]]/api/admin_service/animals" load-complete-data="true"
+            on-filter-data="_filterData"
+            filtered-data="[[_filteredData]]"></animad-animals-list>
       </div>
       <br />
       <br />
@@ -154,9 +156,8 @@
           this._filteredData.filter(animal =>
               animal.name.toLowerCase().includes(filterString) ||
               animal.species.toLowerCase().includes(filterString) ||
-              animal.birthDate.toLowerCase().includes(filterString) ||
-              animal.gender.toString().toLowerCase().includes(filterString) ||
-              animal.alive.toLowerCase().includes(filterString));
+              (animal.birthData != undefined && animal.birthDate.toLowerCase().includes(filterString)) ||
+              animal.gender.toString().toLowerCase().includes(filterString));
 
         if (selectedFilters != undefined && selectedFilters.length > 0) {
           // GENERATOR: Muss im Projekt implementiert werden.

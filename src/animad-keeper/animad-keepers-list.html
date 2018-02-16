@@ -294,21 +294,6 @@
           super._fetchData(this._search);
         }
 
-        /**
-         * Filtert die gefundenen Datensätze neu, wenn die Filter-Selektion geändert wurde.
-         */
-        _filterSelectionData() {
-          this._onFilter();
-        }
-
-        /**
-         * Filtert die gefundenen Datensätze neu, wenn im Filter-Feld eine Änderung durchgeführt wurde.
-         */
-        _filterData(event) {
-          this._filterString = event.target.search.toLowerCase();
-          this._onFilter();
-        }
-
       }
 
       customElements.define(AnimadKeepersList.is, AnimadKeepersList);
