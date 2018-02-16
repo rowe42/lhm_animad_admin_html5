@@ -44,7 +44,7 @@
             <animad-enclosures-list
               name=""
               url="[[backendUrl]]/api/admin_service/enclosures"
-              default-search='name:Elefantenparadies'
+              default-search="name:Elephant's Paradise"
               route="{{subroute}}"
               edit-path="/enclosures-view/edit"
               create-path="/enclosures-view/create"              
@@ -132,7 +132,7 @@
                   reflectToAttribute: true
               },
               routeData: Object,
-              subroute: String,            
+              rootPath: String,         
           /*
            * Das '_domain' property wird benötigt, um" den richtigen Pfad
            * zu den i18n Werten zu erzeugen. Es wird in jedem Element
@@ -187,6 +187,7 @@
         }
 
         _routePageChanged(page) {
+            console.log('changed '+ page);
             this.page = page || '';
             this.composeLoadUrl();
         }

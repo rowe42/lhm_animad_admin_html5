@@ -29,7 +29,8 @@
             <paper-dialog-scrollable>
                 <iron-form id="iform">
                     <form class="animad-animal-create-dialog-form">
-                        <animad-animal-form data="{{_dialogdata}}" auto-validate></animad-animal-form>
+                        <animad-animal-form data="{{_dialogdata}}" 
+                           resources="[[resources]]" lang="[[lang]]" auto-validate></animad-animal-form>
                     </form>
                 </iron-form>
             </paper-dialog-scrollable>
@@ -130,7 +131,13 @@
                 var name = 'data._embedded.' + this._entity + 's';
                 var items = this.get(name);
                 var item = items[index];
-                return this.$t('relation_list', { name: item.name, species: item.species, birthday: item.birthday, gender: item.gender, weight: item.weight, alive: item.alive });
+                //die Enums übersetzen
+                //TODO Generator pattern
+                var translatedItem = Object.assign({}, item);
+                for (var key of ['species', 'gender']) {
+                    translatedItem[key] = this.$t(key + '.' + item[key]);
+                }
+                return this.$t('relation_list', { name: translatedItem.name, species: translatedItem.species, birthday: translatedItem.birthday, gender: translatedItem.gender, weight: translatedItem.weight});
             }
 
             /*
@@ -143,7 +150,14 @@
              * @return  den formatierten Text für den Suggester
              */
             _formatSuggester(item) {
-                return this.$t('relation_suggest', { name: item.name, species: item.species, birthday: item.birthday, gender: item.gender, weight: item.weight, alive: item.alive })
+                //die Enums übersetzen
+                //TODO Generator pattern
+                var translatedItem = Object.assign({}, item);
+                for (var key of ['species', 'gender']) {
+                    translatedItem[key] = this.$t(key + '.' + item[key]);
+                }
+                
+                return this.$t('relation_suggest', { name: translatedItem.name, species: translatedItem.species, birthday: translatedItem.birthday, gender: translatedItem.gender, weight: translatedItem.weight})
             }
         }
 
