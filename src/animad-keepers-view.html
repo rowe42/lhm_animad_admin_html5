@@ -35,12 +35,14 @@
           <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" route="{{subroute}}">
               <animad-keepers-list name=""
                 url="[[backendUrl]]/api/admin_service/keepers"
-                default-search='vorname:hans nachname:dampf'
+                default-search='vorname:hans'
                 route="{{subroute}}"
                 edit-path="/keepers-view/edit"
-                create-path="/keepers-view/create">
+                create-path="/keepers-view/create"
+                on-filter-data="_filterData"
+                filtered-data="[[_filteredData]]">
               </animad-keepers-list>
-              <animad-keeper-create-form name="create" 
+              <animad-keeper-create-form name="create"
                 save-url="[[backendUrl]]/api/admin_service/keepers"
                 profile-url="[[backendUrl]]/api/admin_service/profile/keepers"
                 save-path="/keepers-view/"
@@ -50,7 +52,6 @@
                  profile-url="[[backendUrl]]/api/admin_service/profile/keepers"
                  save-path="/keepers-view/"
                  cancel-path="/keepers-view/"></animad-keeper-update-form>
-              <animad-keepers-list name="filterexample" url="[[backendUrl]]/api/admin_service/keepers" load-complete-data="true"></animad-keepers-list>
           </iron-pages>
         </div>
       </div>
@@ -80,11 +81,20 @@
               rootPath: String,
               backendUrl: {
                   type: String
-              }
+              },
+              /*
+              *  _filteredData enthält alle Objekte, die auf eingegebene oder ausgewählte Filter zutreffen.
+              */
+              _filteredData: {
+                type: Array,
+                value() {
+                  return [];
+                }
+              },
           }
 
         }
-            
+
         static get observers() {
             return [
                 '_routePageChanged(routeData.page)',
@@ -92,6 +102,34 @@
         }
         _routePageChanged(page) {
             this.page = page || '';
+        }
+
+        /**
+        * Wird ausgelöst durch den Event [`event-filter-data`](#/mixins/AnimadListBehavior#event-filter-data).
+        * Filtert die Daten der Liste. Der `event` enthält die folgenden Informationen:
+        * event.detail.filteredData:    Die gefilterten Daten der Liste
+        * event.detail.filtersSelected: Die selektierten Filter
+        * event.detail.filterString:    Die Eingabe im Filter-Feld
+        */
+        _filterData(event) {
+          this._filteredData = event.detail.filteredData;
+          var selectedFilters = event.detail.filtersSelected;
+          var filterString = event.detail.filterString;
+
+          // GENERATOR: alle angezeigten String-Felder und alle angezeigten Integer-Felder (toString())
+          this._filteredData =
+            this._filteredData.filter(keeper =>
+                keeper.firstName.toLowerCase().includes(filterString) ||
+                keeper.lastName.toLowerCase().includes(filterString) ||
+                keeper.employmentDate.toLowerCase().includes(filterString) ||
+                keeper.skill.toString().toLowerCase().includes(filterString) ||
+                keeper.birthday.toLowerCase().includes(filterString) ||
+                new String(keeper.salary).toLowerCase().includes(filterString));
+
+          if (selectedFilters != undefined && selectedFilters.length > 0) {
+            // GENERATOR: Muss im Projekt implementiert werden.
+            console.log("Filtern nach selektierbaren Filtern ist nicht implementiert!");
+          }
         }
     }
 

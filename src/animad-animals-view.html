@@ -29,7 +29,7 @@
         grid-row-gap: 3em;
       }
     </style>
-    
+
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}">
     </app-route>
 
@@ -46,11 +46,15 @@
               default-search='name:Dumbo'
               route="{{subroute}}"
               edit-path="/animals-view/edit"
-              create-path="/animals-view/create">
-            </animad-animals-list>          
-            <animad-animal-create-form name="create" load-url="[[backendUrl]]/api/admin_service/animals"></animad-animal-create-form>            
+              create-path="/animals-view/create"
+              on-filter-data="_filterData"
+              filtered-data="[[_filteredData]]">
+            </animad-animals-list>
+            <animad-animal-create-form name="create" load-url="[[backendUrl]]/api/admin_service/animals"></animad-animal-create-form>
             <animad-animal-update-form name="edit" load-url="[[backendUrl]]/api/admin_service/animals{{subroute.path}}"></animad-animal-update-form>
-            <animad-animals-list name="filterexample" url="[[backendUrl]]/api/admin_service/animals" load-complete-data="true"></animad-animals-list>
+            <animad-animals-list name="filterexample" url="[[backendUrl]]/api/admin_service/animals" load-complete-data="true"
+            on-filter-data="_filterData"
+            filtered-data="[[_filteredData]]"></animad-animals-list>
       </div>
       <br />
       <br />
@@ -99,9 +103,9 @@
       static get properties() {
         return {
           /*
-           * Das '_domain' property wird benötigt, um" den richtigen Pfad 
-           * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
-           * benötigt, in dem die I18nBehavior verwendet wird. Im Falle 
+           * Das '_domain' property wird benötigt, um" den richtigen Pfad
+           * zu den i18n Werten zu erzeugen. Es wird in jedem Element
+           * benötigt, in dem die I18nBehavior verwendet wird. Im Falle
            * einer view ist der Wert IMMER 'view'.
            */
           _domain: {
@@ -109,11 +113,11 @@
             value: 'view'
           },
           /*
-           * Das '_entity' property wird benötigt, um den richtigen Pfad 
-           * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
-           * benötigt, in dem die I18nBehavior verwendet wird. Im Falle 
+           * Das '_entity' property wird benötigt, um den richtigen Pfad
+           * zu den i18n Werten zu erzeugen. Es wird in jedem Element
+           * benötigt, in dem die I18nBehavior verwendet wird. Im Falle
            * einer view ist der Wert immer der Präfix, der im Namen der view
-           * vor '*-view' steht. Bei animad-animals-view.html also 
+           * vor '*-view' steht. Bei animad-animals-view.html also
            * 'animad-animals'.
            */
           _entity: {
@@ -122,7 +126,42 @@
           },
           backendUrl: {
               type: String,
-          }
+          },
+          /*
+          *  _filteredData enthält alle Objekte, die auf eingegebene oder ausgewählte Filter zutreffen.
+          */
+          _filteredData: {
+            type: Array,
+            value() {
+              return [];
+            }
+          },
+        }
+      }
+
+      /**
+      * Wird ausgelöst durch den Event [`event-filter-data`](#/mixins/AnimadListBehavior#event-filter-data).
+      * Filtert die Daten der Liste. Der `event` enthält die folgenden Informationen:
+      * event.detail.filteredData:    Die gefilterten Daten der Liste
+      * event.detail.filtersSelected: Die selektierten Filter
+      * event.detail.filterString:    Die Eingabe im Filter-Feld
+      */
+      _filterData(event) {
+        this._filteredData = event.detail.filteredData;
+        var selectedFilters = event.detail.filtersSelected;
+        var filterString = event.detail.filterString;
+
+        // GENERATOR: alle angezeigten String-Felder und alle angezeigten Integer-Felder (toString())
+        this._filteredData =
+          this._filteredData.filter(animal =>
+              animal.name.toLowerCase().includes(filterString) ||
+              animal.species.toLowerCase().includes(filterString) ||
+              (animal.birthData != undefined && animal.birthDate.toLowerCase().includes(filterString)) ||
+              animal.gender.toString().toLowerCase().includes(filterString));
+
+        if (selectedFilters != undefined && selectedFilters.length > 0) {
+          // GENERATOR: Muss im Projekt implementiert werden.
+          console.log("Filtern nach selektierbaren Filtern ist nicht implementiert!");
         }
       }
     }

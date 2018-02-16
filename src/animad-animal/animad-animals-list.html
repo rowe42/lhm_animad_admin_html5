@@ -114,7 +114,7 @@
 <!-- Für Suche über Lazy Loading:
      <vaadin-grid id="animad-list" data-provider="[[dataProvider]]"  size="200" multi-sort="[[multiSort]]" selected-items="{{_selectedItems}}"> -->
 
-     <vaadin-grid id="animad-list" items="[[_filteredData]]"  multi-sort="[[multiSort]]" selected-items="{{_selectedItems}}">
+     <vaadin-grid id="animad-list" items="[[filteredData]]"  multi-sort="[[multiSort]]" selected-items="{{_selectedItems}}">
         <vaadin-grid-selection-column auto-select>
         </vaadin-grid-selection-column>
 
@@ -278,8 +278,8 @@
 
         _confirmDeleteRow(e) {
           // this is optional. If not implemented will only ask question (translated): Do you really want to delete this item?
-          var index = this._filteredData.findIndex(item => item.id == e.target.id);
-          var item = this._filteredData[index];
+          var index = this.filteredData.findIndex(item => item.id == e.target.id);
+          var item = this.filteredData[index];
           this._deleteInfo = this.t('modal_deleteinfo', {name: item.name, species: item.species, birthDate: item.birthDate, gender: item.gender, alive: item.alive});
 
           super._confirmDeleteRow(e);
@@ -292,48 +292,6 @@
           this._search = event.target.search.toLowerCase();
           super._fetchData(this._search);
         }
-
-        /**
-         * Filtert die gefundenen Datensätze neu, wenn die Filter-Selektion geändert wurde.
-         */
-        _filterSelectionData() {
-          this._filter();
-        }
-
-        /**
-         * Filtert die gefundenen Datensätze neu, wenn im Filter-Feld eine Änderung durchgeführt wurde.
-         */
-        _filterData(event) {
-          this._filterString = event.target.search.toLowerCase();
-          this._filter();
-        }
-
-        /**
-         * Filtert die gefundenen Datensätze nach dem eingegebenen String im Filter-Feld.
-         */
-        _filter(){
-          this._filteredData =
-            this.data.filter(animal =>
-                animal.name.toLowerCase().includes(this._filterString) ||
-                animal.species.toLowerCase().includes(this._filterString) ||
-                animal.birthDate.toLowerCase().includes(this._filterString) ||
-                animal.gender.toString().toLowerCase().includes(this._filterString) ||
-                animal.alive.toLowerCase().includes(this._filterString));
-          this._filteredData = this._filteredData.filter(this._useSelectedFilters, this);
-        }
-
-        /**
-         * Filtert die gefundenen Datensätze nach den ausgewählten, selektierbaren Filtern.
-         */
-        _useSelectedFilters(animal, event) {
-          var isIncluded = true;
-          console.log("Methode _useSelectedFilters ist nicht implementiert!");
-
-          /* Filtern für selektierbare Filter muss manuell implementiert werden */
-
-          return isIncluded;
-        }
-
       }
 
       customElements.define(AnimadAnimalsList.is, AnimadAnimalsList);
