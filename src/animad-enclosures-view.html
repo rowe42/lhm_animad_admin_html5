@@ -38,19 +38,36 @@
         <iron-icon icon="animad-icons:basecamp"></iron-icon>
       </div>
       <h1>[[$t('main_heading')]]</h1>
-      <h2>[[$t('table_sample_heading')]]</h2>
+      <h2>[[$t('table_sample_heading')]] [[page]]</h2>
       <div class="animad-enclosure-view-content">
+          <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" route="{{subroute}}">
             <animad-enclosures-list
               name=""
               url="[[backendUrl]]/api/admin_service/enclosures"
               default-search='name:Elefantenparadies'
               route="{{subroute}}"
-              edit-path="/enclosures-view"
-              create-path="/enclosures-view"              
+              edit-path="/enclosures-view/edit"
+              create-path="/enclosures-view/create"              
               on-filter-data="_filterData"
               filtered-data="[[_filteredData]]"
               resources="[[resources]]" lang="[[lang]]">
-            </animad-enclosures-list>
+            </animad-enclosures-list>              
+            <animad-enclosure-create-form name="create"
+              save-url="[[backendUrl]]/api/admin_service/enclosures"
+              profile-url="[[backendUrl]]/api/admin_service/profile/enclosures"
+              save-path="/enclosures-view/"
+              cancel-path="/enclosures-view/"
+              resources="[[resources]]" lang="[[lang]]"
+              animals>
+            </animad-enclosure-create-form>
+            <animad-enclosure-update-form name="edit" load-url="{{_loadSingleEnclosureUrl}}"
+               profile-url="[[backendUrl]]/api/admin_service/profile/enclosures"
+               save-path="/enclosures-view/"
+               cancel-path="/enclosures-view/"
+               resources="[[resources]]" lang="[[lang]]"
+               animals>
+            </animad-enclosure-update-form>              
+          </iron-pages>
       </div>
       <br />
       <br />
@@ -106,12 +123,22 @@
 
       static get properties() {
         return {
+              route: {
+                  type: String,
+                  reflectToAttribute: true
+              },
+              page: {
+                  type: String,
+                  reflectToAttribute: true
+              },
+              routeData: Object,
+              subroute: String,            
           /*
            * Das '_domain' property wird benötigt, um" den richtigen Pfad
            * zu den i18n Werten zu erzeugen. Es wird in jedem Element
            * benötigt, in dem die I18nBehavior verwendet wird. Im Falle
            * einer view ist der Wert IMMER 'view'.
-           */
+           */          
           _domain: {
             type: String,
             value: 'view'
@@ -131,6 +158,9 @@
           backendUrl: {
               type: String,
           },
+          _loadSingleKeeperUrl: {
+              type: String
+          },
           /*
           *  _filteredData enthält alle Objekte, die auf eingegebene oder ausgewählte Filter zutreffen.
           */
@@ -142,6 +172,24 @@
           },
         }
       }
+      
+        composeLoadUrl() {
+            if (this.subroute && this.subroute.path) {
+                this._loadSingleEnclosureUrl = this.backendUrl + '/api/admin_service/enclosures' + this.subroute.path;
+            }
+        }
+            
+
+        static get observers() {
+            return [
+                '_routePageChanged(routeData.page)',
+            ];
+        }
+
+        _routePageChanged(page) {
+            this.page = page || '';
+            this.composeLoadUrl();
+        }
 
 
       /**

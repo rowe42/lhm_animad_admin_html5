@@ -129,7 +129,7 @@
                 var name = 'data.' + this._entity + 's';
                 var items = this.get(name);
                 var item = items[index];
-                return this.$t('relation_list', {firstName: item.firstName, lastName: item.lastName, birthday: item.birthday, employmentDate: item.employmentDate, skill: item.skill});
+                return this.$t('relation_list', {name: item.name});
             }
 
             /*
@@ -142,7 +142,7 @@
              * @return  den formatierten Text für den Suggester
              */
             _formatSuggester(item) {
-                return this.$t('relation_suggest', {firstName: item.firstName, lastName: item.lastName, birthday: item.birthday, employmentDate: item.employmentDate, skill: item.skill})
+                return this.$t('relation_suggest', {name: item.name})
             }
         }
 
