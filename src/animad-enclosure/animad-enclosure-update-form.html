@@ -36,17 +36,22 @@
                 @apply --animad-enclosure-update-form;
             }
         </style>
+        <!-- Routing Support -->
+        <app-location
+            route="{{route}}"
+            use-hash-as-path>
+        </app-location>          
         <!--
             Das Formular.
         -->
         <form class="animad-enclosure-update-form">
             <animad-enclosure-form id="customform" data="{{data}}" readonly="[[readform]]" 
                resources="[[resources]]" lang="[[lang]]" auto-validate></animad-enclosure-form>
-            <template is="dom-if" if="[[keepers]]">
-                <animad-keeper-simple-relation
+            <template is="dom-if" if="[[animals]]">
+                <animad-animal-simple-relation id="animalrelation"
                 data="{{data}}"
                 resources="[[resources]]" lang="[[lang]]" 
-                preload></animad-keeper-simple-relation>
+                preload></animad-animal-simple-relation>
             </template>
         </form>
         <!-- 
@@ -66,12 +71,12 @@
                 </paper-button>
             </template>
             <template is="dom-if" if="{{cancelPath}}">
-                <paper-button class="cancel" on-tap="_navigateTo" raised>
+                <paper-button class="cancel" on-tap="_cancelEntity"  data-routePath$="[[cancelPath]]" raised>
                     <iron-icon icon="animad-icons:close-circle"></iron-icon>
                     [[$t('button_cancel')]]
                 </paper-button>
             </template>
-            <paper-button class="send" on-tap="_updateEntity" raised>
+            <paper-button class="send" on-tap="_updateForm" data-routePath$="[[savePath]]" raised>
                 <iron-icon icon="animad-icons:send"></iron-icon>
                 [[$t('button_save')]]
             </paper-button>
@@ -134,14 +139,6 @@
                     // GENERATOR: diese Werte müssen abhängig von den Relationen generiert werden
                     /*
                      * Über dieses Element Property kann gesteuert werden, ob die
-                     * Relation zu den 'keepers' angezeigt wird, oder nicht.
-                     */
-                    keepers: {
-                        type: Boolean,
-                        value: false
-                    },
-                    /*
-                     * Über dieses Element Property kann gesteuert werden, ob die
                      * Relation zu den 'animals' angezeigt wird, oder nicht.
                      */
                     animals: {
@@ -149,6 +146,13 @@
                         value: false
                     }
                 }
+            }
+            
+            _updateForm(e) {
+                var keeperrelation = this.shadowRoot.querySelector('#animalrelation');
+                keeperrelation._saveRelationData(this.data);
+                this._updateEntity(e);
+                
             }
         }
 
