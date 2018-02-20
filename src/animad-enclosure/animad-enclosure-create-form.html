@@ -14,7 +14,7 @@
 <link rel="import" href="animad-enclosure-form.html">
 
 <!-- GENERATOR hier die links für die Relationen -->
-<link rel="import" href="../animad-keeper/animad-keeper-simple-relation.html">
+<link rel="import" href="../animad-animal/animad-animal-simple-relation.html">
 
 <link rel="import" href="../animad-icons.html">
 <link rel="import" href="../behaviors/animad-form-behavior.html">
@@ -35,6 +35,11 @@
                 @apply --animad-enclosure-create-form;
             }
         </style>
+        <!-- Routing Support -->
+        <app-location
+            route="{{route}}"
+            use-hash-as-path>
+        </app-location>        
         <!--
             Das vorgefertigte Formular.
         -->
@@ -43,9 +48,9 @@
             <animad-enclosure-form id="customform" data="{{data}}" 
                resources="[[resources]]" lang="[[lang]]" auto-validate></animad-enclosure-form>
             <!-- GENERATOR hier kommen die Templates für die Relationen hin -->
-            <template is="dom-if" if="{{keepers}}">
-                <animad-keeper-simple-relation data="{{data}}" 
-                   resources="[[resources]]" lang="[[lang]]" preload></animad-keeper-simple-relation>
+            <template is="dom-if" if="{{animals}}">
+                <animad-animal-simple-relation data="{{data}}" 
+                   resources="[[resources]]" lang="[[lang]]" lists="[[lists]]" preload></animad-animal-simple-relation>
             </template>
         </form>
         <!--</iron-form>-->
@@ -55,18 +60,18 @@
         <template is="dom-if" if="{{reset}}">
             <paper-button class="reset" on-tap="_resetForm" raised>
                 <iron-icon icon="animad-icons:erase"></iron-icon>
-                [[t('button_reset')]]
+                [[$t('button_reset')]]
             </paper-button>
         </template>
         <template is="dom-if" if="{{cancelPath}}">
-            <paper-button class="cancel" on-tap="_navigateTo" raised>
+            <paper-button class="cancel" on-tap="_cancelEntity"  data-routePath$="[[cancelPath]]" raised>
                 <iron-icon icon="animad-icons:close-circle"></iron-icon>
-                [[t('button_cancel')]]
+                [[$t('button_cancel')]]
             </paper-button>
         </template>
-        <paper-button class="send" on-tap="_saveEntity" raised>
+        <paper-button class="send" on-tap="_saveEntity" data-routePath$="[[savePath]]" raised>
             <iron-icon icon="animad-icons:send"></iron-icon>
-            [[t('button_save')]]
+            [[$t('button_save')]]
         </paper-button>
     </template>
     <script>
@@ -110,14 +115,6 @@
                         value: 'enclosure'
                     },
                     // GENERATOR hier die Relationen generieren
-                    /*
-                     * Wenn dieser Wert auf 'true' gesetzt wird, dann können
-                     * im Formular Relationen zur Entität 'Keeper' gesetzt werden.
-                     */
-                    keepers: {
-                        type: Boolean,
-                        value: false
-                    },
                     /*
                      * Über dieses Element Property kann gesteuert werden, ob die
                      * Relation zu den 'animals' angezeigt wird, oder nicht.
