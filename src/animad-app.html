@@ -89,8 +89,6 @@
 
         </style>
 
-        <common-security-init id="animad_security" load-url="[[backendUrl]]/api/user_service/permissions"></common-security-init>
-
         <!-- TODO add toasts for error, warning, success -->
         <paper-toast 
             id="global_success_toast" 
@@ -106,15 +104,16 @@
             always-on-top>
         </paper-toast>
 
-
-
         <app-location route="{{route}}" use-hash-as-path>
         </app-location>
 
         <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}">
         </app-route>
 
-
+        <common-security-init id="animad_security" load-url="[[backendUrl]]/api/user_service/permissions"
+             resources="{{resources}}" lang="[[lang]]" ></common-security-init>
+        
+        
         <!-- i18n -->
         <nebula-language
             id="language"
@@ -136,6 +135,7 @@
                     <paper-icon-button id="toggle" icon="animad-icons:menu"></paper-icon-button>
                     <div main-title>
                         <b>Animad</b> App </div>
+                    <paper-icon-button icon="animad-icons:logout" on-tap="_logout"></paper-icon-button>
                 </app-toolbar>
             </app-header>
 
@@ -170,6 +170,8 @@
                         </iron-selector>
                     </div>
                 </app-drawer>
+                
+                        
 
                 <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
                     <!-- GENERATOR pattern: <[DOMAINNAME][ENTITYNAME]-view name="[ENTITYNAME]-view"></[DOMAINNAME][ENTITYNAME]-view> -->
@@ -188,7 +190,7 @@
 
             </app-drawer-layout>
 
-        </app-header-layout>
+        </app-header-layout>                
 
     </template>
 
@@ -267,6 +269,25 @@
 
             _showPage404() {
                 this.page = 'view404';
+            }
+            
+            _logout() {
+                //index.html in Service-Worker-Cache finden und entfernen,
+                //damit es neu vom Server geladen werden muss
+                caches.keys().then(function(cacheNames) {
+                    var swCacheName;
+                    cacheNames.forEach(name => { if (name.indexOf('sw-precache-v3') > -1) {swCacheName = name } });
+                    if (swCacheName)
+                      caches.open(swCacheName).then(
+                            function(cache) {
+//                              var myResponse = new Response();
+//                              cache.put('xyz', myResponse);
+                                cache.delete('index.html', {ignoreSearch: true}).then((a) => console.log('found in cache ' + a));
+                              }
+                            );
+
+                })                 
+                window.location.href = '/logout';
             }
         }
 

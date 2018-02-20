@@ -172,6 +172,9 @@
                                     this._resetForm();
                                     this._success('form_success');
                                 } else {
+                                    if (response.status === 403) {
+                                        window.setTimeout('window.location = "/logout"', 3000);
+                                    }
                                     this._error(response.status);
                                 }
                             })
@@ -281,6 +284,9 @@
                                     this.set(target, data);
                                 });
                             } else {
+                                if (response.status === 403) {
+                                    window.setTimeout('window.location = "/logout"', 3000);
+                                }
                                 this._error(response.status);
                             }
                         })

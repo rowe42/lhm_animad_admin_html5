@@ -175,6 +175,9 @@
         "list_too_many_results": "More than %{results} results found. Please narrow your search.",
         "list_action_search": "searching",
         "list_action_delete": "deleting"
+      },
+      "security": {
+        "form_error": "Es ist ein Fehler beim Laden der Rechte aufgetreten. Fehlercode ist '%{code}'."
       }
     }
   },
@@ -357,6 +360,9 @@
         "list_error_too_many_results": "Mehr als %{results} Ergebnisse gefunden. Bitte die Suche verfeinern und erneut suchen!",
         "list_action_search": "bei der Suche",
         "list_action_delete": "beim Löschen"
+      },
+      "security": {
+        "form_error": "Es ist ein Fehler beim Laden der Rechte aufgetreten. Fehlercode ist '%{code}'."
       }
     }
   }
