@@ -211,12 +211,12 @@
              * von create Formularen verwendet.
              */
             _loadOptions(saveUrl, oldV) {
-                if (saveUrl)
+                if (saveUrl) {
 //                    this._loadHalData(saveUrl, 'OPTIONS', 'data');
                     //HACK: Fetching GET instead of OPTIONS until OPTIONS are implemented
                     var hackSaveUrl = saveUrl + 'Options';
                     this._loadHalData(hackSaveUrl, 'GET', 'data');
-                    
+                }
             }
 
             _loadProfile(profileUrl, oldV) {

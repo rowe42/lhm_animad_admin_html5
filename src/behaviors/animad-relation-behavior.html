@@ -80,7 +80,8 @@
                  * Der Link um ein neues Objekt für die Relation zu erstellen.
                  */
                 _newUrl: {
-                    type: String
+                    type: String,
+                    observer: '_loadDialogOptions'
                 },
                 /*
                  * Das Formularobjekt für den Dialog um Relationen 'on the fly'
@@ -333,7 +334,7 @@
 
                             // 'Erfolgs' Toast öffnen
                             if (typeof this._success === "function") {
-                                this._success();
+                                this._success('form_success');
                             } else {
                                 console.warn('Cannot find mixin "*-form-behavior.html"!');
                             }
@@ -341,12 +342,9 @@
                             // Wenn das Objekt erfolgreich gespeichert wurde, dann
                             // kann es gleich in die Auswahlliste gepusht werden.
                             response.json().then((d) => {
-                                // Wenn noch nicht vorhanden, dann leeres Array erzeugen
-                                if(!this.data[this._entity + 's']) {
-                                    this.set('data.' + this._entity + 's', []);
-                                }
-                                // Relation speichern
-                                this.push('data.' + this._entity + 's', d);
+                                var id = halson(d).getLink('self').href;
+                                 this._appendItemInternal(this, id, d);
+
                             })
 
                         } else {
@@ -363,6 +361,15 @@
             }
 
         }
+        
+        _loadDialogOptions(saveUrl, oldV) {
+                if (saveUrl) {
+//                    this._loadHalData(saveUrl, 'OPTIONS', 'data');
+                    //HACK: Fetching GET instead of OPTIONS until OPTIONS are implemented
+                    var hackSaveUrl = saveUrl + 'Options';
+                    this._loadHalData(hackSaveUrl, 'GET', '_dialogdata');
+                }
+            }
 
         /*
          * Sucht in einer vorgeladenen Quelle (Property preload
@@ -376,6 +383,21 @@
         _querySimple(datasource, query) {
             return datasource.filter(x => x[this.textProperty].toLowerCase().indexOf(query) != -1);
         }
+        
+        _appendItem(event) {
+            // Der 'host' des Elternknotens wird benötigt
+            // um an die Properties zu kommen, da wir nicht
+            // im 'this' scope sind.
+            var h = this.parentNode.host;
+            var id = event.detail.value;
+            
+             var item = this.source.find(x => x.value === id);
+            
+            h._appendItemInternal(h, id, item.entity);
+            
+            // Textfeld leeren
+            event.currentTarget.clear();
+        }
 
         /*
          * Listener Methode, um ein ausgewähltes Element der
@@ -383,14 +405,8 @@
          *
          * @param Event mit den notwendigen Daten
          */
-        _appendItem(event) {
-
-            // Der 'host' des Elternknotens wird benötigt
-            // um an die Properties zu kommen, da wir nicht
-            // im 'this' scope sind.
-            var h = this.parentNode.host;
+        _appendItemInternal(h, id, entity) {
             var name = 'data.' + h._entity + 'List';
-            var id = event.detail.value;
 
             // Wenn noch kein Attribut vorhanden ist, um
             // die Referenz zu speichern, so muss eines
@@ -407,7 +423,7 @@
             } else {
                 // Das Relationsobjekt wird gespeichert
                 var item = this.source.find(x => x.value === id);
-                h.push(name, item.entity);
+                h.push(name, entity);
             }
             
             //Unter _embedded wird die Entität mit allen Feldern
@@ -420,11 +436,7 @@
             if (!h.get(embeddedEntities)) {
                 h.set(embeddedEntities, []);
             }            
-            var item = this.source.find(x => x.value === id);
-            h.push(embeddedEntities, item.entity);
-            
-            // Textfeld leeren
-            event.currentTarget.clear();
+            h.push(embeddedEntities, entity);
         }
 
         /*

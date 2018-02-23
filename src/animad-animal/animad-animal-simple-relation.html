@@ -16,6 +16,7 @@
 <link rel="import" href="../behaviors/mixin.html">
 
 <link rel="import" href="animad-animal-create-form.html">
+<link rel="import" href="../animad-keeper/animad-keeper-simple-relation.html">
 
 <dom-module id="animad-animal-simple-relation">
     <template>
@@ -25,12 +26,19 @@
             }
         </style>
         <paper-dialog>
-            <h2>Dialog Title</h2>
+            <h2>[[$t('onthefly_heading')]]</h2>
             <paper-dialog-scrollable>
                 <iron-form id="iform">
                     <form class="animad-animal-create-dialog-form">
                         <animad-animal-form data="{{_dialogdata}}" 
-                           resources="[[resources]]" lang="[[lang]]" auto-validate></animad-animal-form>
+                           resources="[[resources]]" lang="[[lang]]" lists="[[lists]]" keepers auto-validate></animad-animal-form>
+                        <template is="dom-if" if="{{keepers}}">
+                            <animad-keeper-simple-relation
+                                data="{{_dialogdata}}" 
+                                profile-url="[[backendUrl]]/api/admin_service/profile/keepers"
+                                resources="[[resources]]" lang="[[lang]]" preload>
+                            </animad-keeper-simple-relation>
+                        </template>
                     </form>
                 </iron-form>
             </paper-dialog-scrollable>
@@ -84,7 +92,7 @@
          * @polymer
          *
          */
-        class AnimadAnimalSimpleRelation extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadRelationBehavior) {
+        class AnimadAnimalSimpleRelation extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadRelationBehavior, AnimadFormBehavior) {
             static get is() { return 'animad-animal-simple-relation'; }
 
             static get properties() {
@@ -106,7 +114,14 @@
                     _entity: {
                         type: String,
                         value: 'animal'
-                    }
+                    },
+                    backendUrl:{
+                        type: String
+                    },
+                    keepers: {
+                        type: Boolean,
+                        value: false
+                    }                    
                 }
             }
 

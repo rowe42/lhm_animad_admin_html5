@@ -56,6 +56,7 @@
             </animad-animals-list>          
             <animad-animal-create-form name="create" 
               save-url="[[backendUrl]]/api/admin_service/animals"
+              backend-url="[[backendUrl]]"
               profile-url="[[backendUrl]]/api/admin_service/profile/animals"
               save-path="/animals-view/"
               cancel-path="/animals-view/"
@@ -84,6 +85,7 @@
       <h2>[[$t('create_sample_heading')]]</h2>
       <animad-animal-create-form save-url="[[backendUrl]]/api/admin_service/animals"
         profile-url="[[backendUrl]]/api/admin_service/profile/animals"
+        backend-url="[[backendUrl]]"
         save-path="/animals-view" cancel-path="/animals-view"
         resources="[[resources]]" lang="[[lang]]"
         reset>
@@ -94,6 +96,7 @@
       <h2>[[$t('create_with_relation_sample_heading')]]</h2>
       <animad-animal-create-form save-url="[[backendUrl]]/api/admin_service/animals" 
         profile-url="[[backendUrl]]/api/admin_service/profile/animals"
+        backend-url="[[backendUrl]]"
         resources="[[resources]]" lang="[[lang]]"
         keepers>
       </animad-animal-create-form>

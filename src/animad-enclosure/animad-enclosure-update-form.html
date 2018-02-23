@@ -46,12 +46,14 @@
         -->
         <form class="animad-enclosure-update-form">
             <animad-enclosure-form id="customform" data="{{data}}" readonly="[[readform]]" 
-               resources="[[resources]]" lang="[[lang]]" auto-validate></animad-enclosure-form>
+               resources="[[resources]]" lang="[[lang]]" lists="[[lists]]"  auto-validate></animad-enclosure-form>
             <template is="dom-if" if="[[animals]]">
                 <animad-animal-simple-relation id="animalrelation"
                 data="{{data}}"
+                profile-url="[[backendUrl]]/api/admin_service/profile/animals"
+                backend-url="[[backendUrl]]"
                 resources="[[resources]]" lang="[[lang]]" 
-                preload></animad-animal-simple-relation>
+                keepers preload></animad-animal-simple-relation>
             </template>
         </form>
         <!-- 
@@ -136,6 +138,9 @@
                         type: String,
                         value: 'enclosure'
                     },
+                    backendUrl: {
+                        type: String
+                    },                      
                     // GENERATOR: diese Werte müssen abhängig von den Relationen generiert werden
                     /*
                      * Über dieses Element Property kann gesteuert werden, ob die

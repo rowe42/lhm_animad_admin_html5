@@ -55,6 +55,7 @@
             <animad-enclosure-create-form name="create"
               save-url="[[backendUrl]]/api/admin_service/enclosures"
               profile-url="[[backendUrl]]/api/admin_service/profile/enclosures"
+              backend-url="[[backendUrl]]"
               save-path="/enclosures-view/"
               cancel-path="/enclosures-view/"
               resources="[[resources]]" lang="[[lang]]"
@@ -62,6 +63,7 @@
             </animad-enclosure-create-form>
             <animad-enclosure-update-form name="edit" load-url="{{_loadSingleEnclosureUrl}}"
                profile-url="[[backendUrl]]/api/admin_service/profile/enclosures"
+               backend-url="[[backendUrl]]"
                save-path="/enclosures-view/"
                cancel-path="/enclosures-view/"
                resources="[[resources]]" lang="[[lang]]"
@@ -74,6 +76,7 @@
       <hr>
       <h2>[[$t('create_sample_heading')]]</h2>
       <animad-enclosure-create-form save-url="[[backendUrl]]/api/admin_service/enclosures" 
+         backend-url="[[backendUrl]]"
          resources="[[resources]]" lang="[[lang]]" reset>
       </animad-enclosure-create-form>      
       <br />
@@ -81,6 +84,7 @@
       <hr>
       <h2>[[$t('create_sample_heading_cancel')]]</h2>
       <animad-enclosure-create-form save-url="[[backendUrl]]/api/admin_service/enclosures" 
+         backend-url="[[backendUrl]]"
          resources="[[resources]]" lang="[[lang]]" cancel-path="go/anywhere">
       </animad-enclosure-create-form>      
       <br />
@@ -88,6 +92,7 @@
       <hr>
       <h2>[[$t('create_with_relation_sample_heading')]]</h2>
       <animad-enclosure-create-form save-url="[[backendUrl]]/api/admin_service/enclosures" 
+         backend-url="[[backendUrl]]"
          resources="[[resources]]" lang="[[lang]]" cancel-path="go/anywhere" reset animals>
       </animad-enclosure-create-form>
       <br />

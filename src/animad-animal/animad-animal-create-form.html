@@ -51,10 +51,12 @@
             <animad-animal-form id="customform" data="{{data}}" 
               resources="[[resources]]" lang="[[lang]]" lists="[[lists]]" auto-validate></animad-animal-form>
             <!-- GENERATOR hier kommen die Templates für die Relationen hin -->
-            <template is="dom-if" if="{{keepers}}" 
->                <animad-keeper-simple-relation
-                data="{{data}}" resources="[[resources]]" lang="[[lang]]" 
-                preload></animad-keeper-simple-relation>
+            <template is="dom-if" if="{{keepers}}">
+                <animad-keeper-simple-relation
+                    data="{{data}}" 
+                    profile-url="[[backendUrl]]/api/admin_service/profile/keepers"
+                    resources="[[resources]]" lang="[[lang]]" preload
+                ></animad-keeper-simple-relation>
             </template>
         </form>
         <!-- 
@@ -117,6 +119,9 @@
                         type: String,
                         value: 'animal'
                     },
+                    backendUrl: {
+                        type: String
+                    },                    
                     // GENERATOR hier die Relationen generieren
                     /*
                      * Wenn dieser Wert auf 'true' gesetzt wird, dann können

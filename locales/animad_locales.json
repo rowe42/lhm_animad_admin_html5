@@ -72,7 +72,8 @@
         "list_delete_error": "An error occured while deleting the animal '%{id}'. Error code is '%{code}'.",
         "list_error": "An error occured while %{action}.",
         "list_action_search": "searching",
-        "list_action_delete": "deleting"
+        "list_action_delete": "deleting",
+        "onthefly_heading": "Create a new animal"
       },
       "enclosure": {
         "relation_name": "Enclosure",
@@ -110,7 +111,8 @@
         "list_error": "An error occured while %{action}.",
         "list_too_many_results": "More than %{results} results found. Please narrow your search.",
         "list_action_search": "searching",
-        "list_action_delete": "deleting"
+        "list_action_delete": "deleting",
+        "onthefly_heading": "Create a new enclosure"
       },
       "keeper":{
         "firstName": "Firstname",
@@ -174,7 +176,8 @@
         "list_error": "An error occured while %{action}.",
         "list_too_many_results": "More than %{results} results found. Please narrow your search.",
         "list_action_search": "searching",
-        "list_action_delete": "deleting"
+        "list_action_delete": "deleting",
+         "onthefly_heading": "Create a new keeper"
       },
       "security": {
         "form_error": "Es ist ein Fehler beim Laden der Rechte aufgetreten. Fehlercode ist '%{code}'."
@@ -258,7 +261,8 @@
         "list_delete_error": "Es ist ein Fehler beim Löschen des Tiers '%{id}' aufgetreten. Fehlercode ist '%{code}'.",
         "list_error": "Es ist ein Fehler %{action} aufgetreten.",
         "list_action_search": "bei der Suche",
-        "list_action_delete": "beim Löschen"
+        "list_action_delete": "beim Löschen",
+        "onthefly_heading": "Neues Tier anlegen"
       },
       "enclosure": {
         "relation_name": "Gehege",
@@ -294,7 +298,8 @@
         "list_delete_error": "Es ist ein Fehler beim Löschen des Geheges '%{id}' aufgetreten. Fehlercode ist '%{code}'.",
         "list_error": "Es ist ein Fehler %{action} aufgetreten.",
         "list_action_search": "bei der Suche",
-        "list_action_delete": "beim Löschen"
+        "list_action_delete": "beim Löschen",
+        "onthefly_heading": "Neues Gehege anlegen"
       },
       "keeper":{
         "firstName": "Vorname",
@@ -359,7 +364,8 @@
         "list_error": "Es ist ein Fehler %{action} aufgetreten.",
         "list_error_too_many_results": "Mehr als %{results} Ergebnisse gefunden. Bitte die Suche verfeinern und erneut suchen!",
         "list_action_search": "bei der Suche",
-        "list_action_delete": "beim Löschen"
+        "list_action_delete": "beim Löschen",
+         "onthefly_heading": "Neuen Wärter anlegen"
       },
       "security": {
         "form_error": "Es ist ein Fehler beim Laden der Rechte aufgetreten. Fehlercode ist '%{code}'."
