@@ -74,9 +74,6 @@
                  * Generates a computed binding function for getting localized resources.
                  */
                 [computeTranslate] (lang, resources) {
-                    if (!lang || !resources || !this._domain || !this._entity) {
-                        console.warn("WARNING: there is an error in your properties.\n lang -> " + lang + "\n resources -> " + resources + "\n domain -> " + this._domain + "\n entity -> " + this._entity);
-                    }
                     if (resources) {
                         var subtree = resources[lang][this._domain][this._entity];
                     }

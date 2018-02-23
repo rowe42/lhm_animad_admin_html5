@@ -1,18 +1,18 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../bower_components/nebula-i18n/nebula-i18n.html">
-
-<!-- custom components -->
-<link rel="import" href="animad-enclosure/animad-enclosures-list.html">
-<link rel="import" href="animad-enclosure/animad-enclosure-update-form.html">
-<link rel="import" href="animad-enclosure/animad-enclosure-create-form.html">
 
 <!-- custom behaviors -->
 <link rel="import" href="behaviors/nebula-polyglot-behavior.html">
+<link rel="import" href="behaviors/animad-view-behavior.html">
 <link rel="import" href="behaviors/mixin.html">
 
 <!-- custom iconset -->
 <link rel="import" href="animad-icons.html">
+
+<!-- custom components -->
+<link rel="lazy-import" href="animad-enclosure/animad-enclosures-list.html">
+<link rel="lazy-import" href="animad-enclosure/animad-enclosure-update-form.html">
+<link rel="lazy-import" href="animad-enclosure/animad-enclosure-create-form.html">
 
 <link rel="import" href="shared-styles.html">
 
@@ -38,31 +38,31 @@
         <iron-icon icon="animad-icons:basecamp"></iron-icon>
       </div>
       <h1>[[$t('main_heading')]]</h1>
-      <h2>[[$t('table_sample_heading')]] [[page]]</h2>
+      <h2>[[$t('table_sample_heading')]]</h2>
       <div class="animad-enclosure-view-content">
           <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" route="{{subroute}}">
             <animad-enclosures-list
               name=""
-              url="[[backendUrl]]/api/admin_service/enclosures"
-              default-search="name:Elephant's Paradise"
+              url="[[backendUrl]][[_entitiesUrl]]"
+              default-search="name:'Elephant's paradise'"
               route="{{subroute}}"
-              edit-path="/enclosures-view/edit"
+              edit-path="/enclosures-view/update"
               create-path="/enclosures-view/create"              
               on-filter-data="_filterData"
               filtered-data="[[_filteredData]]"
               resources="[[resources]]" lang="[[lang]]">
             </animad-enclosures-list>              
             <animad-enclosure-create-form name="create"
-              save-url="[[backendUrl]]/api/admin_service/enclosures"
-              profile-url="[[backendUrl]]/api/admin_service/profile/enclosures"
+              save-url="[[backendUrl]][[_entitiesUrl]]"
+              profile-url="[[backendUrl]][[_profileUrl]]"
               backend-url="[[backendUrl]]"
               save-path="/enclosures-view/"
               cancel-path="/enclosures-view/"
               resources="[[resources]]" lang="[[lang]]"
               animals>
             </animad-enclosure-create-form>
-            <animad-enclosure-update-form name="edit" load-url="{{_loadSingleEnclosureUrl}}"
-               profile-url="[[backendUrl]]/api/admin_service/profile/enclosures"
+            <animad-enclosure-update-form name="update" load-url="{{_loadSingleEntityUrl}}"
+               profile-url="[[backendUrl]][[_profileUrl]]"
                backend-url="[[backendUrl]]"
                save-path="/enclosures-view/"
                cancel-path="/enclosures-view/"
@@ -71,11 +71,12 @@
             </animad-enclosure-update-form>              
           </iron-pages>
       </div>
-      <br />
+      <!--Können wir das unten alles entfernen? Müsste man sonst fixen...-->
+<!--      <br />
       <br />
       <hr>
       <h2>[[$t('create_sample_heading')]]</h2>
-      <animad-enclosure-create-form save-url="[[backendUrl]]/api/admin_service/enclosures" 
+      <animad-enclosure-create-form save-url="[[backendUrl]][[_entitiesUrl]]" 
          backend-url="[[backendUrl]]"
          resources="[[resources]]" lang="[[lang]]" reset>
       </animad-enclosure-create-form>      
@@ -83,7 +84,7 @@
       <br />
       <hr>
       <h2>[[$t('create_sample_heading_cancel')]]</h2>
-      <animad-enclosure-create-form save-url="[[backendUrl]]/api/admin_service/enclosures" 
+      <animad-enclosure-create-form save-url="[[backendUrl]][[_entitiesUrl]]" 
          backend-url="[[backendUrl]]"
          resources="[[resources]]" lang="[[lang]]" cancel-path="go/anywhere">
       </animad-enclosure-create-form>      
@@ -91,12 +92,12 @@
       <br />
       <hr>
       <h2>[[$t('create_with_relation_sample_heading')]]</h2>
-      <animad-enclosure-create-form save-url="[[backendUrl]]/api/admin_service/enclosures" 
+      <animad-enclosure-create-form save-url="[[backendUrl]][[_entitiesUrl]]" 
          backend-url="[[backendUrl]]"
          resources="[[resources]]" lang="[[lang]]" cancel-path="go/anywhere" reset animals>
       </animad-enclosure-create-form>
       <br />
-      <br />
+      <br />-->
 <!--      <hr>
       <h2>[[$t('update_sample_heading')]]</h2>
       <animad-enclosure-update-form load-url="[[backendUrl]]/api/admin_service/enclosures/3bca5b38-13be-4fd3-b656-fa79a639ddd5">
@@ -122,22 +123,12 @@
 
   <script>
     // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]View
-    class AnimadEnclosuresView extends mix(Polymer.Element).with(Nebula.PolyglotBehavior) {
+    class AnimadEnclosuresView extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadViewBehavior) {
       // GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-view
       static get is() { return 'animad-enclosures-view'; }
 
       static get properties() {
         return {
-              route: {
-                  type: String,
-                  reflectToAttribute: true
-              },
-              page: {
-                  type: String,
-                  reflectToAttribute: true
-              },
-              routeData: Object,
-              rootPath: String,         
           /*
            * Das '_domain' property wird benötigt, um" den richtigen Pfad
            * zu den i18n Werten zu erzeugen. Es wird in jedem Element
@@ -160,12 +151,21 @@
             type: String,
             value: 'animad-enclosures'
           },
-          backendUrl: {
+          /*
+           * wird verwendet, um die lazy einzubindenden Unterelemente zu identifizieren
+           */
+          _singleEntity: {
+            type: String,
+            value: 'animad-enclosure'                  
+          },
+          _entitiesUrl: {
               type: String,
+              value: '/api/admin_service/enclosures'
           },
-          _loadSingleKeeperUrl: {
-              type: String
-          },
+          _profileUrl: {
+              type: String,
+              value: '/api/admin_service/profile/enclosures'
+          },            
           /*
           *  _filteredData enthält alle Objekte, die auf eingegebene oder ausgewählte Filter zutreffen.
           */
@@ -178,26 +178,6 @@
         }
       }
       
-        composeLoadUrl() {
-            if (this.subroute && this.subroute.path) {
-                this._loadSingleEnclosureUrl = this.backendUrl + '/api/admin_service/enclosures' + this.subroute.path;
-            }
-        }
-            
-
-        static get observers() {
-            return [
-                '_routePageChanged(routeData.page)',
-            ];
-        }
-
-        _routePageChanged(page) {
-            console.log('changed '+ page);
-            this.page = page || '';
-            this.composeLoadUrl();
-        }
-
-
       /**
       * Wird ausgelöst durch den Event [`event-filter-data`](#/mixins/AnimadListBehavior#event-filter-data).
       * Filtert die Daten der Liste. Der `event` enthält die folgenden Informationen:
