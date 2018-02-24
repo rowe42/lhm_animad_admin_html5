@@ -321,6 +321,16 @@
               _errorToast: {
                   type: Object
               },
+              _noWriteAllowed: {
+                  type: Boolean,
+                  value: false,
+                  observer: '_handleNoWrite'
+              },
+              _noDeleteAllowed: {
+                  type: Boolean,
+                  value: false,
+                  observer: '_handleNoDelete'
+            } 
             }
         }
 
@@ -718,6 +728,28 @@
           }).catch(error => {
             this._error(this.$t('list_action_delete'), error.message);
           });
+        }
+        
+        /*
+         * Wird vom observer von _noWriteAllowed aufgerufen, um New- und
+         * Edit-Button zu verbergen.
+         */
+        _handleNoWrite(value) {
+            if (value) {
+                this.hideNew = true;
+                this.hideEdit = true;
+            }
+        }
+        
+        /*
+         * Wird vom observer von _noDeleteAllowed aufgerufen, um den 
+         * Delete-Button zu verbergen.
+         */
+        _handleNoDelete(value) {
+            if (value) {
+                this.hideDelete = true;
+
+            }
         }
 
         /**

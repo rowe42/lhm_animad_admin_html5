@@ -24,8 +24,6 @@
 <link rel="import" href="common-security/common-security-init.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 
-
-
 <!-- GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-view.html -->
 <!-- GENERATOR hier müssen alle modellierten views rein-->
 <link rel="lazy-import" href="animad-keepers-view.html">
@@ -81,6 +79,13 @@
                 color: #aa00ff;
                 font-weight: bold;
             }
+            
+                  
+            div.menu-disabled {
+                padding: 0 16px;
+                color: grey;
+                line-height: 40px;
+            }
 
 
             #global_error_toast {
@@ -113,6 +118,9 @@
         <common-security-init id="animad_security" load-url="[[backendUrl]]/api/user_service/permissions"
              resources="{{resources}}" lang="[[lang]]" ></common-security-init>
         
+        <common-security-check permission="administration_READ_Keeper" allowed="{{readKeeperAllowed}}"></common-security-check>
+        <common-security-check permission="administration_READ_Animal" allowed="{{readAnimalAllowed}}"></common-security-check>
+        <common-security-check permission="administration_READ_Enclosure" allowed="{{readEnclosureAllowed}}"></common-security-check>
         
         <!-- i18n -->
         <nebula-language
@@ -146,27 +154,80 @@
                         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
                             <!-- GENERATOR pattern: ...[ENTITYNAME]-view">[ENTITYNAME]</a> -->
                             <!-- GENERATOR TODO - der Name und Icon sollte aus einer i18n Liste kommen -->
-                            <paper-item>
-                                <iron-icon icon="animad-icons:face"></iron-icon>
-                                <a name="keepers-view" href="#[[rootPath]]keepers-view/">Keepers</a>
-<!--                                <a name="keepers-view" href="[[rootPath]]keepers-view/list">Keepers</a>-->
-                            </paper-item>
-                            <paper-item>
-                                <iron-icon icon="animad-icons:panda"></iron-icon>
-                                <a name="animals-view" href="#[[rootPath]]animals-view/">Animals</a>
-                            </paper-item>
-                            <paper-item>
-                                <iron-icon icon="animad-icons:basecamp"></iron-icon>
-                                <a name="enclosures-view" href="#[[rootPath]]enclosures-view/">Enclosures</a>
-                            </paper-item>
-                            <paper-item>
-                                <iron-icon icon="animad-icons:basecamp"></iron-icon>
-                                <a name="security-view" href="#[[rootPath]]security-view/">Security</a>
-                            </paper-item>
-                            <paper-item>
-                                <iron-icon icon="animad-icons:lightbulb-on"></iron-icon>
-                                <a name="keepers-formsamples-view" href="#[[rootPath]]keepers-formsamples-view">Keepers Forms</a>
-                            </paper-item>            
+                            
+                            <!--Keepers-->
+                            <template is="dom-if" if="{{readKeeperAllowed}}">
+                            <a class="paper-item-link" name="keepers-view" href="#[[rootPath]]keepers-view/" tabindex="-1">
+                                <paper-icon-item>
+                                   <iron-icon icon="animad-icons:face" slot="item-icon"></iron-icon>
+                                    Keepers
+                              </paper-icon-item>
+                            </a>
+                            </template>
+                            
+                            <template is="dom-if" if="{{!readKeeperAllowed}}">
+                            <div class="menu-disabled" name="keepers-view">
+                                <paper-icon-item disabled="true">
+                                   <iron-icon icon="animad-icons:face" slot="item-icon"></iron-icon>
+                                    Keepers
+                              </paper-icon-item>
+                            </div>
+                            </template>
+                            
+                            <!--Animals-->
+                            <template is="dom-if" if="{{readAnimalAllowed}}">
+                            <a class="paper-item-link" name="animals-view" href="#[[rootPath]]animals-view/" tabindex="-1">
+                                <paper-icon-item>
+                                   <iron-icon icon="animad-icons:panda" slot="item-icon"></iron-icon>
+                                    Animals
+                              </paper-icon-item>
+                            </a>
+                            </template>
+                            
+                            <template is="dom-if" if="{{!readAnimalAllowed}}">
+                            <div class="menu-disabled" name="animals-view">
+                                <paper-icon-item disabled="true">
+                                   <iron-icon icon="animad-icons:panda" slot="item-icon"></iron-icon>
+                                    Animals
+                              </paper-icon-item>
+                            </div>
+                            </template>
+                            
+                            <!--Enclosures-->
+                            <template is="dom-if" if="{{readEnclosureAllowed}}">
+                            <a class="paper-item-link" name="enclosures-view" href="#[[rootPath]]enclosures-view/" tabindex="-1">
+                                <paper-icon-item>
+                                   <iron-icon icon="animad-icons:basecamp" slot="item-icon"></iron-icon>
+                                    Enclosures
+                              </paper-icon-item>
+                            </a>
+                            </template>
+                            
+                            <template is="dom-if" if="{{!readEnclosureAllowed}}">
+                            <div class="menu-disabled" name="enclosures-view">
+                                <paper-icon-item disabled="true">
+                                   <iron-icon icon="animad-icons:basecamp" slot="item-icon"></iron-icon>
+                                    Enclosures
+                              </paper-icon-item>
+                            </div>
+                            </template>
+
+                            <!--Security-->
+                            <a class="paper-item-link" name="security-view" href="#[[rootPath]]security-view/" tabindex="-1">
+                                <paper-icon-item>
+                                   <iron-icon icon="animad-icons:security" slot="item-icon"></iron-icon>
+                                    Security
+                              </paper-icon-item>
+                            </a>
+                            
+                            <!--Keepers Forms-->
+                            <a class="paper-item-link" name="keepers-formsamples-view" href="#[[rootPath]]keepers-formsamples-view/" tabindex="-1">
+                                <paper-icon-item>
+                                   <iron-icon icon="animad-icons:lightbulb-on" slot="item-icon"></iron-icon>
+                                    Keepers Forms
+                              </paper-icon-item>
+                            </a>
+        
                         </iron-selector>
                     </div>
                 </app-drawer>

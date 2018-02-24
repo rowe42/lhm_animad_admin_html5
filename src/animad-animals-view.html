@@ -12,6 +12,7 @@
 <link rel="import" href="animad-icons.html">
 
 <!-- custom components -->
+<link rel="import" href="common-security/common-security-check.html">
 <link rel="lazy-import" href="animad-animal/animad-animals-list.html">
 <link rel="lazy-import" href="animad-animal/animad-animal-update-form.html">
 <link rel="lazy-import" href="animad-animal/animad-animal-create-form.html">
@@ -35,6 +36,10 @@
   
     <app-route route="{{route}}" pattern="/animals-view/:page" data="{{routeData}}" tail="{{subroute}}">
     </app-route>
+    
+    <!--Security-->
+    <common-security-check permission="administration_READ_Animal" allowed="{{readAllowed}}"></common-security-check>
+    <common-security-check permission="administration_WRITE_Animal" allowed="{{writeAllowed}}"></common-security-check>
 
     <div id="view" class="card">
       <div class="circle">
@@ -44,32 +49,38 @@
       <h2>[[$t('table_sample_heading')]]</h2>
       <div class="animad-animal-view-content">
           <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" route="{{subroute}}">
-            <animad-animals-list
-              name=""
-              url="[[backendUrl]][[_entitiesUrl]]"
-              default-search='name:Dumbo'
-              route="{{subroute}}"
-              edit-path="/animals-view/update"
-              create-path="/animals-view/create"
-              on-filter-data="_filterData"
-              filtered-data="[[_filteredData]]"
-              resources="[[resources]]" lang="[[lang]]">
-            </animad-animals-list>          
-            <animad-animal-create-form name="create" 
-              save-url="[[backendUrl]][[_entitiesUrl]]"
-              backend-url="[[backendUrl]]"
-              profile-url="[[backendUrl]][[_profileUrl]]"
-              save-path="/animals-view/"
-              cancel-path="/animals-view/"
-              resources="[[resources]]" lang="[[lang]]" keepers reset>                  
-            </animad-animal-create-form>            
-            <animad-animal-update-form name="update" 
-              load-url="{{_loadSingleEntityUrl}}"
-              profile-url="[[backendUrl]][[_profileUrl]]"
-              save-path="/animals-view/"
-              cancel-path="/animals-view/"
-              resources="[[resources]]" lang="[[lang]]" keepers>
-            </animad-animal-update-form>
+            <template is="dom-if" if="{{readAllowed}}">
+                <animad-animals-list
+                  name=""
+                  url="[[backendUrl]][[_entitiesUrl]]"
+                  default-search='name:Dumbo'
+                  route="{{subroute}}"
+                  edit-path="/animals-view/update"
+                  create-path="/animals-view/create"
+                  on-filter-data="_filterData"
+                  filtered-data="[[_filteredData]]"
+                  resources="[[resources]]" lang="[[lang]]">
+                </animad-animals-list>
+            </template>
+            <template is="dom-if" if="{{writeAllowed}}">              
+                <animad-animal-create-form name="create" 
+                  save-url="[[backendUrl]][[_entitiesUrl]]"
+                  backend-url="[[backendUrl]]"
+                  profile-url="[[backendUrl]][[_profileUrl]]"
+                  save-path="/animals-view/"
+                  cancel-path="/animals-view/"
+                  resources="[[resources]]" lang="[[lang]]" keepers reset>                  
+                </animad-animal-create-form>
+            </template>
+            <template is="dom-if" if="{{writeAllowed}}">
+                <animad-animal-update-form name="update" 
+                  load-url="{{_loadSingleEntityUrl}}"
+                  profile-url="[[backendUrl]][[_profileUrl]]"
+                  save-path="/animals-view/"
+                  cancel-path="/animals-view/"
+                  resources="[[resources]]" lang="[[lang]]" keepers>
+                </animad-animal-update-form>
+            </template>
           </iron-pages> 
 <!--            <animad-animals-list name="filterexample" 
               url="[[backendUrl]][[_entitiesUrl]]" 

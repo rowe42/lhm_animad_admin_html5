@@ -10,6 +10,7 @@
 <link rel="import" href="animad-icons.html">
 
 <!-- custom components -->
+<link rel="import" href="common-security/common-security-check.html">
 <link rel="lazy-import" href="animad-enclosure/animad-enclosures-list.html">
 <link rel="lazy-import" href="animad-enclosure/animad-enclosure-update-form.html">
 <link rel="lazy-import" href="animad-enclosure/animad-enclosure-create-form.html">
@@ -33,6 +34,10 @@
     <app-route route="{{route}}" pattern="/enclosures-view/:page" data="{{routeData}}" tail="{{subroute}}">
     </app-route>
     
+    <!--Security-->
+    <common-security-check permission="administration_READ_Enclosure" allowed="{{readAllowed}}"></common-security-check>
+    <common-security-check permission="administration_WRITE_Enclosure" allowed="{{writeAllowed}}"></common-security-check>
+    
     <div id="view" class="card">
       <div class="circle">
         <iron-icon icon="animad-icons:basecamp"></iron-icon>
@@ -41,34 +46,40 @@
       <h2>[[$t('table_sample_heading')]]</h2>
       <div class="animad-enclosure-view-content">
           <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" route="{{subroute}}">
-            <animad-enclosures-list
-              name=""
-              url="[[backendUrl]][[_entitiesUrl]]"
-              default-search="name:'Elephant's paradise'"
-              route="{{subroute}}"
-              edit-path="/enclosures-view/update"
-              create-path="/enclosures-view/create"              
-              on-filter-data="_filterData"
-              filtered-data="[[_filteredData]]"
-              resources="[[resources]]" lang="[[lang]]">
-            </animad-enclosures-list>              
-            <animad-enclosure-create-form name="create"
-              save-url="[[backendUrl]][[_entitiesUrl]]"
-              profile-url="[[backendUrl]][[_profileUrl]]"
-              backend-url="[[backendUrl]]"
-              save-path="/enclosures-view/"
-              cancel-path="/enclosures-view/"
-              resources="[[resources]]" lang="[[lang]]"
-              animals>
-            </animad-enclosure-create-form>
-            <animad-enclosure-update-form name="update" load-url="{{_loadSingleEntityUrl}}"
-               profile-url="[[backendUrl]][[_profileUrl]]"
-               backend-url="[[backendUrl]]"
-               save-path="/enclosures-view/"
-               cancel-path="/enclosures-view/"
-               resources="[[resources]]" lang="[[lang]]"
-               animals>
-            </animad-enclosure-update-form>              
+            <template is="dom-if" if="{{readAllowed}}">
+                <animad-enclosures-list
+                  name=""
+                  url="[[backendUrl]][[_entitiesUrl]]"
+                  default-search="name:'Elephant's paradise'"
+                  route="{{subroute}}"
+                  edit-path="/enclosures-view/update"
+                  create-path="/enclosures-view/create"              
+                  on-filter-data="_filterData"
+                  filtered-data="[[_filteredData]]"
+                  resources="[[resources]]" lang="[[lang]]">
+                </animad-enclosures-list>
+            </template>
+            <template is="dom-if" if="{{writeAllowed}}">
+                <animad-enclosure-create-form name="create"
+                  save-url="[[backendUrl]][[_entitiesUrl]]"
+                  profile-url="[[backendUrl]][[_profileUrl]]"
+                  backend-url="[[backendUrl]]"
+                  save-path="/enclosures-view/"
+                  cancel-path="/enclosures-view/"
+                  resources="[[resources]]" lang="[[lang]]"
+                  animals>
+                </animad-enclosure-create-form>
+            </template>
+            <template is="dom-if" if="{{writeAllowed}}">
+                <animad-enclosure-update-form name="update" load-url="{{_loadSingleEntityUrl}}"
+                   profile-url="[[backendUrl]][[_profileUrl]]"
+                   backend-url="[[backendUrl]]"
+                   save-path="/enclosures-view/"
+                   cancel-path="/enclosures-view/"
+                   resources="[[resources]]" lang="[[lang]]"
+                   animals>
+                </animad-enclosure-update-form>
+            </template>
           </iron-pages>
       </div>
       <!--Können wir das unten alles entfernen? Müsste man sonst fixen...-->
