@@ -1,6 +1,11 @@
 {
   "en": {
     "view": {
+      "animad-app": {
+        "keepers": "Keepers",
+        "animals": "Animals",
+        "enclosures": "Enclosures"                
+      },
       "animad-animal": {
         "main_heading": "Animals View",
         "table_sample_heading": "Table Sample",
@@ -186,6 +191,11 @@
   },
   "de": {
     "view": {
+      "animad-app": {
+        "keepers": "Wärter",
+        "animals": "Tiere",
+        "enclosures": "Gehege"                
+      },
       "animad-keepers": {
         "main_heading": "Keepers view"
       },

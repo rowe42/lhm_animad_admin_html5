@@ -15,6 +15,9 @@
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/nebula-i18n/nebula-i18n.html">
 
+<link rel="import" href="behaviors/nebula-polyglot-behavior.html">
+
+
 <!-- GENERATOR pattern: [DOMAINNAME]-icons.html -->
 <link rel="import" href="animad-icons.html">
 
@@ -160,7 +163,7 @@
                             <a class="paper-item-link" name="keepers-view" href="#[[rootPath]]keepers-view/" tabindex="-1">
                                 <paper-icon-item>
                                    <iron-icon icon="animad-icons:face" slot="item-icon"></iron-icon>
-                                    Keepers
+                                    [[$t('keepers')]]
                               </paper-icon-item>
                             </a>
                             </template>
@@ -169,7 +172,7 @@
                             <div class="menu-disabled" name="keepers-view">
                                 <paper-icon-item disabled="true">
                                    <iron-icon icon="animad-icons:face" slot="item-icon"></iron-icon>
-                                    Keepers
+                                    [[$t('keepers')]]
                               </paper-icon-item>
                             </div>
                             </template>
@@ -179,7 +182,7 @@
                             <a class="paper-item-link" name="animals-view" href="#[[rootPath]]animals-view/" tabindex="-1">
                                 <paper-icon-item>
                                    <iron-icon icon="animad-icons:panda" slot="item-icon"></iron-icon>
-                                    Animals
+                                    [[$t('animals')]]
                               </paper-icon-item>
                             </a>
                             </template>
@@ -188,7 +191,7 @@
                             <div class="menu-disabled" name="animals-view">
                                 <paper-icon-item disabled="true">
                                    <iron-icon icon="animad-icons:panda" slot="item-icon"></iron-icon>
-                                    Animals
+                                    [[$t('animals')]]
                               </paper-icon-item>
                             </div>
                             </template>
@@ -198,7 +201,7 @@
                             <a class="paper-item-link" name="enclosures-view" href="#[[rootPath]]enclosures-view/" tabindex="-1">
                                 <paper-icon-item>
                                    <iron-icon icon="animad-icons:basecamp" slot="item-icon"></iron-icon>
-                                    Enclosures
+                                    [[$t('enclosures')]]
                               </paper-icon-item>
                             </a>
                             </template>
@@ -207,7 +210,7 @@
                             <div class="menu-disabled" name="enclosures-view">
                                 <paper-icon-item disabled="true">
                                    <iron-icon icon="animad-icons:basecamp" slot="item-icon"></iron-icon>
-                                    Enclosures
+                                    [[$t('enclosures')]]
                               </paper-icon-item>
                             </div>
                             </template>
@@ -257,7 +260,7 @@
 
     <script>
         // GENERATOR pattern (camel case): [DOMAINNAME]App
-        class AnimadApp extends Polymer.Element {
+        class AnimadApp extends  mix(Polymer.Element).with(Nebula.PolyglotBehavior) {
             // GENERATOR pattern [DOMAINNAME]-app
             static get is() {
                 return 'animad-app';
@@ -265,6 +268,14 @@
 
             static get properties() {
                 return {
+                  _domain: {
+                      type: String,
+                      value: 'view'
+                    },
+                    _entity: {
+                      type: String,
+                      value: 'animad-app'
+                    },                    
                     page: {
                         type: String,
                         reflectToAttribute: true,
