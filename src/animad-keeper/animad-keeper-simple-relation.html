@@ -126,11 +126,17 @@
              * ist notwendig, weil man im HTML Bereich Databinding
              * nicht schachteln kann.
              * 
-             * @param   item des anzuzeigende Element
+             * @param   item das anzuzeigende Element
              * @return  formatierter Text
              */
             _format(item) {
-                return this.$t('relation_list', {firstName: item.firstName, lastName: item.lastName, birthday: item.birthday, employmentDate: item.employmentDate, skill: item.skill});
+                //die Enums übersetzen
+                //TODO Generator pattern
+                var translatedItem = Object.assign({}, item);
+                for (var key of ['sill']) {
+                    translatedItem[key] = this.$t(key + '.' + item[key]);
+                }                
+                return this.$t('relation_list', {firstName: item.firstName, lastName: item.lastName, birthday: item.birthday, employmentDate: item.employmentDate, skill: translatedItem.skill});
             }
 
             /*

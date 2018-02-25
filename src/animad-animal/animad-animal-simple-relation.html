@@ -58,9 +58,7 @@
         <paper-listbox>
             <template is="dom-repeat" items="{{data._embedded.animals}}">
                 <paper-item>
-                    <!-- TODO Hier ist noch ein Bug drin. Die Operation wir nicht aufgerufen, 
-                         wenn aus der Liste gelöscht wird. -->
-                    <paper-item-body>[[_format(index)]]</paper-item-body>
+                    <paper-item-body>[[_format(item)]]</paper-item-body>
                     <paper-icon-button icon="animad-icons:link-off" data-item$="[[index]]" on-tap="_removeItem"></paper-icon-button>
                 </paper-item>
             </template>
@@ -139,13 +137,10 @@
              * ist notwendig, weil man im HTML Bereich Databinding
              * nicht schachteln kann.
              * 
-             * @param   index des jeweiligen Elements
+             * @param   item das anzuzeigende Element
              * @return  formatierter Text
              */
-            _format(index) {
-                var name = 'data._embedded.' + this._entity + 's';
-                var items = this.get(name);
-                var item = items[index];
+            _format(item) {
                 //die Enums übersetzen
                 //TODO Generator pattern
                 var translatedItem = Object.assign({}, item);

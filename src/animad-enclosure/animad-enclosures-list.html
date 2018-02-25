@@ -257,7 +257,7 @@
           // this is optional. If not implemented will only ask question (translated): Do you really want to delete this item?
           var index = this.filteredData.findIndex(item => item.id == e.target.id);
           var item = this.filteredData[index];
-          this._deleteInfo = this.$t('modal_deleteinfo', {name: item.name, cleaningtime: item.cleaningTime});
+          this._deleteInfo = this.$t('modal_deleteinfo', {name: item.name, cleaningTime: item.cleaningTime});
 
           super._confirmDeleteRow(e);
         }
