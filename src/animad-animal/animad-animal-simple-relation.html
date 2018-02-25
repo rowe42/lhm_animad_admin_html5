@@ -143,10 +143,7 @@
             _format(item) {
                 //die Enums übersetzen
                 //TODO Generator pattern
-                var translatedItem = Object.assign({}, item);
-                for (var key of ['species', 'gender']) {
-                    translatedItem[key] = this.$t(key + '.' + item[key]);
-                }
+                var translatedItem =  this._translateItem(item, ['species', 'gender'], []);
                 return this.$t('relation_list', { name: translatedItem.name, species: translatedItem.species, birthday: translatedItem.birthday, gender: translatedItem.gender, weight: translatedItem.weight});
             }
 
@@ -162,11 +159,7 @@
             _formatSuggester(item) {
                 //die Enums übersetzen
                 //TODO Generator pattern
-                var translatedItem = Object.assign({}, item);
-                for (var key of ['species', 'gender']) {
-                    translatedItem[key] = this.$t(key + '.' + item[key]);
-                }
-                
+                var translatedItem =  this._translateItem(item, ['species', 'gender'], []);
                 return this.$t('relation_suggest', { name: translatedItem.name, species: translatedItem.species, birthday: translatedItem.birthday, gender: translatedItem.gender, weight: translatedItem.weight})
             }
         }

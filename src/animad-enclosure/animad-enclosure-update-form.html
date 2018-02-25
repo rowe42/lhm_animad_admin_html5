@@ -15,7 +15,7 @@
 <link rel="import" href="animad-enclosure-form.html">
 
 <!-- GENERATOR hier die links für die Relationen -->
-<link rel="import" href="../animad-keeper/animad-keeper-simple-relation.html">
+<link rel="import" href="../animad-animal/animad-animal-simple-relation.html">
 
 <link rel="import" href="../animad-icons.html">
 <link rel="import" href="../behaviors/animad-form-behavior.html">
@@ -48,6 +48,7 @@
             <animad-enclosure-form id="customform" data="{{data}}" readonly="[[readform]]" 
                resources="[[resources]]" lang="[[lang]]" lists="[[lists]]"  auto-validate></animad-enclosure-form>
             <template is="dom-if" if="[[animals]]">
+                abc
                 <animad-animal-simple-relation id="animalrelation"
                 data="{{data}}"
                 profile-url="[[backendUrl]]/api/admin_service/profile/animals"

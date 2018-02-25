@@ -192,7 +192,7 @@
                     // Wenn die Auswahlliste vorgeladen werden soll, dann
                     // kann dies über den '[Name der Entity]s' Link gemacht
                     // werden.
-                    if (this.preload) {
+                    if (this.preload && this.source.length === 0) {
                         var init = {
                             method: 'GET',
                             mode: 'cors',
@@ -285,6 +285,26 @@
                 
                 
             }
+        }
+        
+        _translateItem(item, singleEntries, multiEntries) {
+            var translatedItem = Object.assign({}, item);
+            //einzelne Werte zu übersetzen
+            for (var key of singleEntries) {
+                translatedItem[key] = this.$t(key + '.' + item[key]);
+            }
+                
+            //CSV-Liste mit Werten zu übersetzen
+            for (var key of multiEntries) {
+                translatedItem[key] = '';
+                for (var subItem of item[key]) {
+                    if (translatedItem[key] !== '') {
+                        translatedItem[key] += ', '; 
+                    }
+                    translatedItem[key] += this.$t(key + '.' + subItem);
+                }
+            } 
+            return translatedItem;
         }
 
         /*

@@ -132,10 +132,7 @@
             _format(item) {
                 //die Enums übersetzen
                 //TODO Generator pattern
-                var translatedItem = Object.assign({}, item);
-                for (var key of ['sill']) {
-                    translatedItem[key] = this.$t(key + '.' + item[key]);
-                }                
+                var translatedItem =  this._translateItem(item, [], ['skill']);                
                 return this.$t('relation_list', {firstName: item.firstName, lastName: item.lastName, birthday: item.birthday, employmentDate: item.employmentDate, skill: translatedItem.skill});
             }
 
@@ -149,8 +146,10 @@
              * @return  den formatierten Text für den Suggester
              */
             _formatSuggester(item) {
-                return this.$t('relation_suggest', {firstName: item.firstName, lastName: item.lastName, birthday: item.birthday, employmentDate: item.employmentDate, skill: item.skill})
+                var translatedItem =  this._translateItem(item, [], ['skill']);
+                return this.$t('relation_suggest', {firstName: item.firstName, lastName: item.lastName, birthday: item.birthday, employmentDate: item.employmentDate, skill: translatedItem.skill})
             }
+            
         }
 
         customElements.define(AnimadKeeperSimpleRelation.is, AnimadKeeperSimpleRelation);
