@@ -162,7 +162,7 @@
           <template class="header">
             <vaadin-grid-sorter path="skill">[[$t('skill')]]</vaadin-grid-sorter>
           </template>
-          <template>[[item.skill]]</template>
+          <template>[[translateCSV('skill', item.skill)]]</template>
         </vaadin-grid-column>
 
         <vaadin-grid-column>
@@ -302,8 +302,6 @@
           this._search = event.target.search.toLowerCase();
           super._fetchData(this._search);
         }
-        
-
 
       }
 

@@ -287,26 +287,6 @@
             }
         }
         
-        _translateItem(item, singleEntries, multiEntries) {
-            var translatedItem = Object.assign({}, item);
-            //einzelne Werte zu übersetzen
-            for (var key of singleEntries) {
-                translatedItem[key] = this.$t(key + '.' + item[key]);
-            }
-                
-            //CSV-Liste mit Werten zu übersetzen
-            for (var key of multiEntries) {
-                translatedItem[key] = '';
-                for (var subItem of item[key]) {
-                    if (translatedItem[key] !== '') {
-                        translatedItem[key] += ', '; 
-                    }
-                    translatedItem[key] += this.$t(key + '.' + subItem);
-                }
-            } 
-            return translatedItem;
-        }
-
         /*
          * Öffnet den Dialog um ein neues Relationsobjekt
          * 'on the fly' anlegen zu können.
