@@ -175,7 +175,11 @@
                                     this.notifyPath('data._embedded.' + this._entity + 's');
                                 });
                             } else {
-                                this._error(response.status);
+                                if (response.status === 403 || response.status === 401) {
+                                    this._errorText('auth_error', response.status);
+                                } else {
+                                    this._error(response.status);
+                                }
                             }
                         })
                 }
@@ -219,7 +223,11 @@
                                         });
                                     });
                                 } else {
-                                    this._error(response.status);
+                                    if (response.status === 403 || response.status === 401) {
+                                        this._errorText('auth_error', response.status);
+                                    } else {
+                                        this._error(response.status);
+                                    }
                                 }
                             })
                     }
@@ -279,7 +287,11 @@
                 fetch(request)
                         .then(response => {
                             if (!response.ok) {
-                                this._error(response.status);
+                                if (response.status === 403 || response.status === 401) {
+                                    this._errorText('auth_error', response.status);
+                                } else {
+                                    this._error(response.status);
+                                }
                             }
                         })
                 
@@ -351,7 +363,11 @@
                             // Wenn ein Fehler aufgetreten ist, dann wird dieser
                             // über einen Toast dem nutzer mitgeteilt.
                             if (typeof this._error === "function") {
-                                this._error(response.status);
+                                if (response.status === 403 || response.status === 401) {
+                                    this._errorText('auth_error', response.status);
+                                } else {
+                                    this._error(response.status);
+                                }
                             } else {
                                 console.warn('Cannot find mixin "*-form-behavior.html"!');
                                 console.error('Cannot call ' + this._newUrl + '. Error Code: ' + response.status);
