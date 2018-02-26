@@ -25,12 +25,12 @@
             }
         </style>
         <paper-dialog>
-            <h2>Dialog Title</h2>
+            <h2>[[$t('onthefly_heading')]]</h2>
             <paper-dialog-scrollable>
                 <iron-form id="iform">
                     <form class="animad-keeper-create-dialog-form">
                         <animad-keeper-form data="{{_dialogdata}}"
-                           resources="[[resources]]" lang="[[lang]]" auto-validate></animad-keeper-form>
+                           resources="[[resources]]" lang="[[lang]]" lists="[[lists]]" auto-validate></animad-keeper-form>
                     </form>
                 </iron-form>
             </paper-dialog-scrollable>
@@ -52,7 +52,7 @@
                 <paper-item>
                     <!-- TODO Hier ist noch ein Bug drin. Die Operation wir nicht aufgerufen, 
                          wenn aus der Liste gelöscht wird. -->
-                    <paper-item-body>[[_format(index)]]</paper-item-body>
+                    <paper-item-body>[[_format(item)]]</paper-item-body>
                     <paper-icon-button icon="animad-icons:link-off" data-item$="[[index]]" on-tap="_removeItem"></paper-icon-button>
                 </paper-item>
             </template>
@@ -126,14 +126,14 @@
              * ist notwendig, weil man im HTML Bereich Databinding
              * nicht schachteln kann.
              * 
-             * @param   index des jeweiligen Elements
+             * @param   item das anzuzeigende Element
              * @return  formatierter Text
              */
-            _format(index) {
-                var name = 'data._embedded.' + this._entity + 's';
-                var items = this.get(name);
-                var item = items[index];
-                return this.$t('relation_list', {firstName: item.firstName, lastName: item.lastName, birthday: item.birthday, employmentDate: item.employmentDate, skill: item.skill});
+            _format(item) {
+                //die Enums übersetzen
+                //TODO Generator pattern
+                var translatedItem =  this.translateItem(item, [], ['skill']);                
+                return this.$t('relation_list', {firstName: item.firstName, lastName: item.lastName, birthday: item.birthday, employmentDate: item.employmentDate, skill: translatedItem.skill});
             }
 
             /*
@@ -146,8 +146,10 @@
              * @return  den formatierten Text für den Suggester
              */
             _formatSuggester(item) {
-                return this.$t('relation_suggest', {firstName: item.firstName, lastName: item.lastName, birthday: item.birthday, employmentDate: item.employmentDate, skill: item.skill})
+                var translatedItem =  this.translateItem(item, [], ['skill']);
+                return this.$t('relation_suggest', {firstName: item.firstName, lastName: item.lastName, birthday: item.birthday, employmentDate: item.employmentDate, skill: translatedItem.skill})
             }
+            
         }
 
         customElements.define(AnimadKeeperSimpleRelation.is, AnimadKeeperSimpleRelation);

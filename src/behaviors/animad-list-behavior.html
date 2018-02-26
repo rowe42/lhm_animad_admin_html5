@@ -321,6 +321,16 @@
               _errorToast: {
                   type: Object
               },
+              _noWriteAllowed: {
+                  type: Boolean,
+                  value: false,
+                  observer: '_handleNoWrite'
+              },
+              _noDeleteAllowed: {
+                  type: Boolean,
+                  value: false,
+                  observer: '_handleNoDelete'
+            } 
             }
         }
 
@@ -519,8 +529,12 @@
                   });
                 } else {
 
-                  this._localizedFilters=[];
-                  this._error(response.status);
+                    this._localizedFilters=[];
+                    if (response.status === 403 || response.status === 401) {
+                        this._errorText('auth_error', response.status);
+                    } else {
+                        this._error(response.status);
+                    }
                 }
               });
           }
@@ -719,6 +733,28 @@
             this._error(this.$t('list_action_delete'), error.message);
           });
         }
+        
+        /*
+         * Wird vom observer von _noWriteAllowed aufgerufen, um New- und
+         * Edit-Button zu verbergen.
+         */
+        _handleNoWrite(value) {
+            if (value) {
+                this.hideNew = true;
+                this.hideEdit = true;
+            }
+        }
+        
+        /*
+         * Wird vom observer von _noDeleteAllowed aufgerufen, um den 
+         * Delete-Button zu verbergen.
+         */
+        _handleNoDelete(value) {
+            if (value) {
+                this.hideDelete = true;
+
+            }
+        }
 
         /**
          * Der 'Toast', der bei Fehlern beim Löschen angezeigt wird.
@@ -751,9 +787,18 @@
          * Der 'Toast', der bei Fehlern (allgemein) angezeigt wird.
          */
         _error(action, msg) {
-            this._errorToast.text = this.$t('list_error', { action: action });
+            this._errorText('list_error', action, msg);
+        }
+        
+        /**
+         * Der 'Toast', der bei Fehlern angezeigt wird, mit expliziter Angabe eine Text-Schlüssels.
+         */
+        _errorText(key, action, msg) {
+            this._errorToast.text = this.$t(key, { action: action });
             console.error(this._errorToast.text+"("+msg+")");
             this._errorToast.open();
         }
+            
+        
     };
 </script>

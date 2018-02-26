@@ -5,7 +5,8 @@
     "src/**/*",
     "images/**/*",
     "locales/**/*",
-    "bower.json"
+    "bower.json",
+    "loggedout.html"
   ],
   "extraDependencies": [
     "manifest.json",

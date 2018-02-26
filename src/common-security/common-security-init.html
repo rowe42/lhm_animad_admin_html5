@@ -3,6 +3,7 @@
 <link rel="import" href="../animad-icons.html">
 
 <link rel="import" href="../behaviors/animad-form-behavior.html">
+<link rel="import" href="../behaviors/nebula-polyglot-behavior.html">
 <link rel="import" href="../behaviors/mixin.html">
 
 <dom-module id="common-security-init">
@@ -16,7 +17,7 @@
          * @polymer
          *
          */
-        class CommonSecurityInit extends mix(Polymer.Element).with(AnimadFormBehavior) {
+        class CommonSecurityInit extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadFormBehavior) {
 
             static get is() {
                 return 'common-security-init';
@@ -25,6 +26,24 @@
             // properties
             static get properties() {
                 return {
+                    /*
+                     * Das '_domain' property wird benötigt, um den richtigen Pfad 
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * benötigt, in dem die I18nBehavior verwendet wird.
+                     */
+                    _domain: {
+                        type: String,
+                        value: 'animad'
+                    },
+                    /*
+                     * Das '_entity' property wird benötigt, um den richtigen Pfad 
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * benötigt, in dem die I18nBehavior verwendet wird.
+                     */
+                    _entity: {
+                        type: String,
+                        value: 'security'
+                    },                   
                     _permissions: {
                         type: Object,
                         value: [],
@@ -40,23 +59,13 @@
                 }
             }
 
-            constructor() {
-                super();
-            }
-
-            connectedCallback() {
-                super.connectedCallback();
-
-            }
-
             // methods
 
             checkPermissions(permissionToCheck) {
                 if (this._permissions.filter(e => e === permissionToCheck).length > 0) {
-                    console.log('checkPermissions: Permission ' + permissionToCheck + ' found in list');
                     return true;
                 }
-                console.log('checkPermissions: Permission ' + permissionToCheck + ' NOT found in list. Found: ' + this._permissions);
+//                console.log('checkPermissions: Permission ' + permissionToCheck + ' NOT found in list. Found: ' + this._permissions);
                 return false;
             }
 
@@ -66,13 +75,11 @@
 
 
             _dataUpdated() {
-                console.log('data updated: ' + this.data.permissions);
                 this._permissions = this.data.permissions;
                 window.dispatchEvent(new CustomEvent('permissionsReceived', {detail: {kicked: true}}));
             }
-
+            
         }
-
 
 
         customElements.define(CommonSecurityInit.is, CommonSecurityInit);

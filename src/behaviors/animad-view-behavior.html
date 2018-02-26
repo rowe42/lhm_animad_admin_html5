@@ -1,0 +1,89 @@
+<link rel="import" href="../common-libs/common-utils.html">
+<script>
+    /**
+     * Behavior, um einer beliebigen View generische Eigenschaften und Methoden zu
+     * geben, so dass diese nicht in jede View dupliziert werden müssen.
+     *
+     * @polymerMixinClass
+     */
+    let AnimadViewBehavior = (superClass) => class extends superClass {
+
+            static get properties() {
+                return {
+                    route: {
+                        type: String,
+                        reflectToAttribute: true
+                    },
+                    page: {
+                        type: String,
+                        reflectToAttribute: true,
+                        observer: '_pageChanged',
+                    },
+                    routeData: Object,
+                    subroute: String,
+                    backendUrl: {
+                        type: String
+                    },
+                    _loadSingleEntityUrl: {
+                        type: String
+                    },
+                    _entitiesUrl: {
+                        type: String
+                    },
+                    _singleEntity: {
+                        type: String
+                    },
+                }
+            }
+
+            static get observers() {
+                return [
+                    '_routePageChanged(routeData.page)',
+                ];
+            }
+
+            /**
+             * Achtung: Es ist wichtig, die loadSingleKeeperUrl in dieser Methode zusammenzusetzen.
+             * Macht man das stattdessen direkt im Feld loadUrl im HTML, wird subroute.path erst im Nachhinein
+             * aufgerufen, was ein mehrmaliges Setzen der load-url in form-behavior bewirkt. Das bedeutet aber,
+             * dass erstmal alle keeper geholt werden und nicht nur einer (race condition).
+             * 
+             */
+            composeLoadUrl() {
+                if (this.subroute && this.subroute.path) {
+                    this._loadSingleEntityUrl = this.backendUrl + this._entitiesUrl + this.subroute.path;
+                }
+            }
+
+            _routePageChanged(page) {
+                this.page = page || '';
+                this.composeLoadUrl();
+            }
+
+            _pageChanged(page) {
+                // Load page import on demand. Show 404 page if fails
+                // GENERATOR ------
+                // GENERATOR pattern (camel case): [DOMAINNAME]
+                var resolvedPageUrl;
+                if (page) {
+                    //page ist create oder update
+                    resolvedPageUrl = this.resolveUrl(this._singleEntity + '/' + this._singleEntity + '-' + page + '-form.html');
+                } else {
+                    //page ist '', d.h. wir zeigen die Tabelle
+                    resolvedPageUrl = this.resolveUrl(this._singleEntity + '/' + this._entity + '-list.html');
+                }
+
+
+                Polymer.importHref(
+                        resolvedPageUrl,
+                        null,
+                        this._showPage404.bind(this),
+                        true);
+            }
+
+            _showPage404() {
+                this.set("route.path", '/view404');
+            }
+
+        };
+</script>

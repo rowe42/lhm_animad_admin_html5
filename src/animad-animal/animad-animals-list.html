@@ -18,6 +18,7 @@
 <link rel="import" href="../behaviors/nebula-polyglot-behavior.html">
 <link rel="import" href="../behaviors/mixin.html">
 <link rel="import" href="../common-libs/animad-list-header.html">
+<link rel="import" href="../common-security/common-security-check.html">
 
 <!-- GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-list -->
 <dom-module id="animad-animals-list">
@@ -38,6 +39,11 @@
           active="{{active}}"
           tail="{{subroute}}">
       </app-route>
+      
+      <!--Security-->
+      <common-security-check permission="administration_DELETE_Animal" not-allowed="{{_noDeleteAllowed}}"></common-security-check>
+      <common-security-check permission="administration_WRITE_Animal" not-allowed="{{_noWriteAllowed}}"></common-security-check>
+
 
       <animad-list-header
           id="animad-list-header-search"
@@ -137,25 +143,25 @@
           <template>[[item.name]]</template>
         </vaadin-grid-column>
 
-        <vaadin-grid-column >
+        <vaadin-grid-column>
           <template class="header">
             <vaadin-grid-sorter path="lastName">[[$t('species')]]</vaadin-grid-sorter>
           </template>
-          <template>[[item.species]]</template>
+          <template>[[translate('species', item.species)]]</template>
         </vaadin-grid-column>
 
         <vaadin-grid-column>
           <template class="header">
-            <vaadin-grid-sorter path="employmentDate">[[$t('birthDate')]]</vaadin-grid-sorter>
+            <vaadin-grid-sorter path="birthday">[[$t('birthday')]]</vaadin-grid-sorter>
           </template>
-          <template>[[item.birthDate]]</template>
+          <template>[[item.birthday]]</template>
         </vaadin-grid-column>
 
         <vaadin-grid-column>
           <template class="header">
             <vaadin-grid-sorter path="gender">[[$t('gender')]]</vaadin-grid-sorter>
           </template>
-          <template>[[item.gender]]</template>
+          <template>[[translate('gender', item.gender)]]</template>
         </vaadin-grid-column>
 
         <vaadin-grid-column>
@@ -169,7 +175,7 @@
           <template class="header">
             <vaadin-grid-sorter path="alive">[[$t('alive')]]</vaadin-grid-sorter>
           </template>
-          <template>[[item.alive]]</template>
+          <template>[[translate('alive', item.alive)]]</template>
         </vaadin-grid-column>
 
         <vaadin-grid-column>
@@ -280,7 +286,7 @@
           // this is optional. If not implemented will only ask question (translated): Do you really want to delete this item?
           var index = this.filteredData.findIndex(item => item.id == e.target.id);
           var item = this.filteredData[index];
-          this._deleteInfo = this.$t('modal_deleteinfo', {name: item.name, species: item.species, birthDate: item.birthDate, gender: item.gender, alive: item.alive});
+          this._deleteInfo = this.$t('modal_deleteinfo', {name: item.name, species: item.species, birthday: item.birthday, gender: item.gender, alive: item.alive});
 
           super._confirmDeleteRow(e);
         }

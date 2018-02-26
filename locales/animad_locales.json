@@ -1,6 +1,11 @@
 {
   "en": {
     "view": {
+      "animad-app": {
+        "keepers": "Keepers",
+        "animals": "Animals",
+        "enclosures": "Enclosures"                
+      },
       "animad-animal": {
         "main_heading": "Animals View",
         "table_sample_heading": "Table Sample",
@@ -43,12 +48,15 @@
         "gender": "Gender",
         "gender.male": "male",                
         "gender.female": "female",                
-        "birthDate": "Date of Birth",
-        "birthDate_error": "Please give a past date!",
+        "birthday": "Date of Birth",
+        "birthday_error": "Please give a past date!",
         "weight": "Weight",
         "weight_error":  "1-50000 KG!",
         "alive": "Alive",
+        "alive.true": "alive",
+        "alive.false": "dead",                
         "form_error": "An error occured with code '%{code}'.",
+        "auth_error": "Authorization Problem. Please logout and login again. Error code is '%{code}'.",
         "form_validation": "Please fix the form errors.",
         "form_success": "The form has been saved.",
         "button_save": "save",
@@ -72,7 +80,8 @@
         "list_delete_error": "An error occured while deleting the animal '%{id}'. Error code is '%{code}'.",
         "list_error": "An error occured while %{action}.",
         "list_action_search": "searching",
-        "list_action_delete": "deleting"
+        "list_action_delete": "deleting",
+        "onthefly_heading": "Create a new animal"
       },
       "enclosure": {
         "relation_name": "Enclosure",
@@ -83,6 +92,7 @@
         "cleaningTime": "Cleaning Time",
         "cleaningTime_error": "Cleaning Time",
         "form_error": "An error occured with code '%{code}'.",
+        "auth_error": "Authorization Problem. Please logout and login again. Error code is '%{code}'.",
         "form_validation": "Please fix the form errors.",
         "form_success": "The form has been saved.",
         "button_save": "save",
@@ -110,7 +120,8 @@
         "list_error": "An error occured while %{action}.",
         "list_too_many_results": "More than %{results} results found. Please narrow your search.",
         "list_action_search": "searching",
-        "list_action_delete": "deleting"
+        "list_action_delete": "deleting",
+        "onthefly_heading": "Create a new enclosure"
       },
       "keeper":{
         "firstName": "Firstname",
@@ -147,6 +158,7 @@
         "relation_search_salary": "",
         "salary_error": "",
         "form_error": "An error occured with code '%{code}'.",
+        "auth_error": "Authorization Problem. Please logout and login again. Error code is '%{code}'.",
         "form_validation": "Please fix the form errors.",
         "form_success": "The form has been saved.",
         "button_save": "save",
@@ -154,8 +166,8 @@
         "button_reload": "reload",
         "button_edit": "edit",
         "button_cancel": "cancel",
-        "relation_list": "%{firstName} %{lastName}",
-        "relation_suggest": "%{firstName} %{lastName}",
+        "relation_list": "%{firstName} %{lastName} born %{birthday} since: %{employmentDate} skills: %{skill}",
+        "relation_suggest": "%{firstName} %{lastName} born %{birthday} since: %{employmentDate} skills: %{skill}",
         "filter_placeholder": "Filter",
         "search_placeholder": "Search",
         "no_results_found_text": "No matching results found.",
@@ -174,12 +186,22 @@
         "list_error": "An error occured while %{action}.",
         "list_too_many_results": "More than %{results} results found. Please narrow your search.",
         "list_action_search": "searching",
-        "list_action_delete": "deleting"
+        "list_action_delete": "deleting",
+         "onthefly_heading": "Create a new keeper"
+      },
+      "security": {
+       "form_error": "An error occured while loading the permissions. Error code is '%{code}'.",
+       "auth_error": "Authorization Problem. Please logout and login again. Error code is '%{code}'."
       }
     }
   },
   "de": {
     "view": {
+      "animad-app": {
+        "keepers": "Wärter",
+        "animals": "Tiere",
+        "enclosures": "Gehege"                
+      },
       "animad-keepers": {
         "main_heading": "Keepers view"
       },
@@ -226,12 +248,15 @@
         "gender": "Geschlecht",
         "gender.male": "männlich",                
         "gender.female": "weiblich",                
-        "birthDate": "Geburtstag",
-        "birthDate_error":  "Geben Sie bitte ein Geburtsdatum in der Vergangenheit an!",
+        "birthday": "Geburtstag",
+        "birthday_error":  "Geben Sie bitte ein Geburtsdatum in der Vergangenheit an!",
         "weight": "Gewicht",
         "weight_error":  "1-50000 KG!",
         "alive": "Lebendig",
+        "alive.true": "Lebendig",
+        "alive.false": "Tot",
         "form_error": "Es ist ein Fehler beim Speichern des Tiers aufgetreten. Fehlercode ist '%{code}'.",
+        "auth_error": "Berechtigungsproblem. Bitte ausloggen und erneut einloggen. Fehlercode ist '%{code}'.",
         "form_validation": "Bitte die angezeigten Fehler im Formular beheben!",
         "form_success": "Das Tier wurde gespeichert!",
         "button_save": "speichern",
@@ -255,7 +280,8 @@
         "list_delete_error": "Es ist ein Fehler beim Löschen des Tiers '%{id}' aufgetreten. Fehlercode ist '%{code}'.",
         "list_error": "Es ist ein Fehler %{action} aufgetreten.",
         "list_action_search": "bei der Suche",
-        "list_action_delete": "beim Löschen"
+        "list_action_delete": "beim Löschen",
+        "onthefly_heading": "Neues Tier anlegen"
       },
       "enclosure": {
         "relation_name": "Gehege",
@@ -268,6 +294,7 @@
         "relation_search_cleaningTime": "Reinigungszeit: ",
         "cleaningTime_error": "Tägliche Putzzeit muss im Format <HH:mm:ss> eingegeben werden!",
         "form_error": "Es ist ein Fehler beim Speichern des Geheges aufgetreten. Fehlercode ist '%{code}'.",
+        "auth_error": "Berechtigungsproblem. Bitte ausloggen und erneut einloggen. Fehlercode ist '%{code}'.",
         "form_validation": "Bitte die angezeigten Fehler im Formular beheben!",
         "form_success": "Das Gehege wurde gespeichert!",
         "button_save": "speichern",
@@ -287,11 +314,12 @@
         "modal_delete_text_multi": "Wollen Sie die ausgewählten Datensätze wirklich löschen?",
         "modal_delete_button_yes": "Ja",
         "modal_delete_button_no": "Nein",
-        "modal_deleteinfo": "(%{name} %{species}, Putzzeit: %{cleaningTimegender})",
+        "modal_deleteinfo": "(%{name}, Putzzeit: %{cleaningTime})",
         "list_delete_error": "Es ist ein Fehler beim Löschen des Geheges '%{id}' aufgetreten. Fehlercode ist '%{code}'.",
         "list_error": "Es ist ein Fehler %{action} aufgetreten.",
         "list_action_search": "bei der Suche",
-        "list_action_delete": "beim Löschen"
+        "list_action_delete": "beim Löschen",
+        "onthefly_heading": "Neues Gehege anlegen"
       },
       "keeper":{
         "firstName": "Vorname",
@@ -329,6 +357,7 @@
         "relation_search_salary": "",
         "salary_error": "",
         "form_error": "Es ist ein Fehler beim Speichern des Wärters aufgetreten. Fehlercode ist '%{code}'.",
+        "auth_error": "Berechtigungsproblem. Bitte ausloggen und erneut einloggen. Fehlercode ist '%{code}'.",
         "form_validation": "Bitte die angezeigten Fehler im Formular beheben!",
         "form_success": "Der Wärter wurde gespeichert!",
         "button_save": "speichern",
@@ -336,8 +365,8 @@
         "button_reload": "neu laden",
         "button_edit": "bearbeiten",
         "button_cancel": "abbrechen",
-        "relation_list": "%{firstName} %{lastName}",
-        "relation_suggest": "%{firstName} %{lastName}",
+        "relation_list": "%{firstName} %{lastName} geb. %{birthday} seit: %{employmentDate} Erfahrungen: %{skill}",
+        "relation_suggest": "%{firstName} %{lastName} geb. %{birthday} seit: %{employmentDate} Erfahrungen: %{skill}",
         "filter_placeholder": "Filter",
         "search_placeholder": "Suche",
         "no_results_found_text": "Keine Datensätze gefunden",
@@ -356,7 +385,12 @@
         "list_error": "Es ist ein Fehler %{action} aufgetreten.",
         "list_error_too_many_results": "Mehr als %{results} Ergebnisse gefunden. Bitte die Suche verfeinern und erneut suchen!",
         "list_action_search": "bei der Suche",
-        "list_action_delete": "beim Löschen"
+        "list_action_delete": "beim Löschen",
+         "onthefly_heading": "Neuen Wärter anlegen"
+      },
+      "security": {
+        "form_error": "Es ist ein Fehler beim Laden der Rechte aufgetreten. Fehlercode ist '%{code}'.",
+        "auth_error": "Berechtigungsproblem. Bitte ausloggen und erneut einloggen. Fehlercode ist '%{code}'."
       }
     }
   }

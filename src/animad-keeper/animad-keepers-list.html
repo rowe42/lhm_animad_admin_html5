@@ -18,6 +18,7 @@
 <link rel="import" href="../behaviors/mixin.html">
 <link rel="import" href="../behaviors/nebula-polyglot-behavior.html">
 <link rel="import" href="../common-libs/animad-list-header.html">
+<link rel="import" href="../common-security/common-security-check.html">
 
 <!-- GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-list -->
 
@@ -39,6 +40,11 @@
           active="{{active}}"
           tail="{{subroute}}">
       </app-route>
+    
+      <!--Security-->
+      <common-security-check permission="administration_DELETE_Keeper" not-allowed="{{_noDeleteAllowed}}"></common-security-check>
+      <common-security-check permission="administration_WRITE_Keeper" not-allowed="{{_noWriteAllowed}}"></common-security-check>
+
 
       <animad-list-header
           id="animad-list-header-search"
@@ -156,7 +162,7 @@
           <template class="header">
             <vaadin-grid-sorter path="skill">[[$t('skill')]]</vaadin-grid-sorter>
           </template>
-          <template>[[item.skill]]</template>
+          <template>[[translateCSV('skill', item.skill)]]</template>
         </vaadin-grid-column>
 
         <vaadin-grid-column>
@@ -258,7 +264,7 @@
             },
             $t: {
               type: Function
-            }
+            }           
           }
         }
 

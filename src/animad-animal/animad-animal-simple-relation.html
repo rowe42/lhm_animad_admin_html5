@@ -16,6 +16,7 @@
 <link rel="import" href="../behaviors/mixin.html">
 
 <link rel="import" href="animad-animal-create-form.html">
+<link rel="import" href="../animad-keeper/animad-keeper-simple-relation.html">
 
 <dom-module id="animad-animal-simple-relation">
     <template>
@@ -25,12 +26,19 @@
             }
         </style>
         <paper-dialog>
-            <h2>Dialog Title</h2>
+            <h2>[[$t('onthefly_heading')]]</h2>
             <paper-dialog-scrollable>
                 <iron-form id="iform">
                     <form class="animad-animal-create-dialog-form">
                         <animad-animal-form data="{{_dialogdata}}" 
-                           resources="[[resources]]" lang="[[lang]]" auto-validate></animad-animal-form>
+                           resources="[[resources]]" lang="[[lang]]" lists="[[lists]]" keepers auto-validate></animad-animal-form>
+                        <template is="dom-if" if="{{keepers}}">
+                            <animad-keeper-simple-relation
+                                data="{{_dialogdata}}" 
+                                profile-url="[[backendUrl]]/api/admin_service/profile/keepers"
+                                resources="[[resources]]" lang="[[lang]]" preload>
+                            </animad-keeper-simple-relation>
+                        </template>
                     </form>
                 </iron-form>
             </paper-dialog-scrollable>
@@ -50,9 +58,7 @@
         <paper-listbox>
             <template is="dom-repeat" items="{{data._embedded.animals}}">
                 <paper-item>
-                    <!-- TODO Hier ist noch ein Bug drin. Die Operation wir nicht aufgerufen, 
-                         wenn aus der Liste gelöscht wird. -->
-                    <paper-item-body>[[_format(index)]]</paper-item-body>
+                    <paper-item-body>[[_format(item)]]</paper-item-body>
                     <paper-icon-button icon="animad-icons:link-off" data-item$="[[index]]" on-tap="_removeItem"></paper-icon-button>
                 </paper-item>
             </template>
@@ -84,7 +90,7 @@
          * @polymer
          *
          */
-        class AnimadAnimalSimpleRelation extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadRelationBehavior) {
+        class AnimadAnimalSimpleRelation extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadRelationBehavior, AnimadFormBehavior) {
             static get is() { return 'animad-animal-simple-relation'; }
 
             static get properties() {
@@ -106,7 +112,14 @@
                     _entity: {
                         type: String,
                         value: 'animal'
-                    }
+                    },
+                    backendUrl:{
+                        type: String
+                    },
+                    keepers: {
+                        type: Boolean,
+                        value: false
+                    }                    
                 }
             }
 
@@ -124,19 +137,13 @@
              * ist notwendig, weil man im HTML Bereich Databinding
              * nicht schachteln kann.
              * 
-             * @param   index des jeweiligen Elements
+             * @param   item das anzuzeigende Element
              * @return  formatierter Text
              */
-            _format(index) {
-                var name = 'data._embedded.' + this._entity + 's';
-                var items = this.get(name);
-                var item = items[index];
+            _format(item) {
                 //die Enums übersetzen
                 //TODO Generator pattern
-                var translatedItem = Object.assign({}, item);
-                for (var key of ['species', 'gender']) {
-                    translatedItem[key] = this.$t(key + '.' + item[key]);
-                }
+                var translatedItem =  this.translateItem(item, ['species', 'gender'], []);
                 return this.$t('relation_list', { name: translatedItem.name, species: translatedItem.species, birthday: translatedItem.birthday, gender: translatedItem.gender, weight: translatedItem.weight});
             }
 
@@ -152,11 +159,7 @@
             _formatSuggester(item) {
                 //die Enums übersetzen
                 //TODO Generator pattern
-                var translatedItem = Object.assign({}, item);
-                for (var key of ['species', 'gender']) {
-                    translatedItem[key] = this.$t(key + '.' + item[key]);
-                }
-                
+                var translatedItem =  this.translateItem(item, ['species', 'gender'], []);
                 return this.$t('relation_suggest', { name: translatedItem.name, species: translatedItem.species, birthday: translatedItem.birthday, gender: translatedItem.gender, weight: translatedItem.weight})
             }
         }

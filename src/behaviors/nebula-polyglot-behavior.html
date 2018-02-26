@@ -74,9 +74,6 @@
                  * Generates a computed binding function for getting localized resources.
                  */
                 [computeTranslate] (lang, resources) {
-                    if (!lang || !resources || !this._domain || !this._entity) {
-                        console.warn("WARNING: there is an error in your properties.\n lang -> " + lang + "\n resources -> " + resources + "\n domain -> " + this._domain + "\n entity -> " + this._entity);
-                    }
                     if (resources) {
                         var subtree = resources[lang][this._domain][this._entity];
                     }
@@ -94,7 +91,31 @@
                     }
                 }
                 
+                translateItem(item, singleEntries, multiEntries) {
+                    var translatedItem = Object.assign({}, item);
+                    //einzelne Werte zu übersetzen
+                    for (var key of singleEntries) {
+                        translatedItem[key] = this.$t(key + '.' + item[key]);
+                    }
+
+                    //CSV-Liste mit Werten zu übersetzen
+                    for (var key of multiEntries) {
+                        translatedItem[key] = this.translateCSV(key, item[key]);
+                    } 
+                    return translatedItem;
+                }
                 
+                translateCSV(key, csv) {
+                    var translated = '';
+                        for (var item of csv) {
+                            if (translated !== '') {
+                                translated += ', '; 
+                            }
+                            translated += this.$t(key + '.' + item);
+                        }
+                    return translated;
+                }
+
             }
         })
     }())

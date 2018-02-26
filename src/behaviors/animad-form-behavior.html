@@ -172,7 +172,11 @@
                                     this._resetForm();
                                     this._success('form_success');
                                 } else {
-                                    this._error(response.status);
+                                    if (response.status === 403 || response.status === 401) {
+                                        this._errorText('auth_error', response.status);
+                                    } else {
+                                        this._error(response.status);
+                                    }
                                 }
                             })
                     // navigiere zu data-routePath wenn form o.k.
@@ -208,12 +212,12 @@
              * von create Formularen verwendet.
              */
             _loadOptions(saveUrl, oldV) {
-                if (saveUrl)
+                if (saveUrl) {
 //                    this._loadHalData(saveUrl, 'OPTIONS', 'data');
                     //HACK: Fetching GET instead of OPTIONS until OPTIONS are implemented
                     var hackSaveUrl = saveUrl + 'Options';
                     this._loadHalData(hackSaveUrl, 'GET', 'data');
-                    
+                }
             }
 
             _loadProfile(profileUrl, oldV) {
@@ -243,7 +247,6 @@
                                     //hier sollte die simpleCsvToArray-Version ausreichen
                                     this.lists[entry.name] = CommonUtils.simpleCsvToArray(value);
                                     this.notifyPath('lists.'+entry.name);
-                                    console.log('Setting list ' + entry.name + ' to ' + value);
                                 }
                             }
                             //Optimierung: Es gibt nur ein ..._representation Element
@@ -281,7 +284,11 @@
                                     this.set(target, data);
                                 });
                             } else {
-                                this._error(response.status);
+                                if (response.status === 403 || response.status === 401) {
+                                    this._errorText('auth_error', response.status);
+                                } else {
+                                    this._error(response.status);
+                                }
                             }
                         })
             }
@@ -318,8 +325,16 @@
              * Der 'Toast', der bei Fehlern angezeigt wird.
              */
             _error(status) {
-                this._errorToast.text = this.$t('form_error', {code: status});
+                this._errorText('form_error', status);
+            }
+            
+            /**
+             * Der 'Toast', der bei Fehlern angezeigt wird, mit expliziter Angabe eine Text-Schlüssels.
+             */
+            _errorText(key, status) {
+                this._errorToast.text = this.$t(key, {code: status});
                 this._errorToast.open();
             }
+            
         };
 </script>

@@ -46,11 +46,13 @@
         <!--<iron-form id="iform">-->
         <form class="animad-enclosure-create-form">
             <animad-enclosure-form id="customform" data="{{data}}" 
-               resources="[[resources]]" lang="[[lang]]" auto-validate></animad-enclosure-form>
+               resources="[[resources]]" lang="[[lang]]" lists="[[lists]]" auto-validate></animad-enclosure-form>
             <!-- GENERATOR hier kommen die Templates für die Relationen hin -->
             <template is="dom-if" if="{{animals}}">
-                <animad-animal-simple-relation data="{{data}}" 
-                   resources="[[resources]]" lang="[[lang]]" lists="[[lists]]" preload></animad-animal-simple-relation>
+                <animad-animal-simple-relation data="{{data}}"
+                   profile-url="[[backendUrl]]/api/admin_service/profile/animals"
+                   backend-url="[[backendUrl]]"
+                   resources="[[resources]]" lang="[[lang]]" keepers preload></animad-animal-simple-relation>
             </template>
         </form>
         <!--</iron-form>-->
@@ -114,6 +116,9 @@
                         type: String,
                         value: 'enclosure'
                     },
+                    backendUrl: {
+                        type: String
+                    },                      
                     // GENERATOR hier die Relationen generieren
                     /*
                      * Über dieses Element Property kann gesteuert werden, ob die

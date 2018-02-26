@@ -14,7 +14,11 @@ module.exports = {
   staticFileGlobs: [
     'bower_components/webcomponentsjs/webcomponents-loader.js',
     'manifest.json',
+    'loggedout.html',
+    '!logout'
   ],
+  navigateFallback: '/index.html',
+  navigateFallbackWhitelist: [/^(?!.*\.html$|\/api\/|\/logout).*/],
   runtimeCaching: [
     {
       urlPattern: /\/bower_components\/webcomponentsjs\/.*.js/,

@@ -18,6 +18,13 @@
                         value: false,
                         notify: true,
                         observer: '_allowedChanged'
+                    },
+                    //wird benötigt, da in Data Bindings Negierung nicht two-way funktioniert
+                    notAllowed: {
+                        type: Boolean,
+                        value: true,
+                        notify: true,
+                        observer: '_notAllowedChanged'
                     }
                 }
             }
@@ -38,6 +45,10 @@
 
             checkPermissions() {
                 this.allowed = this._security.checkPermissions(this.permission);
+                this.notAllowed = !this.allowed;
+                if (this.allowed) {
+                    this._onAllowed();
+                }
                 return this.allowed;
             }
 
@@ -48,6 +59,14 @@
 
             _allowedChanged(newValue, oldValue) {
                 //do nothing - override...
+            }
+            
+            _notAllowedChanged(newValue, oldValue) {
+                //do nothing - override...
+            }
+            
+            _onAllowed() {
+              this.dispatchEvent(new CustomEvent('allowed', {bubbles: true, composed: true}));
             }
         }
     }
