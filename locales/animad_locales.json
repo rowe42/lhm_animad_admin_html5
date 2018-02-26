@@ -49,6 +49,7 @@
         "weight_error":  "1-50000 KG!",
         "alive": "Alive",
         "form_error": "An error occured with code '%{code}'.",
+        "auth_error": "Authorization Problem. Please logout and login again. Error code is '%{code}'.",
         "form_validation": "Please fix the form errors.",
         "form_success": "The form has been saved.",
         "button_save": "save",
@@ -83,6 +84,7 @@
         "cleaningTime": "Cleaning Time",
         "cleaningTime_error": "Cleaning Time",
         "form_error": "An error occured with code '%{code}'.",
+        "auth_error": "Authorization Problem. Please logout and login again. Error code is '%{code}'.",
         "form_validation": "Please fix the form errors.",
         "form_success": "The form has been saved.",
         "button_save": "save",
@@ -147,6 +149,7 @@
         "relation_search_salary": "",
         "salary_error": "",
         "form_error": "An error occured with code '%{code}'.",
+        "auth_error": "Authorization Problem. Please logout and login again. Error code is '%{code}'.",
         "form_validation": "Please fix the form errors.",
         "form_success": "The form has been saved.",
         "button_save": "save",
@@ -177,7 +180,8 @@
         "list_action_delete": "deleting"
       },
       "security": {
-        "form_error": "Es ist ein Fehler beim Laden der Rechte aufgetreten. Fehlercode ist '%{code}'."
+       "form_error": "An error occured while loading the permissions. Error code is '%{code}'.",
+       "auth_error": "Authorization Problem. Please logout and login again. Error code is '%{code}'."
       }
     }
   },
@@ -235,6 +239,7 @@
         "weight_error":  "1-50000 KG!",
         "alive": "Lebendig",
         "form_error": "Es ist ein Fehler beim Speichern des Tiers aufgetreten. Fehlercode ist '%{code}'.",
+        "auth_error": "Berechtigungsproblem. Bitte ausloggen und erneut einloggen. Fehlercode ist '%{code}'.",
         "form_validation": "Bitte die angezeigten Fehler im Formular beheben!",
         "form_success": "Das Tier wurde gespeichert!",
         "button_save": "speichern",
@@ -271,6 +276,7 @@
         "relation_search_cleaningTime": "Reinigungszeit: ",
         "cleaningTime_error": "Tägliche Putzzeit muss im Format <HH:mm:ss> eingegeben werden!",
         "form_error": "Es ist ein Fehler beim Speichern des Geheges aufgetreten. Fehlercode ist '%{code}'.",
+        "auth_error": "Berechtigungsproblem. Bitte ausloggen und erneut einloggen. Fehlercode ist '%{code}'.",
         "form_validation": "Bitte die angezeigten Fehler im Formular beheben!",
         "form_success": "Das Gehege wurde gespeichert!",
         "button_save": "speichern",
@@ -332,6 +338,7 @@
         "relation_search_salary": "",
         "salary_error": "",
         "form_error": "Es ist ein Fehler beim Speichern des Wärters aufgetreten. Fehlercode ist '%{code}'.",
+        "auth_error": "Berechtigungsproblem. Bitte ausloggen und erneut einloggen. Fehlercode ist '%{code}'.",
         "form_validation": "Bitte die angezeigten Fehler im Formular beheben!",
         "form_success": "Der Wärter wurde gespeichert!",
         "button_save": "speichern",
@@ -362,7 +369,8 @@
         "list_action_delete": "beim Löschen"
       },
       "security": {
-        "form_error": "Es ist ein Fehler beim Laden der Rechte aufgetreten. Fehlercode ist '%{code}'."
+        "form_error": "Es ist ein Fehler beim Laden der Rechte aufgetreten. Fehlercode ist '%{code}'.",
+        "auth_error": "Berechtigungsproblem. Bitte ausloggen und erneut einloggen. Fehlercode ist '%{code}'."
       }
     }
   }

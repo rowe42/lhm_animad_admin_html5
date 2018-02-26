@@ -172,10 +172,11 @@
                                     this._resetForm();
                                     this._success('form_success');
                                 } else {
-                                    if (response.status === 403) {
-                                        window.setTimeout('window.location = "/logout"', 3000);
+                                    if (response.status === 403 || response.status === 401) {
+                                        this._errorText('auth_error', response.status);
+                                    } else {
+                                        this._error(response.status);
                                     }
-                                    this._error(response.status);
                                 }
                             })
                     // navigiere zu data-routePath wenn form o.k.
@@ -284,10 +285,11 @@
                                     this.set(target, data);
                                 });
                             } else {
-                                if (response.status === 403) {
-                                    window.setTimeout('window.location = "/logout"', 3000);
+                                if (response.status === 403 || response.status === 401) {
+                                    this._errorText('auth_error', response.status);
+                                } else {
+                                    this._error(response.status);
                                 }
-                                this._error(response.status);
                             }
                         })
             }
@@ -324,8 +326,16 @@
              * Der 'Toast', der bei Fehlern angezeigt wird.
              */
             _error(status) {
-                this._errorToast.text = this.$t('form_error', {code: status});
+                this._errorText('form_error', status);
+            }
+            
+            /**
+             * Der 'Toast', der bei Fehlern angezeigt wird, mit expliziter Angabe eine Text-Schlüssels.
+             */
+            _errorText(key, status) {
+                this._errorToast.text = this.$t(key, {code: status});
                 this._errorToast.open();
             }
+            
         };
 </script>
