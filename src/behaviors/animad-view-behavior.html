@@ -47,7 +47,7 @@
              * Macht man das stattdessen direkt im Feld loadUrl im HTML, wird subroute.path erst im Nachhinein
              * aufgerufen, was ein mehrmaliges Setzen der load-url in form-behavior bewirkt. Das bedeutet aber,
              * dass erstmal alle keeper geholt werden und nicht nur einer (race condition).
-             * 
+             *
              */
             composeLoadUrl() {
                 if (this.subroute && this.subroute.path) {
@@ -85,5 +85,8 @@
                 this.set("route.path", '/view404');
             }
 
+            onRouteTailChanged() {
+              this._filteredData = [];
+            }
         };
 </script>

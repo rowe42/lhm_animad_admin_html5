@@ -31,13 +31,13 @@
       }
     </style>
 
-    <app-route route="{{route}}" pattern="/enclosures-view/:page" data="{{routeData}}" tail="{{subroute}}">
+    <app-route route="{{route}}" pattern="/enclosures-view/:page" data="{{routeData}}" tail="{{subroute}}" on-tail-changed="onRouteTailChanged">
     </app-route>
-    
+
     <!--Security-->
     <common-security-check permission="administration_READ_Enclosure" allowed="{{readAllowed}}"></common-security-check>
     <common-security-check permission="administration_WRITE_Enclosure" allowed="{{writeAllowed}}"></common-security-check>
-    
+
     <div id="view" class="card">
       <div class="circle">
         <iron-icon icon="animad-icons:basecamp"></iron-icon>
@@ -53,7 +53,7 @@
                   default-search="name:'Elephant's paradise'"
                   route="{{subroute}}"
                   edit-path="/enclosures-view/update"
-                  create-path="/enclosures-view/create"              
+                  create-path="/enclosures-view/create"
                   on-filter-data="_filterData"
                   filtered-data="[[_filteredData]]"
                   resources="[[resources]]" lang="[[lang]]">
@@ -87,23 +87,23 @@
       <br />
       <hr>
       <h2>[[$t('create_sample_heading')]]</h2>
-      <animad-enclosure-create-form save-url="[[backendUrl]][[_entitiesUrl]]" 
+      <animad-enclosure-create-form save-url="[[backendUrl]][[_entitiesUrl]]"
          backend-url="[[backendUrl]]"
          resources="[[resources]]" lang="[[lang]]" reset>
-      </animad-enclosure-create-form>      
+      </animad-enclosure-create-form>
       <br />
       <br />
       <hr>
       <h2>[[$t('create_sample_heading_cancel')]]</h2>
-      <animad-enclosure-create-form save-url="[[backendUrl]][[_entitiesUrl]]" 
+      <animad-enclosure-create-form save-url="[[backendUrl]][[_entitiesUrl]]"
          backend-url="[[backendUrl]]"
          resources="[[resources]]" lang="[[lang]]" cancel-path="go/anywhere">
-      </animad-enclosure-create-form>      
+      </animad-enclosure-create-form>
       <br />
       <br />
       <hr>
       <h2>[[$t('create_with_relation_sample_heading')]]</h2>
-      <animad-enclosure-create-form save-url="[[backendUrl]][[_entitiesUrl]]" 
+      <animad-enclosure-create-form save-url="[[backendUrl]][[_entitiesUrl]]"
          backend-url="[[backendUrl]]"
          resources="[[resources]]" lang="[[lang]]" cancel-path="go/anywhere" reset animals>
       </animad-enclosure-create-form>
@@ -123,7 +123,7 @@
       <br />
       <hr>
       <h2>[[$t('update_sample_heading_with_relation')]]</h2>
-      <animad-enclosure-update-form 
+      <animad-enclosure-update-form
         load-url="[[backendUrl]]/api/admin_service/enclosures/3bca5b38-13be-4fd3-b656-fa79a639ddd5" cancel-path="go/anywhere" reset animals>
       </animad-enclosure-update-form>
       <br />
@@ -145,7 +145,7 @@
            * zu den i18n Werten zu erzeugen. Es wird in jedem Element
            * benötigt, in dem die I18nBehavior verwendet wird. Im Falle
            * einer view ist der Wert IMMER 'view'.
-           */          
+           */
           _domain: {
             type: String,
             value: 'view'
@@ -167,7 +167,7 @@
            */
           _singleEntity: {
             type: String,
-            value: 'animad-enclosure'                  
+            value: 'animad-enclosure'
           },
           _entitiesUrl: {
               type: String,
@@ -176,7 +176,7 @@
           _profileUrl: {
               type: String,
               value: '/api/admin_service/profile/enclosures'
-          },            
+          },
           /*
           *  _filteredData enthält alle Objekte, die auf eingegebene oder ausgewählte Filter zutreffen.
           */
@@ -188,7 +188,7 @@
           },
         }
       }
-      
+
       /**
       * Wird ausgelöst durch den Event [`event-filter-data`](#/mixins/AnimadListBehavior#event-filter-data).
       * Filtert die Daten der Liste. Der `event` enthält die folgenden Informationen:
