@@ -290,7 +290,7 @@
               * Der Text der angezeigt wird, um die Anzahl der gefundenen Datensätze anzuzeigen.
               * Kann zur Lokalisierung verwendet werden.
               */
-              _resultsText:{
+              resultsText:{
                 type: String
               },
               /*
@@ -330,7 +330,7 @@
                   type: Boolean,
                   value: false,
                   observer: '_handleNoDelete'
-            } 
+            }
             }
         }
 
@@ -357,6 +357,24 @@
         _dataChanged(dataLength) {
           // refresh list data
           this.filteredData = this.data;
+
+          if (this._hasSearched){
+            // set results text
+            if (dataLength > 1) {
+              this.resultsText = dataLength+this.$t('results_found_text');
+            }
+            else if (dataLength == 1) {
+              this.resultsText = dataLength+this.$t('results_one_found_text');
+            }
+            else if (dataLength == 0) {
+                if (this._tooManyResults) {
+                    this.resultsText = this.$t('too_many_results_found_text', {results: this._maxResults});
+                } else {
+                    this.resultsText = this.$t('no_results_found_text');
+                }
+            }
+          }
+
           this._onFilter();
 
           // unselect all deleted items
@@ -368,22 +386,6 @@
           this._deleteItems = [];
           this._deleteInfos = "";
 
-          if (this._hasSearched){
-            // set results text
-            if (dataLength > 1) {
-              this._resultsText = dataLength+this.$t('results_found_text');
-            }
-            else if (dataLength == 1) {
-              this._resultsText = dataLength+this.$t('results_one_found_text');
-            }
-            else if (dataLength == 0) {
-                if (this._tooManyResults) {
-                    this._resultsText = this.$t('too_many_results_found_text', {results: this._maxResults});
-                } else {
-                    this._resultsText = this.$t('no_results_found_text');
-                }
-            }
-          }
         }
 
         /**
@@ -405,7 +407,12 @@
           this.dispatchEvent(new CustomEvent('filter-data', {
             bubbles: true,
             composed: true,
-            detail: {filteredData: this.data, filtersSelected: this._selectedFilters, filterString: this._filterString}
+            detail: {
+              filteredData: this.data,
+              filtersSelected: this._selectedFilters,
+              filterString: this._filterString,
+              resultsText: this.resultsText
+            }
           }));
         }
 
@@ -733,7 +740,7 @@
             this._error(this.$t('list_action_delete'), error.message);
           });
         }
-        
+
         /*
          * Wird vom observer von _noWriteAllowed aufgerufen, um New- und
          * Edit-Button zu verbergen.
@@ -744,9 +751,9 @@
                 this.hideEdit = true;
             }
         }
-        
+
         /*
-         * Wird vom observer von _noDeleteAllowed aufgerufen, um den 
+         * Wird vom observer von _noDeleteAllowed aufgerufen, um den
          * Delete-Button zu verbergen.
          */
         _handleNoDelete(value) {
@@ -789,7 +796,7 @@
         _error(action, msg) {
             this._errorText('list_error', action, msg);
         }
-        
+
         /**
          * Der 'Toast', der bei Fehlern angezeigt wird, mit expliziter Angabe eine Text-Schlüssels.
          */
@@ -798,7 +805,7 @@
             console.error(this._errorToast.text+"("+msg+")");
             this._errorToast.open();
         }
-            
-        
+
+
     };
 </script>

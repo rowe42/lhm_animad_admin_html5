@@ -34,9 +34,9 @@
       }
     </style>
 
-    <app-route route="{{route}}" pattern="/keepers-view/:page" data="{{routeData}}" tail="{{subroute}}">
+    <app-route route="{{route}}" pattern="/keepers-view/:page" data="{{routeData}}" tail="{{subroute}}" on-tail-changed="onRouteTailChanged">
     </app-route>
-    
+
     <!--Security-->
     <common-security-check permission="administration_READ_Keeper" allowed="{{readAllowed}}"></common-security-check>
     <common-security-check permission="administration_WRITE_Keeper" allowed="{{writeAllowed}}"></common-security-check>
@@ -55,6 +55,7 @@
                   create-path="/keepers-view/create"
                   on-filter-data="_filterData"
                   filtered-data="[[_filteredData]]"
+                  results-text="{{_resultsText}}"
                   resources="[[resources]]" lang="[[lang]]">
                 </animad-keepers-list>
               </template>
@@ -102,7 +103,7 @@
                */
               _singleEntity: {
                 type: String,
-                value: 'animad-keeper'                  
+                value: 'animad-keeper'
               },
               _entitiesUrl: {
                   type: String,
@@ -111,7 +112,7 @@
               _profileUrl: {
                   type: String,
                   value: '/api/admin_service/profile/keepers'
-              },                 
+              },
               /*
               *  _filteredData enthält alle Objekte, die auf eingegebene oder ausgewählte Filter zutreffen.
               */
@@ -120,11 +121,11 @@
                 value() {
                   return [];
                 }
-              }           
+              },
           }
 
         }
-        
+
 
         /**
         * Wird ausgelöst durch den Event [`event-filter-data`](#/mixins/AnimadListBehavior#event-filter-data).
@@ -135,6 +136,7 @@
         */
         _filterData(event) {
           this._filteredData = event.detail.filteredData;
+          this._resultsText = event.detail.resultsText;
           var selectedFilters = event.detail.filtersSelected;
           var filterString = event.detail.filterString;
 
