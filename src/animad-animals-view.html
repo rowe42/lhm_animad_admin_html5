@@ -59,6 +59,7 @@
                   create-path="/animals-view/create"
                   on-filter-data="_filterData"
                   filtered-data="[[_filteredData]]"
+                  results-text="[[_resultsText]]"
                   resources="[[resources]]" lang="[[lang]]">
                 </animad-animals-list>
             </template>
@@ -198,6 +199,7 @@
       */
       _filterData(event) {
         this._filteredData = event.detail.filteredData;
+        this._resultsText = event.detail.resultsText;
         var selectedFilters = event.detail.filtersSelected;
         var filterString = event.detail.filterString;
 

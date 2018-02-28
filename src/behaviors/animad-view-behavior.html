@@ -33,6 +33,14 @@
                     _singleEntity: {
                         type: String
                     },
+                    /*
+                     * Gibt die Anzahl der gefundenen Datensätze an. Sie ist zu Beginn und nach dem Rücksetzen der
+                     * Datensätze leer.
+                     */
+                    _resultsText: {
+                      type: String,
+                      value: "test"
+                    },
                 }
             }
 
@@ -87,6 +95,7 @@
 
             onRouteTailChanged() {
               this._filteredData = [];
+              this._resultsText = "";
             }
         };
 </script>
