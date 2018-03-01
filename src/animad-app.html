@@ -288,9 +288,18 @@
                     rootPath: String,
                     backendUrl: {
                         type: String,
-                        value: ''
-                    }
-                };
+                        value() {if (window.location.hostname === 'localhost'
+                                        && window.location.port === '8081') {
+                                        //für lokale Entwicklung wollen wir hier einen CORS-Pfad
+                                        //zum API-Gateway
+                                        return 'http://localhost:8082'
+                                    } else {
+                                        //an sonsten soll die eigene Domäne+Pfad verwendet werden
+                                        return ''
+                                    }
+                                }
+                        }
+                }
             }
 
             static get observers() {
