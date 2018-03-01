@@ -39,11 +39,11 @@
           active="{{active}}"
           tail="{{subroute}}">
       </app-route>
-      
+
       <!--Security-->
       <common-security-check permission="administration_DELETE_Enclosure" not-allowed="{{_noDeleteAllowed}}"></common-security-check>
       <common-security-check permission="administration_WRITE_Enclosure" not-allowed="{{_noWriteAllowed}}"></common-security-check>
-      
+
 
       <animad-list-header
           id="animad-list-header-search"
@@ -64,7 +64,7 @@
           hide-filter-button="[[hideFilter]]"
           disable-new-button="[[disableNew]]"
           show-results="[[showResults]]"
-          results-text="[[_resultsText]]"
+          results-text="[[resultsText]]"
           icon="[[icon]]">
       </animad-list-header>
 
@@ -88,7 +88,7 @@
           disable-filter-button="[[disableFilter]]"
           disable-new-button="[[disableNew]]"
           show-results="[[showResults]]"
-          results-text="[[_resultsText]]"
+          results-text="[[resultsText]]"
           icon="[[icon]]">
       </animad-list-header>
 
