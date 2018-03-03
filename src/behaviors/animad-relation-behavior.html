@@ -196,7 +196,9 @@
                     // Wenn die Auswahlliste vorgeladen werden soll, dann
                     // kann dies über den '[Name der Entity]s' Link gemacht
                     // werden.
-                    if (this.preload && this.source.length === 0) {
+                    if (this.preload) {
+                        //source zurücksetzen, damit neu erstellte Entites auch auftauchen
+                        this.source = [];
                         var init = {
                             method: 'GET',
                             mode: 'cors',

@@ -219,6 +219,18 @@
                     this._loadHalData(hackSaveUrl, 'GET', 'data');
                 }
             }
+            
+            /*
+             * Lädt das zugrunde liegende Data-Objekt neu
+             */
+            reload() {
+                if (this.loadUrl) {
+                    this._loadFormData(this.loadUrl);
+                }
+                if (this.saveUrl) {
+                    this._loadOptions(this.saveUrl);
+                }
+            }
 
             _loadProfile(profileUrl, oldV) {
                 var lhd = this._loadHalData(profileUrl, 'GET', 'profile');
