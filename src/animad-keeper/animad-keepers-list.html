@@ -117,6 +117,18 @@
           <paper-button raised dialog-dismiss on-click="_unsetTemporaryDeleteInfo" autofocus>[[$t('modal_delete_button_no')]]</paper-button>
         </paper-item>
       </paper-dialog>
+      
+      <paper-listbox>
+          <template is="dom-repeat" items="[[filteredData]]">
+             <paper-icon-item>
+                <iron-icon icon="animad-icons:basecamp" slot="item-icon"></iron-icon>
+                <paper-item-body two-line>
+                  <div>[[item.firstName]]</div>
+                  <div secondary>[[item.lastName]]</div>
+                </paper-item-body>
+              </paper-icon-item>
+          </template>
+      </paper-listbox>
 
 <!-- Für Suche über Lazy Loading:
      <vaadin-grid id="animad-list" data-provider="[[dataProvider]]"  size="200" multi-sort="[[multiSort]]" selected-items="{{_selectedItems}}"> -->
