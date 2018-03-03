@@ -45,8 +45,7 @@
         <div class="circle"><iron-icon icon="animad-icons:basecamp"></iron-icon></div>
         <h1>[[$t('main_heading')]]</h1>
         <div class="animad-keeper-view-content">
-          <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" route="{{subroute}}"
-                      on-selected-item-changed="selectedItemChanged">
+            <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" route="{{subroute}}">
               <template is="dom-if" if="{{readAllowed}}">
                 <animad-keepers-list name=""
                   url="[[backendUrl]][[_entitiesUrl]]"
@@ -157,20 +156,6 @@
           }
         }
         
-        selectedItemChanged(event) {
-            if (event.detail.value) {
-                let id = event.detail.value.id;
-                console.log('fired ' + id);
-                if (id) {
-                    let element = this.shadowRoot.querySelector('#' + id);
-                    if (element) {
-                        element.reload();
-                    }
-                }
-            }
-        }
-        
-
     }
 
     // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]View
