@@ -187,6 +187,8 @@
         "list_too_many_results": "More than %{results} results found. Please narrow your search.",
         "list_action_search": "searching",
         "list_action_delete": "deleting",
+        "list_first_line": "%{firstName} %{lastName}; hired: %{employmentDate}",
+        "list_second_line": "skills: %{skill}; born: %{birthday}; salary: %{salary}",
          "onthefly_heading": "Create a new keeper"
       },
       "security": {
@@ -386,6 +388,8 @@
         "list_error_too_many_results": "Mehr als %{results} Ergebnisse gefunden. Bitte die Suche verfeinern und erneut suchen!",
         "list_action_search": "bei der Suche",
         "list_action_delete": "beim Löschen",
+        "list_first_line": "%{firstName} %{lastName}; eingestellt: %{employmentDate}",
+        "list_second_line": "Erfahrung: %{skill}; geboren: %{birthday}; Gehalt: %{salary}",
          "onthefly_heading": "Neuen Wärter anlegen"
       },
       "security": {

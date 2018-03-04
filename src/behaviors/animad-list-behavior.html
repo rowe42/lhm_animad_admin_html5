@@ -330,7 +330,8 @@
                   type: Boolean,
                   value: false,
                   observer: '_handleNoDelete'
-            }
+              },
+              displayType: String,
             }
         }
 
@@ -762,6 +763,16 @@
 
             }
         }
+        
+        /**
+         * Wird in der Komponente verwendet um den Parameter display-type 
+         * in einem Data-Binding zu überprüfen.
+         */
+        _isOfType(value) {
+            return this.displayType === value;
+        }
+        
+
 
         /**
          * Der 'Toast', der bei Fehlern beim Löschen angezeigt wird.

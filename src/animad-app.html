@@ -162,7 +162,7 @@
                             <template is="dom-if" if="{{readKeeperAllowed}}">
                             <a class="paper-item-link" name="keepers-view" href="#[[rootPath]]keepers-view/" tabindex="-1">
                                 <paper-icon-item>
-                                   <iron-icon icon="animad-icons:face" slot="item-icon"></iron-icon>
+                                   <iron-icon icon="animad-icons:keeper" slot="item-icon"></iron-icon>
                                     [[$t('keepers')]]
                               </paper-icon-item>
                             </a>
@@ -171,7 +171,7 @@
                             <template is="dom-if" if="{{!readKeeperAllowed}}">
                             <div class="menu-disabled" name="keepers-view">
                                 <paper-icon-item disabled="true">
-                                   <iron-icon icon="animad-icons:face" slot="item-icon"></iron-icon>
+                                   <iron-icon icon="animad-icons:keeper" slot="item-icon"></iron-icon>
                                     [[$t('keepers')]]
                               </paper-icon-item>
                             </div>

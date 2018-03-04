@@ -33,7 +33,7 @@
     "paper-autocomplete": "ellipticaljs/paper-autocomplete#^3.4.0",
     "web-animations-js": "^2.3.1",
     "paper-dialog": "PolymerElements/paper-dialog#^2.0.1",
-    "paper-dialog-scrollable": "PolymerElements/paper-dialog-scrollable#^2.1.0",
+    "paper-dialog-scrollable": "^2.2.0",
     "halson": "^3.0.0",
     "paper-dropdown": "pushkar8723/paper-dropdown#^2.0.0"
   },
