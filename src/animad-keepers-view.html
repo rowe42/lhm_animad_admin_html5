@@ -72,6 +72,7 @@
               </template>
               <template is="dom-if" if="{{writeAllowed}}">
                 <animad-keeper-update-form name="update" id="update" load-url="{{_loadSingleEntityUrl}}"
+                   readform="true"
                    profile-url="[[backendUrl]][[_profileUrl]]"
                    save-path="/keepers-view/"
                    cancel-path="/keepers-view/"
