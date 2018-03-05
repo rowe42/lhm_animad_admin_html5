@@ -197,8 +197,6 @@
                     // kann dies über den '[Name der Entity]s' Link gemacht
                     // werden.
                     if (this.preload) {
-                        //zurücksetzen, falls bereits vormals geladen wurde (alter Stand!)
-                        this.source = [];
                         var init = {
                             method: 'GET',
                             mode: 'cors',
@@ -212,6 +210,8 @@
                                 if (response.ok) {
                                     response.json().then((data) => {
                                         var array = data._embedded[this._entity + 's'];
+                                        //zurücksetzen, falls bereits vormals geladen wurde (alter Stand!)
+                                        this.source = [];
                                         array.forEach((element) => {
                                             // der formatierte Text zur Auswahl
                                             var text = this._formatSuggester(element);
