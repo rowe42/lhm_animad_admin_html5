@@ -43,7 +43,7 @@
 
     <div id="view" class="card">
       <div class="circle">
-        <iron-icon icon="animad-icons:basecamp"></iron-icon>
+        <iron-icon icon="animad-icons:panda"></iron-icon>
       </div>
       <h1>[[$t('main_heading')]]</h1>
       <h2>[[$t('table_sample_heading')]]</h2>
@@ -83,59 +83,7 @@
                 </animad-animal-update-form>
             </template>
           </iron-pages>
-<!--            <animad-animals-list name="filterexample"
-              url="[[backendUrl]][[_entitiesUrl]]"
-              profile-url="[[backendUrl]]/api/admin_service/profile/animals"
-              load-complete-data="true"
-              on-filter-data="_filterData"
-              filtered-data="[[_filteredData]]"
-              resources="[[resources]]" lang="[[lang]]">
-            </animad-animals-list>-->
       </div>
-      <!--Ich bin dafür, dass wir die Beispiele unten entfernen - die sind eh nicht mehr gefixt-->
-<!--      <br />
-      <br />
-      <hr>
-      <h2>[[$t('create_sample_heading')]]</h2>
-      <animad-animal-create-form save-url="[[backendUrl]][[_entitiesUrl]]"
-        profile-url="[[backendUrl]]/api/admin_service/profile/animals"
-        backend-url="[[backendUrl]]"
-        save-path="/animals-view" cancel-path="/animals-view"
-        resources="[[resources]]" lang="[[lang]]"
-        reset>
-      </animad-animal-create-form>
-      <br />
-      <br />
-      <hr>
-      <h2>[[$t('create_with_relation_sample_heading')]]</h2>
-      <animad-animal-create-form save-url="[[backendUrl]][[_entitiesUrl]]"
-        profile-url="[[backendUrl]]/api/admin_service/profile/animals"
-        backend-url="[[backendUrl]]"
-        resources="[[resources]]" lang="[[lang]]"
-        keepers>
-      </animad-animal-create-form>
-      <br />
-      <br />-->
-<!--      <hr>
-      <h2>[[$t('update_sample_heading')]]</h2>
-      <animad-animal-update-form load-url="[[backendUrl]]/api/admin_service/animals/92cbbfb9-1bab-485e-8230-066f82287c2f">
-      </animad-animal-update-form>
-      <br />
-      <br />
-      <hr>
-      <h2>[[$t('read_sample_heading')]]</h2>
-      <animad-animal-update-form load-url="[[backendUrl]]/api/admin_service/animals/92cbbfb9-1bab-485e-8230-066f82287c2f" readform>
-      </animad-animal-update-form>
-      <br />
-      <br />
-      <hr>
-      <h2>[[$t('update_sample_heading_with_relation')]]</h2>
-      <animad-animal-update-form load-url="[[backendUrl]]/api/admin_service/animals/92cbbfb9-1bab-485e-8230-066f82287c2f" save-path="/animals-view"
-        cancel-path="/animals-view" reset keepers>
-      </animad-animal-update-form>
-      <br />
-      <br />
-      <hr>-->
     </div>
   </template>
 
@@ -208,7 +156,7 @@
           this._filteredData.filter(animal =>
               animal.name.toLowerCase().includes(filterString) ||
               animal.species.toLowerCase().includes(filterString) ||
-              (animal.birthData != undefined && animal.birthDate.toLowerCase().includes(filterString)) ||
+              (animal.birthday != undefined && animal.birthday.toLowerCase().includes(filterString)) ||
               animal.gender.toString().toLowerCase().includes(filterString));
 
         if (selectedFilters != undefined && selectedFilters.length > 0) {
