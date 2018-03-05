@@ -1,16 +1,23 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
 
 <!-- GENERATOR for all lists the same -->
 
 <dom-module id="animad-date-input">
     <template>
-        <style></style>
+        <style is="custom-style">
+
+            .animad-date-field {
+                @apply --animad-date-field;
+            }
+
+        </style>
         <template is="dom-if" if="{{!_checkDateInput()}}">                        
             <div>  
                 <template is="dom-if" if="{{!_defaultLanguage()}}">
                     <vaadin-date-picker 
-                        class="[[class]]"
+                        class="animad-date-field"
                         id="[[id]]"
                         type="date" 
                         name="[[name]]"  
@@ -26,7 +33,7 @@
                 </template>
                 <template is="dom-if" if="{{_defaultLanguage()}}">
                     <vaadin-date-picker 
-                        class="[[class]]"
+                        class="animad-date-field"
                         id="[[id]]"
                         type="date" 
                         name="[[name]]"  
@@ -43,7 +50,7 @@
         </template>
         <template is="dom-if" if="{{_checkDateInput()}}">
             <paper-input
-                class="[[class]]"
+                class="animad-date-field"
                 id="[[id]]"
                 type="date" 
                 name="[[name]]"  
@@ -52,7 +59,8 @@
                 auto-validate="[[autoValidate]]"
                 error-message="[[errorMessage]]"
                 pattern="[[pattern]]" 
-                required="[[required]]">
+                required="[[required]]"
+                >
             </paper-input>
         </template>
     </template>
@@ -110,11 +118,11 @@
 //                                      let year = date.getFullYear();
 //
 //                                      return year + '-' + month + '-' + day;
-                                      let day = date.getDate();
-                                      let month = date.getMonth()+1;
-                                      let year = date.getFullYear();
+                                    let day = date.getDate();
+                                    let month = date.getMonth() + 1;
+                                    let year = date.getFullYear();
 
-                                      return day + '.' + month + '.' + year;//                                      
+                                    return day + '.' + month + '.' + year;//                                      
                                     // returns a string representation of the given
                                     // Date object in 'MM/DD/YYYY' -format
                                 },
@@ -126,7 +134,7 @@
                                 parseDate: text => {
                                     let dateElements = text.split('.');
                                     if (dateElements.length >= 2) {
-                                        return new Date(dateElements[2], dateElements[1]-1, dateElements[0]);
+                                        return new Date(dateElements[2], dateElements[1] - 1, dateElements[0]);
                                     } else {
                                         return null;
                                     }
@@ -148,13 +156,12 @@
                     }
                 }
             }
-            
+
             _defaultLanguage() {
-                var userLang = navigator.language || navigator.userLanguage; 
+                var userLang = navigator.language || navigator.userLanguage;
                 console.log(userLang);
                 return userLang === 'en';
             }
-            
 
             _checkDateInput() {
                 var input = document.createElement("input");
