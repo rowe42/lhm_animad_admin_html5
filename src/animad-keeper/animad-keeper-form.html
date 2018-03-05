@@ -6,6 +6,8 @@
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-dropdown/paper-dropdown.html">
 
+<link rel="import" href="../common-libs/animad-date-input.html">
+
 <!-- custom behaviors -->
 <link rel="import" href="../behaviors/nebula-polyglot-behavior.html">
 <link rel="import" href="../behaviors/mixin.html">
@@ -70,10 +72,9 @@
                         maxlength="30" 
                         required>
                     </paper-input>
-                    <paper-input
+                    <animad-date-input 
                         class="animad-keeper-employmentDate-field"
                         id="keeper-employmentDate"
-                        type="date" 
                         name="employmentDate"  
                         label="[[$t('employmentDate')]]" 
                         value="{{data.employmentDate}}" 
@@ -81,7 +82,7 @@
                         error-message="[[$t('employmentDate_error')]]"
                         pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" 
                         required>
-                    </paper-input>
+                    </animad-date-input>                    
                     <paper-dropdown class="animad-keeper-skill-field"
                         id="keeper-skill" 
                         label="[[$t('skill')]]" value="{{data.skill}}" 
@@ -106,10 +107,9 @@
                         </paper-listbox>
                     </paper-dropdown-menu>-->
 
-                    <paper-input
+                    <animad-date-input
                         class="animad-keeper-birthday-field" 
                         id="keeper-birthday"
-                        type="date" 
                         name="birthday" 
                         label="[[$t('birthday')]]" 
                         value="{{data.birthday}}" 
@@ -117,7 +117,7 @@
                         error-message="[[$t('birthday_error')]]"
                         pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" 
                         required>
-                    </paper-input>
+                    </animad-date-input>
                     <paper-input
                         class="animad-keeper-salary-field" 
                         id="keeper-salary"

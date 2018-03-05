@@ -1,0 +1,171 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/vaadin-date-picker/vaadin-date-picker.html">
+
+<!-- GENERATOR for all lists the same -->
+
+<dom-module id="animad-date-input">
+    <template>
+        <style></style>
+        <template is="dom-if" if="{{!_checkDateInput()}}">                        
+            <div>  
+                <template is="dom-if" if="{{!_defaultLanguage()}}">
+                    <vaadin-date-picker 
+                        class="[[class]]"
+                        id="[[id]]"
+                        type="date" 
+                        name="[[name]]"  
+                        label="[[label]]" 
+                        value="{{value}}" 
+                        auto-validate="[[autoValidate]]"
+                        error-message="[[errorMessage]]"
+                        pattern="[[pattern]]" 
+                        required="[[required]]"
+                        i18n="[[i18n]]"
+                        >
+                    </vaadin-date-picker>
+                </template>
+                <template is="dom-if" if="{{_defaultLanguage()}}">
+                    <vaadin-date-picker 
+                        class="[[class]]"
+                        id="[[id]]"
+                        type="date" 
+                        name="[[name]]"  
+                        label="[[label]]" 
+                        value="{{value}}" 
+                        auto-validate="[[autoValidate]]"
+                        error-message="[[errorMessage]]"
+                        pattern="[[pattern]]" 
+                        required="[[required]]"
+                        >
+                    </vaadin-date-picker>                
+                </template>
+            </div>
+        </template>
+        <template is="dom-if" if="{{_checkDateInput()}}">
+            <paper-input
+                class="[[class]]"
+                id="[[id]]"
+                type="date" 
+                name="[[name]]"  
+                label="[[label]]" 
+                value="{{value}}" 
+                auto-validate="[[autoValidate]]"
+                error-message="[[errorMessage]]"
+                pattern="[[pattern]]" 
+                required="[[required]]">
+            </paper-input>
+        </template>
+    </template>
+    <script>
+
+
+        class AnimadDateInput extends Polymer.Element {
+            static get is() {
+                return 'animad-date-input';
+            }
+
+            static get properties() {
+                return {
+                    i18n: {
+                        type: Object,
+                        value() {
+                            return {
+                                // An array with the full names of months starting
+                                // with January.
+                                monthNames: [
+                                    'Januar', 'Februar', 'März', 'April', 'Mai',
+                                    'Juni', 'Juli', 'August', 'September',
+                                    'October', 'November', 'Dezember'
+                                ],
+                                // An array of weekday names starting with Sunday. Used
+                                // in screen reader announcements.
+                                weekdays: [
+                                    'Sonntag', 'Montag', 'Dienstag', 'Mittwoch',
+                                    'Donnerstag', 'Freitag', 'Samstag'
+                                ],
+                                // An array of short weekday names starting with Sunday.
+                                // Displayed in the calendar.
+                                weekdaysShort: [
+                                    'So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'
+                                ],
+                                // An integer indicating the first day of the week
+                                // (0 = Sunday, 1 = Monday, etc.).
+                                firstDayOfWeek: 0,
+                                // Used in screen reader announcements along with week
+                                // numbers, if they are displayed.
+                                week: 'Woche',
+                                // Translation of the Calendar icon button title.
+                                calendar: 'Kalender',
+                                // Translation of the Clear icon button title.
+                                clear: 'Löschen',
+                                // Translation of the Today shortcut button text.
+                                today: 'Heute',
+                                // Translation of the Cancel button text.
+                                cancel: 'Abbrechen',
+                                // A function to format given `Date` object as
+                                // date string.
+                                formatDate: date => {
+//                                      let day = date.getDate();
+//                                      let month = date.getMonth()+1;
+//                                      let year = date.getFullYear();
+//
+//                                      return year + '-' + month + '-' + day;
+                                      let day = date.getDate();
+                                      let month = date.getMonth()+1;
+                                      let year = date.getFullYear();
+
+                                      return day + '.' + month + '.' + year;//                                      
+                                    // returns a string representation of the given
+                                    // Date object in 'MM/DD/YYYY' -format
+                                },
+                                // A function to parse the given text to a `Date`
+                                // object. Must properly parse (at least) text
+                                // formatted by `formatDate`.
+                                // Setting the property to null will disable
+                                // keyboard input feature.
+                                parseDate: text => {
+                                    let dateElements = text.split('.');
+                                    if (dateElements.length >= 2) {
+                                        return new Date(dateElements[2], dateElements[1]-1, dateElements[0]);
+                                    } else {
+                                        return null;
+                                    }
+                                    // Parses a string in 'MM/DD/YY', 'MM/DD' or 'DD' -format to
+                                    // a Date object
+                                },
+
+                                // A function to format given `monthName` and
+                                // `fullYear` integer as calendar title string.
+                                formatTitle: (monthName, fullYear) => {
+                                    return monthName + ' ' + fullYear;
+                                }
+                            }
+                        }
+                    },
+                    value: {
+                        type: String,
+                        notify: true
+                    }
+                }
+            }
+            
+            _defaultLanguage() {
+                var userLang = navigator.language || navigator.userLanguage; 
+                console.log(userLang);
+                return userLang === 'en';
+            }
+            
+
+            _checkDateInput() {
+                var input = document.createElement("input");
+                input.setAttribute("type", "date");
+                let support = input.type === "date";
+                console.log('Supports date: ' + support);
+                return support;
+            }
+
+        }
+
+        customElements.define(AnimadDateInput.is, AnimadDateInput);
+    </script>
+</dom-module>
