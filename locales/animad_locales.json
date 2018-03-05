@@ -6,6 +6,9 @@
         "animals": "Animals",
         "enclosures": "Enclosures"                
       },
+      "animad-keepers": {
+        "main_heading": "Keepers view"
+      },
       "animad-animal": {
         "main_heading": "Animals View",
         "table_sample_heading": "Table Sample",
@@ -146,6 +149,7 @@
         "relation_search_employmentDate": "",
         "employmentDate_error": "Please give a past date!",
         "skill": "Skills",
+        "skillelements": "elements selected",
         "items_selected": "items selected",
         "skill.cleaning": "Cleaning",
         "skill.feeding": "Feeding",
@@ -203,7 +207,7 @@
         "enclosures": "Gehege"                
       },
       "animad-keepers": {
-        "main_heading": "Keepers view"
+        "main_heading": "Übersicht Wärter"
       },
       "animad-animals": {
         "main_heading": "Übersicht Tiere",
@@ -345,6 +349,7 @@
         "relation_search_employmentDate": "",
         "employmentDate_error": "Geben Sie bitte ein Einstellungsdatum in der Vergangenheit an!",
         "skill": "Erfahrung",
+        "skillelements": "Einträge gewählt",
         "items_selected": "Elemente gewählt",                
         "skill.cleaning": "Putzen",
         "skill.feeding": "Füttern",

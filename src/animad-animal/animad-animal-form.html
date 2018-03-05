@@ -31,8 +31,8 @@
                 @apply --animad-animal-gender-field;
             }
 
-            .animad-animal-birthDate-field {
-                @apply --animad-animal-birthDate-field;
+            .animad-animal-birthday-field {
+                @apply --animad-animal-birthday-field;
             }
 
             .animad-animal-weight-field {
@@ -53,7 +53,7 @@
                         id="animal-name" 
                         type="text" 
                         name="name" 
-                        label="[[$t('name')]]"
+                        label="[[$t('name')]]*"
                         value="{{data.name}}"
                         readonly="[[readonly]]" 
                         auto-validate="[[autoValidate]]" 
@@ -76,13 +76,13 @@
                             </template>
                         </paper-listbox>
                     </paper-dropdown-menu>
-                    <!-- Animal Birthdate -->
+                    <!-- Animal birthday -->
                     <paper-input 
-                        class="animad-animal-birthDate-field" 
-                        id="animal-birthDate" 
+                        class="animad-animal-birthday-field" 
+                        id="animal-birthday" 
                         type="date" step="1" 
-                        name="birthDate" 
-                        label="[[$t('birthDate')]]"
+                        name="birthday" 
+                        label="[[$t('birthday')]]*"
                         value="{{data.birthday}}" 
                         readonly="[[readonly]]" 
                         auto-validate="[[autoValidate]]" 
@@ -109,7 +109,7 @@
                         id="animal-weight" 
                         type="number" 
                         name="weight" 
-                        label="[[$t('weight')]]" 
+                        label="[[$t('weight')]]*" 
                         value="{{data.weight}}"
                         readonly="[[readonly]]" 
                         auto-validate="[[autoValidate]]" 
@@ -117,7 +117,6 @@
                         min="1" 
                         max="50000"
                         required>
-                        <div slot="suffix">KG</div>
                     </paper-input>
                     <!-- Animal Alive -->
                     <paper-checkbox 
@@ -125,7 +124,7 @@
                         id="animal-alive" 
                         name="alive" 
                         checked="{{data.alive}}">
-                    [[$t('alive')]]
+                    [[$t('alive')]]*
                     </paper-checkbox>
                 </form>
             </iron-form>
