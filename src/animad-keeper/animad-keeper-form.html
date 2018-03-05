@@ -71,6 +71,7 @@
                         error-message="[[$t('lastName_error')]]"
                         minlength="3" 
                         maxlength="30" 
+                        readonly="[[readonly]]"
                         required>
                     </paper-input>
                     <animad-date-input 
@@ -82,6 +83,7 @@
                         auto-validate="[[autoValidate]]"
                         error-message="[[$t('employmentDate_error')]]"
                         pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" 
+                        readonly="[[readonly]]"
                         required>
                     </animad-date-input>                    
                     <paper-dropdown class="animad-keeper-skill-field"
@@ -89,6 +91,7 @@
                         label="[[$t('skill')]]*" value="{{data.skill}}" 
                         multi-label="[[$t('skillelements')]]"
                         searchable="true" multi="true"
+                        disabled="[[readonly]]"
                         > 
                         <!--in paper-dropdown ergänzen, sobald pull request durch ist-->
                         <!--multi-label="[[t('items-selected')]]"-->
@@ -118,6 +121,7 @@
                         auto-validate="[[autoValidate]]"
                         error-message="[[$t('birthday_error')]]"
                         pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" 
+                        readonly="[[readonly]]"
                         required>
                     </animad-date-input>
                     <paper-input
@@ -131,6 +135,7 @@
                         error-message="[[$t('salary_error')]]"
                         step="1" 
                         min="0"
+                        readonly="[[readonly]]"
                         required>
                     </paper-input>
                 </form>
