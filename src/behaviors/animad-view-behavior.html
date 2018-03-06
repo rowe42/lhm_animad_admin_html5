@@ -87,10 +87,10 @@
                         this._reload.bind(this),
                         this._showPage404.bind(this),
                         true);
-                
-                
+
+
             }
-            
+
             _reload() {
                 let page = this.page;
                 if (page) {
@@ -98,6 +98,12 @@
                     if (element) {
                         element.reload();
                     }
+                }
+                else {
+                  let element = this.shadowRoot.querySelector('#list');
+                  if (element != undefined && element.loadCompleteData === true) {
+                    element.reload();
+                  }
                 }
             }
 

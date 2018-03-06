@@ -47,7 +47,9 @@
         <div class="animad-keeper-view-content">
             <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" route="{{subroute}}">
               <template is="dom-if" if="{{readAllowed}}">
-                <animad-keepers-list name=""
+                <animad-keepers-list
+                  id="list"
+                  name=""
                   url="[[backendUrl]][[_entitiesUrl]]"
                   default-search='vorname:hans'
                   display-type='list'
@@ -158,7 +160,7 @@
             console.log("Filtern nach selektierbaren Filtern ist nicht implementiert!");
           }
         }
-        
+
     }
 
     // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]View

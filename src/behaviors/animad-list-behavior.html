@@ -639,6 +639,10 @@
           this._deleteInfo = "";
         }
 
+        reload() {
+          this._loadHalData(this.url, 'GET');
+        }
+        
         // Backend methods
         /*
         * Führt die Suche im Backend durch.
@@ -766,15 +770,15 @@
 
             }
         }
-        
+
         /**
-         * Wird in der Komponente verwendet um den Parameter display-type 
+         * Wird in der Komponente verwendet um den Parameter display-type
          * in einem Data-Binding zu überprüfen.
          */
         _isOfType(value) {
             return this.displayType === value;
         }
-        
+
 
 
         /**
