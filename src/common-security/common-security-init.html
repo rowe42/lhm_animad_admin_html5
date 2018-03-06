@@ -60,6 +60,10 @@
             }
 
             // methods
+            connectedCallback() {
+                super.connectedCallback();
+                this.reload();
+            }            
 
             checkPermissions(permissionToCheck) {
                 if (this._permissions.filter(e => e === permissionToCheck).length > 0) {

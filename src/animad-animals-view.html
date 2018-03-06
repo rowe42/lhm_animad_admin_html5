@@ -64,7 +64,7 @@
                 </animad-animals-list>
             </template>
             <template is="dom-if" if="{{writeAllowed}}">
-                <animad-animal-create-form name="create"
+                <animad-animal-create-form name="create" id="create"
                   save-url="[[backendUrl]][[_entitiesUrl]]"
                   backend-url="[[backendUrl]]"
                   profile-url="[[backendUrl]][[_profileUrl]]"
@@ -74,11 +74,12 @@
                 </animad-animal-create-form>
             </template>
             <template is="dom-if" if="{{writeAllowed}}">
-                <animad-animal-update-form name="update"
+                <animad-animal-update-form name="update" id="update"
                   load-url="{{_loadSingleEntityUrl}}"
                   profile-url="[[backendUrl]][[_profileUrl]]"
                   save-path="/animals-view/"
                   cancel-path="/animals-view/"
+                  readform
                   resources="[[resources]]" lang="[[lang]]" keepers>
                 </animad-animal-update-form>
             </template>

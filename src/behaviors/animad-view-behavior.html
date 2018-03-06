@@ -84,9 +84,21 @@
 
                 Polymer.importHref(
                         resolvedPageUrl,
-                        null,
+                        this._reload.bind(this),
                         this._showPage404.bind(this),
                         true);
+                
+                
+            }
+            
+            _reload() {
+                let page = this.page;
+                if (page) {
+                    let element = this.shadowRoot.querySelector('#' + page);
+                    if (element) {
+                        element.reload();
+                    }
+                }
             }
 
             _showPage404() {

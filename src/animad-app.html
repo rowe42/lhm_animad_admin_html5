@@ -11,6 +11,7 @@
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/nebula-i18n/nebula-i18n.html">
@@ -162,7 +163,7 @@
                             <template is="dom-if" if="{{readKeeperAllowed}}">
                             <a class="paper-item-link" name="keepers-view" href="#[[rootPath]]keepers-view/" tabindex="-1">
                                 <paper-icon-item>
-                                   <iron-icon icon="animad-icons:face" slot="item-icon"></iron-icon>
+                                   <iron-icon icon="animad-icons:keeper" slot="item-icon"></iron-icon>
                                     [[$t('keepers')]]
                               </paper-icon-item>
                             </a>
@@ -171,7 +172,7 @@
                             <template is="dom-if" if="{{!readKeeperAllowed}}">
                             <div class="menu-disabled" name="keepers-view">
                                 <paper-icon-item disabled="true">
-                                   <iron-icon icon="animad-icons:face" slot="item-icon"></iron-icon>
+                                   <iron-icon icon="animad-icons:keeper" slot="item-icon"></iron-icon>
                                     [[$t('keepers')]]
                               </paper-icon-item>
                             </div>

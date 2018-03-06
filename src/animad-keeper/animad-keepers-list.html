@@ -1,10 +1,14 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item-body.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../bower_components/nebula-i18n/nebula-i18n.html">
 <link rel="import" href="../../bower_components/vaadin-material-theme/vaadin-grid.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid.html">
@@ -25,6 +29,14 @@
 <dom-module id="animad-keepers-list">
     <template>
       <style>
+          section {
+            width: 100%;
+            height: 300px;
+            @apply --layout-vertical;
+          }
+          section paper-dialog-scrollable {
+            @apply --layout-flex;
+          }
       </style>
 
       <!-- Routing Support -->
@@ -117,7 +129,39 @@
           <paper-button raised dialog-dismiss on-click="_unsetTemporaryDeleteInfo" autofocus>[[$t('modal_delete_button_no')]]</paper-button>
         </paper-item>
       </paper-dialog>
+      
 
+      <template is="dom-if" if="[[_isOfType('list')]]">
+        <section>
+          <paper-dialog-scrollable>
+              <paper-listbox>
+                  <template is="dom-repeat" items="[[filteredData]]">
+                     <paper-icon-item>
+                        <iron-icon icon="animad-icons:[[_entity]]" slot="item-icon"></iron-icon>
+                        <paper-item-body two-line>
+                          <div>[[_format('list_first_line', item)]]</div>
+                          <div secondary>[[_format('list_second_line', item)]]</div>
+                        </paper-item-body>
+                        <paper-icon-button
+                          icon="animad-icons:delete"
+                          id="[[item.id]]"
+                          hidden="[[hideDelete]]"
+                          on-click="_confirmDeleteRow">
+                        </paper-icon-button>
+                        <paper-icon-button
+                          icon="animad-icons:mode-edit"
+                          id="[[item.id]]"
+                          hidden="[[hideEdit]]"
+                          on-click="_editRow">
+                        </paper-icon-button>                
+                      </paper-icon-item>
+                  </template>
+              </paper-listbox>
+          </paper-dialog-scrollable>
+        </section>
+      </template>
+
+      <template is="dom-if" if="[[_isOfType('table')]]">
 <!-- Für Suche über Lazy Loading:
      <vaadin-grid id="animad-list" data-provider="[[dataProvider]]"  size="200" multi-sort="[[multiSort]]" selected-items="{{_selectedItems}}"> -->
 
@@ -201,6 +245,7 @@
           </template>
         </vaadin-grid-column>
       </vaadin-grid>
+    </template>
 
     </template>
 
@@ -301,6 +346,22 @@
         _searchData(event) {
           this._search = event.target.search.toLowerCase();
           super._fetchData(this._search);
+        }
+        
+        /*
+         * Bereitet die Ausgabe der Einträge in der Liste 
+         * nach den Vorgaben in der locales Datei auf. Dies
+         * ist notwendig, weil man im HTML Bereich Databinding
+         * nicht schachteln kann.
+         * 
+         * @param   item das anzuzeigende Element
+         * @return  formatierter Text
+         */
+        _format(key, item) {
+            //die Enums übersetzen
+            //TODO Generator pattern
+            var translatedItem =  this.translateItem(item, [], ['skill']);                
+            return this.$t(key, {firstName: item.firstName, lastName: item.lastName, birthday: item.birthday, employmentDate: item.employmentDate, skill: translatedItem.skill, salary: item.salary});
         }
 
       }

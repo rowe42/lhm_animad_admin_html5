@@ -72,6 +72,7 @@
                         type: Boolean,
                         value: false
                     },
+                    _initialReadform: Boolean,
                     /**
                      *
                      */
@@ -104,6 +105,7 @@
                 this._errorToast = document.querySelector('animad-app').$.global_error_toast;
                 this._successToast = document.querySelector('animad-app').$.global_success_toast;
                 this._warningToast = document.querySelector('animad-app').$.global_warning_toast;
+                this._initialReadform = this.readform || false;
             }
 
             /**
@@ -217,6 +219,19 @@
                     //HACK: Fetching GET instead of OPTIONS until OPTIONS are implemented
                     var hackSaveUrl = saveUrl + 'Options';
                     this._loadHalData(hackSaveUrl, 'GET', 'data');
+                }
+            }
+            
+            /*
+             * Lädt das zugrunde liegende Data-Objekt neu
+             */
+            reload() {
+                this.readform = this._initialReadform;
+                if (this.loadUrl) {
+                    this._loadFormData(this.loadUrl);
+                }
+                if (this.saveUrl) {
+                    this._loadOptions(this.saveUrl);
                 }
             }
 

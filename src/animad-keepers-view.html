@@ -42,14 +42,16 @@
     <common-security-check permission="administration_WRITE_Keeper" allowed="{{writeAllowed}}"></common-security-check>
 
       <div class="card">
-        <div class="circle"><iron-icon icon="animad-icons:face"></iron-icon></div>
+        <div class="circle"><iron-icon icon="animad-icons:keeper"></iron-icon></div>
         <h1>[[$t('main_heading')]]</h1>
         <div class="animad-keeper-view-content">
-          <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" route="{{subroute}}">
+            <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" route="{{subroute}}">
               <template is="dom-if" if="{{readAllowed}}">
                 <animad-keepers-list name=""
                   url="[[backendUrl]][[_entitiesUrl]]"
                   default-search='vorname:hans'
+                  display-type='list'
+                  load-complete-data
                   route="{{subroute}}"
                   edit-path="/keepers-view/update"
                   create-path="/keepers-view/create"
@@ -60,7 +62,7 @@
                 </animad-keepers-list>
               </template>
               <template is="dom-if" if="{{writeAllowed}}">
-                <animad-keeper-create-form name="create"
+                <animad-keeper-create-form name="create" id="create"
                   save-url="[[backendUrl]][[_entitiesUrl]]"
                   profile-url="[[backendUrl]][[_profileUrl]]"
                   save-path="/keepers-view/"
@@ -69,7 +71,8 @@
                 </animad-keeper-create-form>
               </template>
               <template is="dom-if" if="{{writeAllowed}}">
-                <animad-keeper-update-form name="update" load-url="{{_loadSingleEntityUrl}}"
+                <animad-keeper-update-form name="update" id="update" load-url="{{_loadSingleEntityUrl}}"
+                   readform="true"
                    profile-url="[[backendUrl]][[_profileUrl]]"
                    save-path="/keepers-view/"
                    cancel-path="/keepers-view/"
@@ -155,6 +158,7 @@
             console.log("Filtern nach selektierbaren Filtern ist nicht implementiert!");
           }
         }
+        
     }
 
     // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]View
