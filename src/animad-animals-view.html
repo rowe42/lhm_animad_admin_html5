@@ -51,6 +51,7 @@
           <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" route="{{subroute}}">
             <template is="dom-if" if="{{readAllowed}}">
                 <animad-animals-list
+                  id="list"
                   name=""
                   url="[[backendUrl]][[_entitiesUrl]]"
                   default-search='name:Dumbo'
