@@ -102,9 +102,6 @@
 
             connectedCallback() {
                 super.connectedCallback();
-                this._errorToast = document.querySelector('animad-app').$.global_error_toast;
-                this._successToast = document.querySelector('animad-app').$.global_success_toast;
-                this._warningToast = document.querySelector('animad-app').$.global_warning_toast;
                 this._initialReadform = this.readform || false;
             }
 
@@ -175,7 +172,7 @@
                                     this._success('form_success');
                                 } else {
                                     if (response.status === 403 || response.status === 401) {
-                                        this._errorText('auth_error', response.status);
+                                        this._error(response.status,'auth_error');
                                     } else {
                                         this._error(response.status);
                                     }
@@ -300,7 +297,7 @@
                                 });
                             } else {
                                 if (response.status === 403 || response.status === 401) {
-                                    this._errorText('auth_error', response.status);
+                                    this._error(response.status,'auth_error');
                                 } else {
                                     this._error(response.status);
                                 }
@@ -332,24 +329,32 @@
              * Der 'Toast', der bei Erfolg angezeigt wird.
              */
             _success(key) {
-                this._successToast.text = this.$t(key);
-                this._successToast.open();
+                const notification = {
+                    type: 'success',
+                    message: this.$t(key),
+                }
+                const e = new CustomEvent('notify', {
+                    detail: notification,
+                    bubbles: true,
+                    composed: true,
+                })
+                this.dispatchEvent(e)
             }
 
             /**
              * Der 'Toast', der bei Fehlern angezeigt wird.
              */
-            _error(status) {
-                this._errorText('form_error', status);
+            _error(status, key = 'form_error') {
+                const notification = {
+                    type: 'error',
+                    message: this.$t(key, {code: status}),
+                }
+                const e = new CustomEvent('notify', {
+                    detail: notification,
+                    bubbles: true,
+                    composed: true,
+                })
+                this.dispatchEvent(e)
             }
-            
-            /**
-             * Der 'Toast', der bei Fehlern angezeigt wird, mit expliziter Angabe eine Text-Schlüssels.
-             */
-            _errorText(key, status) {
-                this._errorToast.text = this.$t(key, {code: status});
-                this._errorToast.open();
-            }
-            
         };
 </script>

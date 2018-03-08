@@ -350,7 +350,6 @@
 
         connectedCallback() {
             super.connectedCallback();
-            this._errorToast = document.querySelector('animad-app').$.global_error_toast;
         }
 
         // refresh view and reset any delete information
@@ -779,33 +778,21 @@
             return this.displayType === value;
         }
 
-
-
         /**
          * Der 'Toast', der bei Fehlern beim Löschen angezeigt wird.
          */
         _errorDelete(status, id) {
-            this._errorToast.text = this.$t('list_delete_error', { code: status, id: id });
-            console.error(this._errorToast.text);
-            this._errorToast.open();
-        }
-
-        /**
-         * Der 'Toast', der bei Fehlern beim Löschen angezeigt wird.
-         */
-        _errorDelete(status, id) {
-            this._errorToast.text = this.$t('list_delete_error', { code: status, id: id });
-            console.error(this._errorToast.text);
-            this._errorToast.open();
+            const text = this.$t('list_delete_error', { code: status, id: id });
+            this._error(message);
         }
 
         /**
          * Der 'Toast', der bei zu vielen Ergebnissen angezeigt wird.
          */
         _errorTooManyResults(results, msg) {
-            this._errorToast.text = this.$t('list_error_too_many_results', { results: results });
-            console.error(this._errorToast.text+"("+msg+")");
-            this._errorToast.open();
+            const text = this.$t('list_error_too_many_results', { results: results });
+            console.error(text+"("+msg+")");
+            this._error(message);
         }
 
         /**
@@ -819,11 +806,22 @@
          * Der 'Toast', der bei Fehlern angezeigt wird, mit expliziter Angabe eine Text-Schlüssels.
          */
         _errorText(key, action, msg) {
-            this._errorToast.text = this.$t(key, { action: action });
-            console.error(this._errorToast.text+"("+msg+")");
-            this._errorToast.open();
+           const text = this.$t(key, { action: action });
+            console.error(text+"("+msg+")");
+            this._error(text);
         }
 
-
+        _error(message) {
+          const notification = {
+            type: 'error',
+            message: message,
+          }
+          const e = new CustomEvent('notify', {
+            detail: notification,
+            bubbles: true,
+            composed: true,
+          })
+          this.dispatchEvent(e)
+        }
     };
 </script>
