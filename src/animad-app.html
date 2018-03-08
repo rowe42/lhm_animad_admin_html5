@@ -92,7 +92,7 @@
             }
 
 
-            #global_error_toast {
+            #toast_error {
                 --paper-toast-background-color: red;
             }
 
@@ -100,15 +100,15 @@
 
         <!-- TODO add toasts for error, warning, success -->
         <paper-toast 
-            id="global_success_toast" 
+            id="toast_success" 
             always-on-top>
         </paper-toast>
         <paper-toast 
-            id="global_warning_toast" 
+            id="toast_warning" 
             always-on-top>
         </paper-toast>
         <paper-toast 
-            id="global_error_toast"
+            id="toast_error"
             duration=10000 
             always-on-top>
         </paper-toast>
@@ -321,6 +321,26 @@
                         drawerLayout.drawer.toggle();
                     }
                 });
+            }
+            ready() {
+                this.addEventListener('notify', this._onNotify);
+                super.ready();
+            }
+
+            _onNotify(e) {
+                switch(e.detail.type) {
+                    case "success":
+                        this.$.toast_success.show(e.detail.message);
+                        break;
+                    case "warning":
+                        this.$.toast_warning.show(e.detail.message);
+                        break;
+                    case "error":
+                        this.$.toast_error.show(e.detail.message);
+                        break;
+                    default: 
+                        console.log("Event ignored. Notification type not known: " + e);
+                }
             }
 
             _routePageChanged(page) {
