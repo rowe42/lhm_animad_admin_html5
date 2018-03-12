@@ -70,6 +70,13 @@
       * and trailing slashes (e.g., `/my-app/`).
       */
       window.Polymer = {rootPath: '/'};
+      
+      // Register custom object which get filtered by gulp build
+      // GENERATOR: window.[[DOMAIN]]
+      window.animad =  {
+    		  // will be replaced by gulp build
+    		  appVersion: '@@appVersion'
+      };
 
       // Load and register pre-caching Service Worker
       if ('serviceWorker' in navigator) {
