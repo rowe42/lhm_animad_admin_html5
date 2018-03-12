@@ -51,6 +51,7 @@
                resources="[[resources]]" lang="[[lang]]" auto-validate></animad-animal-form>
             <template is="dom-if" if="[[keepers]]">
                 <animad-keeper-simple-relation id="keeperrelation" data="{{data}}" 
+                profile-url="[[backendUrl]]/api/admin_service/profile/keepers"
                resources="[[resources]]" lang="[[lang]]" preload></animad-keeper-simple-relation>
             </template>
         </form>
@@ -136,6 +137,9 @@
                         type: String,
                         value: 'animal'
                     },
+                    backendUrl: {
+                        type: String
+                    },  
                     // GENERATOR: diese Werte müssen abhängig von den Relationen generiert werden
                     /*
                      * Über dieses Element Property kann gesteuert werden, ob die
