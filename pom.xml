@@ -51,7 +51,22 @@
                         <goals>
                             <goal>exec</goal>
                         </goals>
+                    </execution>
+<!--
+                    <execution>
+                        <id>exec-polymer-test</id>
+                        <phase>test</phase>
+                        <configuration>
+                            <executable>polymer</executable>
+                            <arguments>
+                                <argument>test</argument>
+                            </arguments>
+                        </configuration>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
                     </execution>                    
+-->
                 </executions>
             </plugin>            
         </plugins>
