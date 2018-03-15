@@ -110,8 +110,6 @@
              Navigiert zum Attribut "data-routePath" wenn der Button gedrückt wird.
              */
             _navigateTo(e) {
-                //loadUrl zurücksetzen, damit beim Neueinstieg auf jeden Fall neu geladen wird
-                this.loadUrl = null;
                 var routePath = e.target.dataset.routepath;
                 console.log("navigiere zu:" + routePath);
                 this.set("route.path", routePath);
@@ -168,7 +166,7 @@
                     fetch(request)
                             .then(response => {
                                 if (response.ok) {
-                                    this._resetForm();
+                                    if (verb === 'POST') this._resetForm();
                                     this._success('form_success');
                                 } else {
                                     if (response.status === 403 || response.status === 401) {
@@ -326,9 +324,11 @@
                 }, this);
                 
                 
-//                Object.keys(this.data).forEach(key => {
-//                    this.set('data.' + key, null);
-//                });
+                Object.keys(this.data).forEach(key => {
+                    if (key != '_links') {
+                        this.set('data.' + key, null);
+                    }
+                });
                 
                 this.set('data._embedded', null);
                 this.autoValidate = true;

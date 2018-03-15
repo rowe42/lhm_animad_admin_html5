@@ -31,9 +31,12 @@
 <!-- GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-view.html -->
 <!-- GENERATOR hier müssen alle modellierten views rein-->
 <link rel="lazy-import" href="animad-keepers-view.html">
+<link rel="lazy-import" href="animad-keeperdetail-view.html">
+<link rel="lazy-import" href="animad-keepercreate-view.html">
 <link rel="lazy-import" href="animad-animals-view.html">
 <link rel="lazy-import" href="animad-animaldetail-view.html">
 <link rel="lazy-import" href="animad-enclosures-view.html">
+<link rel="lazy-import" href="animad-enclosuredetail-view.html">
 <link rel="lazy-import" href="animad-security-view.html">
 <link rel="lazy-import" href="animad-keepers-formsamples-view.html">
 <link rel="lazy-import" href="animad-view404.html">
@@ -243,12 +246,18 @@
                     <!-- GENERATOR pattern: <[DOMAINNAME][ENTITYNAME]-view name="[ENTITYNAME]-view"></[DOMAINNAME][ENTITYNAME]-view> -->
                     <animad-keepers-view name="keepers-view" route="{{route}}" 
                        backend-url="[[backendUrl]]" resources="[[resources]]" lang="[[lang]]"></animad-keepers-view>
+                    <animad-keeperdetail-view name="keeperdetail-view" route="{{route}}" 
+                       backend-url="[[backendUrl]]" resources="[[resources]]" lang="[[lang]]"></animad-keeperdetail-view>
+                    <animad-keepercreate-view name="keepercreate-view" route="{{route}}" 
+                       backend-url="[[backendUrl]]" resources="[[resources]]" lang="[[lang]]"></animad-keepercreate-view>
                     <animad-animals-view name="animals-view" route="{{route}}"
                        backend-url="[[backendUrl]]" resources="[[resources]]" lang="{{lang}}"></animad-animals-view>
                     <animad-animaldetail-view name="animaldetail-view" route="{{route}}"
                        backend-url="[[backendUrl]]" resources="[[resources]]" lang="{{lang}}"></animad-animaldetail-view>
                     <animad-enclosures-view name="enclosures-view" route="{{route}}"
                        backend-url="[[backendUrl]]" resources="[[resources]]" lang="{{lang}}"></animad-enclosures-view>
+                    <animad-enclosuredetail-view name="enclosuredetail-view" route="{{route}}"
+                       backend-url="[[backendUrl]]" resources="[[resources]]" lang="{{lang}}"></animad-enclosuredetail-view>
                     <animad-security-view name="security-view" route="{{route}}"
                        backend-url="[[backendUrl]]" resources="[[resources]]" lang="{{lang}}"></animad-security-view>
                     <animad-keepers-formsamples-view name="keepers-formsamples-view" route="{{route}}"
