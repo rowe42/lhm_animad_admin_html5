@@ -313,7 +313,9 @@
              * Setzt das Formular zurück.
              */
             _resetForm() {
+                this.autoValidate = false;
                 this.set('data', {});
+                this.autoValidate = true;
             }
 
             /**
