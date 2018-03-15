@@ -14,20 +14,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>Tests</title>
+    <title>my-view1</title>
 
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!-- Import the element to test -->
+    <link rel="import" href="../src/common-libs/animad-list-header.html">
   </head>
   <body>
+    <test-fixture id="BasicAnimadListHeader">
+      <template>
+             <animad-list-header id="basic-animad-list-header"></animad-list-header>
+      </template>
+    </test-fixture>
+
     <script>
-      WCT.loadSuites([
-	'animad-list-header_test.html?dom=shadow',
-	'animad-list-header_test.html?wc-shadydom=true'
-        // Load 'my-view1.html' test suite, using native shadow dom
-        //'my-view1.html?dom=shadow',
-        // Load 'my-view1.html' test suite, using shadydom
-        //'my-view1.html?wc-shadydom=true',
-      ]);
+      suite('animad-list-header tests', function() {
+        test('Test Placeholder Defaults', function() {
+          var basicAnimadListHeader = fixture('BasicAnimadListHeader');
+          var searchBar = basicAnimadListHeader.shadowRoot.querySelector('#search-bar');
+          console.log(searchBar);
+          assert.equal(basicAnimadListHeader.placeholderSearch, 'Search');
+        });
+      });
     </script>
   </body>
 </html>
