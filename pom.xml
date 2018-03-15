@@ -75,6 +75,7 @@
             <resource>
                 <directory>build/es5-bundled</directory>
                 <targetPath>static</targetPath>
+                <filtering>true</filtering>
             </resource>
         </resources>
 

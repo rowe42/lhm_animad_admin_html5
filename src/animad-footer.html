@@ -1,0 +1,44 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<link rel="import" href="shared-styles.html">
+
+<!-- GENERATOR pattern: [DOMAINNAME]-footer -->
+<dom-module id="animad-footer">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+        padding: 10px;
+      }
+      footer {
+        text-align: center;
+        font-size: 12px;
+      }
+    </style>
+
+    <footer>
+      <b>Animad App</b> - Version <span id="animad-footer-version">[[_version]]</span>
+    </footer>
+
+  </template>
+
+  <script>
+    // GENERATOR pattern (camel case): [DOMAINNAME]Footer
+    class AnimadFooter extends Polymer.Element {
+      // GENERATOR pattern: [DOMAINNAME]-footer
+      static get is() { return 'animad-footer'; }
+      static get properties() {
+          return {
+            _version: {
+              type: String,
+              // will be filtered by Maven
+              value: "@project.version@"
+            }
+          }
+        }
+    }
+    
+    // GENERATOR pattern (camel case): [DOMAINNAME]Footer
+    window.customElements.define(AnimadFooter.is, AnimadFooter);
+  </script>
+</dom-module>
