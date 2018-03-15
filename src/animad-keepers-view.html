@@ -65,6 +65,7 @@
               <template is="dom-if" if="{{writeAllowed}}">
                 <animad-keeper-create-form name="create" id="create"
                   save-url="[[backendUrl]][[_entitiesUrl]]"
+                  backend-url="[[backendUrl]]"
                   profile-url="[[backendUrl]][[_profileUrl]]"
                   save-path="/keepers-view/"
                   cancel-path="/keepers-view/"
@@ -72,7 +73,9 @@
                 </animad-keeper-create-form>
               </template>
               <template is="dom-if" if="{{writeAllowed}}">
-                <animad-keeper-update-form name="update" id="update" load-url="{{_loadSingleEntityUrl}}"
+                <animad-keeper-update-form name="update" id="update" 
+                   load-url="{{_loadSingleEntityUrl}}"
+                   backend-url="[[backendUrl]]"
                    readform="true"
                    profile-url="[[backendUrl]][[_profileUrl]]"
                    save-path="/keepers-view/"

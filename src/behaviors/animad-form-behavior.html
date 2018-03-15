@@ -321,9 +321,16 @@
                     let tempRequired = field.required;
                     field.required = null;
                     field.value = null;
+                    this.set('data.'+field.name, null);
                     field.required = tempRequired;
                 }, this);
-
+                
+                
+//                Object.keys(this.data).forEach(key => {
+//                    this.set('data.' + key, null);
+//                });
+                
+                this.set('data._embedded', null);
                 this.autoValidate = true;
             }
 

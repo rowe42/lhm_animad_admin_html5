@@ -20,7 +20,7 @@
 <link rel="import" href="shared-styles.html">
 
 <!-- GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-view -->
-<dom-module id="animad-animals-view">
+<dom-module id="animad-animaldetail-view">
   <template>
     <style include="shared-styles">
       :host {
@@ -34,7 +34,7 @@
     </style>
 
 
-    <app-route route="{{route}}" pattern="/animals-view/:page" data="{{routeData}}" tail="{{subroute}}" on-active-changed="onRouteTailChanged">
+    <app-route route="{{route}}" pattern="/animaldetail-view/:page" data="{{routeData}}" tail="{{subroute}}" on-tail-changed="onRouteTailChanged">
     </app-route>
 
     <!--Security-->
@@ -48,26 +48,9 @@
       <h1>[[$t('main_heading')]]</h1>
       <h2>[[$t('table_sample_heading')]]</h2>
       <div class="animad-animal-view-content">
-          <!--<iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" route="{{subroute}}">-->
-            <template is="dom-if" if="{{readAllowed}}">
-                <animad-animals-list
-                  id="list"
-                  name=""
-                  url="[[backendUrl]][[_entitiesUrl]]"
-                  default-search='name:Dumbo'
-                  route="{{subroute}}"
-                  edit-path="/animaldetail-view"
-                  hide-new
-                  on-filter-data="_filterData"
-                  filtered-data="[[_filteredData]]"
-                  results-text="[[_resultsText]]"
-                  resources="[[resources]]" lang="[[lang]]">
-                </animad-animals-list>
-            </template>
-
-<!--            <template is="dom-if" if="{{writeAllowed}}">
+            <template is="dom-if" if="{{writeAllowed}}">
                 <animad-animal-update-form name="update" id="update"
-                  load-url="{{_loadSingleEntityUrl}}"
+                  load-url="[[backendUrl]]/api/admin_service/animals/[[page]]"
                   backend-url="[[backendUrl]]"
                   profile-url="[[backendUrl]][[_profileUrl]]"
                   save-path="/animals-view/"
@@ -75,27 +58,16 @@
                   readform
                   resources="[[resources]]" lang="[[lang]]" keepers>
                 </animad-animal-update-form>
-            </template>-->
-          <!--</iron-pages>-->
-            <template is="dom-if" if="{{writeAllowed}}">
-                <animad-animal-create-form name="create" id="create"
-                  save-url="[[backendUrl]][[_entitiesUrl]]"
-                  backend-url="[[backendUrl]]"
-                  profile-url="[[backendUrl]][[_profileUrl]]"
-                  save-path="/animals-view/"
-                  cancel-path="/animals-view/"
-                  resources="[[resources]]" lang="[[lang]]" keepers reset>
-                </animad-animal-create-form>
-            </template>          
+            </template>
       </div>
     </div>
   </template>
 
   <script>
     // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]View
-    class AnimadAnimalsView extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadViewBehavior) {
+    class AnimadAnimaldetailView extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadViewBehavior) {
       // GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-view
-      static get is() { return 'animad-animals-view'; }
+      static get is() { return 'animad-animaldetail-view'; }
 
       static get properties() {
         return {
@@ -172,6 +144,6 @@
     }
 
     // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]View
-    window.customElements.define(AnimadAnimalsView.is, AnimadAnimalsView);
+    window.customElements.define(AnimadAnimaldetailView.is, AnimadAnimaldetailView);
   </script>
 </dom-module>
