@@ -315,6 +315,29 @@
             _resetForm() {
                 this.autoValidate = false;
                 this.set('data', {});
+                
+                //                let customform = this.shadowRoot.querySelector('#customform');
+//                Object.keys(this.data).forEach(function(key,index) {
+//                    let field = customform.shadowRoot.querySelector('#keeper-' + key);
+//                    if (field) {
+//                        let tempMinLength = field.minLength;
+//                        let tempRequired = field.required;
+//                        field.minlength = null;
+//                        field.required = null;
+////                        this.set('data.'+key, null);
+//                        field.value = null;
+//                        field.minlength = tempMinLength;
+//                        field.required = tempRequired;
+//                    }
+//                });
+
+                
+//                let field = customform.shadowRoot.querySelector('#firstname');
+//                var x = this.$.customform.$.firstname;
+//                x.minlength = 0;
+////                this.shadowRoot.querySelector('#firstname').minlength = 0;
+//                this.set('data.firstName', null);
+                
                 this.autoValidate = true;
             }
 
