@@ -783,7 +783,7 @@
          */
         _errorDelete(status, id) {
             const text = this.$t('list_delete_error', { code: status, id: id });
-            this._error(message);
+            this._error(text);
         }
 
         /**
@@ -792,7 +792,7 @@
         _errorTooManyResults(results, msg) {
             const text = this.$t('list_error_too_many_results', { results: results });
             console.error(text+"("+msg+")");
-            this._error(message);
+            this._error(text);
         }
 
         /**

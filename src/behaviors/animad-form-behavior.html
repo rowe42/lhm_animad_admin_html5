@@ -316,14 +316,12 @@
                 this.autoValidate = false;
                 
                 let customform = this.shadowRoot.querySelector('#customform');
-                Object.keys(this.data).forEach(function(key,index) {
-                    let field = customform.shadowRoot.querySelector('#' + this._entity + '-' + key);
-                    if (field) {
-                        let tempRequired = field.required;
-                        field.required = null;
-                        field.value = null;
-                        field.required = tempRequired;
-                    }
+                let fields = customform.shadowRoot.querySelectorAll('[id^=' + this._entity + ']');
+                fields.forEach(field => {                    
+                    let tempRequired = field.required;
+                    field.required = null;
+                    field.value = null;
+                    field.required = tempRequired;
                 }, this);
 
                 this.autoValidate = true;
