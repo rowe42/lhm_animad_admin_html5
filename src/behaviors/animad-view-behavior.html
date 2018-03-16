@@ -16,21 +16,9 @@
                     },
                     page: {
                         type: String,
-                        reflectToAttribute: true,
-                        observer: '_pageChanged',
+                        reflectToAttribute: true
                     },
-                    routeData: Object,
-                    subroute: String,
                     backendUrl: {
-                        type: String
-                    },
-                    _loadSingleEntityUrl: {
-                        type: String
-                    },
-                    _entitiesUrl: {
-                        type: String
-                    },
-                    _singleEntity: {
                         type: String
                     },
                     /*
@@ -50,66 +38,10 @@
                 ];
             }
 
-            /**
-             * Achtung: Es ist wichtig, die loadSingleKeeperUrl in dieser Methode zusammenzusetzen.
-             * Macht man das stattdessen direkt im Feld loadUrl im HTML, wird subroute.path erst im Nachhinein
-             * aufgerufen, was ein mehrmaliges Setzen der load-url in form-behavior bewirkt. Das bedeutet aber,
-             * dass erstmal alle keeper geholt werden und nicht nur einer (race condition).
-             *
-             */
-            composeLoadUrl() {
-                if (this.subroute && this.subroute.path) {
-                    this._loadSingleEntityUrl = this.backendUrl + this._entitiesUrl + this.subroute.path;
-                }
-            }
-
             _routePageChanged(page) {
                 this.page = page || '';
-                this.composeLoadUrl();
             }
 
-            _pageChanged(page) {
-                // Load page import on demand. Show 404 page if fails
-                // GENERATOR ------
-                // GENERATOR pattern (camel case): [DOMAINNAME]
-                var resolvedPageUrl;
-                if (page) {
-                    //page ist create oder update
-                    resolvedPageUrl = this.resolveUrl(this._singleEntity + '/' + this._singleEntity + '-' + page + '-form.html');
-                } else {
-                    //page ist '', d.h. wir zeigen die Tabelle
-                    resolvedPageUrl = this.resolveUrl(this._singleEntity + '/' + this._entity + '-list.html');
-                }
-
-
-                Polymer.importHref(
-                        resolvedPageUrl,
-                        this._reload.bind(this),
-                        this._showPage404.bind(this),
-                        true);
-
-
-            }
-
-            _reload() {
-                let page = this.page;
-                if (page) {
-                    let element = this.shadowRoot.querySelector('#' + page);
-                    if (element) {
-                        element.reload();
-                    }
-                }
-                else {
-                  let element = this.shadowRoot.querySelector('#list');
-                  if (element != undefined && element.loadCompleteData === true) {
-                    element.reload();
-                  }
-                }
-            }
-
-            _showPage404() {
-                this.set("route.path", '/view404');
-            }
 
             onRouteTailChanged() {
               this._filteredData = [];

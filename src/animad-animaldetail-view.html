@@ -1,5 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/nebula-i18n/nebula-i18n.html">
 
 <!-- custom behaviors -->
 <link rel="import" href="behaviors/nebula-polyglot-behavior.html">
@@ -11,65 +13,49 @@
 
 <!-- custom components -->
 <link rel="import" href="common-security/common-security-check.html">
-<link rel="import" href="animad-enclosure/animad-enclosures-list.html">
-<link rel="import" href="animad-enclosure/animad-enclosure-update-form.html">
-<link rel="import" href="animad-enclosure/animad-enclosure-create-form.html">
+<link rel="import" href="animad-animal/animad-animal-update-form.html">
 
 <link rel="import" href="shared-styles.html">
 
 <!-- GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-view -->
-<dom-module id="animad-enclosures-view">
+<dom-module id="animad-animaldetail-view">
   <template>
     <style include="shared-styles">
       :host {
         display: block;
         padding: 10px;
       }
-      .animad-enclosure-view-content {
+      .animad-animal-view-content {
         display: grid;
         grid-row-gap: 3em;
       }
     </style>
 
-    <app-route route="{{route}}" pattern="/enclosures-view/:page" data="{{routeData}}" tail="{{subroute}}" on-tail-changed="onRouteTailChanged">
+
+    <app-route route="{{route}}" pattern="/animaldetail-view/:page" data="{{routeData}}" tail="{{subroute}}" on-tail-changed="onRouteTailChanged">
     </app-route>
 
     <!--Security-->
-    <common-security-check permission="administration_READ_Enclosure" allowed="{{readAllowed}}"></common-security-check>
-    <common-security-check permission="administration_WRITE_Enclosure" allowed="{{writeAllowed}}"></common-security-check>
+    <common-security-check permission="administration_READ_Animal" allowed="{{readAllowed}}"></common-security-check>
+    <common-security-check permission="administration_WRITE_Animal" allowed="{{writeAllowed}}"></common-security-check>
 
     <div id="view" class="card">
       <div class="circle">
-        <iron-icon icon="animad-icons:basecamp"></iron-icon>
+        <iron-icon icon="animad-icons:panda"></iron-icon>
       </div>
       <h1>[[$t('main_heading')]]</h1>
       <h2>[[$t('table_sample_heading')]]</h2>
-      <div class="animad-enclosure-view-content">
-            <template is="dom-if" if="{{readAllowed}}">
-                <animad-enclosures-list
-                  id="list"
-                  name=""
-                  url="[[backendUrl]][[_entitiesUrl]]"
-                  default-search="name:'Elephant's paradise'"
-                  route="{{subroute}}"
-                  edit-path="/enclosuredetail-view"
-                  hide-new
-                  on-filter-data="_filterData"
-                  filtered-data="[[_filteredData]]"
-                  results-text="[[_resultsText]]"
-                  resources="[[resources]]" lang="[[lang]]">
-                </animad-enclosures-list>
-            </template>
+      <div class="animad-animal-view-content">
             <template is="dom-if" if="{{writeAllowed}}">
-                <animad-enclosure-create-form name="create"
-                  save-url="[[backendUrl]][[_entitiesUrl]]"
-                  profile-url="[[backendUrl]][[_profileUrl]]"
+                <animad-animal-update-form name="update" id="update"
+                  load-url="[[backendUrl]]/api/admin_service/animals/[[page]]"
                   backend-url="[[backendUrl]]"
-                  save-path="/enclosures-view/"
-                  cancel-path="/enclosures-view/"
-                  resources="[[resources]]" lang="[[lang]]"
-                  animals>
-                </animad-enclosure-create-form>
+                  profile-url="[[backendUrl]][[_profileUrl]]"
+                  save-path="/animals-view/"
+                  cancel-path="/animals-view/"
+                  readform
+                  resources="[[resources]]" lang="[[lang]]" keepers>
+                </animad-animal-update-form>
             </template>
       </div>
     </div>
@@ -77,18 +63,12 @@
 
   <script>
     // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]View
-    class AnimadEnclosuresView extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadViewBehavior) {
+    class AnimadAnimaldetailView extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadViewBehavior) {
       // GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-view
-      static get is() { return 'animad-enclosures-view'; }
+      static get is() { return 'animad-animaldetail-view'; }
 
       static get properties() {
         return {
-          /*
-           * Das '_domain' property wird benötigt, um" den richtigen Pfad
-           * zu den i18n Werten zu erzeugen. Es wird in jedem Element
-           * benötigt, in dem die I18nBehavior verwendet wird. Im Falle
-           * einer view ist der Wert IMMER 'view'.
-           */
           _domain: {
             type: String,
             value: 'view'
@@ -98,27 +78,27 @@
            * zu den i18n Werten zu erzeugen. Es wird in jedem Element
            * benötigt, in dem die I18nBehavior verwendet wird. Im Falle
            * einer view ist der Wert immer der Präfix, der im Namen der view
-           * vor '*-view' steht. Bei animad-enclosures-view.html also
-           * 'animad-enclosures'.
+           * vor '*-view' steht. Bei animad-animals-view.html also
+           * 'animad-animals'.
            */
           _entity: {
             type: String,
-            value: 'animad-enclosures'
+            value: 'animad-animals'
           },
           /*
            * wird verwendet, um die lazy einzubindenden Unterelemente zu identifizieren
            */
           _singleEntity: {
             type: String,
-            value: 'animad-enclosure'
+              value: 'animad-animal'
           },
           _entitiesUrl: {
               type: String,
-              value: '/api/admin_service/enclosures'
+              value: '/api/admin_service/animals'
           },
           _profileUrl: {
               type: String,
-              value: '/api/admin_service/profile/enclosures'
+              value: '/api/admin_service/profile/animals'
           },
           /*
           *  _filteredData enthält alle Objekte, die auf eingegebene oder ausgewählte Filter zutreffen.
@@ -147,18 +127,21 @@
 
         // GENERATOR: alle angezeigten String-Felder und alle angezeigten Integer-Felder (toString())
         this._filteredData =
-          this._filteredData.filter(enclosure =>
-            enclosure.name.toLowerCase().includes(filterString) ||
-            enclosure.cleaningtime.toLowerCase().includes(filterString));
+          this._filteredData.filter(animal =>
+              animal.name.toLowerCase().includes(filterString) ||
+              animal.species.toLowerCase().includes(filterString) ||
+              (animal.birthday != undefined && animal.birthday.toLowerCase().includes(filterString)) ||
+              animal.gender.toString().toLowerCase().includes(filterString));
 
         if (selectedFilters != undefined && selectedFilters.length > 0) {
           // GENERATOR: Muss im Projekt implementiert werden.
           console.log("Filtern nach selektierbaren Filtern ist nicht implementiert!");
         }
       }
+
     }
 
     // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]View
-    window.customElements.define(AnimadEnclosuresView.is, AnimadEnclosuresView);
+    window.customElements.define(AnimadAnimaldetailView.is, AnimadAnimaldetailView);
   </script>
 </dom-module>

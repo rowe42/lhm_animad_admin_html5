@@ -18,7 +18,7 @@
 <link rel="import" href="shared-styles.html">
 
 <!-- GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-view -->
-<dom-module id="animad-enclosures-view">
+<dom-module id="animad-enclosuredetail-view">
   <template>
     <style include="shared-styles">
       :host {
@@ -31,7 +31,7 @@
       }
     </style>
 
-    <app-route route="{{route}}" pattern="/enclosures-view/:page" data="{{routeData}}" tail="{{subroute}}" on-tail-changed="onRouteTailChanged">
+    <app-route route="{{route}}" pattern="/enclosuredetail-view/:page" data="{{routeData}}" tail="{{subroute}}" on-tail-changed="onRouteTailChanged">
     </app-route>
 
     <!--Security-->
@@ -45,22 +45,23 @@
       <h1>[[$t('main_heading')]]</h1>
       <h2>[[$t('table_sample_heading')]]</h2>
       <div class="animad-enclosure-view-content">
-            <template is="dom-if" if="{{readAllowed}}">
+          <!--<iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" route="{{subroute}}">-->
+<!--            <template is="dom-if" if="{{readAllowed}}">
                 <animad-enclosures-list
                   id="list"
                   name=""
                   url="[[backendUrl]][[_entitiesUrl]]"
                   default-search="name:'Elephant's paradise'"
                   route="{{subroute}}"
-                  edit-path="/enclosuredetail-view"
-                  hide-new
+                  edit-path="/enclosures-view/update"
+                  create-path="/enclosures-view/create"
                   on-filter-data="_filterData"
                   filtered-data="[[_filteredData]]"
                   results-text="[[_resultsText]]"
                   resources="[[resources]]" lang="[[lang]]">
                 </animad-enclosures-list>
-            </template>
-            <template is="dom-if" if="{{writeAllowed}}">
+            </template>-->
+<!--            <template is="dom-if" if="{{writeAllowed}}">
                 <animad-enclosure-create-form name="create"
                   save-url="[[backendUrl]][[_entitiesUrl]]"
                   profile-url="[[backendUrl]][[_profileUrl]]"
@@ -70,16 +71,28 @@
                   resources="[[resources]]" lang="[[lang]]"
                   animals>
                 </animad-enclosure-create-form>
+            </template>-->
+            <template is="dom-if" if="{{writeAllowed}}">
+                <animad-enclosure-update-form name="update" 
+                   load-url="[[backendUrl]]/api/admin_service/enclosures/[[page]]"
+                   profile-url="[[backendUrl]][[_profileUrl]]"
+                   backend-url="[[backendUrl]]"
+                   save-path="/enclosures-view/"
+                   cancel-path="/enclosures-view/"
+                   resources="[[resources]]" lang="[[lang]]"
+                   animals>
+                </animad-enclosure-update-form>
             </template>
+          <!--</iron-pages>-->
       </div>
     </div>
   </template>
 
   <script>
     // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]View
-    class AnimadEnclosuresView extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadViewBehavior) {
+    class AnimadEnclosureDetailView extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadViewBehavior) {
       // GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-view
-      static get is() { return 'animad-enclosures-view'; }
+      static get is() { return 'animad-enclosuredetail-view'; }
 
       static get properties() {
         return {
@@ -159,6 +172,6 @@
     }
 
     // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]View
-    window.customElements.define(AnimadEnclosuresView.is, AnimadEnclosuresView);
+    window.customElements.define(AnimadEnclosureDetailView.is, AnimadEnclosureDetailView);
   </script>
 </dom-module>

@@ -110,8 +110,6 @@
              Navigiert zum Attribut "data-routePath" wenn der Button gedrückt wird.
              */
             _navigateTo(e) {
-                //loadUrl zurücksetzen, damit beim Neueinstieg auf jeden Fall neu geladen wird
-                this.loadUrl = null;
                 var routePath = e.target.dataset.routepath;
                 console.log("navigiere zu:" + routePath);
                 this.set("route.path", routePath);
@@ -168,7 +166,7 @@
                     fetch(request)
                             .then(response => {
                                 if (response.ok) {
-                                    this._resetForm();
+                                    if (verb === 'POST') this._resetForm();
                                     this._success('form_success');
                                 } else {
                                     if (response.status === 403 || response.status === 401) {
@@ -313,7 +311,27 @@
              * Setzt das Formular zurück.
              */
             _resetForm() {
-                this.set('data', {});
+                this.autoValidate = false;
+                
+                let customform = this.shadowRoot.querySelector('#customform');
+                let fields = customform.shadowRoot.querySelectorAll('[id^=' + this._entity + ']');
+                fields.forEach(field => {                    
+                    let tempRequired = field.required;
+                    field.required = null;
+                    field.value = null;
+                    this.set('data.'+field.name, null);
+                    field.required = tempRequired;
+                }, this);
+                
+                
+                Object.keys(this.data).forEach(key => {
+                    if (key != '_links') {
+                        this.set('data.' + key, null);
+                    }
+                });
+                
+                this.set('data._embedded', null);
+                this.autoValidate = true;
             }
 
             /**
