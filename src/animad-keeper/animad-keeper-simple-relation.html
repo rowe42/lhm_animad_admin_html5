@@ -41,7 +41,8 @@
         </paper-dialog>
         <paper-autocomplete 
             label="[[$t('relation_name')]]"
-            source="[[source]]">
+            remote-source min-length="1"
+            >
             <paper-icon-button slot="prefix" prefix icon="animad-icons:magnify"></paper-icon-button>
             <template is="dom-if" if="[[_new]]">
                 <paper-icon-button slot="suffix" icon="animad-icons:plus-box" on-tap="_showDialog"></paper-icon-button>
@@ -149,7 +150,7 @@
                 var translatedItem =  this.translateItem(item, [], ['skill']);
                 return this.$t('relation_suggest', {firstName: item.firstName, lastName: item.lastName, birthday: item.birthday, employmentDate: item.employmentDate, skill: translatedItem.skill})
             }
-            
+
         }
 
         customElements.define(AnimadKeeperSimpleRelation.is, AnimadKeeperSimpleRelation);

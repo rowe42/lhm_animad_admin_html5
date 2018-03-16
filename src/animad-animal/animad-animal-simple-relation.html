@@ -36,7 +36,7 @@
                             <animad-keeper-simple-relation
                                 data="{{_dialogdata}}" 
                                 profile-url="[[backendUrl]]/api/admin_service/profile/keepers"
-                                resources="[[resources]]" lang="[[lang]]" preload>
+                                resources="[[resources]]" lang="[[lang]]">
                             </animad-keeper-simple-relation>
                         </template>
                     </form>
@@ -49,7 +49,7 @@
         </paper-dialog>
         <paper-autocomplete 
             label="[[$t('relation_name')]]"
-            source="[[source]]">
+            remote-source min-length="3">
             <paper-icon-button slot="prefix" prefix icon="animad-icons:magnify"></paper-icon-button>
             <template is="dom-if" if="[[_new]]">
                 <paper-icon-button slot="suffix" icon="animad-icons:plus-box" on-tap="_showDialog"></paper-icon-button>
@@ -81,7 +81,7 @@
          *   source-url="[Quelle zu den Animals]"
          *   text-property="name"
          *   value-property="id"
-         *   preload>
+         *   >
          * </animad-animal-simple-relation>
          * ...
          * ```
