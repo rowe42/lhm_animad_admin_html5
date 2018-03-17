@@ -29,13 +29,24 @@
                 /*
                  * Der Daten-Cache.
                  */
-                suggestions: {
+                source: {
                     type: Array,
                     value() {
                         return [];
                     },
                     notify: true
-                },
+                },                
+                /*
+                 * Legt fest, ob die Daten vorab in den Speicher
+                 * geladen werden. Dies ist bei kleinen Datenmengen
+                 * durchaus sinnvoll. Die Daten werden in dem
+                 * Augenblick geladen, in dem die Komponente
+                 * gerendert wird.
+                 */
+                preload: {
+                    type: Boolean,
+                    value: false
+                },                
                 /*
                  * Legt fest, ob eine neu hinzugefügte Relation per ID
                  * oder als komplette eingebettete Entität angelegt wird.
@@ -93,12 +104,20 @@
             var e = this.shadowRoot.querySelector('paper-autocomplete');
             e.addEventListener('autocomplete-selected', this._appendItem);
             e.addEventListener('autocomplete-change', this._loadSuggestions);
+            
+            
+
+            // Die generische Query Methode muss
+            // durch eine eigene Methode überschrieben
+            // werden.
+            e.queryFn = this._querySimple;
         }
 
         /*
          * Wird ein Traversal Objekt übergeben, dann werden automatisch
-         * die vorhandenen Daten geladen. Dies sind die zur
-         * Entität gehörenden Relationen.
+         * die vorhandenen Daten geladen. Dies sind einerseits die zur
+         * Entität gehörenden Relationen, andererseits werden die möglichen
+         * Relationen vorgeladen (sofern das 'preload' Attribut gesetzt ist).
          *
          * @param   das neue Traversal Objekt
          * @param   der bisherige Wert des Propeties (wird nicht benötigt)
@@ -175,6 +194,13 @@
                     var url = allRelations.href;
                     this.set('_new', true);
                     this.set('_newUrl', url);
+                    
+                                        // Wenn die Auswahlliste vorgeladen werden soll, dann
+                    // kann dies über den '[Name der Entity]s' Link gemacht
+                    // werden.
+                    if (this.preload) {
+                        this._loadAutocompleteEntries(null, null);
+                    }
                 }
             }
         }
@@ -190,8 +216,12 @@
             // Das HAL Objekt wird eingelesen.
             var hal = halson(this.data);
             var allRelations = hal.getLink(this._entity + 's');
-            var baseUrl = allRelations.href + '/search'; //HACK: eigentlich sollte man das aus allRelations raus kriegen --> dazu Options erweitern            
-            var searchUrl=baseUrl+"/findFullTextJunction?q="+searchString;
+            if (searchString) {
+                var baseUrl = allRelations.href; //HACK: eigentlich sollte man das aus allRelations raus kriegen --> dazu Options erweitern            
+                var url=baseUrl+"/search/findFullTextJunction?q="+searchString;
+            } else {
+                var url = allRelations.href;
+            }
 
             var init = {
                             method: 'GET',
@@ -199,7 +229,7 @@
                             credentials: 'include'
                         }
 
-            var request = new Request(searchUrl, init);
+            var request = new Request(url, init);
 
             fetch(request)
                 .then(response => {
@@ -208,7 +238,7 @@
                             if (data && data._embedded) {
                                 var array = data._embedded[this._entity + 's'];
                                 //zurücksetzen, falls bereits vormals geladen wurde (alter Stand!)
-                                this.suggestions = [];
+                                this.source = [];
                                 array.forEach((element) => {
                                     // der formatierte Text zur Auswahl
                                     var text = this._formatSuggester(element);
@@ -218,9 +248,10 @@
                                     // Die beiden Werte als Objekt in das 'suggestions' Array
                                     // speichern. Dieses Array ist Quelle für die
                                     // Autocomplete Componente.
-                                    this.push('suggestions', { "text": text, "value": value, "entity": element })
+                                    this.push('source', { "text": text, "value": value, "entity": element })
                                 });
-                                autocompleter.suggestions(this.suggestions);
+                                if (autocompleter)
+                                    autocompleter.suggestions(this.source);
                             }
                         });
                     } else {
@@ -387,6 +418,19 @@
                 }
             }
 
+        /*
+         * Sucht in einer vorgeladenen Quelle (Property preload
+         * ist auf 'true' gesetzt) nach Vorkommen einer Zeichenkette
+         * im Attribut, dass im Property 'textProperty' angegeben wurde.
+         *
+         * @param die Auswahlliste Liste
+         * @param die Such-Zeichenkette
+         * @return ein Array der selektierten Elemente
+         */
+        _querySimple(datasource, query) {
+            return datasource.filter(x => x[this.textProperty].toLowerCase().indexOf(query) != -1);
+        }
+        
         _appendItem(event) {
             // Der 'host' des Elternknotens wird benötigt
             // um an die Properties zu kommen, da wir nicht
@@ -394,7 +438,7 @@
             var h = this.parentNode.host;
             var id = event.detail.value;
             
-            var item = h.suggestions.find(x => x.value === id);
+             var item = this.source.find(x => x.value === id);
             
             h._appendItemInternal(h, id, item.entity);
             
@@ -432,7 +476,7 @@
                 h.push(name, id);
             } else {
                 // Das Relationsobjekt wird gespeichert
-                var item = this.suggestions.find(x => x.value === id);
+                var item = this.source.find(x => x.value === id);
                 h.push(name, entity);
             }
             

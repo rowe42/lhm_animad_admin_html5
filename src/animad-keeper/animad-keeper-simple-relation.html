@@ -41,7 +41,7 @@
         </paper-dialog>
         <paper-autocomplete 
             label="[[$t('relation_name')]]"
-            remote-source min-length="1"
+            source="[[source]]" remote-source="{{!preload}}" min-length="1"
             >
             <paper-icon-button slot="prefix" prefix icon="animad-icons:magnify"></paper-icon-button>
             <template is="dom-if" if="[[_new]]">
