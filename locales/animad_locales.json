@@ -9,31 +9,43 @@
       "animad-keepers": {
         "main_heading": "Keepers view"
       },
+      "animad-keepercreate": {
+        "main_heading": "Create keeper"
+      },        
+      "animad-keeperdetail": {
+        "main_heading": "Change keeper"
+      },           
       "animad-animal": {
         "main_heading": "Animals View",
-        "table_sample_heading": "Table Sample",
-        "create_sample_heading": "'Create' Form Sample",
+        "table_sample_heading": "Table",
+        "create_sample_heading": "Create Form",
         "create_with_relation_sample_heading": "'Create' Form Sample with Relation",
-        "update_sample_heading": "'Update' Form Sample",
-        "read_sample_heading": "'Read' Form sample",
+        "update_sample_heading": "Update Form",
+        "read_sample_heading": "Read Form",
         "update_sample_heading_with_relation": "Sample with HAL source",
         "create_sample_heading_cancel": "'Create' sample with cancel button"
       },
+      "animad-animaldetail": {
+        "main_heading": "Change animal"
+      },        
       "animad-enclosures": {
         "main_heading": "Enclosures View",
-        "table_sample_heading": "Table Sample",
-        "create_sample_heading": "'Create' Form Sample",
-        "create_with_relation_sample_heading": "'Create' Form Sample with Relation",
-        "update_sample_heading": "'Update' Form Sample",
-        "read_sample_heading": "'Read' Form sample"
+        "table_sample_heading": "Table",
+        "create_sample_heading": "'Create Form",
+        "create_with_relation_sample_heading": "'Create Form with Relation",
+        "update_sample_heading": "Update Form",
+        "read_sample_heading": "Read Form"
       },
+      "animad-enclosuredetail": {
+        "main_heading": "Change enclosure"
+      },        
       "animad-keepers-formsamples": {
         "main_heading": "Keepers View",
-        "create_sample_heading": "'Create' Form Sample",
-        "create_with_relation_sample_heading": "'Create' Form Sample with Relation",
-        "update_sample_heading": "'Update' Form Sample",
-        "read_sample_heading": "'Read' Form sample",
-        "update_sample_heading_with_relation": "'Update' Form Sample with Relation"
+        "create_sample_heading": "Create Form",
+        "create_with_relation_sample_heading": "Create Form with Relation",
+        "update_sample_heading": "Update Form",
+        "read_sample_heading": "Read Form",
+        "update_sample_heading_with_relation": "Update Form with Relation"
       }
     },
     "animad": {
@@ -141,15 +153,9 @@
         "id": "Keeper ID",
         "relation_search_id": "",
         "relation_search_firstName": "",
-        "firstName_error": "",
         "relation_search_lastName": "",
-        "lastName_error": "",
-        "birthday": "Date of Birth",
         "relation_search_birthday": "",
-        "birthday_error": "Please give a past date!",
-        "employmentDate": "Date of Employment",
         "relation_search_employmentDate": "",
-        "employmentDate_error": "Please give a past date!",
         "skill": "Skills",
         "skillelements": "elements selected",
         "items_selected": "items selected",
@@ -213,32 +219,44 @@
       "animad-keepers": {
         "main_heading": "Übersicht Wärter"
       },
+      "animad-keepercreate": {
+        "main_heading": "Wärter anlegen"
+      },        
+      "animad-keeperdetail": {
+        "main_heading": "Wärter bearbeiten"
+      },          
       "animad-animals": {
         "main_heading": "Übersicht Tiere",
-        "table_sample_heading": "Beispiel für eine Tabelle",
-        "create_sample_heading": "Beispiel für ein 'create' Formular",
-        "create_with_relation_sample_heading": "Beispiel für ein 'create' Formular mit Relation zu Wärtern",
-        "update_sample_heading": "Beispiel für ein 'update' Formular",
-        "read_sample_heading": "Beispiel für ein 'read' Formular",
-        "update_sample_heading_with_relation": "Beispiel für update Formular mit Relation aus einer HAL Quelle"
+        "table_sample_heading": "Tabelle",
+        "create_sample_heading": "Create Formular",
+        "create_with_relation_sample_heading": "Create Formular mit Relation zu Wärtern",
+        "update_sample_heading": "Update Formular",
+        "read_sample_heading": "Read Formular",
+        "update_sample_heading_with_relation": "Update Formular mit Relation aus einer HAL Quelle"
       },
+      "animad-animaldetail": {
+        "main_heading": "Tier bearbeiten"
+      },      
       "animad-enclosures": {
         "main_heading": "Übersicht Gehege",
-        "table_sample_heading": "Beispiel für eine Tabelle",
-        "create_sample_heading": "Beispiel für ein 'create' Formular",
-        "create_with_relation_sample_heading": "Beispiel für ein 'create' Formular mit Relation zu Tieren",
-        "update_sample_heading": "Beispiel für ein 'update' Formular",
-        "read_sample_heading": "Beispiel für ein 'read' Formular",
-        "update_sample_heading_with_relation": "Beispiel für update Formular mit Relation aus einer HAL Quelle",
-        "create_sample_heading_cancel": "Beispiel 'create' Formular mit Cancel"
+        "table_sample_heading": "Tabelle",
+        "create_sample_heading": "Create Formular",
+        "create_with_relation_sample_heading": "Create Formular mit Relation zu Wärtern",
+        "update_sample_heading": "Update Formular",
+        "read_sample_heading": "Read Formular",
+        "update_sample_heading_with_relation": "Update Formular mit Relation aus einer HAL Quelle"
       },
+      "animad-enclosuredetail": {
+        "main_heading": "Gehege bearbeiten"
+      },          
       "animad-keepers-formsamples": {
         "main_heading": "Übersicht Wärter",
-        "create_sample_heading": "Beispiel für ein 'create' Formular",
-        "create_with_relation_sample_heading": "Beispiel für ein 'create' Formular mit Relation zu ???",
-        "update_sample_heading": "Beispiel für ein 'update' Formular",
-        "read_sample_heading": "Beispiel für ein 'read' Formular",
-        "update_sample_heading_with_relation": "Beispiel für update Formular mit Relation aus einer HAL Quelle"
+        "table_sample_heading": "Tabelle",
+        "create_sample_heading": "Create Formular",
+        "create_with_relation_sample_heading": "Create Formular mit Relation zu Wärtern",
+        "update_sample_heading": "Update Formular",
+        "read_sample_heading": "Read Formular",
+        "update_sample_heading_with_relation": "Update Formular mit Relation aus einer HAL Quelle"
       }
     },
     "animad": {
