@@ -540,11 +540,11 @@
                 } else {
 
                     this._localizedFilters=[];
-                    if (response.status === 403 || response.status === 401) {
-                        this._errorText('auth_error', response.status);
-                    } else {
+//                    if (response.status === 403 || response.status === 401) {
+//                        this._errorText('auth_error', response.status);
+//                    } else {
                         this._error(response.status);
-                    }
+//                    }
                 }
               });
           }
@@ -641,7 +641,7 @@
         reload() {
           this._loadHalData(this.url, 'GET');
         }
-        
+
         // Backend methods
         /*
         * Führt die Suche im Backend durch.

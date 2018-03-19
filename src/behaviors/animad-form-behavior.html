@@ -216,7 +216,7 @@
                     this._loadHalData(hackSaveUrl, 'GET', 'data');
                 }
             }
-            
+
             /*
              * Lädt das zugrunde liegende Data-Objekt neu
              */
@@ -272,12 +272,12 @@
             }
 
 
-            
+
             _loadHalData(url, verb, target) {
                 if (!url || !verb || !target) {
                     return;
                 }
-                
+
                 // prepare request
                 var init = {
                     method: verb,
@@ -294,11 +294,11 @@
                                     this.set(target, data);
                                 });
                             } else {
-                                if (response.status === 403 || response.status === 401) {
-                                    this._error(response.status,'auth_error');
-                                } else {
+//                                if (response.status === 403 || response.status === 401) {
+//                                    this._error(response.status,'auth_error');
+//                                } else {
                                     this._error(response.status);
-                                }
+//                                }
                             }
                         })
             }
@@ -312,24 +312,24 @@
              */
             _resetForm() {
                 this.autoValidate = false;
-                
+
                 let customform = this.shadowRoot.querySelector('#customform');
                 let fields = customform.shadowRoot.querySelectorAll('[id^=' + this._entity + ']');
-                fields.forEach(field => {                    
+                fields.forEach(field => {
                     let tempRequired = field.required;
                     field.required = null;
                     field.value = null;
                     this.set('data.'+field.name, null);
                     field.required = tempRequired;
                 }, this);
-                
-                
+
+
                 Object.keys(this.data).forEach(key => {
                     if (key != '_links') {
                         this.set('data.' + key, null);
                     }
                 });
-                
+
                 this.set('data._embedded', null);
                 this.autoValidate = true;
             }
@@ -365,6 +365,7 @@
             _error(status, key = 'form_error') {
                 const notification = {
                     type: 'error',
+                    code: status,
                     message: this.$t(key, {code: status}),
                 }
                 const e = new CustomEvent('notify', {
