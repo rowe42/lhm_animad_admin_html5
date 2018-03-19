@@ -195,9 +195,6 @@
                     this.set('_new', true);
                     this.set('_newUrl', url);
                     
-                                        // Wenn die Auswahlliste vorgeladen werden soll, dann
-                    // kann dies über den '[Name der Entity]s' Link gemacht
-                    // werden.
                     if (this.preload) {
                         this._loadAutocompleteEntries(null, null);
                     }
@@ -218,7 +215,7 @@
             var allRelations = hal.getLink(this._entity + 's');
             if (searchString) {
                 var baseUrl = allRelations.href; //HACK: eigentlich sollte man das aus allRelations raus kriegen --> dazu Options erweitern            
-                var url=baseUrl+"/search/findFullTextJunction?q="+searchString;
+                var url=baseUrl+'/search/findFullTextJunction?q=' + searchString + '*';
             } else {
                 var url = allRelations.href;
             }
