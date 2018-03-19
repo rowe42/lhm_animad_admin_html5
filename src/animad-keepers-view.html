@@ -12,6 +12,7 @@
 <!-- custom components -->
 <link rel="import" href="common-security/common-security-check.html">
 <link rel="import" href="animad-keeper/animad-keepers-list.html">
+<link rel="import" href="animad-keeper/animad-keepers-generic-list.html">
 <link rel="import" href="animad-keeper/animad-keeper-create-form.html">
 <link rel="import" href="animad-keeper/animad-keeper-update-form.html">
 
@@ -51,7 +52,7 @@
                   name=""
                   url="[[backendUrl]][[_entitiesUrl]]"
                   default-search='vorname:hans'
-                  display-type='table'
+                  show-icons='true'
                   route="{{subroute}}"
                   edit-path="/keeperdetail-view"
                   create-path="/keepercreate-view"
