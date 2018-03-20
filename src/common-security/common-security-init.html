@@ -3,6 +3,7 @@
 <link rel="import" href="../animad-icons.html">
 
 <link rel="import" href="../behaviors/animad-form-behavior.html">
+<link rel="import" href="../behaviors/animad-error-behavior.html">
 <link rel="import" href="../behaviors/nebula-polyglot-behavior.html">
 <link rel="import" href="../behaviors/mixin.html">
 
@@ -17,7 +18,7 @@
          * @polymer
          *
          */
-        class CommonSecurityInit extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadFormBehavior) {
+        class CommonSecurityInit extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadFormBehavior, AnimadErrorBehavior) {
 
             static get is() {
                 return 'common-security-init';

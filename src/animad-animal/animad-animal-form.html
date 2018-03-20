@@ -48,26 +48,26 @@
             <iron-form id="iform">
                 <form>
                     <!-- Animal Name -->
-                    <paper-input 
-                        class="animad-animal-name-field" 
-                        id="animal-name" 
-                        type="text" 
-                        name="name" 
+                    <paper-input
+                        class="animad-animal-name-field"
+                        id="animal-name"
+                        type="text"
+                        name="name"
                         label="[[$t('name')]]*"
                         value="{{data.name}}"
-                        readonly="[[readonly]]" 
-                        auto-validate="[[autoValidate]]" 
-                        error-message="[[$t('name_error')]]" 
-                        minlength="3" 
+                        readonly="[[readonly]]"
+                        auto-validate="[[autoValidate]]"
+                        error-message="[[$t('name_error')]]"
+                        minlength="3"
                         maxlength="30"
                         required>
                     </paper-input>
                     <!-- Animal Species -->
-                    <paper-dropdown-menu 
-                        class="animad-animal-species-field" 
-                        id="animal-species" 
-                        name="species" 
-                        label="[[$t('species')]]*" 
+                    <paper-dropdown-menu
+                        class="animad-animal-species-field"
+                        id="animal-species"
+                        name="species"
+                        label="[[$t('species')]]*"
                         required>
                         <paper-listbox attr-for-selected="key" selected="{{data.species}}"
                             slot="dropdown-content">
@@ -77,24 +77,24 @@
                         </paper-listbox>
                     </paper-dropdown-menu>
                     <!-- Animal birthday -->
-                    <paper-input 
-                        class="animad-animal-birthday-field" 
-                        id="animal-birthday" 
-                        type="date" step="1" 
-                        name="birthday" 
+                    <paper-input
+                        class="animad-animal-birthday-field"
+                        id="animal-birthday"
+                        type="date" step="1"
+                        name="birthday"
                         label="[[$t('birthday')]]*"
-                        value="{{data.birthday}}" 
-                        readonly="[[readonly]]" 
-                        auto-validate="[[autoValidate]]" 
+                        value="{{data.birthday}}"
+                        readonly="[[readonly]]"
+                        auto-validate="[[autoValidate]]"
                         error-message="[[$t('birthday_error')]]"
                         required>
                     </paper-input>
                     <!-- Animal Gender -->
-                    <paper-dropdown-menu 
-                        class="animad-animal-gender-field" 
+                    <paper-dropdown-menu
+                        class="animad-animal-gender-field"
                         id="animal-gender"
-                        name="gender" 
-                        label="[[$t('gender')]]*" 
+                        name="gender"
+                        label="[[$t('gender')]]*"
                         required>
                         <paper-listbox attr-for-selected="key" selected="{{data.gender}}"
                             slot="dropdown-content">
@@ -106,23 +106,23 @@
                     <!-- Animal Weight -->
                     <paper-input
                         class="animad-animal-weight-field"
-                        id="animal-weight" 
-                        type="number" 
-                        name="weight" 
-                        label="[[$t('weight')]]*" 
+                        id="animal-weight"
+                        type="number"
+                        name="weight"
+                        label="[[$t('weight')]]*"
                         value="{{data.weight}}"
-                        readonly="[[readonly]]" 
-                        auto-validate="[[autoValidate]]" 
-                        error-message="[[$t('weight_error')]]" 
-                        min="1" 
+                        readonly="[[readonly]]"
+                        auto-validate="[[autoValidate]]"
+                        error-message="[[$t('weight_error')]]"
+                        min="1"
                         max="50000"
                         required>
                     </paper-input>
                     <!-- Animal Alive -->
-                    <paper-checkbox 
-                        class="animad-animal-alive-field" 
-                        id="animal-alive" 
-                        name="alive" 
+                    <paper-checkbox
+                        class="animad-animal-alive-field"
+                        id="animal-alive"
+                        name="alive"
                         checked="{{data.alive}}">
                     [[$t('alive')]]*
                     </paper-checkbox>
@@ -142,7 +142,7 @@
          * <animad-animal-form id="updateform" data="{{data}}" auto-validate></animad-animal-form>
          * ...
          * ```
-         * 
+         *
          * @customElement
          * @polymer
          *
@@ -176,8 +176,8 @@
                         value: false
                     },
                     /*
-                     * Das '_domain' property wird benötigt, um den richtigen Pfad 
-                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * Das '_domain' property wird benötigt, um den richtigen Pfad
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element
                      * benötigt, in dem die I18nBehavior verwendet wird.
                      *
                      * GENERATOR das Attribute value generieren
@@ -187,8 +187,8 @@
                         value: 'animad'
                     },
                     /*
-                     * Das '_entity' property wird benötigt, um den richtigen Pfad 
-                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * Das '_entity' property wird benötigt, um den richtigen Pfad
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element
                      * benötigt, in dem die I18nBehavior verwendet wird.
                      *
                      * GENERATOR das Attribute value generieren
@@ -202,7 +202,7 @@
 
             /*
              * Diese Methode validiert das Formular. Sie kann von
-             * 'aussen' aufgerufen werden. 
+             * 'aussen' aufgerufen werden.
              */
              validate() {
                 var valid = this.shadowRoot.querySelector('#iform').validate();

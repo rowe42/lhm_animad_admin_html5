@@ -89,8 +89,8 @@
                 color: #aa00ff;
                 font-weight: bold;
             }
-            
-                  
+
+
             div.menu-disabled {
                 padding: 0 16px;
                 color: grey;
@@ -105,17 +105,17 @@
         </style>
 
         <!-- TODO add toasts for error, warning, success -->
-        <paper-toast 
-            id="toast_success" 
+        <paper-toast
+            id="toast_success"
             always-on-top>
         </paper-toast>
-        <paper-toast 
-            id="toast_warning" 
+        <paper-toast
+            id="toast_warning"
             always-on-top>
         </paper-toast>
-        <paper-toast 
+        <paper-toast
             id="toast_error"
-            duration=10000 
+            duration=10000
             always-on-top>
         </paper-toast>
 
@@ -127,11 +127,11 @@
 
         <common-security-init id="animad_security" load-url="[[backendUrl]]/api/user_service/permissions"
              resources="{{resources}}" lang="[[lang]]" ></common-security-init>
-        
+
         <common-security-check permission="administration_READ_Keeper" allowed="{{readKeeperAllowed}}"></common-security-check>
         <common-security-check permission="administration_READ_Animal" allowed="{{readAnimalAllowed}}"></common-security-check>
         <common-security-check permission="administration_READ_Enclosure" allowed="{{readEnclosureAllowed}}"></common-security-check>
-        
+
         <!-- i18n -->
         <nebula-language
             id="language"
@@ -164,7 +164,7 @@
                         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
                             <!-- GENERATOR pattern: ...[ENTITYNAME]-view">[ENTITYNAME]</a> -->
                             <!-- GENERATOR TODO - der Name und Icon sollte aus einer i18n Liste kommen -->
-                            
+
                             <!--Keepers-->
                             <template is="dom-if" if="{{readKeeperAllowed}}">
                             <a class="paper-item-link" name="keepers-view" href="#[[rootPath]]keepers-view/" tabindex="-1">
@@ -174,7 +174,7 @@
                               </paper-icon-item>
                             </a>
                             </template>
-                            
+
                             <template is="dom-if" if="{{!readKeeperAllowed}}">
                             <div class="menu-disabled" name="keepers-view">
                                 <paper-icon-item disabled="true">
@@ -183,7 +183,7 @@
                               </paper-icon-item>
                             </div>
                             </template>
-                            
+
                             <!--Animals-->
                             <template is="dom-if" if="{{readAnimalAllowed}}">
                             <a class="paper-item-link" name="animals-view" href="#[[rootPath]]animals-view/" tabindex="-1">
@@ -193,7 +193,7 @@
                               </paper-icon-item>
                             </a>
                             </template>
-                            
+
                             <template is="dom-if" if="{{!readAnimalAllowed}}">
                             <div class="menu-disabled" name="animals-view">
                                 <paper-icon-item disabled="true">
@@ -202,7 +202,7 @@
                               </paper-icon-item>
                             </div>
                             </template>
-                            
+
                             <!--Enclosures-->
                             <template is="dom-if" if="{{readEnclosureAllowed}}">
                             <a class="paper-item-link" name="enclosures-view" href="#[[rootPath]]enclosures-view/" tabindex="-1">
@@ -212,7 +212,7 @@
                               </paper-icon-item>
                             </a>
                             </template>
-                            
+
                             <template is="dom-if" if="{{!readEnclosureAllowed}}">
                             <div class="menu-disabled" name="enclosures-view">
                                 <paper-icon-item disabled="true">
@@ -229,7 +229,7 @@
                                     Security
                               </paper-icon-item>
                             </a>
-                            
+
                             <!--Keepers Forms-->
                             <a class="paper-item-link" name="keepers-formsamples-view" href="#[[rootPath]]keepers-formsamples-view/" tabindex="-1">
                                 <paper-icon-item>
@@ -237,20 +237,20 @@
                                     Keepers Forms
                               </paper-icon-item>
                             </a>
-        
+
                         </iron-selector>
                     </div>
                 </app-drawer>
-                
-                        
+
+
 
                 <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
                     <!-- GENERATOR pattern: <[DOMAINNAME][ENTITYNAME]-view name="[ENTITYNAME]-view"></[DOMAINNAME][ENTITYNAME]-view> -->
-                    <animad-keepers-view name="keepers-view" route="{{route}}" 
+                    <animad-keepers-view name="keepers-view" route="{{route}}"
                        backend-url="[[backendUrl]]" resources="[[resources]]" lang="[[lang]]"></animad-keepers-view>
-                    <animad-keeperdetail-view name="keeperdetail-view" route="{{route}}" 
+                    <animad-keeperdetail-view name="keeperdetail-view" route="{{route}}"
                        backend-url="[[backendUrl]]" resources="[[resources]]" lang="[[lang]]"></animad-keeperdetail-view>
-                    <animad-keepercreate-view name="keepercreate-view" route="{{route}}" 
+                    <animad-keepercreate-view name="keepercreate-view" route="{{route}}"
                        backend-url="[[backendUrl]]" resources="[[resources]]" lang="[[lang]]"></animad-keepercreate-view>
                     <animad-animals-view name="animals-view" route="{{route}}"
                        backend-url="[[backendUrl]]" resources="[[resources]]" lang="{{lang}}"></animad-animals-view>
@@ -271,7 +271,7 @@
 
             </app-drawer-layout>
 
-        </app-header-layout>                
+        </app-header-layout>
 
     </template>
 
@@ -292,7 +292,7 @@
                     _entity: {
                       type: String,
                       value: 'animad-app'
-                    },                    
+                    },
                     page: {
                         type: String,
                         reflectToAttribute: true,
@@ -352,9 +352,13 @@
                         this.$.toast_warning.show(e.detail.message);
                         break;
                     case "error":
-                        this.$.toast_error.show(e.detail.message);
+                        var msg = e.detail.message;
+                        if (e.detail.code >= 400 && e.detail.code <= 499) {
+                            msg = msg + " - " + this.$t("error_msg_"+e.detail.code, {code: e.detail.code});
+                        }
+                        this.$.toast_error.show(msg);
                         break;
-                    default: 
+                    default:
                         console.log("Event ignored. Notification type not known: " + e);
                 }
             }
@@ -388,7 +392,7 @@
             _showPage404() {
                 this.page = 'view404';
             }
-            
+
             _logout() {
                 //index.html in Service-Worker-Cache finden und entfernen,
                 //damit es neu vom Server geladen werden muss
@@ -404,7 +408,7 @@
                               }
                             );
 
-                })                 
+                })
                 window.location.href = '/logout';
             }
         }

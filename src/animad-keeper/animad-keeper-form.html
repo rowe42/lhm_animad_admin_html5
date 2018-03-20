@@ -46,16 +46,16 @@
         <div class="animad-keeper-form">
             <iron-form id="iform">
                 <form>
-                    <paper-input 
+                    <paper-input
                         class="animad-keeper-firstName-field"
                         id="keeper-firstName"
-                        type="text" 
-                        name="firstName" 
-                        label="[[$t('firstName')]]*" 
+                        type="text"
+                        name="firstName"
+                        label="[[$t('firstName')]]*"
                         value="{{data.firstName}}"
                         auto-validate="[[autoValidate]]"
                         error-message="[[$t('firstName_error')]]"
-                        minlength="3" 
+                        minlength="3"
                         maxlength="30"
                         readonly="[[readonly]]"
                         required>
@@ -63,36 +63,36 @@
                     <paper-input
                         class="animad-keeper-lastName-field"
                         id="keeper-lastName"
-                        type="text" 
-                        name="lastName" 
-                        label="[[$t('lastName')]]*" 
-                        value="{{data.lastName}}" 
+                        type="text"
+                        name="lastName"
+                        label="[[$t('lastName')]]*"
+                        value="{{data.lastName}}"
                         auto-validate="[[autoValidate]]"
                         error-message="[[$t('lastName_error')]]"
-                        minlength="3" 
-                        maxlength="30" 
+                        minlength="3"
+                        maxlength="30"
                         readonly="[[readonly]]"
                         required>
                     </paper-input>
-                    <animad-date-input 
+                    <animad-date-input
                         class="animad-keeper-employmentDate-field"
                         id="keeper-employmentDate"
-                        name="employmentDate"  
-                        label="[[$t('employmentDate')]]*" 
-                        value="{{data.employmentDate}}" 
+                        name="employmentDate"
+                        label="[[$t('employmentDate')]]*"
+                        value="{{data.employmentDate}}"
                         auto-validate="[[autoValidate]]"
                         error-message="[[$t('employmentDate_error')]]"
-                        pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" 
+                        pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
                         readonly="[[readonly]]"
                         required>
-                    </animad-date-input>                    
+                    </animad-date-input>
                     <paper-dropdown class="animad-keeper-skill-field"
-                        id="keeper-skill" 
-                        label="[[$t('skill')]]*" value="{{data.skill}}" 
+                        id="keeper-skill"
+                        label="[[$t('skill')]]*" value="{{data.skill}}"
                         multi-label="[[$t('skillelements')]]"
                         searchable="true" multi="true"
                         disabled="[[readonly]]"
-                        > 
+                        >
                         <!--in paper-dropdown ergänzen, sobald pull request durch ist-->
                         <!--multi-label="[[t('items-selected')]]"-->
                         <template is="dom-repeat" items="{{lists.skill}}">
@@ -100,10 +100,10 @@
                         </template>
                     </paper-dropdown>
                      <!--Alternative mit Paper-Dropdown-Menu; Problem: man kann nur immer 1 Element anwählen, dann schließt das Dropdown; nur das erste Element wird dann angezeigt-->
-<!--                    <paper-dropdown-menu 
+<!--                    <paper-dropdown-menu
                         class="animad-keeper-skill-field"
-                        id="keeper-skill" 
-                        label="[[$t('skill')]]" 
+                        id="keeper-skill"
+                        label="[[$t('skill')]]"
                         required>
                         <paper-listbox multi attr-for-selected="key" selected-values="{{data.skill}}" slot="dropdown-content">
                             <template is="dom-repeat" items="{{lists.skill}}">
@@ -113,27 +113,27 @@
                     </paper-dropdown-menu>-->
 
                     <animad-date-input
-                        class="animad-keeper-birthday-field" 
+                        class="animad-keeper-birthday-field"
                         id="keeper-birthday"
-                        name="birthday" 
-                        label="[[$t('birthday')]]*" 
-                        value="{{data.birthday}}" 
+                        name="birthday"
+                        label="[[$t('birthday')]]*"
+                        value="{{data.birthday}}"
                         auto-validate="[[autoValidate]]"
                         error-message="[[$t('birthday_error')]]"
-                        pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" 
+                        pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
                         readonly="[[readonly]]"
                         required>
                     </animad-date-input>
                     <paper-input
-                        class="animad-keeper-salary-field" 
+                        class="animad-keeper-salary-field"
                         id="keeper-salary"
-                        type="number" 
-                        name="salary" 
-                        label="[[$t('salary')]]*" 
-                        value="{{data.salary}}" 
+                        type="number"
+                        name="salary"
+                        label="[[$t('salary')]]*"
+                        value="{{data.salary}}"
                         auto-validate="[[autoValidate]]"
                         error-message="[[$t('salary_error')]]"
-                        step="1" 
+                        step="1"
                         min="0"
                         readonly="[[readonly]]"
                         required>
@@ -154,7 +154,7 @@
          * <animad-keeper-form id="updateform" data="{{data}}" auto-validate></animad-keeper-form>
          * ...
          * ```
-         * 
+         *
          * @customElement
          * @polymer
          *
@@ -190,8 +190,8 @@
                         value: false
                     },
                     /*
-                     * Das '_domain' property wird benötigt, um den richtigen Pfad 
-                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * Das '_domain' property wird benötigt, um den richtigen Pfad
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element
                      * benötigt, in dem die I18nBehavior verwendet wird.
                      *
                      * GENERATOR das Attribute value generieren
@@ -201,8 +201,8 @@
                         value: 'animad'
                     },
                     /*
-                     * Das '_entity' property wird benötigt, um den richtigen Pfad 
-                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * Das '_entity' property wird benötigt, um den richtigen Pfad
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element
                      * benötigt, in dem die I18nBehavior verwendet wird.
                      *
                      * GENERATOR das Attribute value generieren
@@ -218,7 +218,7 @@
                 if (!data) {
                     data = {}
                 }
-                
+
                 //Leere Liste für Skills anlegen
                 if (!data.skill) {
                     data.skill = [];
@@ -228,7 +228,7 @@
 
             /*
              * Diese Methode validiert das Formular. Sie kann von
-             * 'aussen' aufgerufen werden. 
+             * 'aussen' aufgerufen werden.
              */
             validate() {
                 var valid = this.shadowRoot.querySelector('#iform').validate();

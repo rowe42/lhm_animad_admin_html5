@@ -8,7 +8,7 @@
 <link rel="import" href="../../bower_components/polymer/lib/elements/dom-if.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
- 
+
 <link rel="import" href="../animad-icons.html">
 <link rel="import" href="../behaviors/animad-form-behavior.html">
 <link rel="import" href="../behaviors/nebula-polyglot-behavior.html">
@@ -39,18 +39,18 @@
                 <paper-button dialog-confirm on-tap="_saveDialog">save</paper-button>
             </div>
         </paper-dialog>
-        <paper-autocomplete 
+        <paper-autocomplete
             label="[[$t('relation_name')]]"
             source="[[source]]">
             <paper-icon-button slot="prefix" prefix icon="animad-icons:magnify"></paper-icon-button>
             <template is="dom-if" if="[[_new]]">
                 <paper-icon-button slot="suffix" icon="animad-icons:plus-box" on-tap="_showDialog"></paper-icon-button>
-            </template>            
+            </template>
         </paper-autocomplete>
         <paper-listbox>
             <template is="dom-repeat" items="{{data._embedded.keepers}}">
                 <paper-item>
-                    <!-- TODO Hier ist noch ein Bug drin. Die Operation wir nicht aufgerufen, 
+                    <!-- TODO Hier ist noch ein Bug drin. Die Operation wir nicht aufgerufen,
                          wenn aus der Liste gelöscht wird. -->
                     <paper-item-body>[[_format(item)]]</paper-item-body>
                     <paper-icon-button icon="animad-icons:link-off" data-item$="[[index]]" on-tap="_removeItem"></paper-icon-button>
@@ -61,15 +61,15 @@
     <script>
         /**
          * # Formular zum Erstellen von einer Ralation zu einem 'Enclosure'.
-         * `<animad-anclosure-simple-relation>` stellt ein Suchfeld zur Verfügung, 
-         * über das man ein 'Enclosure' selektieren und als Relation an eine 
-         * vorhandenen Datenstruktur einfügen kann. 
+         * `<animad-anclosure-simple-relation>` stellt ein Suchfeld zur Verfügung,
+         * über das man ein 'Enclosure' selektieren und als Relation an eine
+         * vorhandenen Datenstruktur einfügen kann.
          *
          * ## Anwendung in der Applikation
          * ```html
          * <link rel="import" href="[Pfad zu meinen Abhängigkeiten]/animad-enclosure/animad-enclosure-simple-relation.html">
          * ...
-         * <animad-enclosure-simple-relation 
+         * <animad-enclosure-simple-relation
          *   data="{{data}}"
          *   source-url="[Quelle zu den Enclosures]"
          *   text-property="name"
@@ -78,7 +78,7 @@
          * </animad-enclosure-simple-relation>
          * ...
          * ```
-         * 
+         *
          * @customElement
          * @polymer
          *
@@ -89,8 +89,8 @@
             static get properties() {
                 return {
                     /*
-                     * Das '_domain' property wird benötigt, um den richtigen Pfad 
-                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * Das '_domain' property wird benötigt, um den richtigen Pfad
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element
                      * benötigt, in dem die I18nBehavior verwendet wird.
                      */
                      _domain: {
@@ -98,8 +98,8 @@
                         value: 'animad'
                     },
                     /*
-                     * Das '_entity' property wird benötigt, um den richtigen Pfad 
-                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * Das '_entity' property wird benötigt, um den richtigen Pfad
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element
                      * benötigt, in dem die I18nBehavior verwendet wird.
                      */
                     _entity: {
@@ -121,27 +121,27 @@
             }
 
             /*
-             * Bereitet die Ausgabe der Relationen in der Liste 
+             * Bereitet die Ausgabe der Relationen in der Liste
              * nach den Vorgaben in der locales Datei auf. Dies
              * ist notwendig, weil man im HTML Bereich Databinding
              * nicht schachteln kann.
-             * 
+             *
              * @param   item das anzuzeigende Element
              * @return  formatierter Text
              */
             _format(item) {
                 //die Enums übersetzen
                 //TODO Generator pattern
-                var translatedItem =  this.translateItem(item, [], ['skill']);                
+                var translatedItem =  this.translateItem(item, [], ['skill']);
                 return this.$t('relation_list', {firstName: item.firstName, lastName: item.lastName, birthday: item.birthday, employmentDate: item.employmentDate, skill: translatedItem.skill});
             }
 
             /*
-             * Formatiert die Ausgaben für den Suggester vor. 
-             * Wie die Ausgabe formatiert wird (welche Werte 
-             * gezeigt werden), kann in der i18n Datei definiert 
+             * Formatiert die Ausgaben für den Suggester vor.
+             * Wie die Ausgabe formatiert wird (welche Werte
+             * gezeigt werden), kann in der i18n Datei definiert
              * werden.
-             * 
+             *
              * @param   die jeweilige Entität
              * @return  den formatierten Text für den Suggester
              */
@@ -149,7 +149,7 @@
                 var translatedItem =  this.translateItem(item, [], ['skill']);
                 return this.$t('relation_suggest', {firstName: item.firstName, lastName: item.lastName, birthday: item.birthday, employmentDate: item.employmentDate, skill: translatedItem.skill})
             }
-            
+
         }
 
         customElements.define(AnimadKeeperSimpleRelation.is, AnimadKeeperSimpleRelation);
