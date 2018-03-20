@@ -34,7 +34,7 @@
       }
     </style>
 
-    <app-route route="{{route}}" pattern="/keeperdetail-view/:page" data="{{routeData}}" tail="{{subroute}}" on-tail-changed="onRouteTailChanged">
+    <app-route route="{{route}}" pattern="/keeperdetail-view/:page" data="{{routeData}}" tail="{{subroute}}">
     </app-route>
 
     <!--Security-->
@@ -50,7 +50,7 @@
                    load-url="[[backendUrl]]/api/admin_service/keepers/[[page]]"
                    backend-url="[[backendUrl]]"
                    readform="true"
-                   profile-url="[[backendUrl]][[_profileUrl]]"
+                   profile-url="[[backendUrl]]/api/admin_service/profile/keepers"
                    save-path="/keepers-view/"
                    cancel-path="/keepers-view/"
                     resources="[[resources]]" lang="[[lang]]">
@@ -76,21 +76,6 @@
               _entity: {
                 type: String,
                 value: 'animad-keeperdetail'
-              },
-              /*
-               * wird verwendet, um die lazy einzubindenden Unterelemente zu identifizieren
-               */
-              _singleEntity: {
-                type: String,
-                value: 'animad-keeper'
-              },
-              _entitiesUrl: {
-                  type: String,
-                  value: '/api/admin_service/keepers'
-              },
-              _profileUrl: {
-                  type: String,
-                  value: '/api/admin_service/profile/keepers'
               },
               /*
               *  _filteredData enthält alle Objekte, die auf eingegebene oder ausgewählte Filter zutreffen.

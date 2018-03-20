@@ -166,7 +166,21 @@
                     fetch(request)
                             .then(response => {
                                 if (response.ok) {
-                                    if (verb === 'POST') this._resetForm();
+                                    if (verb === 'POST' && typeof this._resetForm === "function") {
+                                        this._resetForm();
+                                    } else {
+                                        console.warn('Cannot find mixin "*-form-behavior.html"!');
+                                    }
+
+                                    if (verb === 'POST' || verb === 'PUT') {
+                                        //Event, dass etwas im Backend an den Entities geändert hat --> reload der Table/List
+                                        this.dispatchEvent(new CustomEvent(this._entity + 'Reload', {
+                                            bubbles: true,
+                                            composed: true,
+                                            detail: {kicked: true}
+                                        }));
+
+                                    }
                                     this._success('form_success');
                                 } else {
                                     if (response.status === 403 || response.status === 401) {
@@ -307,30 +321,39 @@
                 this._loadFormData(this.loadUrl, null);
             }
 
+            _resetForm(event) {
+                this._resetFormWithObject('data');
+            }
+
             /**
              * Setzt das Formular zurück.
              */
-            _resetForm() {
+            _resetFormWithObject(obj) {
                 this.autoValidate = false;
-                
+
                 let customform = this.shadowRoot.querySelector('#customform');
                 let fields = customform.shadowRoot.querySelectorAll('[id^=' + this._entity + ']');
                 fields.forEach(field => {                    
                     let tempRequired = field.required;
                     field.required = null;
                     field.value = null;
-                    this.set('data.'+field.name, null);
                     field.required = tempRequired;
                 }, this);
                 
-                
-                Object.keys(this.data).forEach(key => {
-                    if (key != '_links') {
-                        this.set('data.' + key, null);
+                //nur zur Sicherheit auch nochmal alle Felder von 'data' löschen (damit auch nicht 
+                //Einträge entfernt werden, die kein Feld haben)
+                Object.keys(this.get(obj)).forEach(key => {
+                    if (key != '_links') {                        
+                        let entry = this.get(obj + '.'+key);
+                        if (entry instanceof Array) {
+                            this.set(obj + '.' + key, []);
+                        } else {
+                            this.set(obj + '.' + key, null);
+                        }
                     }
                 });
                 
-                this.set('data._embedded', null);
+                this.set(obj + '._embedded', null);
                 this.autoValidate = true;
             }
 

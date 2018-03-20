@@ -34,7 +34,7 @@
     </style>
 
 
-    <app-route route="{{route}}" pattern="/animals-view/:page" data="{{routeData}}" tail="{{subroute}}" on-active-changed="onRouteTailChanged">
+    <app-route route="{{route}}" pattern="/animals-view/:page" data="{{routeData}}" tail="{{subroute}}">
     </app-route>
 
     <!--Security-->
@@ -52,9 +52,8 @@
             <animad-animals-list
               id="list"
               name=""
-              url="[[backendUrl]][[_entitiesUrl]]"
+              url="[[backendUrl]]/api/admin_service/animals"
               default-search='name:Dumbo'
-              route="{{subroute}}"
               edit-path="/animaldetail-view"
               hide-new
               on-filter-data="_filterData"
@@ -67,9 +66,9 @@
         <h2>[[$t('create_sample_heading')]]</h2>
         <template is="dom-if" if="{{writeAllowed}}">
             <animad-animal-create-form name="create" id="create"
-              save-url="[[backendUrl]][[_entitiesUrl]]"
+              save-url="[[backendUrl]]/api/admin_service/animals"
               backend-url="[[backendUrl]]"
-              profile-url="[[backendUrl]][[_profileUrl]]"
+              profile-url="[[backendUrl]]/api/admin_service/profile/animals"
               save-path="/animals-view/"
               cancel-path="/animals-view/"
               resources="[[resources]]" lang="[[lang]]" keepers reset>
@@ -102,21 +101,6 @@
           _entity: {
             type: String,
             value: 'animad-animals'
-          },
-          /*
-           * wird verwendet, um die lazy einzubindenden Unterelemente zu identifizieren
-           */
-          _singleEntity: {
-            type: String,
-              value: 'animad-animal'
-          },
-          _entitiesUrl: {
-              type: String,
-              value: '/api/admin_service/animals'
-          },
-          _profileUrl: {
-              type: String,
-              value: '/api/admin_service/profile/animals'
           },
           /*
           *  _filteredData enthält alle Objekte, die auf eingegebene oder ausgewählte Filter zutreffen.

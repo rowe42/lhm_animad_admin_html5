@@ -1,0 +1,381 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/nebula-i18n/nebula-i18n.html">
+<link rel="import" href="../../bower_components/vaadin-material-theme/vaadin-grid.html">
+<link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-column.html">
+<link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-selection-column.html">
+<link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-filter.html">
+
+<link rel="import" href="../animad-icons.html">
+<link rel="import" href="../behaviors/animad-list-behavior.html">
+<link rel="import" href="../behaviors/mixin.html">
+<link rel="import" href="../behaviors/nebula-polyglot-behavior.html">
+<link rel="import" href="../common-libs/animad-list-header.html">
+<link rel="import" href="../common-security/common-security-check.html">
+
+<!-- GENERATOR pattern: [DOMAINNAME]-[ENTITYNAME]-list -->
+
+<dom-module id="animad-keepers-generic-list">
+    <template>
+      <style>
+          section {
+            width: 100%;
+            height: 300px;
+            @apply --layout-vertical;
+          }
+          section paper-dialog-scrollable {
+            @apply --layout-flex;
+          }
+      </style>
+
+      <!-- Routing Support -->
+      <app-location
+          route="{{route}}"
+          url-space-regex="^[[rootPath]]"
+          use-hash-as-path>
+      </app-location>
+      <app-route
+          route="{{route}}"
+          pattern="[[rootPath]]:page"
+          data="{{routeData}}"
+          active="{{active}}"
+          tail="{{subroute}}">
+      </app-route>
+
+      <!--Security-->
+      <common-security-check permission="administration_DELETE_Keeper" not-allowed="{{_noDeleteAllowed}}"></common-security-check>
+      <common-security-check permission="administration_WRITE_Keeper" not-allowed="{{_noWriteAllowed}}"></common-security-check>
+
+
+      <animad-list-header
+          id="animad-list-header-search"
+          placeholder-search="[[_setSearchText('search_placeholder')]]"
+          placeholder-delete="Löschen"
+          placeholder-new="Neu"
+          all-filters="[[_localizedFilters]]"
+          selected-filters = "{{_selectedFilters}}"
+          search="{{_search}}"
+          on-search="_searchData"
+          on-filter-selection="_filterSelectionData"
+          on-delete="_confirmDeleteSelected"
+          on-new="_handleNew"
+          disable-delete-button="[[_disableDeleteButton]]"
+          hide-header="[[_hideSearchHeader(hideHeader)]]"
+          hide-new-button="[[hideNew]]"
+          hide-delete-button="[[hideDelete]]"
+          hide-filter-button="[[hideFilter]]"
+          disable-new-button="[[disableNew]]"
+          show-results="[[showResults]]"
+          results-text="[[resultsText]]"
+          icon="[[icon]]">
+      </animad-list-header>
+
+      <animad-list-header
+          id="animad-list-header-filter"
+          placeholder-search="[[$t('filter_placeholder')]]"
+          placeholder-delete="Löschen"
+          placeholder-new="Neu"
+          all-filters="[[_localizedFilters]]"
+          selected-filters = "{{_selectedFilters}}"
+          search="{{_filterString}}"
+          on-filter="_filterData"
+          on-filter-selection="_filterSelectionData"
+          on-delete="_confirmDeleteSelected"
+          on-new="_handleNew"
+          disable-delete-button="[[_disableDeleteButton]]"
+          hide-header="[[_hideFilterHeader(hideHeader)]]"
+          hide-new-button="[[hideNew]]"
+          hide-delete-button="[[hideDelete]]"
+          hide-filter-button="[[hideFilter]]"
+          disable-filter-button="[[disableFilter]]"
+          disable-new-button="[[disableNew]]"
+          show-results="[[showResults]]"
+          results-text="[[resultsText]]"
+          icon="[[icon]]">
+      </animad-list-header>
+
+
+      <!--
+        Modaler Dialog zur Abfrage vor dem Löschen von in der Liste über Checkboxen selektierten Datensätze
+      -->
+      <paper-dialog id="dialogDeleteSelected">
+        <h2>[[$t('modal_delete_header')]]</h2>
+        <p>[[$t('modal_delete_text_multi')]]</p>
+        <paper-item>
+          <paper-button raised dialog-confirm on-click="_deleteSelectedRows">[[$t('modal_delete_button_yes')]]</paper-button>
+          <paper-button raised dialog-dismiss on-click="_unsetTemporaryDeleteInfo" autofocus>[[$t('modal_delete_button_no')]]</paper-button>
+        </paper-item>
+      </paper-dialog>
+
+      <!--
+        Modaler Dialog zur Abfrage vor dem Löschen eines Datensatzes über Papierkorb
+      -->
+      <paper-dialog id="dialogDeleteItem">
+        <h2>[[$t('modal_delete_header')]]</h2>
+        <p>[[$t('modal_delete_text_single')]] [[_deleteInfo]]</p>
+        <paper-item>
+          <paper-button raised dialog-confirm on-click="_deleteSelectedRows">[[$t('modal_delete_button_yes')]]</paper-button>
+          <paper-button raised dialog-dismiss on-click="_unsetTemporaryDeleteInfo" autofocus>[[$t('modal_delete_button_no')]]</paper-button>
+        </paper-item>
+      </paper-dialog>
+      
+
+      <template is="dom-if" if="[[_isOfType('list')]]">
+        <section>
+          <paper-dialog-scrollable>
+              <paper-listbox>
+                  <template is="dom-repeat" items="[[filteredData]]">
+                     <paper-icon-item>
+                       <template is="dom-if" if="[[showIcons]]">
+                        <iron-icon icon="animad-icons:[[_entity]]" slot="item-icon"></iron-icon>
+                      </template>
+                        <paper-item-body two-line>
+                          <div>[[_format('list_first_line', item)]]</div>
+                          <div secondary>[[_format('list_second_line', item)]]</div>
+                        </paper-item-body>
+                        <paper-icon-button
+                          icon="animad-icons:delete"
+                          id="[[item.id]]"
+                          hidden="[[hideDelete]]"
+                          on-click="_confirmDeleteRow">
+                        </paper-icon-button>
+                        <paper-icon-button
+                          icon="animad-icons:mode-edit"
+                          id="[[item.id]]"
+                          hidden="[[hideEdit]]"
+                          on-click="_editRow">
+                        </paper-icon-button>                
+                      </paper-icon-item>
+                  </template>
+              </paper-listbox>
+          </paper-dialog-scrollable>
+        </section>
+      </template>
+
+      <template is="dom-if" if="[[_isOfType('table')]]">
+<!-- Für Suche über Lazy Loading:
+     <vaadin-grid id="animad-list" data-provider="[[dataProvider]]"  size="200" multi-sort="[[multiSort]]" selected-items="{{_selectedItems}}"> -->
+
+     <vaadin-grid id="animad-list" items="[[filteredData]]"  multi-sort="[[multiSort]]" selected-items="{{_selectedItems}}">
+        <vaadin-grid-selection-column auto-select>
+        </vaadin-grid-selection-column>
+
+        <template is="dom-if" if="[[showIcons]]">
+        <vaadin-grid-column width="50px" flex-grow="0" >
+            <template class="header"></template>
+            <template><iron-icon icon="animad-icons:[[_entity]]" slot="item-icon"></iron-icon></template>
+        </vaadin-grid-column>
+      </template>
+
+        <vaadin-grid-column width="50px" flex-grow="0" >
+          <template class="header">#</template>
+          <template>[[index]]</template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column >
+          <template class="header">
+            <vaadin-grid-sorter path="id">[[$t('id')]]</vaadin-grid-sorter>
+          </template>
+          <template>[[item.id]]</template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column>
+          <template class="header">
+            <vaadin-grid-sorter path="firstName">[[$t('firstName')]]</vaadin-grid-sorter>
+          </template>
+          <template>[[item.firstName]]</template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column >
+          <template class="header">
+            <vaadin-grid-sorter path="lastName">[[$t('lastName')]]</vaadin-grid-sorter>
+          </template>
+          <template>[[item.lastName]]</template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column>
+          <template class="header">
+            <vaadin-grid-sorter path="employmentDate">[[$t('employmentDate')]]</vaadin-grid-sorter>
+          </template>
+          <template>[[item.employmentDate]]</template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column>
+          <template class="header">
+            <vaadin-grid-sorter path="skill">[[$t('skill')]]</vaadin-grid-sorter>
+          </template>
+          <template>[[translateCSV('skill', item.skill)]]</template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column>
+          <template class="header">
+            <vaadin-grid-sorter path="birthday">[[$t('birthday')]]</vaadin-grid-sorter>
+          </template>
+          <template>[[item.birthday]]</template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column>
+          <template class="header">
+            <vaadin-grid-sorter path="salary">[[$t('salary')]]</vaadin-grid-sorter>
+          </template>
+          <template>[[item.salary]]</template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column>
+          <template>
+            <paper-icon-button
+              icon="animad-icons:delete"
+              id="[[item.id]]"
+              hidden="[[hideDelete]]"
+              on-click="_confirmDeleteRow">
+            </paper-icon-button>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column>
+          <template>
+            <paper-icon-button
+              icon="animad-icons:mode-edit"
+              id="[[item.id]]"
+              hidden="[[hideEdit]]"
+              on-click="_editRow">
+            </paper-icon-button>
+          </template>
+        </vaadin-grid-column>
+      </vaadin-grid>
+    </template>
+
+    </template>
+
+    <script>
+      // GENERATOR pattern (camel case): [DOMAINNAME][ENTITYNAME]List
+      /**
+       * `animad-keepers-list` ist eine Liste zur Anzeige von Wärtern, die über die angegebene [url](#/elements/animad-keepers-list#property-url)
+       * gesucht werden.
+       *
+       * Zur Suche können Suchbegriffe eingegeben werden, um die Anzahl der gefundenen Datensätze zu begrenzen. Diese Suchbegriffe können
+       * auch als Standard für die Liste festgelegt werden.
+       *
+       * Die gefundenen Datensätze können sortiert, selektiert und gelöscht werden.
+       *
+       * Die Navigation auf die Forms [`<animad-keeper-create-form>`](#/elements/animad-keeper-create-form)
+       * und [`<animad-keeper-update-form>`](#/elements/animad-keeper-update-form)
+       * zur Neuanlage bzw. zum Editieren eines Datensatzes ist möglich.
+       *
+       * #### Beispiel:
+       *
+       *     <animad-keepers-list name=""
+       *       url="http://localhost:39146/keepers"
+       *       default-search='vorname:hans nachname:dampf'
+       *       route="{{subroute}}"
+       *       edit-path="/keepers-view/edit"
+       *       create-path="/keepers-view/create">
+       *     </animad-keepers-list>
+       *
+       * @polymer
+       * @customElement
+       * @appliesMixin AnimadListBehavior
+       * @appliesMixin AnimadI18nBehavior
+       **/
+      class AnimadKeepersGenericList extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadListBehavior) {
+
+        static get is() { return 'animad-keepers-generic-list'; }
+
+        static get properties() {
+          return {
+            /*
+             * Das '_domain' property wird benötigt, um" den richtigen Pfad
+             * zu den i18n Werten zu erzeugen. Es wird in jedem Element
+             * benötigt, in dem die I18nBehavior verwendet wird. Im Falle
+             * einer view ist der Wert IMMER 'view'.
+             */
+            _domain: {
+              type: String,
+              value: 'animad'
+            },
+            /*
+             * Das '_entity' property wird benötigt, um den richtigen Pfad
+             * zu den i18n Werten zu erzeugen. Es wird in jedem Element
+             * benötigt, in dem die I18nBehavior verwendet wird. Im Falle
+             * einer view ist der Wert immer der Präfix, der im Namen der view
+             * vor '*-view' steht. Bei animad-enclosures-view.html also
+             * 'animad-enclosures'.
+             */
+            _entity: {
+              type: String,
+              value: 'keeper'
+            },
+            $t: {
+              type: Function
+            }
+          }
+        }
+
+        // Observers
+        // proteceted methods
+        /**
+         * Wechselt auf die unter [`createPath`](#/elements/animad-keepers-list#property-createPath) angegebene Form.
+         */
+        _handleNew(event) {
+          var routePath = this.createPath;
+          this.set("route.path", routePath);
+        }
+
+        /**
+         * Wechselt auf die unter [`editPath`](#/elements/animad-keepers-list#property-editPath) angegebene Form.
+         */
+        _editRow(event){
+          var routePath = this.editPath+'/'+event.target.id;
+          this.set("route.path", routePath);
+        }
+
+        _confirmDeleteRow(e) {
+          // this is optional. If not implemented will only ask question (translated): Do you really want to delete this item?
+          var index = this.filteredData.findIndex(item => item.id == e.target.id);
+          var item = this.filteredData[index];
+          this._deleteInfo = this.$t('modal_deleteinfo', {firstName: item.firstName, lastName: item.lastName, employmentDate: item.employmentDate, skill: item.skill,   birthday: item.birthday,  salary: item.salary});
+
+          super._confirmDeleteRow(e);
+        }
+
+        /**
+         * Führt die Suche im Backend bei der unter [`url`](#/elements/animad-keepers-list#property-url) angegebenen URL aus.
+         */
+        _searchData(event) {
+          this._search = event.target.search.toLowerCase();
+          super._fetchData(this._search);
+        }
+        
+        /*
+         * Bereitet die Ausgabe der Einträge in der Liste 
+         * nach den Vorgaben in der locales Datei auf. Dies
+         * ist notwendig, weil man im HTML Bereich Databinding
+         * nicht schachteln kann.
+         * 
+         * @param   item das anzuzeigende Element
+         * @return  formatierter Text
+         */
+        _format(key, item) {
+            //die Enums übersetzen
+            //TODO Generator pattern
+            var translatedItem =  this.translateItem(item, [], ['skill']);                
+            return this.$t(key, {firstName: item.firstName, lastName: item.lastName, birthday: item.birthday, employmentDate: item.employmentDate, skill: translatedItem.skill, salary: item.salary});
+        }
+
+      }
+
+      customElements.define(AnimadKeepersGenericList.is, AnimadKeepersGenericList);
+    </script>
+
+  </dom-module>

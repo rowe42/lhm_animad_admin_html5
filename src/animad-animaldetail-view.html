@@ -32,7 +32,7 @@
     </style>
 
 
-    <app-route route="{{route}}" pattern="/animaldetail-view/:page" data="{{routeData}}" tail="{{subroute}}" on-tail-changed="onRouteTailChanged">
+    <app-route route="{{route}}" pattern="/animaldetail-view/:page" data="{{routeData}}" tail="{{subroute}}">
     </app-route>
 
     <!--Security-->
@@ -41,16 +41,15 @@
 
     <div id="view" class="card">
       <div class="circle">
-        <iron-icon icon="animad-icons:panda"></iron-icon>
+        <iron-icon icon="animad-icons:animal"></iron-icon>
       </div>
       <h1>[[$t('main_heading')]]</h1>
-      <h2>[[$t('table_sample_heading')]]</h2>
       <div class="animad-animal-view-content">
             <template is="dom-if" if="{{writeAllowed}}">
                 <animad-animal-update-form name="update" id="update"
                   load-url="[[backendUrl]]/api/admin_service/animals/[[page]]"
                   backend-url="[[backendUrl]]"
-                  profile-url="[[backendUrl]][[_profileUrl]]"
+                  profile-url="[[backendUrl]]/api/admin_service/profile/animals"
                   save-path="/animals-view/"
                   cancel-path="/animals-view/"
                   readform
@@ -84,21 +83,6 @@
           _entity: {
             type: String,
             value: 'animad-animaldetail'
-          },
-          /*
-           * wird verwendet, um die lazy einzubindenden Unterelemente zu identifizieren
-           */
-          _singleEntity: {
-            type: String,
-              value: 'animad-animal'
-          },
-          _entitiesUrl: {
-              type: String,
-              value: '/api/admin_service/animals'
-          },
-          _profileUrl: {
-              type: String,
-              value: '/api/admin_service/profile/animals'
           },
           /*
           *  _filteredData enthält alle Objekte, die auf eingegebene oder ausgewählte Filter zutreffen.

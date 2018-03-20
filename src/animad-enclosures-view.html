@@ -31,7 +31,7 @@
       }
     </style>
 
-    <app-route route="{{route}}" pattern="/enclosures-view/:page" data="{{routeData}}" tail="{{subroute}}" on-tail-changed="onRouteTailChanged">
+    <app-route route="{{route}}" pattern="/enclosures-view/:page" data="{{routeData}}" tail="{{subroute}}">
     </app-route>
 
     <!--Security-->
@@ -49,9 +49,8 @@
             <animad-enclosures-list
               id="list"
               name=""
-              url="[[backendUrl]][[_entitiesUrl]]"
+              url="[[backendUrl]]/api/admin_service/enclosures"
               default-search="name:'Elephant's paradise'"
-              route="{{subroute}}"
               edit-path="/enclosuredetail-view"
               hide-new
               on-filter-data="_filterData"
@@ -64,8 +63,8 @@
         <h2>[[$t('create_sample_heading')]]</h2>
         <template is="dom-if" if="{{writeAllowed}}">
             <animad-enclosure-create-form name="create"
-              save-url="[[backendUrl]][[_entitiesUrl]]"
-              profile-url="[[backendUrl]][[_profileUrl]]"
+              save-url="[[backendUrl]]/api/admin_service/enclosures"
+              profile-url="[[backendUrl]]/api/admin_service/profile/enclosures"
               backend-url="[[backendUrl]]"
               save-path="/enclosures-view/"
               cancel-path="/enclosures-view/"
@@ -106,21 +105,6 @@
           _entity: {
             type: String,
             value: 'animad-enclosures'
-          },
-          /*
-           * wird verwendet, um die lazy einzubindenden Unterelemente zu identifizieren
-           */
-          _singleEntity: {
-            type: String,
-            value: 'animad-enclosure'
-          },
-          _entitiesUrl: {
-              type: String,
-              value: '/api/admin_service/enclosures'
-          },
-          _profileUrl: {
-              type: String,
-              value: '/api/admin_service/profile/enclosures'
           },
           /*
           *  _filteredData enthält alle Objekte, die auf eingegebene oder ausgewählte Filter zutreffen.

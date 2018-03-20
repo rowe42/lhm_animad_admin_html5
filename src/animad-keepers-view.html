@@ -12,7 +12,7 @@
 <!-- custom components -->
 <link rel="import" href="common-security/common-security-check.html">
 <link rel="import" href="animad-keeper/animad-keepers-list.html">
-<link rel="import" href="animad-keeper/animad-keepers-generic-list.html">
+<link rel="import" href="animad-keeper/animad-keepers-table.html">
 <link rel="import" href="animad-keeper/animad-keeper-create-form.html">
 <link rel="import" href="animad-keeper/animad-keeper-update-form.html">
 
@@ -35,7 +35,7 @@
       }
     </style>
 
-    <app-route route="{{route}}" pattern="/keepers-view/:page" data="{{routeData}}" tail="{{subroute}}" on-tail-changed="onRouteTailChanged">
+    <app-route route="{{route}}" pattern="/keepers-view/:page" data="{{routeData}}" tail="{{subroute}}">
     </app-route>
 
     <!--Security-->
@@ -50,10 +50,8 @@
                 <animad-keepers-list
                   id="list"
                   name=""
-                  url="[[backendUrl]][[_entitiesUrl]]"
+                  url="[[backendUrl]]/api/admin_service/keepers"
                   default-search='vorname:hans'
-                  show-icons='true'
-                  route="{{subroute}}"
                   edit-path="/keeperdetail-view"
                   create-path="/keepercreate-view"
                   on-filter-data="_filterData"
@@ -82,21 +80,6 @@
               _entity: {
                 type: String,
                 value: 'animad-keepers'
-              },
-              /*
-               * wird verwendet, um die lazy einzubindenden Unterelemente zu identifizieren
-               */
-              _singleEntity: {
-                type: String,
-                value: 'animad-keeper'
-              },
-              _entitiesUrl: {
-                  type: String,
-                  value: '/api/admin_service/keepers'
-              },
-              _profileUrl: {
-                  type: String,
-                  value: '/api/admin_service/profile/keepers'
               },
               /*
               *  _filteredData enthält alle Objekte, die auf eingegebene oder ausgewählte Filter zutreffen.

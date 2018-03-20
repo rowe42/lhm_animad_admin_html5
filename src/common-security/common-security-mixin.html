@@ -31,14 +31,13 @@
 
             constructor() {
                 super();
-                this._boundListener = this._customeventlistener.bind(this);                
             }
 
             connectedCallback() {
                 super.connectedCallback();
                 this._security = document.querySelector('animad-app').$.animad_security;
                 this.checkPermissions();
-                window.addEventListener('permissionsReceived', this._boundListener);
+                window.addEventListener('permissionsReceived', this._customeventlistener.bind(this));
             }
 
             // methods

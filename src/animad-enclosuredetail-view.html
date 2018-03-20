@@ -31,7 +31,7 @@
       }
     </style>
 
-    <app-route route="{{route}}" pattern="/enclosuredetail-view/:page" data="{{routeData}}" tail="{{subroute}}" on-tail-changed="onRouteTailChanged">
+    <app-route route="{{route}}" pattern="/enclosuredetail-view/:page" data="{{routeData}}" tail="{{subroute}}">
     </app-route>
 
     <!--Security-->
@@ -40,15 +40,14 @@
 
     <div id="view" class="card">
       <div class="circle">
-        <iron-icon icon="animad-icons:basecamp"></iron-icon>
+        <iron-icon icon="animad-icons:enclosure"></iron-icon>
       </div>
       <h1>[[$t('main_heading')]]</h1>
-      <h2>[[$t('table_sample_heading')]]</h2>
       <div class="animad-enclosure-view-content">
             <template is="dom-if" if="{{writeAllowed}}">
                 <animad-enclosure-update-form name="update" 
                    load-url="[[backendUrl]]/api/admin_service/enclosures/[[page]]"
-                   profile-url="[[backendUrl]][[_profileUrl]]"
+                   profile-url="[[backendUrl]]/api/admin_service/profile/enclosures"
                    backend-url="[[backendUrl]]"
                    save-path="/enclosures-view/"
                    cancel-path="/enclosures-view/"
@@ -89,21 +88,6 @@
           _entity: {
             type: String,
             value: 'animad-enclosuredetail'
-          },
-          /*
-           * wird verwendet, um die lazy einzubindenden Unterelemente zu identifizieren
-           */
-          _singleEntity: {
-            type: String,
-            value: 'animad-enclosure'
-          },
-          _entitiesUrl: {
-              type: String,
-              value: '/api/admin_service/enclosures'
-          },
-          _profileUrl: {
-              type: String,
-              value: '/api/admin_service/profile/enclosures'
           },
           /*
           *  _filteredData enthält alle Objekte, die auf eingegebene oder ausgewählte Filter zutreffen.

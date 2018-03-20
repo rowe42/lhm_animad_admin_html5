@@ -215,7 +215,7 @@
             var allRelations = hal.getLink(this._entity + 's');
             if (searchString) {
                 var baseUrl = allRelations.href; //HACK: eigentlich sollte man das aus allRelations raus kriegen --> dazu Options erweitern            
-                var url=baseUrl+'/search/findFullTextJunction?q=' + searchString + '*';
+                var url=baseUrl+'/search/findFullTextJunction?q=' + searchString.toLowerCase() + '*';
             } else {
                 var url = allRelations.href;
             }
@@ -344,7 +344,7 @@
         _saveDialog() {
 
             // check if the form content is valid against the defined rules
-            var valid = this.shadowRoot.querySelector('#iform').validate();
+            var valid = this.shadowRoot.querySelector('#customform').validate();
 
             if (valid) {
                 // prepare request
@@ -367,10 +367,17 @@
                         if (response.ok) {
                             // Formular zurücksetzen
                             if (typeof this._resetForm === "function") {
-                                //this._resetForm();
+                                this._resetDialog();
                             } else {
                                 console.warn('Cannot find mixin "*-form-behavior.html"!');
                             }
+
+                            //Event, dass etwas im Backend an den Entities geändert hat --> reload der Table/List
+                            this.dispatchEvent(new CustomEvent(this._entity + 'Reload', {
+                                bubbles: true,
+                                composed: true,
+                                detail: {kicked: true}
+                            }));
 
                             // 'Erfolgs' Toast öffnen
                             if (typeof this._success === "function") {
@@ -404,6 +411,10 @@
                     })
             }
 
+        }
+
+        _resetDialog() {
+            this._resetFormWithObject('_dialogdata');
         }
         
         _loadDialogOptions(saveUrl, oldV) {

@@ -354,6 +354,13 @@
 
         connectedCallback() {
             super.connectedCallback();
+            window.addEventListener(this._entity + 'Reload', this._reloadListener.bind(this));
+        }
+
+        _reloadListener() {
+          if (this.loadCompleteData) {
+            this.reload();
+          }
         }
 
         // refresh view and reset any delete information
@@ -498,14 +505,18 @@
         ready() {
           super.ready();
           this._search = this.defaultSearch;
-          if (this.loadCompleteData){
+          if (this.loadCompleteData) {
             this._loadHalData(this.url, 'GET');
             var animadListHeaderFilter =this.shadowRoot.querySelector('#animad-list-header-filter');
-            animadListHeaderFilter.focus();
+            if (animadListHeaderFilter) {
+              animadListHeaderFilter.focus();
+            }
           }
           else {
             var animadListHeaderSearch =this.shadowRoot.querySelector('#animad-list-header-search');
-            animadListHeaderSearch.focus();
+            if (animadListHeaderSearch) {
+              animadListHeaderSearch.focus();
+            }
           }
         }
 
