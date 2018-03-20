@@ -20,6 +20,7 @@
 
 <link rel="import" href="../animad-icons.html">
 <link rel="import" href="../behaviors/animad-form-behavior.html">
+<link rel="import" href="../behaviors/animad-error-behavior.html">
 <link rel="import" href="../behaviors/nebula-polyglot-behavior.html">
 <link rel="import" href="../behaviors/mixin.html">
 
@@ -48,19 +49,19 @@
             Das vorgefertigte Formular.
         -->
         <form class="animad-animal-create-form">
-            <animad-animal-form id="customform" data="{{data}}" 
+            <animad-animal-form id="customform" data="{{data}}"
               resources="[[resources]]" lang="[[lang]]" lists="[[lists]]" auto-validate></animad-animal-form>
             <!-- GENERATOR hier kommen die Templates für die Relationen hin -->
             <template is="dom-if" if="{{keepers}}">
                 <animad-keeper-simple-relation
-                    data="{{data}}" 
+                    data="{{data}}"
                     profile-url="[[backendUrl]]/api/admin_service/profile/keepers"
                     backend-url="[[backendUrl]]"
                     resources="[[resources]]" lang="[[lang]]" preload
                 ></animad-keeper-simple-relation>
             </template>
         </form>
-        <!-- 
+        <!--
             buttons
         -->
         <template is="dom-if" if="{{reset}}">
@@ -92,19 +93,19 @@
          * <animad-animal-create-form post-url="[URL an die die Daten geschickt werden]"></animad-animal-create-form>
          * ...
          * ```
-         * 
+         *
          * @customElement
          * @polymer
          *
          */
-        class AnimadAnimalCreateForm extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadFormBehavior) {
+        class AnimadAnimalCreateForm extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadFormBehavior, AnimadErrorBehavior) {
             static get is() { return 'animad-animal-create-form'; }
 
             static get properties() {
                 return {
                     /*
-                     * Das '_domain' property wird benötigt, um den richtigen Pfad 
-                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * Das '_domain' property wird benötigt, um den richtigen Pfad
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element
                      * benötigt, in dem die I18nBehavior verwendet wird.
                      */
                     _domain: {
@@ -112,8 +113,8 @@
                         value: 'animad'
                     },
                     /*
-                     * Das '_entity' property wird benötigt, um den richtigen Pfad 
-                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * Das '_entity' property wird benötigt, um den richtigen Pfad
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element
                      * benötigt, in dem die I18nBehavior verwendet wird.
                      */
                     _entity: {
@@ -122,7 +123,7 @@
                     },
                     backendUrl: {
                         type: String
-                    },                    
+                    },
                     // GENERATOR hier die Relationen generieren
                     /*
                      * Wenn dieser Wert auf 'true' gesetzt wird, dann können

@@ -19,6 +19,7 @@
 
 <link rel="import" href="../animad-icons.html">
 <link rel="import" href="../behaviors/animad-list-behavior.html">
+<link rel="import" href="../behaviors/animad-error-behavior.html">
 <link rel="import" href="../behaviors/mixin.html">
 <link rel="import" href="../behaviors/nebula-polyglot-behavior.html">
 <link rel="import" href="../common-libs/animad-list-header.html">
@@ -129,7 +130,7 @@
           <paper-button raised dialog-dismiss on-click="_unsetTemporaryDeleteInfo" autofocus>[[$t('modal_delete_button_no')]]</paper-button>
         </paper-item>
       </paper-dialog>
-      
+
 
       <template is="dom-if" if="[[_isOfType('list')]]">
         <section>
@@ -153,7 +154,7 @@
                           id="[[item.id]]"
                           hidden="[[hideEdit]]"
                           on-click="_editRow">
-                        </paper-icon-button>                
+                        </paper-icon-button>
                       </paper-icon-item>
                   </template>
               </paper-listbox>
@@ -279,7 +280,7 @@
        * @appliesMixin AnimadListBehavior
        * @appliesMixin AnimadI18nBehavior
        **/
-      class AnimadKeepersList extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadListBehavior) {
+      class AnimadKeepersList extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadListBehavior, AnimadErrorBehavior) {
 
         static get is() { return 'animad-keepers-list'; }
 
@@ -347,20 +348,20 @@
           this._search = event.target.search.toLowerCase();
           super._fetchData(this._search);
         }
-        
+
         /*
-         * Bereitet die Ausgabe der Einträge in der Liste 
+         * Bereitet die Ausgabe der Einträge in der Liste
          * nach den Vorgaben in der locales Datei auf. Dies
          * ist notwendig, weil man im HTML Bereich Databinding
          * nicht schachteln kann.
-         * 
+         *
          * @param   item das anzuzeigende Element
          * @return  formatierter Text
          */
         _format(key, item) {
             //die Enums übersetzen
             //TODO Generator pattern
-            var translatedItem =  this.translateItem(item, [], ['skill']);                
+            var translatedItem =  this.translateItem(item, [], ['skill']);
             return this.$t(key, {firstName: item.firstName, lastName: item.lastName, birthday: item.birthday, employmentDate: item.employmentDate, skill: translatedItem.skill, salary: item.salary});
         }
 

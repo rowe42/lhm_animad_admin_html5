@@ -8,7 +8,7 @@
 <link rel="import" href="../../bower_components/polymer/lib/elements/dom-if.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
- 
+
 <link rel="import" href="../animad-icons.html">
 <link rel="import" href="../behaviors/animad-form-behavior.html">
 <link rel="import" href="../behaviors/nebula-polyglot-behavior.html">
@@ -30,11 +30,11 @@
             <paper-dialog-scrollable>
                 <iron-form id="iform">
                     <form class="animad-animal-create-dialog-form">
-                        <animad-animal-form data="{{_dialogdata}}" 
+                        <animad-animal-form data="{{_dialogdata}}"
                            resources="[[resources]]" lang="[[lang]]" lists="[[lists]]" keepers auto-validate></animad-animal-form>
                         <template is="dom-if" if="{{keepers}}">
                             <animad-keeper-simple-relation
-                                data="{{_dialogdata}}" 
+                                data="{{_dialogdata}}"
                                 profile-url="[[backendUrl]]/api/admin_service/profile/keepers"
                                 resources="[[resources]]" lang="[[lang]]" preload>
                             </animad-keeper-simple-relation>
@@ -47,13 +47,13 @@
                 <paper-button dialog-confirm on-tap="_saveDialog">save</paper-button>
             </div>
         </paper-dialog>
-        <paper-autocomplete 
+        <paper-autocomplete
             label="[[$t('relation_name')]]"
             source="[[source]]">
             <paper-icon-button slot="prefix" prefix icon="animad-icons:magnify"></paper-icon-button>
             <template is="dom-if" if="[[_new]]">
                 <paper-icon-button slot="suffix" icon="animad-icons:plus-box" on-tap="_showDialog"></paper-icon-button>
-            </template>            
+            </template>
         </paper-autocomplete>
         <paper-listbox>
             <template is="dom-repeat" items="{{data._embedded.animals}}">
@@ -68,15 +68,15 @@
     <script>
         /**
          * # Formular zum Erstellen einer Relation zu einem 'Animal'.
-         * `<animad-animal-simple-relation>` stellt ein Suchfeld zur Verfügung, 
-         * über das man ein 'Animal' selektieren und als Relation an eine 
-         * vorhandenen Datenstruktur einfügen kann. 
+         * `<animad-animal-simple-relation>` stellt ein Suchfeld zur Verfügung,
+         * über das man ein 'Animal' selektieren und als Relation an eine
+         * vorhandenen Datenstruktur einfügen kann.
          *
          * ## Anwendung in der Applikation
          * ```html
          * <link rel="import" href="[Pfad zu meinen Abhängigkeiten]/animad-animal/animad-animal-simple-relation.html">
          * ...
-         * <animad-animal-simple-relation 
+         * <animad-animal-simple-relation
          *   data="{{data}}"
          *   source-url="[Quelle zu den Animals]"
          *   text-property="name"
@@ -85,7 +85,7 @@
          * </animad-animal-simple-relation>
          * ...
          * ```
-         * 
+         *
          * @customElement
          * @polymer
          *
@@ -96,8 +96,8 @@
             static get properties() {
                 return {
                     /*
-                     * Das '_domain' property wird benötigt, um den richtigen Pfad 
-                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * Das '_domain' property wird benötigt, um den richtigen Pfad
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element
                      * benötigt, in dem die I18nBehavior verwendet wird.
                      */
                     _domain: {
@@ -105,8 +105,8 @@
                         value: 'animad'
                     },
                     /*
-                     * Das '_entity' property wird benötigt, um den richtigen Pfad 
-                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * Das '_entity' property wird benötigt, um den richtigen Pfad
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element
                      * benötigt, in dem die I18nBehavior verwendet wird.
                      */
                     _entity: {
@@ -119,7 +119,7 @@
                     keepers: {
                         type: Boolean,
                         value: false
-                    }                    
+                    }
                 }
             }
 
@@ -132,11 +132,11 @@
             }
 
             /*
-             * Bereitet die Ausgabe der Relationen in der Liste 
+             * Bereitet die Ausgabe der Relationen in der Liste
              * nach den Vorgaben in der locales Datei auf. Dies
              * ist notwendig, weil man im HTML Bereich Databinding
              * nicht schachteln kann.
-             * 
+             *
              * @param   item das anzuzeigende Element
              * @return  formatierter Text
              */
@@ -148,11 +148,11 @@
             }
 
             /*
-             * Formatiert die Ausgaben für den Suggester vor. 
-             * Wie die Ausgabe formatiert wird (welche Werte 
-             * gezeigt werden), kann in der i18n Datei definiert 
+             * Formatiert die Ausgaben für den Suggester vor.
+             * Wie die Ausgabe formatiert wird (welche Werte
+             * gezeigt werden), kann in der i18n Datei definiert
              * werden.
-             * 
+             *
              * @param   die jeweilige Entität
              * @return  den formatierten Text für den Suggester
              */

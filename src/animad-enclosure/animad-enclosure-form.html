@@ -13,7 +13,7 @@
         <style is="custom-style">
            .animad-enclosure-form {
                 @apply --animad-enclosure-form;
-            } 
+            }
 
             .animad-enclosure-name-field {
                 @apply --animad-enclosure-name-field;
@@ -23,40 +23,40 @@
                 @apply --animad-enclosure-cleaningTime-field;
             }
         </style>
-        
+
             <div class="animad-enclosure-form">
                 <iron-form id="iform">
                     <form>
-                        <paper-input 
+                        <paper-input
                             class="animad-enclosure-name-field"
-                            id="enclosure-name" 
-                            type="text" 
-                            name="name" 
-                            label="[[$t('name')]]*" 
-                            value="{{data.name}}" 
+                            id="enclosure-name"
+                            type="text"
+                            name="name"
+                            label="[[$t('name')]]*"
+                            value="{{data.name}}"
                             readonly="[[readonly]]"
-                            auto-validate="[[autoValidate]]" 
+                            auto-validate="[[autoValidate]]"
                             error-message="[[$t('name_error')]]"
-                            minlength="3" 
-                            maxlength="30" 
+                            minlength="3"
+                            maxlength="30"
                             required>
                         </paper-input>
                         <paper-input
                             class="animad-enclosure-cleaningTime-field"
-                            id="enclosure-cleaningTime" 
+                            id="enclosure-cleaningTime"
                             type="time"
                             step="1"
-                            name=cleaningTime 
-                            label="[[$t('cleaningTime')]]*" 
+                            name=cleaningTime
+                            label="[[$t('cleaningTime')]]*"
                             value="{{data.cleaningTime}}"
-                            readonly="[[readonly]]" 
-                            required auto-validate="[[autoValidate]]" 
+                            readonly="[[readonly]]"
+                            required auto-validate="[[autoValidate]]"
                             error-message="[[$t('cleaningTime_error')]]">
                         </paper-input>
                     </form>
                 </iron-form>
             </div>
-        
+
     </template>
     <script>
         /**
@@ -70,7 +70,7 @@
          * <animad-enclosure-form id="updateform" data="{{data}}" auto-validate></animad-enclosure-form>
          * ...
          * ```
-         * 
+         *
          * @customElement
          * @polymer
          *
@@ -104,8 +104,8 @@
                         value: false
                     },
                     /*
-                     * Das '_domain' property wird benötigt, um den richtigen Pfad 
-                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * Das '_domain' property wird benötigt, um den richtigen Pfad
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element
                      * benötigt, in dem die I18nBehavior verwendet wird.
                      *
                      * GENERATOR das Attribute value generieren
@@ -115,8 +115,8 @@
                         value: 'animad'
                     },
                     /*
-                     * Das '_entity' property wird benötigt, um den richtigen Pfad 
-                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * Das '_entity' property wird benötigt, um den richtigen Pfad
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element
                      * benötigt, in dem die I18nBehavior verwendet wird.
                      *
                      * GENERATOR das Attribute value generieren
@@ -130,7 +130,7 @@
 
             /*
              * Diese Methode validiert das Formular. Sie kann von
-             * 'aussen' aufgerufen werden. 
+             * 'aussen' aufgerufen werden.
              */
             validate() {
                 var valid = this.shadowRoot.querySelector('#iform').validate();

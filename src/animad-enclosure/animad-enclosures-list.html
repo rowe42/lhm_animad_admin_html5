@@ -15,6 +15,7 @@
 
 <link rel="import" href="../animad-icons.html">
 <link rel="import" href="../behaviors/animad-list-behavior.html">
+<link rel="import" href="../behaviors/animad-error-behavior.html">
 <link rel="import" href="../behaviors/nebula-polyglot-behavior.html">
 <link rel="import" href="../behaviors/mixin.html">
 <link rel="import" href="../common-libs/animad-list-header.html">
@@ -205,7 +206,7 @@
        * @appliesMixin AnimadListBehavior
        * @appliesMixin AnimadI18nBehavior
        **/
-      class AnimadEnclosuresList extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadListBehavior) {
+      class AnimadEnclosuresList extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadListBehavior, AnimadErrorBehavior) {
 
         static get is() { return 'animad-enclosures-list'; }
 

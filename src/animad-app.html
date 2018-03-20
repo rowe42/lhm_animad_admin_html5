@@ -353,8 +353,8 @@
                         break;
                     case "error":
                         var msg = e.detail.message;
-                        switch(true) {
-                          case (e.detail.code >= 400 && e.detail.code <= 499): msg = this.$t("error_msg_"+e.detail.code, {code: e.detail.code});
+                        if (e.detail.code >= 400 && e.detail.code <= 499) {
+                            msg = msg + " - " + this.$t("error_msg_"+e.detail.code, {code: e.detail.code});
                         }
                         this.$.toast_error.show(msg);
                         break;

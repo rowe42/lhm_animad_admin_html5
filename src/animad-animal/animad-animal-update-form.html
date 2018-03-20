@@ -18,6 +18,7 @@
 
 <link rel="import" href="../animad-icons.html">
 <link rel="import" href="../behaviors/animad-form-behavior.html">
+<link rel="import" href="../behaviors/animad-error-behavior.html">
 <link rel="import" href="../behaviors/nebula-polyglot-behavior.html">
 <link rel="import" href="../behaviors/mixin.html">
 
@@ -47,18 +48,18 @@
             Das Formular.
         -->
         <form class="animad-animal-form">
-            <animad-animal-form id="customform" data="{{data}}" lists="[[lists]]" readonly="[[readform]]" 
+            <animad-animal-form id="customform" data="{{data}}" lists="[[lists]]" readonly="[[readform]]"
                resources="[[resources]]" lang="[[lang]]" auto-validate></animad-animal-form>
             <template is="dom-if" if="[[keepers]]">
-                <animad-keeper-simple-relation id="keeperrelation" 
-                    data="{{data}}" 
+                <animad-keeper-simple-relation id="keeperrelation"
+                    data="{{data}}"
                     profile-url="[[backendUrl]]/api/admin_service/profile/keepers"
                     backend-url="[[backendUrl]]"
                     resources="[[resources]]" lang="[[lang]]" preload>
                 </animad-keeper-simple-relation>
             </template>
         </form>
-        <!-- 
+        <!--
             buttons
         -->
         <template is="dom-if" if="{{readform}}">
@@ -98,22 +99,22 @@
          * <animad-animal-update-form get-url="[zu ladende Ressource]" post-url="[URL an die die Daten geschickt werden]"></animad-animal-update-form>
          * ...
          * ```
-         * 
+         *
          * @customElement
          * @polymer
          *
          */
-        class AnimadAnimalUpdateForm extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadFormBehavior) {
+        class AnimadAnimalUpdateForm extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadFormBehavior, AnimadErrorBehavior) {
             static get is() { return 'animad-animal-update-form'; }
 
             static get properties() {
                 return {
                     /*
                      * Das *UpdateForm kann auch lesend benutzt werden. Dazu muss
-                     * das Property 'readform' auf true gesetzt werden. Der 
-                     * Default Wert ist immer 'false'. 
-                     * 
-                     * Wird dieser Wert auf 'true' gesetzt, so sind die Felder des 
+                     * das Property 'readform' auf true gesetzt werden. Der
+                     * Default Wert ist immer 'false'.
+                     *
+                     * Wird dieser Wert auf 'true' gesetzt, so sind die Felder des
                      * Formulars nicht mehr editierbar. Die Schaltflächen zum Editieren
                      * werden ausgeblendet. Je nach Berechtigung wird eine Schaltfläche
                      * hinzugefügt, die das Formular wieder editierbar macht.
@@ -123,8 +124,8 @@
                         value: false
                     },
                     /*
-                     * Das '_domain' property wird benötigt, um den richtigen Pfad 
-                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * Das '_domain' property wird benötigt, um den richtigen Pfad
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element
                      * benötigt, in dem die I18nBehavior verwendet wird.
                      */
                     _domain: {
@@ -132,8 +133,8 @@
                         value: 'animad'
                     },
                     /*
-                     * Das '_entity' property wird benötigt, um den richtigen Pfad 
-                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * Das '_entity' property wird benötigt, um den richtigen Pfad
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element
                      * benötigt, in dem die I18nBehavior verwendet wird.
                      */
                     _entity: {
@@ -142,7 +143,7 @@
                     },
                     backendUrl: {
                         type: String
-                    },  
+                    },
                     // GENERATOR: diese Werte müssen abhängig von den Relationen generiert werden
                     /*
                      * Über dieses Element Property kann gesteuert werden, ob die
@@ -154,12 +155,12 @@
                     }
                 }
             }
-            
+
             _updateForm(e) {
                 var keeperrelation = this.shadowRoot.querySelector('#keeperrelation');
                 keeperrelation._saveRelationData(this.data);
                 this._updateEntity(e);
-                
+
             }
         }
 
