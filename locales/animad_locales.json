@@ -472,8 +472,10 @@
          "form_action_load": "beim Laden"
       },
       "security": {
-        "form_error": "Es ist ein Fehler beim Laden der Rechte aufgetreten. Fehlercode ist '%{code}'.",
-        "auth_error": "Berechtigungsproblem. Bitte ausloggen und erneut einloggen. Fehlercode ist '%{code}'."
+        "auth_error": "Berechtigungsproblem. Bitte ausloggen und erneut einloggen. Fehlercode ist '%{code}'.",
+        "form_action_load": "beim Laden",
+        "list_error": "Es ist ein Fehler beim Laden der Rechte aufgetreten. Fehlercode ist '%{code}'."
+        
       }
     }
   }
