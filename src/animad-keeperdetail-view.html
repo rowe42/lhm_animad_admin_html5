@@ -47,10 +47,10 @@
         <div class="animad-keeper-view-content">
               <template is="dom-if" if="{{writeAllowed}}">
                 <animad-keeper-update-form name="update" id="update" 
-                   load-url="[[backendUrl]]/api/admin_service/keepers/[[page]]"
+                   load-url="[[backendUrl]]/api/animad-service-administration/keepers/[[page]]"
                    backend-url="[[backendUrl]]"
                    readform="true"
-                   profile-url="[[backendUrl]]/api/admin_service/profile/keepers"
+                   profile-url="[[backendUrl]]/api/animad-service-administration/profile/keepers"
                    save-path="/keepers-view/"
                    cancel-path="/keepers-view/"
                     resources="[[resources]]" lang="[[lang]]">
