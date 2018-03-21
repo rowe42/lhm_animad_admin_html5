@@ -52,7 +52,7 @@
             <animad-animals-list
               id="list"
               name=""
-              url="[[backendUrl]]/api/animad-service-administration/animals"
+              url="[[backendUrl]]/api/animad-administration-service/animals"
               default-search='name:Dumbo'
               edit-path="/animaldetail-view"
               hide-new
@@ -66,9 +66,9 @@
         <h2>[[$t('create_sample_heading')]]</h2>
         <template is="dom-if" if="{{writeAllowed}}">
             <animad-animal-create-form name="create" id="create"
-              save-url="[[backendUrl]]/api/animad-service-administration/animals"
+              save-url="[[backendUrl]]/api/animad-administration-service/animals"
               backend-url="[[backendUrl]]"
-              profile-url="[[backendUrl]]/api/animad-service-administration/profile/animals"
+              profile-url="[[backendUrl]]/api/animad-administration-service/profile/animals"
               save-path="/animals-view/"
               cancel-path="/animals-view/"
               resources="[[resources]]" lang="[[lang]]" keepers reset>
