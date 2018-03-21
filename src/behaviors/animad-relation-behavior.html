@@ -65,12 +65,13 @@
                     observer: '_loadRelationData'
                 },
                 /*
-                 * Falls true wird beim Anhängen zunächst überprüft, ob die  anzuhängende Entit
+                 * Falls gesetzt  wird beim Anhängen zunächst überprüft, ob die  anzuhängende Entität
                  * bereits an einer anderen Entität hängt.
+                 * Wert: 'create' falls in einer Create-Form, 'update' falls in einer Update-Form
                  */                
-                oneToMany: {
-                    type: Boolean,
-                    value: false
+                oneToManyCheck: {
+                    type: String,
+                    value: null
                 },
                 /*
                  * Wenn in der HAL Nachricht ein Link vorhanden ist, der
@@ -444,7 +445,7 @@
 
             var item = this.source.find(x => x.value === id);
 
-            if (h.oneToMany) {
+            if (h.oneToManyCheck) {
                 //zunächst die oneToMany-Relation prüfen
                 h._isRelationTarget(id, function() { h._appendItemInternal(h, id, item.entity); } );
             } else {
@@ -507,7 +508,18 @@
          * @param functionToExecute die Funktion, die im "Negativ-Fall" (noch nicht verknüpft) aufzurufen ist
          */
         _isRelationTarget(idWithUrl, functionToExecute) {
-            let baseUrl = this.data._links.self.href;
+            let baseUrl = null;
+            if (this.oneToManyCheck === 'create') {
+                baseUrl = this.data._links.self.href;
+            } else if (this.oneToManyCheck === 'update') {
+                baseUrl = this._stripIdFromUrl(this.data._links.self.href);
+            } else {
+                console.warn('oneToManyCheck ' + this.oneToManyCheck + ' not supported. Try create or update.');
+                return;
+            }
+
+            if (!baseUrl) return;
+
             var methodName = 'findBy' + this._toFirstUpper(this._entity) + 'ListOid';
             let id = this._stripUrlFromId(idWithUrl);
             let url = baseUrl + '/search/' + methodName + '?oid=' + id;
@@ -541,6 +553,10 @@
          */
         _stripUrlFromId(idWithUrl) {
             return idWithUrl.substring(idWithUrl.lastIndexOf('/') + 1, idWithUrl.length);
+        }
+
+        _stripIdFromUrl(idWithUrl) {
+            return idWithUrl.substring(0, idWithUrl.lastIndexOf('/'));
         }
 
         /*

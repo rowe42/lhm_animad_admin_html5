@@ -49,8 +49,8 @@
             <animad-enclosure-form id="customform" data="{{data}}" readonly="[[readform]]"
                resources="[[resources]]" lang="[[lang]]" lists="[[lists]]"  auto-validate></animad-enclosure-form>
             <template is="dom-if" if="[[animals]]">
-                abc
                 <animad-animal-simple-relation id="animalrelation"
+                one-to-many-check="update"
                 data="{{data}}"
                 profile-url="[[backendUrl]]/api/animad-administration-service/profile/animals"
                 backend-url="[[backendUrl]]"
