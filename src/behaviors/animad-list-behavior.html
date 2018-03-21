@@ -40,6 +40,20 @@
                   return this.data;
                 }
               },
+              /**
+              */
+              searchFilters: {
+                type: Array,
+                value() {
+                  return [];
+                }
+              },
+              /**
+              *  _localizedSearchFilters entspricht searchFilters, aber die Werte in 'search' und 'label' sind durch lokalisierte Werte ersetzt worden.
+              */
+              _localizedSearchFilters: {
+                type: Array
+              },
               /*
               * _allFilters sind selektierbare Filter, die über eine REST-Schnittstelle (url: [`allFiltersUrl`](#/elements/animad-keepers-list#property-allFiltersUrl))
               *  geladen werden können.
@@ -348,7 +362,8 @@
             '_loadAllFilters(allFiltersUrl)',
             '_selectionChanged(_selectedItems.length)',
             '_dataChanged(data.length)',
-            '_initLocalizedFilter(_allFilters)'
+            '_initLocalizedFilter(_allFilters)',
+            '_initLocalizedSearchFilter(searchFilters)'
           ]
         }
 
@@ -584,6 +599,23 @@
           }
           else {
             this._localizedFilters=[];
+          }
+        }
+
+        /*
+        * Wird aufgerufen, wenn über die Methode [`_loadAllFilters`](#TBD) selektierbare Filter gefunden wurden.
+        * Lokalisiert `id` und `label` der gefundenen Filter.
+        */
+        _initLocalizedSearchFilter(filters){
+          if (filters){
+            for (var j in filters) {
+              filters[j].label = this.$t(filters[j].label);
+              filters[j].search = this.$t(filters[j].search);
+            }
+            this._localizedSearchFilters = filters;
+          }
+          else {
+            this._localizedSearchFilters=[];
           }
         }
 

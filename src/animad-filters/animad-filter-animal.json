@@ -1,0 +1,8 @@
+[
+  {"label": "Elephant", "search": "species:elephant", "query": "species:elephant"},
+  {"label": "Giraffe,", "search": "species:giraffe", "query": "species:giraffe"},
+  {"label": "Penguin", "search": "species:penguin", "query": "species:penguin"},
+  {"label": "Barrakuda", "search": "species:barrakuda", "query": "species:barrakuda"},
+  {"label": "Alive", "search": "is:alive", "query": "alive:true"},
+  {"label": "Dead", "search": "not:alive", "query": "alive:false"}
+]

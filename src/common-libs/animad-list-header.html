@@ -12,8 +12,26 @@
 <dom-module id="animad-list-header">
     <template>
       <style></style>
+
       <div hidden$="[[hideHeader]]">
 				<paper-item id="search-panel">
+          <paper-dropdown id="filter-field"
+              hidden$="[[_hideFilterButton(searchFilters)]]"
+              on-selected-changed="_changeSearch"
+              label="[[placeholderFilter]]"
+              value="{{selectedSearch}}"
+              searchable="true"
+              disabled="[[readonly]]"
+              multi="true"
+              multi-label="[[placeholderSelection]]"
+              >
+              <!--in paper-dropdown ergänzen, sobald pull request durch ist-->
+              <!--multi-label="[[t('items-selected')]]"-->
+              <template is="dom-repeat" items="{{searchFilters}}">
+                  <paper-item value$="[[item.query]]">[[item.label]]</paper-item>
+              </template>
+          </paper-dropdown>
+
 		      <paper-item-body>
 		    		<paper-search-bar
 		    			id="search-bar"
@@ -29,7 +47,7 @@
 		    		</paper-search-bar>
 		      </paper-item-body>
 
-		      <paper-button id="new-button"
+          <paper-button id="new-button"
             raised
             on-tap="_onNew"
             disabled="[[disableNewButton]]"
@@ -139,7 +157,12 @@
 				    				observer: '_onChangeRequest',
 				    				notify: true
 				    			},
-				          /*
+                  /*
+                   */
+                  selectedSearch: {
+                    type: String
+                  },
+                  /*
 				          * `selectedFilters` enthält die Information über alle ausgewählten selektierbaren Filter.
 				          */
 				          selectedFilters: {
@@ -152,6 +175,10 @@
 				    			 * Alle selektierbaren Filter, die ausgewählt werden können.
 				    			 */
 				    			allFilters: Object,
+                  /*
+				    			 * Alle selektierbaren Filter, die ausgewählt werden können.
+				    			 */
+				    			searchFilters: Object,
                   /*
                   * Gibt an, ob der Header angezeigt werden soll oder nicht.
                   * Ist das Attribut "hide-header" gesetzt, wird der Header nicht angezeigt.
@@ -233,6 +260,19 @@
 				    				type: String,
 				    				value: 'New'
 				    			},
+                  /*
+                   * Gibt den Text an, der auf dem Neu-Button angezeigt wird.
+                   */
+                  placeholderFilter: {
+                    type: String,
+                    value: 'Filter'
+                  },
+                  /*
+                  */
+                  placeholderSelection: {
+                    type: String,
+                    value: 'elements selected'
+                  },
                   /*
                    * Wechselt die Sichtbarkeit des zusammenklappbaren Elements für die Filter-Selektion
                    */
@@ -344,6 +384,35 @@
 			  		_disableFilterButton(filters) {
 			        return this.disableFilterButton || !filters || filters.length === 0;
 			  		}
+            /*
+            */
+            _changeSearch(e) {
+              // TBD: Search bauen
+              /*
+              var myRe =/(\w+:\w+)|(\w+:\"[^\"]*\")/g;
+              var searchArray;
+              while ((searchArray = myRe.exec(this.search)) !== null) {
+                var searchEntry = searchArray[0];
+                for (var item of this.searchFilters) {
+                  if (searchEntry == item) {
+                    console.log("exists");
+                    for (var selected of this.selectedSearch) {
+                      console.log("selected");
+                    }
+                  }
+                }
+              }
+              */
+              for (var item of this.selectedSearch) {
+                if (this.search) {
+                  this.search += " "+item;
+                }
+                else {
+                  this.search = item;
+                }
+              }
+
+            }
         }
 
         customElements.define(AnimadListHeader.is, AnimadListHeader);

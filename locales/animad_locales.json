@@ -39,10 +39,10 @@
       },
       "animad-keepercreate": {
         "main_heading": "Create keeper"
-      },        
+      },
       "animad-keeperdetail": {
         "main_heading": "Change keeper"
-      },           
+      },
       "animad-animal": {
         "main_heading": "Animals View",
         "table_sample_heading": "Table",
@@ -55,7 +55,7 @@
       },
       "animad-animaldetail": {
         "main_heading": "Change animal"
-      },        
+      },
       "animad-enclosures": {
         "main_heading": "Enclosures View",
         "table_sample_heading": "Table",
@@ -66,7 +66,7 @@
       },
       "animad-enclosuredetail": {
         "main_heading": "Change enclosure"
-      },        
+      },
       "animad-keepers-formsamples": {
         "main_heading": "Keepers View",
         "create_sample_heading": "Create Form",
@@ -115,6 +115,8 @@
         "results_one_found_text": " result found.",
         "results_found_text": " results found.",
         "too_many_results_found_text": "More than %{results} results found. Please narrow your search and try again!",
+        "button_new": "New",
+        "button_delete": "Delete",
         "modal_delete_header": "Delete",
         "modal_delete_text_single": "Do you really want to delete this item? ",
         "modal_delete_text_multi": "Do you really want to delete the selected items?",
@@ -128,7 +130,20 @@
         "list_action_delete": "deleting",
         "onthefly_heading": "Create a new animal",
         "form_action_send": "while saving",
-        "form_action_load": "while loading"
+        "form_action_load": "while loading",
+        "filter_items_selected": "items selected",
+        "filter_label_elephant": "Elephants",
+        "filter_label_giraffe": "Giraffes",
+        "filter_label_penguin": "Penguins",
+        "filter_label_barrakuda": "Barrakudas",
+        "filter_label_alive": "Living animals",
+        "filter_label_dead": "Dead animals",
+        "filter_search_species_elephant": "species:elephant",
+        "filter_search_species_giraffe": "species:giraffe",
+        "filter_search_species_penguin": "species:penguin",
+        "filter_search_species_barrakuda": "species:barrakuda",
+        "filter_search_is_alive": "is:alive",
+        "filter_search_is_dead": "is:dead"
       },
       "enclosure": {
         "relation_name": "Enclosure",
@@ -170,7 +185,8 @@
         "list_action_delete": "deleting",
         "onthefly_heading": "Create a new enclosure",
         "form_action_send": "while saving",
-        "form_action_load": "while loading"
+        "form_action_load": "while loading",
+        "filter_items_selected": "items selected"
       },
       "keeper":{
         "firstName": "Firstname",
@@ -235,7 +251,8 @@
         "list_second_line": "skills: %{skill}; born: %{birthday}; salary: %{salary}",
          "onthefly_heading": "Create a new keeper",
          "form_action_send": "while saving",
-         "form_action_load": "while loading"
+         "form_action_load": "while loading",
+         "filter_items_selected": "items selected"
       },
       "security": {
        "form_error": "An error occured while loading the permissions. Error code is '%{code}'.",
@@ -283,10 +300,10 @@
       },
       "animad-keepercreate": {
         "main_heading": "Wärter anlegen"
-      },        
+      },
       "animad-keeperdetail": {
         "main_heading": "Wärter bearbeiten"
-      },          
+      },
       "animad-animals": {
         "main_heading": "Übersicht Tiere",
         "table_sample_heading": "Tabelle",
@@ -298,7 +315,7 @@
       },
       "animad-animaldetail": {
         "main_heading": "Tier bearbeiten"
-      },      
+      },
       "animad-enclosures": {
         "main_heading": "Übersicht Gehege",
         "table_sample_heading": "Tabelle",
@@ -310,7 +327,7 @@
       },
       "animad-enclosuredetail": {
         "main_heading": "Gehege bearbeiten"
-      },          
+      },
       "animad-keepers-formsamples": {
         "main_heading": "Übersicht Wärter",
         "table_sample_heading": "Tabelle",
@@ -360,6 +377,8 @@
         "results_one_found_text": " Datensatz gefunden.",
         "results_found_text": " Datensätze gefunden.",
         "too_many_results_found_text": "Mehr als %{results} Ergebnisse gefunden. Bitte die Suche verfeinern.",
+        "button_new": "Neu",
+        "button_delete": "Löschen",
         "modal_delete_header": "Löschen",
         "modal_delete_text_single": "Wollen Sie den ausgewählten Datensatz wirklich löschen?",
         "modal_delete_text_multi": "Wollen Sie die ausgewählten Datensätze wirklich löschen?",
@@ -373,7 +392,20 @@
         "list_action_delete": "beim Löschen",
         "onthefly_heading": "Neues Tier anlegen",
         "form_action_send": "beim Speichern",
-        "form_action_load": "beim Laden"
+        "form_action_load": "beim Laden",
+        "filter_items_selected": "Einträge selektiert",
+        "filter_label_elephant": "Elefanten",
+        "filter_label_giraffe": "Giraffen",
+        "filter_label_penguin": "Pinguine",
+        "filter_label_barrakuda": "Barrakudas",
+        "filter_label_alive": "Lebende Tiere",
+        "filter_label_dead": "Tote Tiere",
+        "filter_search_species_elephant": "art:elefant",
+        "filter_search_species_giraffe": "art:giraffe",
+        "filter_search_species_penguin": "art:pinguin",
+        "filter_search_species_barrakuda": "art:barrakuda",
+        "filter_search_is_alive": "ist:lebendig",
+        "filter_search_is_dead": "ist:tot"
       },
       "enclosure": {
         "relation_name": "Gehege",
@@ -402,6 +434,8 @@
         "results_one_found_text": " Datensatz gefunden.",
         "results_found_text": " Datensätze gefunden.",
         "too_many_results_found_text": "Mehr als %{results} Ergebnisse gefunden. Bitte die Suche verfeinern.",
+        "button_new": "Neu",
+        "button_delete": "Löschen",
         "modal_delete_header": "Löschen",
         "modal_delete_text_single": "Wollen Sie den ausgewählten Datensatz wirklich löschen?",
         "modal_delete_text_multi": "Wollen Sie die ausgewählten Datensätze wirklich löschen?",
@@ -415,7 +449,8 @@
         "list_action_delete": "beim Löschen",
         "onthefly_heading": "Neues Gehege anlegen",
         "form_action_send": "beim Speichern",
-        "form_action_load": "beim Laden"
+        "form_action_load": "beim Laden",
+        "filter_items_selected": "Einträge selektiert"
       },
       "keeper":{
         "firstName": "Vorname",
@@ -480,13 +515,14 @@
         "list_second_line": "Erfahrung: %{skill}; geboren: %{birthday}; Gehalt: %{salary}",
          "onthefly_heading": "Neuen Wärter anlegen",
          "form_action_send": "beim Speichern",
-         "form_action_load": "beim Laden"
+         "form_action_load": "beim Laden",
+         "filter_items_selected": "Einträge selektiert"
       },
       "security": {
         "auth_error": "Berechtigungsproblem. Bitte ausloggen und erneut einloggen. Fehlercode ist '%{code}'.",
         "form_action_load": "beim Laden",
         "list_error": "Es ist ein Fehler beim Laden der Rechte aufgetreten. Fehlercode ist '%{code}'."
-        
+
       }
     }
   }
