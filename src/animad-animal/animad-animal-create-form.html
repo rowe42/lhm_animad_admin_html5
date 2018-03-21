@@ -54,10 +54,10 @@
             <!-- GENERATOR hier kommen die Templates für die Relationen hin -->
             <template is="dom-if" if="{{keepers}}">
                 <animad-keeper-simple-relation
-                    data="{{data}}"
-                    profile-url="[[backendUrl]]/api/admin_service/profile/keepers"
+                    data="{{data}}" 
+                    profile-url="[[backendUrl]]/api/animad-administration-service/profile/keepers"
                     backend-url="[[backendUrl]]"
-                    resources="[[resources]]" lang="[[lang]]" preload
+                    resources="[[resources]]" lang="[[lang]]" 
                 ></animad-keeper-simple-relation>
             </template>
         </form>

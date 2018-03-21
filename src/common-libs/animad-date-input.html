@@ -170,7 +170,7 @@
                 var input = document.createElement("input");
                 input.setAttribute("type", "date");
                 let support = input.type === "date";
-                console.log('Supports date: ' + support);
+                input.remove();
                 return support;
             }
 

@@ -3,9 +3,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>de.muenchen.referenzarchitektur</groupId>
-    <artifactId>lhm_animad_admin_html5</artifactId>
-    <name>lhm_animad_admin_html5</name>
+    <groupId>de.muenchen.animad.admin</groupId>
+    <artifactId>animad-gui-keeperinterface</artifactId>
+    <name>animad-gui-keeperinterface</name>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <organization>

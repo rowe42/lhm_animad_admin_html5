@@ -27,7 +27,7 @@
                      */
                     _resultsText: {
                       type: String,
-                      value: "test"
+                      value: ""
                     },
                 }
             }
@@ -42,10 +42,5 @@
                 this.page = page || '';
             }
 
-
-            onRouteTailChanged() {
-              this._filteredData = [];
-              this._resultsText = "";
-            }
         };
 </script>

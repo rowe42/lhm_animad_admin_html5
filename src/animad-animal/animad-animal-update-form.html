@@ -51,11 +51,11 @@
             <animad-animal-form id="customform" data="{{data}}" lists="[[lists]]" readonly="[[readform]]"
                resources="[[resources]]" lang="[[lang]]" auto-validate></animad-animal-form>
             <template is="dom-if" if="[[keepers]]">
-                <animad-keeper-simple-relation id="keeperrelation"
-                    data="{{data}}"
-                    profile-url="[[backendUrl]]/api/admin_service/profile/keepers"
+                <animad-keeper-simple-relation id="keeperrelation" 
+                    data="{{data}}" 
+                    profile-url="[[backendUrl]]/api/animad-administration-service/profile/keepers"
                     backend-url="[[backendUrl]]"
-                    resources="[[resources]]" lang="[[lang]]" preload>
+                    resources="[[resources]]" lang="[[lang]]">
                 </animad-keeper-simple-relation>
             </template>
         </form>

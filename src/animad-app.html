@@ -127,11 +127,11 @@
 
         <common-security-init id="animad_security" load-url="[[backendUrl]]/api/user_service/permissions"
              resources="{{resources}}" lang="[[lang]]" ></common-security-init>
-
-        <common-security-check permission="administration_READ_Keeper" allowed="{{readKeeperAllowed}}"></common-security-check>
-        <common-security-check permission="administration_READ_Animal" allowed="{{readAnimalAllowed}}"></common-security-check>
-        <common-security-check permission="administration_READ_Enclosure" allowed="{{readEnclosureAllowed}}"></common-security-check>
-
+        
+        <common-security-check permission="administration_GUI_KeepersView" allowed="{{keepersViewAllowed}}"></common-security-check>
+        <common-security-check permission="administration_GUI_AnimalsView" allowed="{{animalsViewAllowed}}"></common-security-check>
+        <common-security-check permission="administration_GUI_EnclosuresView" allowed="{{enclosuresViewAllowed}}"></common-security-check>
+        
         <!-- i18n -->
         <nebula-language
             id="language"
@@ -166,57 +166,57 @@
                             <!-- GENERATOR TODO - der Name und Icon sollte aus einer i18n Liste kommen -->
 
                             <!--Keepers-->
-                            <template is="dom-if" if="{{readKeeperAllowed}}">
+                            <template is="dom-if" if="{{keepersViewAllowed}}">
                             <a class="paper-item-link" name="keepers-view" href="#[[rootPath]]keepers-view/" tabindex="-1">
                                 <paper-icon-item>
-                                   <iron-icon icon="animad-icons:keeper" slot="item-icon"></iron-icon>
+                                   <iron-icon icon="animad-icons:keepers-view" slot="item-icon"></iron-icon>
                                     [[$t('keepers')]]
                               </paper-icon-item>
                             </a>
                             </template>
-
-                            <template is="dom-if" if="{{!readKeeperAllowed}}">
+                            
+                            <template is="dom-if" if="{{!keepersViewAllowed}}">
                             <div class="menu-disabled" name="keepers-view">
                                 <paper-icon-item disabled="true">
-                                   <iron-icon icon="animad-icons:keeper" slot="item-icon"></iron-icon>
+                                   <iron-icon icon="animad-icons:keepers-view" slot="item-icon"></iron-icon>
                                     [[$t('keepers')]]
                               </paper-icon-item>
                             </div>
                             </template>
 
                             <!--Animals-->
-                            <template is="dom-if" if="{{readAnimalAllowed}}">
+                            <template is="dom-if" if="{{animalsViewAllowed}}">
                             <a class="paper-item-link" name="animals-view" href="#[[rootPath]]animals-view/" tabindex="-1">
                                 <paper-icon-item>
-                                   <iron-icon icon="animad-icons:panda" slot="item-icon"></iron-icon>
+                                   <iron-icon icon="animad-icons:animals-view" slot="item-icon"></iron-icon>
                                     [[$t('animals')]]
                               </paper-icon-item>
                             </a>
                             </template>
-
-                            <template is="dom-if" if="{{!readAnimalAllowed}}">
+                            
+                            <template is="dom-if" if="{{!animalsViewAllowed}}">
                             <div class="menu-disabled" name="animals-view">
                                 <paper-icon-item disabled="true">
-                                   <iron-icon icon="animad-icons:panda" slot="item-icon"></iron-icon>
+                                   <iron-icon icon="animad-icons:animals-view" slot="item-icon"></iron-icon>
                                     [[$t('animals')]]
                               </paper-icon-item>
                             </div>
                             </template>
 
                             <!--Enclosures-->
-                            <template is="dom-if" if="{{readEnclosureAllowed}}">
+                            <template is="dom-if" if="{{enclosuresViewAllowed}}">
                             <a class="paper-item-link" name="enclosures-view" href="#[[rootPath]]enclosures-view/" tabindex="-1">
                                 <paper-icon-item>
-                                   <iron-icon icon="animad-icons:basecamp" slot="item-icon"></iron-icon>
+                                   <iron-icon icon="animad-icons:enclosures-view" slot="item-icon"></iron-icon>
                                     [[$t('enclosures')]]
                               </paper-icon-item>
                             </a>
                             </template>
-
-                            <template is="dom-if" if="{{!readEnclosureAllowed}}">
+                            
+                            <template is="dom-if" if="{{!enclosuresViewAllowed}}">
                             <div class="menu-disabled" name="enclosures-view">
                                 <paper-icon-item disabled="true">
-                                   <iron-icon icon="animad-icons:basecamp" slot="item-icon"></iron-icon>
+                                   <iron-icon icon="animad-icons:enclosures-view" slot="item-icon"></iron-icon>
                                     [[$t('enclosures')]]
                               </paper-icon-item>
                             </div>

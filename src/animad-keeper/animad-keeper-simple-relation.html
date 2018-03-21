@@ -29,7 +29,7 @@
             <paper-dialog-scrollable>
                 <iron-form id="iform">
                     <form class="animad-keeper-create-dialog-form">
-                        <animad-keeper-form data="{{_dialogdata}}"
+                        <animad-keeper-form  id="customform" data="{{_dialogdata}}"
                            resources="[[resources]]" lang="[[lang]]" lists="[[lists]]" auto-validate></animad-keeper-form>
                     </form>
                 </iron-form>
@@ -41,7 +41,8 @@
         </paper-dialog>
         <paper-autocomplete
             label="[[$t('relation_name')]]"
-            source="[[source]]">
+            source="[[source]]" remote-source="{{!preload}}" min-length="1"
+            >
             <paper-icon-button slot="prefix" prefix icon="animad-icons:magnify"></paper-icon-button>
             <template is="dom-if" if="[[_new]]">
                 <paper-icon-button slot="suffix" icon="animad-icons:plus-box" on-tap="_showDialog"></paper-icon-button>

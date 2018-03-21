@@ -29,7 +29,7 @@
             <paper-dialog-scrollable>
                 <iron-form id="iform">
                     <form class="animad-enclosure-create-dialog-form">
-                        <animad-enclosure-form data="{{_dialogdata}}"
+                        <animad-enclosure-form  id="customform" data="{{_dialogdata}}" 
                            resources="[[resources]]" lang="[[lang]]"  lists="[[lists]]" auto-validate></animad-enclosure-form>
                     </form>
                 </iron-form>
@@ -41,7 +41,7 @@
         </paper-dialog>
         <paper-autocomplete
             label="[[$t('relation_name')]]"
-            source="[[source]]">
+            remote-source min-length="3">
             <paper-icon-button slot="prefix" prefix icon="animad-icons:magnify"></paper-icon-button>
             <template is="dom-if" if="[[_new]]">
                 <paper-icon-button slot="suffix" icon="animad-icons:plus-box" on-tap="_showDialog"></paper-icon-button>
@@ -74,7 +74,7 @@
          *   source-url="[Quelle zu den Enclosures]"
          *   text-property="name"
          *   value-property="id"
-         *   preload>
+         *   >
          * </animad-enclosure-simple-relation>
          * ...
          * ```

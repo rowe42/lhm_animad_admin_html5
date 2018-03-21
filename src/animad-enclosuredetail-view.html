@@ -31,7 +31,7 @@
       }
     </style>
 
-    <app-route route="{{route}}" pattern="/enclosuredetail-view/:page" data="{{routeData}}" tail="{{subroute}}" on-tail-changed="onRouteTailChanged">
+    <app-route route="{{route}}" pattern="/enclosuredetail-view/:page" data="{{routeData}}" tail="{{subroute}}">
     </app-route>
 
     <!--Security-->
@@ -40,42 +40,14 @@
 
     <div id="view" class="card">
       <div class="circle">
-        <iron-icon icon="animad-icons:basecamp"></iron-icon>
+        <iron-icon icon="animad-icons:enclosure"></iron-icon>
       </div>
       <h1>[[$t('main_heading')]]</h1>
-      <h2>[[$t('table_sample_heading')]]</h2>
       <div class="animad-enclosure-view-content">
-          <!--<iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" route="{{subroute}}">-->
-<!--            <template is="dom-if" if="{{readAllowed}}">
-                <animad-enclosures-list
-                  id="list"
-                  name=""
-                  url="[[backendUrl]][[_entitiesUrl]]"
-                  default-search="name:'Elephant's paradise'"
-                  route="{{subroute}}"
-                  edit-path="/enclosures-view/update"
-                  create-path="/enclosures-view/create"
-                  on-filter-data="_filterData"
-                  filtered-data="[[_filteredData]]"
-                  results-text="[[_resultsText]]"
-                  resources="[[resources]]" lang="[[lang]]">
-                </animad-enclosures-list>
-            </template>-->
-<!--            <template is="dom-if" if="{{writeAllowed}}">
-                <animad-enclosure-create-form name="create"
-                  save-url="[[backendUrl]][[_entitiesUrl]]"
-                  profile-url="[[backendUrl]][[_profileUrl]]"
-                  backend-url="[[backendUrl]]"
-                  save-path="/enclosures-view/"
-                  cancel-path="/enclosures-view/"
-                  resources="[[resources]]" lang="[[lang]]"
-                  animals>
-                </animad-enclosure-create-form>
-            </template>-->
             <template is="dom-if" if="{{writeAllowed}}">
                 <animad-enclosure-update-form name="update" 
-                   load-url="[[backendUrl]]/api/admin_service/enclosures/[[page]]"
-                   profile-url="[[backendUrl]][[_profileUrl]]"
+                   load-url="[[backendUrl]]/api/animad-administration-service/enclosures/[[page]]"
+                   profile-url="[[backendUrl]]/api/animad-administration-service/profile/enclosures"
                    backend-url="[[backendUrl]]"
                    save-path="/enclosures-view/"
                    cancel-path="/enclosures-view/"
@@ -83,7 +55,6 @@
                    animals>
                 </animad-enclosure-update-form>
             </template>
-          <!--</iron-pages>-->
       </div>
     </div>
   </template>
@@ -116,22 +87,7 @@
            */
           _entity: {
             type: String,
-            value: 'animad-enclosures'
-          },
-          /*
-           * wird verwendet, um die lazy einzubindenden Unterelemente zu identifizieren
-           */
-          _singleEntity: {
-            type: String,
-            value: 'animad-enclosure'
-          },
-          _entitiesUrl: {
-              type: String,
-              value: '/api/admin_service/enclosures'
-          },
-          _profileUrl: {
-              type: String,
-              value: '/api/admin_service/profile/enclosures'
+            value: 'animad-enclosuredetail'
           },
           /*
           *  _filteredData enthält alle Objekte, die auf eingegebene oder ausgewählte Filter zutreffen.

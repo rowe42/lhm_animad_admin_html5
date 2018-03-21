@@ -35,7 +35,7 @@
                         return [];
                     },
                     notify: true
-                },
+                },                
                 /*
                  * Legt fest, ob die Daten vorab in den Speicher
                  * geladen werden. Dies ist bei kleinen Datenmengen
@@ -46,7 +46,7 @@
                 preload: {
                     type: Boolean,
                     value: false
-                },
+                },                
                 /*
                  * Legt fest, ob eine neu hinzugefügte Relation per ID
                  * oder als komplette eingebettete Entität angelegt wird.
@@ -103,7 +103,9 @@
             // können.
             var e = this.shadowRoot.querySelector('paper-autocomplete');
             e.addEventListener('autocomplete-selected', this._appendItem);
-
+            e.addEventListener('autocomplete-change', this._loadSuggestions);
+            
+            
 
             // Die generische Query Methode muss
             // durch eine eigene Methode überschrieben
@@ -188,45 +190,67 @@
                     var url = allRelations.href;
                     this.set('_new', true);
                     this.set('_newUrl', url);
-
-                    // Wenn die Auswahlliste vorgeladen werden soll, dann
-                    // kann dies über den '[Name der Entity]s' Link gemacht
-                    // werden.
+                    
                     if (this.preload) {
-                        var init = {
+                        this._loadAutocompleteEntries(null, null);
+                    }
+                }
+            }
+        }
+
+        /*
+         * Sucht im Backend für den aktuellen Entitätstyp nach Entitäten, die 
+         * den searchString erfüllen und platziert diese im Objekt 'autocompleter'.
+         *
+         * @param   der searchString
+         * @param   das autocompleter Objekt, das es zu befüllen gilt
+         */
+        _loadAutocompleteEntries(searchString, autocompleter) {
+            // Das HAL Objekt wird eingelesen.
+            var hal = halson(this.data);
+            var allRelations = hal.getLink(this._entity + 's');
+            if (searchString) {
+                var baseUrl = allRelations.href; //HACK: eigentlich sollte man das aus allRelations raus kriegen --> dazu Options erweitern            
+                var url=baseUrl+'/search/findFullTextJunction?q=' + searchString.toLowerCase() + '*';
+            } else {
+                var url = allRelations.href;
+            }
+
+            var init = {
                             method: 'GET',
                             mode: 'cors',
                             credentials: 'include'
                         }
 
-                        var request = new Request(url, init);
+            var request = new Request(url, init);
 
-                        fetch(request)
-                            .then(response => {
-                                if (response.ok) {
-                                    response.json().then((data) => {
-                                        var array = data._embedded[this._entity + 's'];
-                                        //zurücksetzen, falls bereits vormals geladen wurde (alter Stand!)
-                                        this.source = [];
-                                        array.forEach((element) => {
-                                            // der formatierte Text zur Auswahl
-                                            var text = this._formatSuggester(element);
-                                            // die id
-                                            var value = element._links.self.href;
+            fetch(request)
+                .then(response => {
+                    if (response.ok) {
+                        response.json().then((data) => {
+                            if (data && data._embedded) {
+                                var array = data._embedded[this._entity + 's'];
+                                //zurücksetzen, falls bereits vormals geladen wurde (alter Stand!)
+                                this.source = [];
+                                array.forEach((element) => {
+                                    // der formatierte Text zur Auswahl
+                                    var text = this._formatSuggester(element);
+                                    // die id
+                                    var value = element._links.self.href;
 
-                                            // Die beiden Werte als Objekt in das 'source' Array
-                                            // speichern. Dieses Array ist Quelle für die
-                                            // Autocomplete Componente.
-                                            this.push('source', { "text": text, "value": value, "entity": element })
-                                        });
-                                    });
-                                } else {
-                                  this._error(response.status, '_loadRelationData', 'form_action_load');
-                                }
-                            })
+                                    // Die beiden Werte als Objekt in das 'suggestions' Array
+                                    // speichern. Dieses Array ist Quelle für die
+                                    // Autocomplete Componente.
+                                    this.push('source', { "text": text, "value": value, "entity": element })
+                                });
+                                if (autocompleter)
+                                    autocompleter.suggestions(this.source);
+                            }
+                        });
+                    } else {
+                       this._error(response.status, '_loadRelationData', 'form_action_load');
                     }
-                }
-            }
+                })
         }
 
 
@@ -306,7 +330,7 @@
         _saveDialog() {
 
             // check if the form content is valid against the defined rules
-            var valid = this.shadowRoot.querySelector('#iform').validate();
+            var valid = this.shadowRoot.querySelector('#customform').validate();
 
             if (valid) {
                 // prepare request
@@ -329,10 +353,17 @@
                         if (response.ok) {
                             // Formular zurücksetzen
                             if (typeof this._resetForm === "function") {
-                                //this._resetForm();
+                                this._resetDialog();
                             } else {
                                 console.warn('Cannot find mixin "*-form-behavior.html"!');
                             }
+
+                            //Event, dass etwas im Backend an den Entities geändert hat --> reload der Table/List
+                            this.dispatchEvent(new CustomEvent(this._entity + 'Reload', {
+                                bubbles: true,
+                                composed: true,
+                                detail: {kicked: true}
+                            }));
 
                             // 'Erfolgs' Toast öffnen
                             if (typeof this._success === "function") {
@@ -364,6 +395,10 @@
 
         }
 
+        _resetDialog() {
+            this._resetFormWithObject('_dialogdata');
+        }
+        
         _loadDialogOptions(saveUrl, oldV) {
                 if (saveUrl) {
 //                    this._loadHalData(saveUrl, 'OPTIONS', 'data');
@@ -399,6 +434,13 @@
 
             // Textfeld leeren
             event.currentTarget.clear();
+        }
+
+        _loadSuggestions(event) {
+            var h = this.parentNode.host;
+            let element = event.target;
+            let searchString = event.detail.value;
+            let suggestion = h._loadAutocompleteEntries(searchString, element);
         }
 
         /*
