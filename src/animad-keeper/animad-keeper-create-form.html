@@ -16,6 +16,7 @@
 
 <link rel="import" href="../animad-icons.html">
 <link rel="import" href="../behaviors/animad-form-behavior.html">
+<link rel="import" href="../behaviors/animad-error-behavior.html">
 <link rel="import" href="../behaviors/nebula-polyglot-behavior.html">
 <link rel="import" href="../behaviors/mixin.html">
 
@@ -35,13 +36,13 @@
                 @apply --animad-keeper-create-form;
             }
         </style>
-        
+
        <!-- Routing Support -->
         <app-location
           route="{{route}}"
           use-hash-as-path>
       </app-location>
-        
+
         <!--
             Das vorgefertigte Formular.
         -->
@@ -50,7 +51,7 @@
                 lang="[[lang]]" lists="[[lists]]"></animad-keeper-form>
             <!-- GENERATOR hier kommen die Templates für die Relationen hin -->
         </form>
-        <!-- 
+        <!--
             buttons
         -->
         <template is="dom-if" if="{{reset}}">
@@ -68,7 +69,7 @@
         <paper-button class="send" on-tap="_saveEntity" raised>
             <iron-icon icon="animad-icons:send"></iron-icon>
             [[$t('button_save')]]
-        </paper-button>   
+        </paper-button>
     </template>
     <script>
         /**
@@ -82,19 +83,19 @@
          * <animad-keeper-create-form post-url="[URL an die die Daten geschickt werden]"></animad-keeper-create-form>
          * ...
          * ```
-         * 
+         *
          * @customElement
          * @polymer
          *
          */
-        class AnimadKeeperCreateForm extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadFormBehavior) {
+        class AnimadKeeperCreateForm extends mix(Polymer.Element).with(Nebula.PolyglotBehavior, AnimadFormBehavior, AnimadErrorBehavior) {
             static get is() { return 'animad-keeper-create-form'; }
 
             static get properties() {
                 return {
                     /*
-                     * Das '_domain' property wird benötigt, um den richtigen Pfad 
-                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * Das '_domain' property wird benötigt, um den richtigen Pfad
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element
                      * benötigt, in dem die I18nBehavior verwendet wird.
                      *
                      * GENERATOR das Attribut value generieren
@@ -104,8 +105,8 @@
                         value: 'animad'
                     },
                     /*
-                     * Das '_entity' property wird benötigt, um den richtigen Pfad 
-                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element 
+                     * Das '_entity' property wird benötigt, um den richtigen Pfad
+                     * zu den i18n Werten zu erzeugen. Es wird in jedem Element
                      * benötigt, in dem die I18nBehavior verwendet wird.
                      *
                      * GENERATOR das Attribute value generieren

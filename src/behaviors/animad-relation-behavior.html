@@ -165,23 +165,19 @@
                                     //die Links auf die referenzierten Entities kommen nach [entity]List
                                     var refName = 'data.' + this._entity + 'List';
                                     this.set(refName, linkArray);
-                                    
+
                                     //der eigentliche Content der referenzierten Entities kommt nach data._embedded
                                     var embedded = 'data._embedded';
                                     if (!this.get(embedded)) {
                                         this.set(embedded, {});
                                     }
                                     this.set(path, array);
-                                    
+
                                     //für das Rendering der Relationen muss ein Update angestoßen werden
                                     this.notifyPath('data._embedded.' + this._entity + 's');
                                 });
                             } else {
-                                if (response.status === 403 || response.status === 401) {
-                                    this._errorText('auth_error', response.status);
-                                } else {
-                                    this._error(response.status);
-                                }
+                              this._error(response.status, '_loadRelationData', 'form_action_load');
                             }
                         })
                 }
@@ -252,13 +248,7 @@
                             }
                         });
                     } else {
-                        if (response.status === 413) {
-                            //"payload too long" ignorieren wir - dann muss der User eben weitertippen...
-                        } else if (response.status === 403 || response.status === 401) {
-                            this._errorText('auth_error', response.status);
-                        } else {
-                            this._error(response.status);
-                        }
+                       this._error(response.status, '_loadRelationData', 'form_action_load');
                     }
                 })
         }
@@ -284,21 +274,21 @@
                 // [Name der Entity] klein geschrieben
                 // und singular.
                 var link = this._entity + 'List';
-                
+
                 // Das HAL Objekt wird eingelesen.
                 var hal = halson(data);
-                
+
                 //der Link, zu dem der PUT Request erfolgen soll
                 var entityRelationLink = hal.getLink(link).href;
-                
+
                 //die Relationen, die gespeichert werden sollen,
                 //liegen unter dem Property, das genauso heißt wie der Link
                 var relationsToSave = data[link];
-                
-                //wir erzeugen ein neues HAL Object                
+
+                //wir erzeugen ein neues HAL Object
                 var objectToSave = halson();
                 relationsToSave.forEach((relation, i) => objectToSave.addLink(i, relation));
-                
+
                 //und speichern
                 var init = {
                         method: 'PUT',
@@ -309,24 +299,20 @@
                             'Content-Type': 'application/json'
                         })
                     }
-                    
+
                 var request = new Request(entityRelationLink, init);
 
                 fetch(request)
                         .then(response => {
                             if (!response.ok) {
-                                if (response.status === 403 || response.status === 401) {
-                                    this._errorText('auth_error', response.status);
-                                } else {
-                                    this._error(response.status);
-                                }
+                              this._error(response.status, '_saveRelationData', 'form_action_send');
                             }
                         })
-                
-                
+
+
             }
         }
-        
+
         /*
          * Öffnet den Dialog um ein neues Relationsobjekt
          * 'on the fly' anlegen zu können.
@@ -355,7 +341,7 @@
                     body: JSON.stringify(this._dialogdata),
                     headers: new Headers({
                         'Content-Type': 'application/json'
-                    })                    
+                    })
                 }
 
                 var request = new Request(this._newUrl, init);
@@ -398,11 +384,7 @@
                             // Wenn ein Fehler aufgetreten ist, dann wird dieser
                             // über einen Toast dem nutzer mitgeteilt.
                             if (typeof this._error === "function") {
-                                if (response.status === 403 || response.status === 401) {
-                                    this._errorText('auth_error', response.status);
-                                } else {
-                                    this._error(response.status);
-                                }
+                              this._error(response.status, '_saveDialog', 'form_action_send');
                             } else {
                                 console.warn('Cannot find mixin "*-form-behavior.html"!');
                                 console.error('Cannot call ' + this._newUrl + '. Error Code: ' + response.status);
@@ -438,18 +420,18 @@
         _querySimple(datasource, query) {
             return datasource.filter(x => x[this.textProperty].toLowerCase().indexOf(query) != -1);
         }
-        
+
         _appendItem(event) {
             // Der 'host' des Elternknotens wird benötigt
             // um an die Properties zu kommen, da wir nicht
             // im 'this' scope sind.
             var h = this.parentNode.host;
             var id = event.detail.value;
-            
+
              var item = this.source.find(x => x.value === id);
-            
+
             h._appendItemInternal(h, id, item.entity);
-            
+
             // Textfeld leeren
             event.currentTarget.clear();
         }
@@ -487,7 +469,7 @@
                 var item = this.source.find(x => x.value === id);
                 h.push(name, entity);
             }
-            
+
             //Unter _embedded wird die Entität mit allen Feldern
             //eingebettet, damit man sie im Formular darstellen kann
             var embedded = 'data._embedded';
@@ -497,7 +479,7 @@
             var embeddedEntities = embedded + '.' + h._entity + 's';
             if (!h.get(embeddedEntities)) {
                 h.set(embeddedEntities, []);
-            }            
+            }
             h.push(embeddedEntities, entity);
         }
 
@@ -514,12 +496,12 @@
             this.splice(name, index, 1);
 
             //das [entity]List Array neu setzen
-            var array = this.get(name);            
+            var array = this.get(name);
             var linkArray = array.map(entity => halson(entity).getLink('self').href);
             //die Links auf die referenzierten Entities kommen nach [entity]List
             var refName = 'data.' + this._entity + 'List';
             this.set(refName, linkArray);
         }
-        
+
     }
 </script>

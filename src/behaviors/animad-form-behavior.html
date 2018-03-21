@@ -164,32 +164,28 @@
                     var request = new Request(url, init);
 
                     fetch(request)
-                            .then(response => {
-                                if (response.ok) {
-                                    if (verb === 'POST' && typeof this._resetForm === "function") {
-                                        this._resetForm();
-                                    } else {
-                                        console.warn('Cannot find mixin "*-form-behavior.html"!');
-                                    }
-
-                                    if (verb === 'POST' || verb === 'PUT') {
-                                        //Event, dass etwas im Backend an den Entities geändert hat --> reload der Table/List
-                                        this.dispatchEvent(new CustomEvent(this._entity + 'Reload', {
-                                            bubbles: true,
-                                            composed: true,
-                                            detail: {kicked: true}
-                                        }));
-
-                                    }
-                                    this._success('form_success');
-                                } else {
-                                    if (response.status === 403 || response.status === 401) {
-                                        this._error(response.status,'auth_error');
-                                    } else {
-                                        this._error(response.status);
-                                    }
-                                }
-                            })
+                        .then(response => {
+                            if (response.ok) {
+                              if (verb === 'POST' && typeof this._resetForm === "function") {
+                                  this._resetForm();
+                              } else {
+                                  console.warn('Cannot find mixin "*-form-behavior.html"!');
+                              }
+                              if (verb === 'POST' || verb === 'PUT') {
+                                 //Event, dass etwas im Backend an den Entities geändert hat --> reload der Table/List
+                                 this.dispatchEvent(new CustomEvent(this._entity + 'Reload', {
+                                     bubbles: true,
+                                     composed: true,
+                                     detail: {kicked: true}
+                                 }));
+                              }
+                              this._success('form_success');
+                          } else {
+                            this._error(response.status, '_send', 'form_action_send');
+                          }
+                      }).catch(error => {
+                        this._error(500, '_send', 'form_action_send');
+                      });
                     // navigiere zu data-routePath wenn form o.k.
                     this._navigateTo(e);
                 } else {
@@ -230,7 +226,7 @@
                     this._loadHalData(hackSaveUrl, 'GET', 'data');
                 }
             }
-            
+
             /*
              * Lädt das zugrunde liegende Data-Objekt neu
              */
@@ -286,12 +282,12 @@
             }
 
 
-            
+
             _loadHalData(url, verb, target) {
                 if (!url || !verb || !target) {
                     return;
                 }
-                
+
                 // prepare request
                 var init = {
                     method: verb,
@@ -308,13 +304,11 @@
                                     this.set(target, data);
                                 });
                             } else {
-                                if (response.status === 403 || response.status === 401) {
-                                    this._error(response.status,'auth_error');
-                                } else {
-                                    this._error(response.status);
-                                }
+                                this._error(response.status, '_loadHalData', 'form_action_load');
                             }
-                        })
+                        }).catch(error => {
+                          this._error(500, '_loadHalData', 'form_action_load');
+                        });
             }
 
             _reloadForm() {
@@ -333,7 +327,7 @@
 
                 let customform = this.shadowRoot.querySelector('#customform');
                 let fields = customform.shadowRoot.querySelectorAll('[id^=' + this._entity + ']');
-                fields.forEach(field => {                    
+                fields.forEach(field => {
                     let tempRequired = field.required;
                     field.required = null;
                     field.value = null;
@@ -382,20 +376,5 @@
                 this.dispatchEvent(e)
             }
 
-            /**
-             * Der 'Toast', der bei Fehlern angezeigt wird.
-             */
-            _error(status, key = 'form_error') {
-                const notification = {
-                    type: 'error',
-                    message: this.$t(key, {code: status}),
-                }
-                const e = new CustomEvent('notify', {
-                    detail: notification,
-                    bubbles: true,
-                    composed: true,
-                })
-                this.dispatchEvent(e)
-            }
         };
 </script>

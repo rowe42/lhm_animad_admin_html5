@@ -553,14 +553,11 @@
                       this.set('_allFilters', data);
                   });
                 } else {
-
-                    this._localizedFilters=[];
-                    if (response.status === 403 || response.status === 401) {
-                        this._errorText('auth_error', response.status);
-                    } else {
-                        this._error(response.status);
-                    }
+                  this._localizedFilters=[];
+                  this._error(response.status, '_loadAllFilters', 'list_action_search');
                 }
+              }).catch(error => {
+                this._error(500, '_loadAllFilters', 'list_action_search');
               });
           }
         }
@@ -656,7 +653,7 @@
         reload() {
           this._loadHalData(this.url, 'GET');
         }
-        
+
         // Backend methods
         /*
         * Führt die Suche im Backend durch.
@@ -681,15 +678,17 @@
                             this.set('_backendData', data);
                         });
                     } else if (response.status == 413) {
-                        response.json().then((data) => {
-                            this._maxResults = data.maxResults;
-                            this._tooManyResults = true;
-                            this.set('_backendData', {});
-                            this._errorTooManyResults(this._maxResults, 'too many results');
-                        });
+                      response.json().then((data) => {
+                        this._maxResults = data.maxResults;
+                        this._tooManyResults = true;
+                        this.set('_backendData', {});
+                        this._errorTooManyResults(this._maxResults, 'too many results', '_loadHalData');
+                      });
                     } else {
-                        this._error(response.status);
+                      this._error(response.status, '_loadHalData', 'list_action_search');
                     }
+                }).catch(error => {
+                  this._error(500, '_loadHalData', 'list_action_search');
                 })
         }
 
@@ -756,10 +755,10 @@
             }
             else {
               // notify user about error
-              this._errorDelete(response.status, itemId);
+              this._error(response.status, '_loadHalData', 'list_action_delete', '', this.$t('list_delete_error', {id: itemId, code: response.status}));
             }
           }).catch(error => {
-            this._error(this.$t('list_action_delete'), error.message);
+            this._error(500, '_loadHalData', 'list_action_delete');
           });
         }
 
@@ -794,49 +793,13 @@
         }
 
         /**
-         * Der 'Toast', der bei Fehlern beim Löschen angezeigt wird.
-         */
-        _errorDelete(status, id) {
-            const text = this.$t('list_delete_error', { code: status, id: id });
-            this._error(text);
-        }
-
-        /**
          * Der 'Toast', der bei zu vielen Ergebnissen angezeigt wird.
          */
-        _errorTooManyResults(results, msg) {
+        _errorTooManyResults(results, msg, method) {
             const text = this.$t('list_error_too_many_results', { results: results });
             console.error(text+"("+msg+")");
-            this._error(text);
+            this._error(0, method, 'list_action_search', '', text);
         }
 
-        /**
-         * Der 'Toast', der bei Fehlern (allgemein) angezeigt wird.
-         */
-        _error(action, msg) {
-            this._errorText('list_error', action, msg);
-        }
-
-        /**
-         * Der 'Toast', der bei Fehlern angezeigt wird, mit expliziter Angabe eine Text-Schlüssels.
-         */
-        _errorText(key, action, msg) {
-           const text = this.$t(key, { action: action });
-            console.error(text+"("+msg+")");
-            this._error(text);
-        }
-
-        _error(message) {
-          const notification = {
-            type: 'error',
-            message: message,
-          }
-          const e = new CustomEvent('notify', {
-            detail: notification,
-            bubbles: true,
-            composed: true,
-          })
-          this.dispatchEvent(e)
-        }
     };
 </script>
