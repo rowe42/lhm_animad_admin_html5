@@ -40,20 +40,22 @@
             </div>
         </paper-dialog>
         <paper-autocomplete
-            label="[[$t('relation_name')]]"
+            label="[[$t('relation_name')]]" disabled="[[readonly]]"
             remote-source min-length="3">
             <paper-icon-button slot="prefix" prefix icon="animad-icons:magnify"></paper-icon-button>
             <template is="dom-if" if="[[_new]]">
-                <paper-icon-button slot="suffix" icon="animad-icons:plus-box" on-tap="_showDialog"></paper-icon-button>
+                <template is="dom-if" if="[[!readonly]]">
+                    <paper-icon-button slot="suffix" icon="animad-icons:plus-box" on-tap="_showDialog"></paper-icon-button>
+                </template>
             </template>
         </paper-autocomplete>
         <paper-listbox>
             <template is="dom-repeat" items="{{data.enclosures}}">
-                <paper-item>
-                    <!-- TODO Hier ist noch ein Bug drin. Die Operation wir nicht aufgerufen,
-                         wenn aus der Liste gelöscht wird. -->
+                <paper-item disabled="[[readonly]]">
                     <paper-item-body>[[_format(item)]]</paper-item-body>
-                    <paper-icon-button icon="animad-icons:link-off" data-item$="[[index]]" on-tap="_removeItem"></paper-icon-button>
+                    <template is="dom-if" if="[[!readonly]]">
+                        <paper-icon-button icon="animad-icons:link-off" data-item$="[[index]]" on-tap="_removeItem"></paper-icon-button>
+                    </template>
                 </paper-item>
             </template>
         </paper-listbox>

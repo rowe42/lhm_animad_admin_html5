@@ -65,12 +65,14 @@
                     [[$t('button_reload')]]
                 </paper-button>
             </template>
+        </template>
             <template is="dom-if" if="{{cancelPath}}">
                 <paper-button class="cancel" on-tap="_cancelEntity" raised>
                     <iron-icon icon="animad-icons:close-circle"></iron-icon>
                     [[$t('button_cancel')]]
                 </paper-button>
             </template>
+        <template is="dom-if" if="{{!readform}}">
             <paper-button class="send" on-tap="_updateEntity" raised>
                 <iron-icon icon="animad-icons:send"></iron-icon>
                 [[$t('button_save')]]

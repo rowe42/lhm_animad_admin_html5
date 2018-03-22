@@ -48,19 +48,23 @@
                 <paper-button dialog-confirm on-tap="_saveDialog">save</paper-button>
             </div>
         </paper-dialog>
-        <paper-autocomplete
+        <paper-autocomplete disabled="[[readonly]]"
             label="[[$t('relation_name')]]"
             source="[[source]]" remote-source="{{!preload}}" min-length="1">
             <paper-icon-button slot="prefix" prefix icon="animad-icons:magnify"></paper-icon-button>
             <template is="dom-if" if="[[_new]]">
-                <paper-icon-button slot="suffix" icon="animad-icons:plus-box" on-tap="_showDialog"></paper-icon-button>
+                <template is="dom-if" if="[[!readonly]]">
+                    <paper-icon-button slot="suffix" icon="animad-icons:plus-box" on-tap="_showDialog"></paper-icon-button>
+                </template>
             </template>
         </paper-autocomplete>
         <paper-listbox>
             <template is="dom-repeat" items="{{data._embedded.animals}}">
-                <paper-item>
+                <paper-item disabled="[[readonly]]">
                     <paper-item-body>[[_format(item)]]</paper-item-body>
-                    <paper-icon-button icon="animad-icons:link-off" data-item$="[[index]]" on-tap="_removeItem"></paper-icon-button>
+                    <template is="dom-if" if="[[!readonly]]">
+                        <paper-icon-button icon="animad-icons:link-off" data-item$="[[index]]" on-tap="_removeItem"></paper-icon-button>
+                    </template>                
                 </paper-item>
             </template>
         </paper-listbox>
