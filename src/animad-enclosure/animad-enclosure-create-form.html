@@ -50,10 +50,11 @@
                resources="[[resources]]" lang="[[lang]]" lists="[[lists]]" auto-validate></animad-enclosure-form>
             <!-- GENERATOR hier kommen die Templates für die Relationen hin -->
             <template is="dom-if" if="{{animals}}">
-                <animad-animal-simple-relation data="{{data}}"
+                <animad-animal-simple-relation data="{{data}}" 
+                   one-to-many-check="create"
                    profile-url="[[backendUrl]]/api/animad-administration-service/profile/animals"
                    backend-url="[[backendUrl]]"
-                    resources="[[resources]]" lang="[[lang]]" keepers>
+                   resources="[[resources]]" lang="[[lang]]" keepers>
                 </animad-animal-simple-relation>
             </template>
         </form>

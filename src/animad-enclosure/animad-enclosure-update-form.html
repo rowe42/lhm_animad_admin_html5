@@ -49,8 +49,8 @@
             <animad-enclosure-form id="customform" data="{{data}}" readonly="[[readform]]"
                resources="[[resources]]" lang="[[lang]]" lists="[[lists]]"  auto-validate></animad-enclosure-form>
             <template is="dom-if" if="[[animals]]">
-                abc
-                <animad-animal-simple-relation id="animalrelation"
+                <animad-animal-simple-relation id="animalrelation" readonly="[[readform]]"
+                one-to-many-check="update"
                 data="{{data}}"
                 profile-url="[[backendUrl]]/api/animad-administration-service/profile/animals"
                 backend-url="[[backendUrl]]"
@@ -74,12 +74,14 @@
                     [[$t('button_reload')]]
                 </paper-button>
             </template>
-            <template is="dom-if" if="{{cancelPath}}">
-                <paper-button class="cancel" on-tap="_cancelEntity"  data-routePath$="[[cancelPath]]" raised>
-                    <iron-icon icon="animad-icons:close-circle"></iron-icon>
-                    [[$t('button_cancel')]]
-                </paper-button>
-            </template>
+        </template>
+        <template is="dom-if" if="{{cancelPath}}">
+            <paper-button class="cancel" on-tap="_cancelEntity"  data-routePath$="[[cancelPath]]" raised>
+                <iron-icon icon="animad-icons:close-circle"></iron-icon>
+                [[$t('button_cancel')]]
+            </paper-button>
+        </template>
+        <template is="dom-if" if="{{!readform}}">
             <paper-button class="send" on-tap="_updateForm" data-routePath$="[[savePath]]" raised>
                 <iron-icon icon="animad-icons:send"></iron-icon>
                 [[$t('button_save')]]

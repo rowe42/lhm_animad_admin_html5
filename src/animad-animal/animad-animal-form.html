@@ -55,7 +55,7 @@
                         name="name"
                         label="[[$t('name')]]*"
                         value="{{data.name}}"
-                        readonly="[[readonly]]"
+                        disabled="[[readonly]]"
                         auto-validate="[[autoValidate]]"
                         error-message="[[$t('name_error')]]"
                         minlength="3"
@@ -68,6 +68,7 @@
                         id="animal-species"
                         name="species"
                         label="[[$t('species')]]*"
+                        disabled="[[readonly]]"
                         required>
                         <paper-listbox attr-for-selected="key" selected="{{data.species}}"
                             slot="dropdown-content">
@@ -84,7 +85,7 @@
                         name="birthday"
                         label="[[$t('birthday')]]*"
                         value="{{data.birthday}}"
-                        readonly="[[readonly]]"
+                        disabled="[[readonly]]"
                         auto-validate="[[autoValidate]]"
                         error-message="[[$t('birthday_error')]]"
                         required>
@@ -95,6 +96,7 @@
                         id="animal-gender"
                         name="gender"
                         label="[[$t('gender')]]*"
+                        disabled="[[readonly]]"
                         required>
                         <paper-listbox attr-for-selected="key" selected="{{data.gender}}"
                             slot="dropdown-content">
@@ -111,7 +113,7 @@
                         name="weight"
                         label="[[$t('weight')]]*"
                         value="{{data.weight}}"
-                        readonly="[[readonly]]"
+                        disabled="[[readonly]]"
                         auto-validate="[[autoValidate]]"
                         error-message="[[$t('weight_error')]]"
                         min="1"
@@ -123,6 +125,7 @@
                         class="animad-animal-alive-field"
                         id="animal-alive"
                         name="alive"
+                        disabled="[[readonly]]"
                         checked="{{data.alive}}">
                     [[$t('alive')]]*
                     </paper-checkbox>
