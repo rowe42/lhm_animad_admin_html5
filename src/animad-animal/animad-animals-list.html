@@ -101,8 +101,14 @@
         <h2>[[$t('modal_delete_header')]]</h2>
         <p>[[$t('modal_delete_text_multi')]]</p>
         <div class="buttons">
-          <paper-button dialog-confirm on-tap="_deleteSelectedRows">[[$t('modal_delete_button_yes')]]</paper-button>
-          <paper-button dialog-dismiss on-tap="_unsetTemporaryDeleteInfo" autofocus>[[$t('modal_delete_button_no')]]</paper-button>
+          <paper-button dialog-confirm on-tap="_deleteSelectedRows">
+              <iron-icon icon="animad-icons:check-circle"></iron-icon>
+              [[$t('modal_delete_button_yes')]]
+          </paper-button>
+          <paper-button dialog-dismiss on-tap="_unsetTemporaryDeleteInfo" autofocus>
+              <iron-icon icon="animad-icons:close-circle"></iron-icon>
+              [[$t('modal_delete_button_no')]]
+          </paper-button>
         </div>
       </paper-dialog>
 
@@ -113,8 +119,14 @@
         <h2>[[$t('modal_delete_header')]]</h2>
         <p>[[$t('modal_delete_text_single')]] [[_deleteInfo]]</p>
         <div class="buttons">
-          <paper-button dialog-confirm on-tap="_deleteSelectedRows">[[$t('modal_delete_button_yes')]]</paper-button>
-          <paper-button dialog-dismiss on-tap="_unsetTemporaryDeleteInfo" autofocus>[[$t('modal_delete_button_no')]]</paper-button>
+          <paper-button dialog-confirm on-tap="_deleteSelectedRows">
+              <iron-icon icon="animad-icons:check-circle"></iron-icon>
+              [[$t('modal_delete_button_yes')]]
+          </paper-button>
+          <paper-button dialog-dismiss on-tap="_unsetTemporaryDeleteInfo" autofocus>
+              <iron-icon icon="animad-icons:close-circle"></iron-icon>
+              [[$t('modal_delete_button_no')]]
+          </paper-button>
         </div>
       </paper-dialog>
 

@@ -65,6 +65,22 @@
                     observer: '_loadRelationData'
                 },
                 /*
+                 * Falls gesetzt  wird beim Anhängen zunächst überprüft, ob die  anzuhängende Entität
+                 * bereits an einer anderen Entität hängt.
+                 * Wert: 'create' falls in einer Create-Form, 'update' falls in einer Update-Form
+                 */                
+                oneToManyCheck: {
+                    type: String,
+                    value: null
+                },
+                /*
+                * Soll die Relation nur lesend dargestellt werden?
+                */
+                readonly: {
+                    type: Boolean,
+                    value: false
+                },                
+                /*
                  * Wenn in der HAL Nachricht ein Link vorhanden ist, der
                  * es ermöglicht ein neues Objekt für die Relation zu
                  * erstellen, dann wird dieses Property auf 'true' gesetzt.
@@ -421,16 +437,28 @@
             return datasource.filter(x => x[this.textProperty].toLowerCase().indexOf(query) != -1);
         }
 
-        _appendItem(event) {
+        /*
+         * Listener Methode, um ein ausgewähltes Element der
+         * Zielstruktur hinzu zu fügen.
+         *
+         * @param Event mit den notwendigen Daten
+         */
+         _appendItem(event) {
             // Der 'host' des Elternknotens wird benötigt
             // um an die Properties zu kommen, da wir nicht
             // im 'this' scope sind.
             var h = this.parentNode.host;
             var id = event.detail.value;
 
-             var item = this.source.find(x => x.value === id);
+            var item = this.source.find(x => x.value === id);
 
-            h._appendItemInternal(h, id, item.entity);
+            if (h.oneToManyCheck) {
+                //zunächst die oneToMany-Relation prüfen
+                h._isRelationTarget(id, function() { h._appendItemInternal(h, id, item.entity); } );
+            } else {
+                //gleich anhängen
+                h._appendItemInternal(h, id, item.entity);
+            }
 
             // Textfeld leeren
             event.currentTarget.clear();
@@ -443,12 +471,7 @@
             let suggestion = h._loadAutocompleteEntries(searchString, element);
         }
 
-        /*
-         * Listener Methode, um ein ausgewähltes Element der
-         * Zielstruktur hinzu zu fügen.
-         *
-         * @param Event mit den notwendigen Daten
-         */
+
         _appendItemInternal(h, id, entity) {
             var name = 'data.' + h._entity + 'List';
 
@@ -483,6 +506,73 @@
             h.push(embeddedEntities, entity);
         }
 
+
+        /*
+         * Prüft ob die Entität mit der angegebenen ID (die URL vornedran wird zunächst entfernt)
+         * bereits an eine andere Entität vom Typ data_links.self  geknüpft ist.
+         *
+         * @param idWithUrl die ID der zu prüfenden Entität
+         * @param functionToExecute die Funktion, die im "Negativ-Fall" (noch nicht verknüpft) aufzurufen ist
+         */
+        _isRelationTarget(idWithUrl, functionToExecute) {
+            let baseUrl = null;
+            if (this.oneToManyCheck === 'create') {
+                baseUrl = this.data._links.self.href;
+            } else if (this.oneToManyCheck === 'update') {
+                baseUrl = this._stripIdFromUrl(this.data._links.self.href);
+            } else {
+                console.warn('oneToManyCheck ' + this.oneToManyCheck + ' not supported. Try create or update.');
+                return;
+            }
+
+            if (!baseUrl) return;
+
+            var methodName = 'findBy' + this._toFirstUpper(this._entity) + 'ListOid';
+            let id = this._stripUrlFromId(idWithUrl);
+            let url = baseUrl + '/search/' + methodName + '?oid=' + id;
+            
+
+            var init = {
+                method: 'GET',
+                mode: 'cors',
+                credentials: 'include'
+            }
+
+            var request = new Request(url, init);
+
+            fetch(request)
+                .then(response => {
+                    if (response.ok) {
+                        //OneToMany-Entity bereits in einer anderen Entität verknüpft --> Fehlermeldung
+                        this._errorAlreadyAssigned('already assigned', '_isRelationTarget');
+
+                    } else {
+                        // OneToMany-Entity hat keine Verknüpfung bisher --> OK-Fall
+                        functionToExecute();
+                    }
+                })
+
+        }
+
+        /*
+         * Extrahiert aus der angegebenen Url die ID, indem es alles ab dem letzten "/" zurückgibt.
+         *
+         */
+        _stripUrlFromId(idWithUrl) {
+            return idWithUrl.substring(idWithUrl.lastIndexOf('/') + 1, idWithUrl.length);
+        }
+
+        _stripIdFromUrl(idWithUrl) {
+            return idWithUrl.substring(0, idWithUrl.lastIndexOf('/'));
+        }
+
+        /*
+         * Wandelt den übergebenen String so um, dass der erste Buchstabe uppercase ist.
+         */
+        _toFirstUpper(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
         /*
          * Entfernt bereits ausgewähltes Element aus
          * der Zieldatenstruktur.
@@ -501,6 +591,15 @@
             //die Links auf die referenzierten Entities kommen nach [entity]List
             var refName = 'data.' + this._entity + 'List';
             this.set(refName, linkArray);
+        }
+
+        /**
+         * Der 'Toast', der beim erneuten Hinzufügen einer OneToMany-Entity angezeigt wird.
+         */
+         _errorAlreadyAssigned(msg, method) {
+            const text = this.$t('relation_error_already_assigned');
+            console.error(text+"("+msg+")");
+            this._error(0, method, '', '', text);
         }
 
     }
