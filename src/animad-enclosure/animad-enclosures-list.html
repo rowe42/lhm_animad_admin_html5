@@ -100,10 +100,10 @@
       <paper-dialog id="dialogDeleteSelected">
         <h2>[[$t('modal_delete_header')]]</h2>
         <p>[[$t('modal_delete_text_multi')]]</p>
-        <paper-item>
-          <paper-button raised dialog-confirm on-click="_deleteSelectedRows">[[$t('modal_delete_button_yes')]]</paper-button>
-          <paper-button raised dialog-dismiss on-click="_unsetTemporaryDeleteInfo" autofocus>[[$t('modal_delete_button_no')]]</paper-button>
-        </paper-item>
+        <div class="buttons">
+          <paper-button dialog-confirm on-click="_deleteSelectedRows">[[$t('modal_delete_button_yes')]]</paper-button>
+          <paper-button dialog-dismiss on-click="_unsetTemporaryDeleteInfo" autofocus>[[$t('modal_delete_button_no')]]</paper-button>
+        </div>
       </paper-dialog>
 
       <!--
@@ -112,10 +112,10 @@
       <paper-dialog id="dialogDeleteItem">
         <h2>[[$t('modal_delete_header')]]</h2>
         <p>[[$t('modal_delete_text_single')]] [[_deleteInfo]]</p>
-        <paper-item>
-          <paper-button raised dialog-confirm on-click="_deleteSelectedRows">[[$t('modal_delete_button_yes')]]</paper-button>
-          <paper-button raised dialog-dismiss on-click="_unsetTemporaryDeleteInfo" autofocus>[[$t('modal_delete_button_no')]]</paper-button>
-        </paper-item>
+        <div class="buttons">
+          <paper-button dialog-confirm on-click="_deleteSelectedRows">[[$t('modal_delete_button_yes')]]</paper-button>
+          <paper-button dialog-dismiss on-click="_unsetTemporaryDeleteInfo" autofocus>[[$t('modal_delete_button_no')]]</paper-button>
+        </div>
       </paper-dialog>
 
 <!-- Für Suche über Lazy Loading:
