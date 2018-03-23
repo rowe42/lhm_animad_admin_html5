@@ -40,6 +40,20 @@
                   return this.data;
                 }
               },
+              /**
+              */
+              searchFilters: {
+                type: Array,
+                value() {
+                  return [];
+                }
+              },
+              /**
+              *  _localizedSearchFilters entspricht searchFilters, aber die Werte in 'search' und 'label' sind durch lokalisierte Werte ersetzt worden.
+              */
+              _localizedSearchFilters: {
+                type: Array
+              },
               /*
               * _allFilters sind selektierbare Filter, die über eine REST-Schnittstelle (url: [`allFiltersUrl`](#/elements/animad-keepers-list#property-allFiltersUrl))
               *  geladen werden können.
@@ -348,7 +362,8 @@
             '_loadAllFilters(allFiltersUrl)',
             '_selectionChanged(_selectedItems.length)',
             '_dataChanged(data.length)',
-            '_initLocalizedFilter(_allFilters)'
+            '_initLocalizedFilter(_allFilters)',
+            '_initLocalizedSearchFilter(searchFilters)'
           ]
         }
 
@@ -587,6 +602,23 @@
           }
         }
 
+        /*
+        * Wird aufgerufen, wenn über die Methode [`_loadAllFilters`](#TBD) selektierbare Filter gefunden wurden.
+        * Lokalisiert `id` und `label` der gefundenen Filter.
+        */
+        _initLocalizedSearchFilter(filters){
+          if (filters){
+            for (var j in filters) {
+              filters[j].label = this.$t(filters[j].label);
+              filters[j].search = this.$t(filters[j].search);
+            }
+            this._localizedSearchFilters = filters;
+          }
+          else {
+            this._localizedSearchFilters=[];
+          }
+        }
+
 
         /*
         * Öffnet den Dialog zur Bestätigung, dass die selektierten Datensätze gelöscht werden sollen.
@@ -693,7 +725,7 @@
         }
 
         _transferCellnameToFieldname(phrases, search){
-          var tmpsearch = search;
+          let tmpsearch = search;
 
           var myRe =/(\w+:\w+)|(\w+:\"[^\"]*\")/g;
           var searchArray;
@@ -701,9 +733,18 @@
             var searchEntry = searchArray[0];
             var searchSplitted = searchEntry.split(':');
             if (searchSplitted.length > 1 && searchSplitted[1] != '') {
-              for (var phrase of phrases){
-                if (phrase[1].toLowerCase() === searchSplitted[0].toLowerCase()){
+              for (var phrase of phrases) {
+                if (phrase[1].toLowerCase() === searchSplitted[0].toLowerCase()) {
                   tmpsearch = tmpsearch.replace(searchSplitted[0], phrase[0]);
+
+                  for (var innerPhrase of phrases) {
+                    let innerPhraseSplitted = innerPhrase[0].split('.');
+                    if (innerPhrase[1].toLowerCase() === searchSplitted[1].toLowerCase()
+                      && innerPhrase[0].startsWith(phrase[0])) {
+                        tmpsearch = tmpsearch.replace(searchSplitted[1], innerPhraseSplitted[1].toLowerCase());
+                        break;
+                    }
+                  }
                   break;
                 }
               }
