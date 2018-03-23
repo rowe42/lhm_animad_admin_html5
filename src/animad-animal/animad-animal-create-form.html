@@ -64,22 +64,22 @@
         <!--
             buttons
         -->
+        <paper-button class="send" on-tap="_saveEntity" data-routePath$="[[savePath]]" raised>
+                <iron-icon icon="animad-icons:save"></iron-icon>
+                [[$t('button_save')]]
+        </paper-button>
         <template is="dom-if" if="{{reset}}">
-            <paper-button class="reset" on-tap="_resetForm" raised>
+            <paper-button class="reset" on-tap="_resetForm">
                 <iron-icon icon="animad-icons:erase"></iron-icon>
                 [[$t('button_reset')]]
             </paper-button>
         </template>
         <template is="dom-if" if="{{cancelPath}}">
-            <paper-button class="cancel" on-tap="_cancelEntity" data-routePath$="[[cancelPath]]" raised>
+            <paper-button class="cancel" on-tap="_cancelEntity" data-routePath$="[[cancelPath]]">
                 <iron-icon icon="animad-icons:close-circle"></iron-icon>
                 [[$t('button_cancel')]]
             </paper-button>
         </template>
-        <paper-button class="send" on-tap="_saveEntity" data-routePath$="[[savePath]]" raised>
-            <iron-icon icon="animad-icons:send"></iron-icon>
-            [[$t('button_save')]]
-        </paper-button>
     </template>
     <script>
         /**

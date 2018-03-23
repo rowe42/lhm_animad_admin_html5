@@ -34,7 +34,7 @@
                             name="name"
                             label="[[$t('name')]]*"
                             value="{{data.name}}"
-                            readonly="[[readonly]]"
+                            disabled="[[readonly]]"
                             auto-validate="[[autoValidate]]"
                             error-message="[[$t('name_error')]]"
                             minlength="3"
@@ -49,7 +49,7 @@
                             name=cleaningTime
                             label="[[$t('cleaningTime')]]*"
                             value="{{data.cleaningTime}}"
-                            readonly="[[readonly]]"
+                            disabled="[[readonly]]"
                             required auto-validate="[[autoValidate]]"
                             error-message="[[$t('cleaningTime_error')]]">
                         </paper-input>
