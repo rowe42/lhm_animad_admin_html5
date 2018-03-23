@@ -1,6 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/vaadin-date-picker/vaadin-date-picker.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="common-utils.html">
 
 <!-- GENERATOR for all lists the same -->
 
@@ -29,6 +30,8 @@
                         required="[[required]]"
                         i18n="[[i18n]]"
                         disabled="[[disabled]]"
+                        min="[[_min]]"
+                        max="[[_max]]"
                         >
                     </vaadin-date-picker>
                 </template>
@@ -45,6 +48,8 @@
                         pattern="[[pattern]]" 
                         required="[[required]]"
                         disabled="[[disabled]]"
+                        min="[[_min]]"
+                        max="[[_max]]"
                         >
                     </vaadin-date-picker>                
                 </template>
@@ -63,13 +68,21 @@
                 pattern="[[pattern]]" 
                 required="[[required]]"
                 disabled="[[disabled]]"
-                >
-            </paper-input>
+                min="[[_min]]"
+                max="[[_max]]">
+                </paper-input>
         </template>
     </template>
     <script>
 
-
+        /**
+         * `<animad-date-input>` kapselt ein `<paper-input type='date'>` bzw. einen `<vaadin-date-picker>`.
+         *
+         * Die Wahl ist abhängig davon, ob der aktuelle Browser `<input type='date'>` unterstützt.
+         *
+         * @customElement
+         * @polymer
+         */
         class AnimadDateInput extends Polymer.Element {
             static get is() {
                 return 'animad-date-input';
@@ -156,8 +169,39 @@
                     value: {
                         type: String,
                         notify: true
+                    },
+                    _min : {
+                        type: String,
+                        computed: '_computeMinDate(validationType)'
+                    },
+                    _max : {
+                        type: String,
+                        computed: '_computeMaxDate(validationType)'
+                    },
+                    /** Angabe einer Datumsvalidierungregel (aktuell 'inThePast', 'inTheFuture') */
+                    validationType : {
+                        type: String,
+                        value: "none"
                     }
                 }
+            }
+
+            _computeMinDate(validationType) {
+                var minDate = "";
+                if (validationType == "inTheFuture") {
+                    var currentDate = new Date();
+                    minDate = CommonUtils.formatDateIso(currentDate);
+                }
+                return minDate;
+            }
+
+            _computeMaxDate(validationType) {
+                var maxDate = "";
+                if (validationType == "inThePast") {
+                    var currentDate = new Date();
+                    maxDate = CommonUtils.formatDateIso(currentDate);
+                }
+                return maxDate;
             }
 
             _defaultLanguage() {
