@@ -42,5 +42,21 @@ class CommonUtils {
         var result = text.split(',').map(item => item.trim());
         return result;
     }
+
+    /**
+     * Formatiert ein Date Objekt in das Format 'YYYY-MM-DD'.
+     * @param {date} date das Datum
+     * @return den formatierten String
+     */
+    static formatDateIso(date) {
+        var month = '' + (date.getMonth() + 1);
+        var day = '' + date.getDate();
+        var year = date.getFullYear();
+
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+
+        return [year, month, day].join('-');
+    }
 }
 </script>
