@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>animad-date-input tests</title>
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!-- Import the element to test -->
+    <link rel="import" href="../src/common-libs/animad-date-input.html">
+
+    <!-- Import common lib -->
+    <link rel="import" href="../src/common-libs/common-utils.html">
+  </head>
+  <body>
+    <test-fixture id="AnimadDateInputInThePast">
+      <template>
+            <animad-date-input
+                class="animad-keeper-birthday-field"
+                id="keeper-birthday"
+                name="birthday"
+                auto-validate="true"
+                validation-type="inThePast"
+            >
+        </animad-date-input>
+      </template>
+    </test-fixture>
+    <test-fixture id="AnimadDateInputInTheFuture">
+        <template>
+              <animad-date-input
+                  class="animad-keeper-birthday-field"
+                  id="keeper-birthday"
+                  name="birthday"
+                  auto-validate="true"
+                  validation-type="inTheFuture"
+              >
+          </animad-date-input>
+        </template>
+    </test-fixture>
+    <test-fixture id="AnimadDateInputNoValidation">
+        <template>
+              <animad-date-input
+                  class="animad-keeper-birthday-field"
+                  id="keeper-birthday"
+                  name="birthday"
+                  auto-validate="true"
+              >
+          </animad-date-input>
+        </template>
+    </test-fixture>
+
+    <script>
+      suite('animad-date-input validation tests', function() {
+        var animadDateInputPast, animadDateInputFuture, animadDateInputNone;
+
+        setup(function() {
+          animadDateInputPast = fixture('AnimadDateInputInThePast');
+          animadDateInputFuture = fixture('AnimadDateInputInTheFuture');
+          animadDateInputNone = fixture('AnimadDateInputNoValidation');
+        });
+
+        test('inThePast - a value in the future should be invalid', function(done) {
+          // set a value in the future
+          animadDateInputPast.value = '2099-12-12';
+          
+          flush(function() {
+            var paperInput = findPaperInput(animadDateInputPast);
+            var vaadinDatePicker = findVaadinDatePicker(animadDateInputPast);
+            if (paperInput != null) {
+              assert.isFalse(paperInput.validate());
+            } else if (vaadinDatePicker != null) {
+              assert.isFalse(vaadinDatePicker.validate());
+            } else {
+              failNoInputFound();
+            }
+            done();
+          });
+        });
+
+        test('inThePast - a value in the past should be valid', function(done) {
+          // set a value in the future
+          animadDateInputPast.value = '1999-12-12';
+          
+          flush(function() {
+            var paperInput = findPaperInput(animadDateInputPast);
+            var vaadinDatePicker = findVaadinDatePicker(animadDateInputPast);
+            if (paperInput != null) {
+              assert.isTrue(paperInput.validate());
+            } else if (vaadinDatePicker != null) {
+              assert.isTrue(vaadinDatePicker.validate());
+            } else {
+              failNoInputFound();
+            }
+            done();
+          });
+        });
+
+        test('inTheFuture - a value in the past should be invalid', function(done) {
+          // set a value in the future
+          animadDateInputFuture.value = '2000-12-12';
+          
+          flush(function() {
+            var paperInput = findPaperInput(animadDateInputFuture);
+            var vaadinDatePicker = findVaadinDatePicker(animadDateInputFuture);
+            if (paperInput != null) {
+              assert.isFalse(paperInput.validate());
+            } else if (vaadinDatePicker != null) {
+              assert.isFalse(vaadinDatePicker.validate());
+            } else {
+              failNoInputFound();
+            }
+            done();
+          });
+        });
+
+        test('inTheFuture - a value in the future should be valid', function(done) {
+          // set a value in the future
+          animadDateInputFuture.value = '2099-12-12';
+          
+          flush(function() {
+            var paperInput = findPaperInput(animadDateInputFuture);
+            var vaadinDatePicker = findVaadinDatePicker(animadDateInputFuture);
+            if (paperInput != null) {
+              assert.isTrue(paperInput.validate());
+            } else if (vaadinDatePicker != null) {
+              assert.isTrue(vaadinDatePicker.validate());
+            } else {
+              failNoInputFound();
+            }
+            done();
+          });
+        });
+
+        test('none - future date value should be valid', function(done) {
+          // set a value in the future
+          animadDateInputNone.value = '2099-12-12';
+          
+          flush(function() {
+            var paperInput = findPaperInput(animadDateInputNone);
+            var vaadinDatePicker = findVaadinDatePicker(animadDateInputNone);
+            if (paperInput != null) {
+              assert.isTrue(paperInput.validate());
+            } else if (vaadinDatePicker != null) {
+              assert.isTrue(vaadinDatePicker.validate());
+            } else {
+              failNoInputFound();
+            }
+            done();        
+          });
+        });
+        
+        test('none - past date value should be valid', function(done) {
+          // set a value in the past
+          animadDateInputNone.value = '1999-12-12';
+          flush(function () {
+            var paperInput = findPaperInput(animadDateInputNone);
+            var vaadinDatePicker = findVaadinDatePicker(animadDateInputNone);
+            if (paperInput != null) {
+              assert.isTrue(paperInput.validate());
+            } else if (vaadinDatePicker != null) {
+              assert.isTrue(vaadinDatePicker.validate());
+            }
+            done();              
+          });
+        });
+
+        findPaperInput = function (fixture) {
+          return fixture.shadowRoot.querySelector('paper-input');
+        }
+        findVaadinDatePicker = function(fixture) {
+          return fixture.shadowRoot.querySelector('vaadin-date-picker');
+        }
+        failNoInputFound = function() {
+          assert.fail("paper-input or vaadin-date-picker present", "paper-input or vaadin-date-picker not present", "No paper-input or vaadin-date-picker present!");
+        }
+      });
+    </script>
+  </body>
+</html>
