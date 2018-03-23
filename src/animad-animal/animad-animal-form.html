@@ -9,6 +9,7 @@
 <link rel="import" href="../../bower_components/polymer/lib/elements/custom-style.html">
 <link rel="import" href="../../bower_components/shadycss/apply-shim.html">
 
+<link rel="import" href="../common-libs/animad-date-input.html">
 <link rel="import" href="../behaviors/nebula-polyglot-behavior.html">
 <link rel="import" href="../behaviors/mixin.html">
 
@@ -78,18 +79,19 @@
                         </paper-listbox>
                     </paper-dropdown-menu>
                     <!-- Animal birthday -->
-                    <paper-input
+                    <animad-date-input
                         class="animad-animal-birthday-field"
                         id="animal-birthday"
-                        type="date" step="1"
                         name="birthday"
                         label="[[$t('birthday')]]*"
                         value="{{data.birthday}}"
                         disabled="[[readonly]]"
                         auto-validate="[[autoValidate]]"
                         error-message="[[$t('birthday_error')]]"
+                        pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
+                        validation-type="inThePast"
                         required>
-                    </paper-input>
+                    </animad-date-input>
                     <!-- Animal Gender -->
                     <paper-dropdown-menu
                         class="animad-animal-gender-field"
