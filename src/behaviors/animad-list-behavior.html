@@ -725,7 +725,7 @@
         }
 
         _transferCellnameToFieldname(phrases, search){
-          var tmpsearch = search;
+          let tmpsearch = search;
 
           var myRe =/(\w+:\w+)|(\w+:\"[^\"]*\")/g;
           var searchArray;
@@ -733,9 +733,18 @@
             var searchEntry = searchArray[0];
             var searchSplitted = searchEntry.split(':');
             if (searchSplitted.length > 1 && searchSplitted[1] != '') {
-              for (var phrase of phrases){
-                if (phrase[1].toLowerCase() === searchSplitted[0].toLowerCase()){
+              for (var phrase of phrases) {
+                if (phrase[1].toLowerCase() === searchSplitted[0].toLowerCase()) {
                   tmpsearch = tmpsearch.replace(searchSplitted[0], phrase[0]);
+
+                  for (var innerPhrase of phrases) {
+                    let innerPhraseSplitted = innerPhrase[0].split('.');
+                    if (innerPhrase[1].toLowerCase() === searchSplitted[1].toLowerCase()
+                      && innerPhrase[0].startsWith(phrase[0])) {
+                        tmpsearch = tmpsearch.replace(searchSplitted[1], innerPhraseSplitted[1].toLowerCase());
+                        break;
+                    }
+                  }
                   break;
                 }
               }

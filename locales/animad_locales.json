@@ -137,14 +137,12 @@
         "filter_label_giraffe": "Giraffes",
         "filter_label_penguin": "Penguins",
         "filter_label_barrakuda": "Barrakudas",
-        "filter_label_alive": "Living animals",
-        "filter_label_dead": "Dead animals",
+        "filter_label_dumbo_elephant": "Dumbo the elephant",
         "filter_search_species_elephant": "species:elephant",
         "filter_search_species_giraffe": "species:giraffe",
         "filter_search_species_penguin": "species:penguin",
         "filter_search_species_barrakuda": "species:barrakuda",
-        "filter_search_is_alive": "is:alive",
-        "filter_search_is_dead": "is:dead"
+        "filter_search_dumbo_elephant": "species:elephant name:dumbo"
       },
       "enclosure": {
         "relation_name": "Enclosure",
@@ -400,14 +398,12 @@
         "filter_label_giraffe": "Giraffen",
         "filter_label_penguin": "Pinguine",
         "filter_label_barrakuda": "Barrakudas",
-        "filter_label_alive": "Lebende Tiere",
-        "filter_label_dead": "Tote Tiere",
+        "filter_label_dumbo_elephant": "Dumbo der Elefant",
         "filter_search_species_elephant": "art:elefant",
         "filter_search_species_giraffe": "art:giraffe",
         "filter_search_species_penguin": "art:pinguin",
         "filter_search_species_barrakuda": "art:barrakuda",
-        "filter_search_is_alive": "ist:lebendig",
-        "filter_search_is_dead": "ist:tot"
+        "filter_search_dumbo_elephant": "art:elefant name:dumbo"
       },
       "enclosure": {
         "relation_name": "Gehege",

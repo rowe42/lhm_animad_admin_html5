@@ -60,15 +60,7 @@
               filtered-data="[[_filteredData]]"
               results-text="[[_resultsText]]"
               resources="[[resources]]" lang="[[lang]]"
-              search-filters=
-               '[
-                  {"id": 0, "label": "filter_label_elephant", "search": "filter_search_species_elephant", "query": "species:elephant"},
-                  {"id": 1, "label": "filter_label_giraffe", "search": "filter_search_species_giraffe", "query": "species:giraffe"},
-                  {"id": 2, "label": "filter_label_penguin", "search": "filter_search_species_penguin", "query": "species:penguin"},
-                  {"id": 3, "label": "filter_label_barrakuda", "search": "filter_search_species_barrakuda", "query": "species:barrakuda"},
-                  {"id": 4, "label": "filter_label_alive", "search": "filter_search_is_alive", "query": "alive:true"},
-                  {"id": 5, "label": "filter_label_dead", "search": "filter_search_is_dead", "query": "alive:false"}
-                ]'
+              search-filters='[[_searchFilters]]'
               >
             </animad-animals-list>
         </template>
@@ -121,6 +113,21 @@
               return [];
             }
           },
+          abc: {
+            type: Array,
+            value: ['abc', 'def']
+          },
+          _searchFilters: {
+            type: Array,
+            value:
+              [
+                {"id": 0, "label": "filter_label_elephant", "search": "filter_search_species_elephant"},
+                {"id": 1, "label": "filter_label_giraffe", "search": "filter_search_species_giraffe"},
+                {"id": 2, "label": "filter_label_penguin", "search": "filter_search_species_penguin"},
+                {"id": 3, "label": "filter_label_barrakuda", "search": "filter_search_species_barrakuda"},
+                {"id": 4, "label": "filter_label_dumbo_elephant", "search": "filter_search_dumbo_elephant"}
+              ]
+          }
         }
       }
 

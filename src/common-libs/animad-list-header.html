@@ -11,26 +11,60 @@
 
 <dom-module id="animad-list-header">
     <template>
-      <style></style>
+      <style>
+        
+        /* .dropdown {
+          --paper-dropdown-menu: {   
+            background-color:  #eaeaea; 
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            padding-left: 5px;
+            padding-right: 5px;
+            margin-bottom: 5px;
+            width: 10%;
+          }
+        } */
+
+        .paperdropdown {
+          background-color:  #eaeaea; 
+          border-radius: 5px;
+          border: 1px solid #ddd;
+          padding-left: 5px;
+          padding-right: 5px;
+          margin-bottom: 5px;
+          width: 10%;
+        }
+
+      </style>
 
       <div hidden$="[[hideHeader]]">
 				<paper-item id="search-panel">
           <paper-dropdown id="filter-field"
+              class="paperdropdown"
               hidden$="[[_hideFilterButton(searchFilters)]]"
-              on-selected-changed="_changeSearch"
+              on-value-changed="_changeSearch"
               label="[[placeholderFilter]]"
               value="{{selectedSearch}}"
               searchable="true"
               disabled="[[readonly]]"
-              multi="true"
-              multi-label="[[placeholderSelection]]"
               >
-              <!--in paper-dropdown ergänzen, sobald pull request durch ist-->
-              <!--multi-label="[[t('items-selected')]]"-->
               <template is="dom-repeat" items="{{searchFilters}}">
-                  <paper-item value$="[[item.query]]">[[item.label]]</paper-item>
+                  <paper-item value$="[[item.search]]">[[item.label]]</paper-item>
               </template>
           </paper-dropdown>
+
+          <!-- <paper-dropdown-menu
+          id="filters"
+          label="[[placeholderFilter]]"
+          class="dropdown"
+          >
+          <paper-listbox attr-for-selected="value" selected-values="{{selectedSearch}}" 
+            slot="dropdown-content" on-selected-changed="_changeSearch">
+              <template is="dom-repeat" items="{{searchFilters}}">
+                  <paper-item value$="[[item.search]]">[[item.label]]</paper-item>
+              </template>
+          </paper-listbox>
+      </paper-dropdown-menu> -->
 
 		      <paper-item-body>
 		    		<paper-search-bar
@@ -43,7 +77,8 @@
 		    			query="{{search}}"
 		    			nr-selected-filters="[[_nrSelectedFilters]]"
 		    			on-paper-search-filter="_toggleFilterSelectionOpen"
-              on-paper-search-search="_onSearchRequest">
+              on-paper-search-search="_onSearchRequest"
+              on-paper-search-clear="_resetFilter">
 		    		</paper-search-bar>
 		      </paper-item-body>
 
@@ -387,31 +422,14 @@
             /*
             */
             _changeSearch(e) {
-              // TBD: Search bauen
-              /*
-              var myRe =/(\w+:\w+)|(\w+:\"[^\"]*\")/g;
-              var searchArray;
-              while ((searchArray = myRe.exec(this.search)) !== null) {
-                var searchEntry = searchArray[0];
-                for (var item of this.searchFilters) {
-                  if (searchEntry == item) {
-                    console.log("exists");
-                    for (var selected of this.selectedSearch) {
-                      console.log("selected");
-                    }
+                  if (e.detail.value) {
+                    this.search = e.detail.value;
+                    this.dispatchEvent(new CustomEvent('search', {bubbles: true, composed: true}));
                   }
-                }
-              }
-              */
-              for (var item of this.selectedSearch) {
-                if (this.search) {
-                  this.search += " "+item;
-                }
-                else {
-                  this.search = item;
-                }
-              }
+            }
 
+            _resetFilter(e) {
+              this.selectedSearch = '';
             }
         }
 
