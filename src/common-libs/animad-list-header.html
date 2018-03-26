@@ -47,8 +47,7 @@
               label="[[placeholderFilter]]"
               value="{{selectedSearch}}"
               searchable="true"
-              disabled="[[readonly]]"
-              >
+              horizontal-align="[[horizontalAlignFilter]]">
               <template is="dom-repeat" items="{{searchFilters}}">
                   <paper-item value$="[[item.search]]">[[item.label]]</paper-item>
               </template>
@@ -308,6 +307,13 @@
 				    				type: String,
 				    				value: 'New'
 				    			},
+                  /**
+                  * Gibt an, ob der Dropdown Filter links- oder rechtsbündig aufgeklappt wird
+                  */
+                  horizontalAlignFilter: {
+                    type: String,
+                    value: "left"
+                  },
                   /*
                    * Gibt den Text an, der auf dem Neu-Button angezeigt wird.
                    */
