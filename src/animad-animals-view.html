@@ -59,7 +59,9 @@
               on-filter-data="_filterData"
               filtered-data="[[_filteredData]]"
               results-text="[[_resultsText]]"
-              resources="[[resources]]" lang="[[lang]]">
+              resources="[[resources]]" lang="[[lang]]"
+              search-filters='[[_searchFilters]]'
+              >
             </animad-animals-list>
         </template>
         <hr>
@@ -73,7 +75,7 @@
               cancel-path="/animals-view/"
               resources="[[resources]]" lang="[[lang]]" keepers reset>
             </animad-animal-create-form>
-        </template>          
+        </template>
       </div>
     </div>
   </template>
@@ -111,6 +113,17 @@
               return [];
             }
           },
+          _searchFilters: {
+            type: Array,
+            value:
+              [
+                {"id": 0, "label": "filter_label_elephant", "search": "filter_search_species_elephant"},
+                {"id": 1, "label": "filter_label_giraffe", "search": "filter_search_species_giraffe"},
+                {"id": 2, "label": "filter_label_penguin", "search": "filter_search_species_penguin"},
+                {"id": 3, "label": "filter_label_barrakuda", "search": "filter_search_species_barrakuda"},
+                {"id": 4, "label": "filter_label_dumbo_elephant", "search": "filter_search_dumbo_elephant"}
+              ]
+          }
         }
       }
 

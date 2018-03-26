@@ -6,14 +6,67 @@
 <link rel="import" href="../../bower_components/paper-item/paper-item-body.html">
 <link rel="import" href="../../bower_components/paper-search/paper-search-bar.html">
 <link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/paper-dropdown/paper-dropdown.html">
 
 <!-- GENERATOR for all lists the same -->
 
 <dom-module id="animad-list-header">
     <template>
-      <style></style>
+      <style>
+        
+        /* .dropdown {
+          --paper-dropdown-menu: {   
+            background-color:  #eaeaea; 
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            padding-left: 5px;
+            padding-right: 5px;
+            margin-bottom: 5px;
+            width: 10%;
+          }
+        } */
+
+        .paperdropdown {
+          background-color:  #eaeaea; 
+          border-radius: 5px;
+          border: 1px solid #ddd;
+          padding-left: 5px;
+          padding-right: 5px;
+          margin-bottom: 5px;
+          width: 10%;
+        }
+
+      </style>
+
       <div hidden$="[[hideHeader]]">
 				<paper-item id="search-panel">
+          <paper-dropdown id="filter-field"
+              class="paperdropdown"
+              hidden$="[[_hideFilterButton(searchFilters)]]"
+              on-value-changed="_changeSearch"
+              label="[[placeholderFilter]]"
+              value="{{selectedSearch}}"
+              searchable="true"
+              disabled="[[readonly]]"
+              >
+              <template is="dom-repeat" items="{{searchFilters}}">
+                  <paper-item value$="[[item.search]]">[[item.label]]</paper-item>
+              </template>
+          </paper-dropdown>
+
+          <!-- <paper-dropdown-menu
+          id="filters"
+          label="[[placeholderFilter]]"
+          class="dropdown"
+          >
+          <paper-listbox attr-for-selected="value" selected-values="{{selectedSearch}}" 
+            slot="dropdown-content" on-selected-changed="_changeSearch">
+              <template is="dom-repeat" items="{{searchFilters}}">
+                  <paper-item value$="[[item.search]]">[[item.label]]</paper-item>
+              </template>
+          </paper-listbox>
+      </paper-dropdown-menu> -->
+
 		      <paper-item-body>
 		    		<paper-search-bar
 		    			id="search-bar"
@@ -25,11 +78,12 @@
 		    			query="{{search}}"
 		    			nr-selected-filters="[[_nrSelectedFilters]]"
 		    			on-paper-search-filter="_toggleFilterSelectionOpen"
-              on-paper-search-search="_onSearchRequest">
+              on-paper-search-search="_onSearchRequest"
+              on-paper-search-clear="_resetFilter">
 		    		</paper-search-bar>
 		      </paper-item-body>
 
-		      <paper-button id="new-button"
+          <paper-button id="new-button"
             raised
             on-tap="_onNew"
             disabled="[[disableNewButton]]"
@@ -139,7 +193,12 @@
 				    				observer: '_onChangeRequest',
 				    				notify: true
 				    			},
-				          /*
+                  /*
+                   */
+                  selectedSearch: {
+                    type: String
+                  },
+                  /*
 				          * `selectedFilters` enthält die Information über alle ausgewählten selektierbaren Filter.
 				          */
 				          selectedFilters: {
@@ -152,6 +211,10 @@
 				    			 * Alle selektierbaren Filter, die ausgewählt werden können.
 				    			 */
 				    			allFilters: Object,
+                  /*
+				    			 * Alle selektierbaren Filter, die ausgewählt werden können.
+				    			 */
+				    			searchFilters: Object,
                   /*
                   * Gibt an, ob der Header angezeigt werden soll oder nicht.
                   * Ist das Attribut "hide-header" gesetzt, wird der Header nicht angezeigt.
@@ -233,6 +296,19 @@
 				    				type: String,
 				    				value: 'New'
 				    			},
+                  /*
+                   * Gibt den Text an, der auf dem Neu-Button angezeigt wird.
+                   */
+                  placeholderFilter: {
+                    type: String,
+                    value: 'Filter'
+                  },
+                  /*
+                  */
+                  placeholderSelection: {
+                    type: String,
+                    value: 'elements selected'
+                  },
                   /*
                    * Wechselt die Sichtbarkeit des zusammenklappbaren Elements für die Filter-Selektion
                    */
@@ -344,6 +420,18 @@
 			  		_disableFilterButton(filters) {
 			        return this.disableFilterButton || !filters || filters.length === 0;
 			  		}
+            /*
+            */
+            _changeSearch(e) {
+                  if (e.detail.value) {
+                    this.search = e.detail.value;
+                    this.dispatchEvent(new CustomEvent('search', {bubbles: true, composed: true}));
+                  }
+            }
+
+            _resetFilter(e) {
+              this.selectedSearch = '';
+            }
         }
 
         customElements.define(AnimadListHeader.is, AnimadListHeader);
