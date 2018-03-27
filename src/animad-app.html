@@ -128,9 +128,9 @@
         <common-security-init id="animad_security" load-url="[[backendUrl]]/api/user_service/permissions"
              resources="{{resources}}" lang="[[lang]]" ></common-security-init>
         
-        <common-security-check permission="administration_GUI_KeepersView" allowed="{{keepersViewAllowed}}"></common-security-check>
-        <common-security-check permission="administration_GUI_AnimalsView" allowed="{{animalsViewAllowed}}"></common-security-check>
-        <common-security-check permission="administration_GUI_EnclosuresView" allowed="{{enclosuresViewAllowed}}"></common-security-check>
+        <common-security-check permission="keeperinterface_GUI_keepers" allowed="{{keepersViewAllowed}}"></common-security-check>
+        <common-security-check permission="keeperinterface_GUI_animals" allowed="{{animalsViewAllowed}}"></common-security-check>
+        <common-security-check permission="keeperinterface_GUI_enclosures" allowed="{{enclosuresViewAllowed}}"></common-security-check>
         
         <!-- i18n -->
         <nebula-language

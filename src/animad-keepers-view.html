@@ -39,8 +39,8 @@
     </app-route>
 
     <!--Security-->
-    <common-security-check permission="administration_READ_Keeper" allowed="{{readAllowed}}"></common-security-check>
-    <common-security-check permission="administration_WRITE_Keeper" allowed="{{writeAllowed}}"></common-security-check>
+    <common-security-check permission="administration_READ_keeper" allowed="{{readAllowed}}"></common-security-check>
+    <common-security-check permission="administration_WRITE_keeper" allowed="{{writeAllowed}}"></common-security-check>
 
       <div class="card">
         <div class="circle"><iron-icon icon="animad-icons:keepers-view"></iron-icon></div>
@@ -107,16 +107,19 @@
           this._resultsText = event.detail.resultsText;
           var selectedFilters = event.detail.filtersSelected;
           var filterString = event.detail.filterString;
+          var filteredDataType = event.detail.filteredDataType;
 
           // GENERATOR: alle angezeigten String-Felder und alle angezeigten Integer-Felder (toString())
-          this._filteredData =
-            this._filteredData.filter(keeper =>
-                keeper.firstName.toLowerCase().includes(filterString) ||
-                keeper.lastName.toLowerCase().includes(filterString) ||
-                keeper.employmentDate.toLowerCase().includes(filterString) ||
-                keeper.skill.toString().toLowerCase().includes(filterString) ||
-                keeper.birthday.toLowerCase().includes(filterString) ||
-                new String(keeper.salary).toLowerCase().includes(filterString));
+          if (filteredDataType === 'keeper') {
+            this._filteredData =
+              this._filteredData.filter(keeper =>
+                  keeper.firstName.toLowerCase().includes(filterString) ||
+                  keeper.lastName.toLowerCase().includes(filterString) ||
+                  keeper.employmentDate.toLowerCase().includes(filterString) ||
+                  keeper.skill.toString().toLowerCase().includes(filterString) ||
+                  keeper.birthday.toLowerCase().includes(filterString) ||
+                  keeper.salary.toString().toLowerCase().includes(filterString));
+          }
 
           if (selectedFilters != undefined && selectedFilters.length > 0) {
             // GENERATOR: Muss im Projekt implementiert werden.
