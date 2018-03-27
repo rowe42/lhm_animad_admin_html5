@@ -13,10 +13,10 @@
 <dom-module id="animad-list-header">
     <template>
       <style>
-        
+
         /* .dropdown {
-          --paper-dropdown-menu: {   
-            background-color:  #eaeaea; 
+          --paper-dropdown-menu: {
+            background-color:  #eaeaea;
             border-radius: 5px;
             border: 1px solid #ddd;
             padding-left: 5px;
@@ -27,7 +27,7 @@
         } */
 
         .paperdropdown {
-          background-color:  #eaeaea; 
+          background-color:  #eaeaea;
           border-radius: 5px;
           border: 1px solid #ddd;
           padding-left: 5px;
@@ -47,19 +47,20 @@
               label="[[placeholderFilter]]"
               value="{{selectedSearch}}"
               searchable="true"
-              disabled="[[readonly]]"
-              >
+              horizontal-align="[[horizontalAlignFilter]]">
               <template is="dom-repeat" items="{{searchFilters}}">
                   <paper-item value$="[[item.search]]">[[item.label]]</paper-item>
               </template>
           </paper-dropdown>
+          <paper-icon-button id=filter-clear-button icon="clear" on-click="_clearFilter" hidden$="[[_hideFilterClearButton]]"></paper-icon-button>
+
 
           <!-- <paper-dropdown-menu
           id="filters"
           label="[[placeholderFilter]]"
           class="dropdown"
           >
-          <paper-listbox attr-for-selected="value" selected-values="{{selectedSearch}}" 
+          <paper-listbox attr-for-selected="value" selected-values="{{selectedSearch}}"
             slot="dropdown-content" on-selected-changed="_changeSearch">
               <template is="dom-repeat" items="{{searchFilters}}">
                   <paper-item value$="[[item.search]]">[[item.label]]</paper-item>
@@ -194,6 +195,12 @@
 				    				notify: true
 				    			},
                   /*
+				    			 * Vorbelegung für das Suche-Feld
+				    			 */
+				    			_defaultSearch: {
+				    				type: String
+				    			},
+                  /*
                    */
                   selectedSearch: {
                     type: String
@@ -215,6 +222,10 @@
 				    			 * Alle selektierbaren Filter, die ausgewählt werden können.
 				    			 */
 				    			searchFilters: Object,
+                  _hideFilterClearButton: {
+                    type: Boolean,
+                    value: true
+                  },
                   /*
                   * Gibt an, ob der Header angezeigt werden soll oder nicht.
                   * Ist das Attribut "hide-header" gesetzt, wird der Header nicht angezeigt.
@@ -296,6 +307,13 @@
 				    				type: String,
 				    				value: 'New'
 				    			},
+                  /**
+                  * Gibt an, ob der Dropdown Filter links- oder rechtsbündig aufgeklappt wird
+                  */
+                  horizontalAlignFilter: {
+                    type: String,
+                    value: "left"
+                  },
                   /*
                    * Gibt den Text an, der auf dem Neu-Button angezeigt wird.
                    */
@@ -349,12 +367,15 @@
             /*
             * Löst den Event `filter` aus.
             */
-			  		_onChangeRequest(newValue, oldValue) {
-			  			// Ignore initial setting of properties (caller is supposed to trigger this call automatically)
-			  			if (typeof oldValue !== 'undefined') {
+            _onChangeRequest(newValue, oldValue) {
+              // Ignore initial setting of properties (caller is supposed to trigger this call automatically)
+              if (typeof oldValue !== 'undefined') {
+                if (typeof this._defaultSearch === 'undefined') {
+                  this._defaultSearch = newValue;
+                }
                 this.dispatchEvent(new CustomEvent('filter', {bubbles: true, composed: true}));
-			  			}
-			  		}
+              }
+            }
 
             /*
             * Setzt die selektierten Filter und löst den Event `filter-selection` aus
@@ -423,10 +444,18 @@
             /*
             */
             _changeSearch(e) {
-                  if (e.detail.value) {
-                    this.search = e.detail.value;
-                    this.dispatchEvent(new CustomEvent('search', {bubbles: true, composed: true}));
-                  }
+              if (e.detail.value) {
+                this.search = e.detail.value;
+                this._hideFilterClearButton = false;
+                this.dispatchEvent(new CustomEvent('search', {bubbles: true, composed: true}));
+              }
+            }
+
+            _clearFilter(e) {
+              this.selectedSearch = '';
+              this._hideFilterClearButton = true;
+              this.search=this._defaultSearch;
+              this.dispatchEvent(new CustomEvent('search', {bubbles: true, composed: true}));
             }
 
             _resetFilter(e) {
