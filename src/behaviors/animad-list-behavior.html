@@ -453,8 +453,11 @@
 
           // this is necessary as vaadin-grid doesn't unselect itself
           // when selected-items is assigned to an empty array...
-          for (var item of items) {
-            this.shadowRoot.querySelector('#animad-list').deselectItem(item);
+          var animadList = this.shadowRoot.querySelector('#animad-list');
+          if (animadList) {
+            for (var item of items) {
+              animadList.deselectItem(item);
+            }
           }
         }
 
