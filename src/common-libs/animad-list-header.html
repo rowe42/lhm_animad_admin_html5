@@ -7,6 +7,8 @@
 <link rel="import" href="../../bower_components/paper-search/paper-search-bar.html">
 <link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="../../bower_components/paper-dropdown/paper-dropdown.html">
+<link rel="import" href="../animad-icons.html">
+
 
 <!-- GENERATOR for all lists the same -->
 
@@ -54,7 +56,6 @@
           </paper-dropdown>
           <paper-icon-button id=filter-clear-button icon="clear" on-click="_clearFilter" hidden$="[[_hideFilterClearButton]]"></paper-icon-button>
 
-
           <!-- <paper-dropdown-menu
           id="filters"
           label="[[placeholderFilter]]"
@@ -83,6 +84,22 @@
               on-paper-search-clear="_resetFilter">
 		    		</paper-search-bar>
 		      </paper-item-body>
+
+          <paper-icon-button id="button-search-favorite"
+            icon="animad-icons:star"
+            on-tap="_openDialogSearchFavorite"
+            hidden="[[hideSearchFavorite]]">
+          </paper-icon-button>
+          <paper-dialog id="dialogSearchFavorite"
+            no-overlap
+            horizontal-align="auto"
+            vertical-align="top">
+            <h4>[[placeholderSearchFavoriteLabel]]</h4>
+            <paper-input id="input-search-favorite"
+              value="{{searchFavoriteName}}"
+              on-keydown="_onSearchFavorite">
+            </paper-input>
+          </paper-dialog>
 
           <paper-button id="new-button"
             raised
@@ -225,6 +242,16 @@
                   _hideFilterClearButton: {
                     type: Boolean,
                     value: true
+                  },
+                  placeholderSearchFavoriteLabel: {
+                    type: String,
+                    value: "Enter your search name:"
+                  },
+                  hideSearchFavorite: {
+                    type: Boolean
+                  },
+                  searchFavoriteName: {
+                    type: String
                   },
                   /*
                   * Gibt an, ob der Header angezeigt werden soll oder nicht.
@@ -423,6 +450,20 @@
 			      _onNew(event) {
               this.dispatchEvent(new CustomEvent('new', {bubbles: true, composed: true}));
 			      }
+
+            _openDialogSearchFavorite(event) {
+              console.log("Search Favorite", event);
+              var favoriteSearchButton =this.shadowRoot.querySelector('#button-search-favorite');
+              this.$.dialogSearchFavorite.positionTarget = favoriteSearchButton;
+              this.$.dialogSearchFavorite.open();
+            }
+
+            _onSearchFavorite(event) {
+              if (event.key === "Enter") {
+                this.dispatchEvent(new CustomEvent('search-favorite', {bubbles: true, composed: true}));
+              }
+            }
+
             /*
             * Wechselt die Sichtbarkeit des Elements zur Anzeige der selektierbaren Filter.
             */

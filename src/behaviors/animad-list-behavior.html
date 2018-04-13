@@ -183,6 +183,12 @@
                  value: ""
                },
                /*
+               */
+               userServiceUrl: {
+                 type: String,
+                 value: ""
+               },
+               /*
                 *`multiSort` gibt an, ob in der Tabelle nach mehreren Feldern sortiert
                 * werden kann (multi-sort = "true") oder nicht (multi-sort = "false").
                 * Standard: `false`
@@ -335,6 +341,12 @@
               _errorToast: {
                   type: Object
               },
+              /*
+               * Das Objekt, das bei Erfolg angezeigt wird.
+               */
+              _successToast: {
+                  type: Object
+              },
               _noWriteAllowed: {
                   type: Boolean,
                   value: false,
@@ -352,6 +364,9 @@
               showIcons: {
                 type: Boolean,
                 value: false
+              },
+              _searchFavoriteName: {
+                type: String
               }
             }
         }
@@ -807,6 +822,47 @@
           });
         }
 
+        /**
+        */
+        _onSearchFavorite(event) {
+          console.log("save search favorite")
+          var url = this.userServiceUrl+'/customsearches/replaceOldestSearchForCurrentUser' ;
+
+          this._search = event.target.search.toLowerCase();
+          this._searchFavoriteName = event.target.searchFavoriteName.toLowerCase();
+
+          var payload = { "componentName": this._entity, "searchName": this._searchFavoriteName, "search": this._search }
+
+          // prepare request
+          var init = {
+              method: 'POST',
+              mode: 'cors',
+              credentials: 'include',
+              body: JSON.stringify(payload),
+              headers: new Headers({
+                  'Content-Type': 'application/json'
+              })
+          }
+
+          var request = new Request(url, init);
+          fetch(request)
+          .then(response => {
+            var index = response.url.lastIndexOf('/') + 1;
+            var itemId = response.url.substring(index);
+
+            if (response.ok) {
+              // refresh view
+              this._success('save_search_favorite_success');
+            }
+            else {
+              // notify user about error
+              this._error(response.status, '_onSearchFavorite', 'save_search_favorite', '', this.$t('save_search_favorite_error', {id: itemId, code: response.status}));
+            }
+          }).catch(error => {
+            this._error(500, '_onSearchFavorite', 'save_search_favorite');
+          });
+        }
+
         /*
          * Wird vom observer von _noWriteAllowed aufgerufen, um New- und
          * Edit-Button zu verbergen.
@@ -846,5 +902,20 @@
             this._error(0, method, 'list_action_search', '', text);
         }
 
+        /**
+         * Der 'Toast', der bei, erfolgreichen Speichern der Suche angezeigt wird.
+         */
+        _success(key) {
+            const notification = {
+                type: 'success',
+                message: this.$t(key),
+            }
+            const e = new CustomEvent('notify', {
+                detail: notification,
+                bubbles: true,
+                composed: true,
+            })
+            this.dispatchEvent(e)
+        }
     };
 </script>
