@@ -7,6 +7,8 @@
 <link rel="import" href="../../bower_components/paper-search/paper-search-bar.html">
 <link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="../../bower_components/paper-dropdown/paper-dropdown.html">
+<link rel="import" href="../animad-icons.html">
+
 
 <!-- GENERATOR for all lists the same -->
 
@@ -42,7 +44,8 @@
 				<paper-item id="search-panel">
           <paper-dropdown id="filter-field"
               class="paperdropdown"
-              hidden$="[[_hideFilterButton(searchFilters)]]"
+              hidden="[[hideFilterButton]]"
+              disabled="[[_disableSearchFilter]]"
               on-value-changed="_changeSearch"
               label="[[placeholderFilter]]"
               value="{{selectedSearch}}"
@@ -53,7 +56,6 @@
               </template>
           </paper-dropdown>
           <paper-icon-button id=filter-clear-button icon="clear" on-click="_clearFilter" hidden$="[[_hideFilterClearButton]]"></paper-icon-button>
-
 
           <!-- <paper-dropdown-menu
           id="filters"
@@ -83,6 +85,22 @@
               on-paper-search-clear="_resetFilter">
 		    		</paper-search-bar>
 		      </paper-item-body>
+
+          <paper-icon-button id="button-search-favorite"
+            icon="animad-icons:star"
+            on-tap="_openDialogSearchFavorite"
+            hidden="[[hideSearchFavorite]]">
+          </paper-icon-button>
+          <paper-dialog id="dialogSearchFavorite"
+            no-overlap
+            horizontal-align="auto"
+            vertical-align="top"
+            on-iron-overlay-closed="_onSearchFavoriteValidate">
+            <h4>[[placeholderSearchFavoriteLabel]]</h4>
+            <paper-input id="input-search-favorite"
+              value="{{searchFavoriteName}}">
+            </paper-input>
+          </paper-dialog>
 
           <paper-button id="new-button"
             raised
@@ -226,6 +244,16 @@
                     type: Boolean,
                     value: true
                   },
+                  placeholderSearchFavoriteLabel: {
+                    type: String,
+                    value: "Enter your search name:"
+                  },
+                  hideSearchFavorite: {
+                    type: Boolean
+                  },
+                  searchFavoriteName: {
+                    type: String
+                  },
                   /*
                   * Gibt an, ob der Header angezeigt werden soll oder nicht.
                   * Ist das Attribut "hide-header" gesetzt, wird der Header nicht angezeigt.
@@ -239,6 +267,14 @@
 				    				type: Boolean,
 				    				value: false
 				    			},
+                  /*
+                  * Aktiviert/Deaktivert den Suche-Filter-Button, abhängig von
+                  * disableFilterButton und der Anzahl der Filter für die Suche.
+                  */
+                  _disableSearchFilter: {
+                    type: Boolean,
+                    computed: '_disableSearchFilterButton(disableFilterButton, searchFilters.length)'
+                  },
                   /*
                   * Gibt an, ob der Löschen-Button angezeigt werden soll oder nicht.
                   * Ist das Attribut "hide-delete-button" gesetzt, wird der Löschen-Button nicht angezeigt.
@@ -423,6 +459,21 @@
 			      _onNew(event) {
               this.dispatchEvent(new CustomEvent('new', {bubbles: true, composed: true}));
 			      }
+
+            _openDialogSearchFavorite(event) {
+              var favoriteSearchButton = this.shadowRoot.querySelector('#button-search-favorite');
+              this.searchFavoriteName = "";
+              this.$.dialogSearchFavorite.positionTarget = favoriteSearchButton;
+              this.$.dialogSearchFavorite.open();
+            }
+
+            _onSearchFavoriteValidate(event) {
+              event.preventDefault();
+              if (this.searchFavoriteName && this.searchFavoriteName.length > 0) {
+                this.dispatchEvent(new CustomEvent('search-favorite', {bubbles: true, composed: true}));
+              }
+            }
+
             /*
             * Wechselt die Sichtbarkeit des Elements zur Anzeige der selektierbaren Filter.
             */
@@ -433,7 +484,13 @@
             * Setzt die Sichtbarkeit des Filter-Buttons
             */
 			      _hideFilterButton(filters) {
-			  			return this.hideFilterButton || !filters || filters.length === 0;
+              return this.hideFilterButton || !filters || filters.length === 0;
+            }
+            /*
+            * Setzt die Aktivierung des Suche-Filter-Buttons
+            */
+            _disableSearchFilterButton(disableFilterButton, searchFilterLength) {
+              return disableFilterButton || searchFilterLength === 0;
 			  		}
             /*
             * Setzt die Aktivierung / Deaktivierung des Filter-Buttons

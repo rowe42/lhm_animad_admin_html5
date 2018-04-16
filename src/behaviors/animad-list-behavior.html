@@ -16,8 +16,12 @@
       *   1. die Daten für die Liste neu gesucht wurden,
       *   2. die Eingabe im Filter-Feld geändert wurde,
       *   3. die Auswahl der selektierbaren Filter geändert wurde.
+      *
+      * @event reload-search-favorites
+      *
+      * Ausgelöst, wenn die Nutzerin eine neue Suche speichert,
+      * um deren gespeicherte Such-Filter neu zu laden.
       */
-
 
         static get properties() {
             return {
@@ -41,18 +45,23 @@
                 }
               },
               /**
+              * searchFilters sind die nicht-lokalisierten Standard-Suchfilter.
               */
               searchFilters: {
                 type: Array,
                 value() {
                   return [];
-                }
+                },
+                reflectToAttribute: false
               },
               /**
-              *  _localizedSearchFilters entspricht searchFilters, aber die Werte in 'search' und 'label' sind durch lokalisierte Werte ersetzt worden.
+              *  _allSearchFilters enthält die für einen Nutzer gespeicherten Such-Filter sowie die lokalisierten Standard-Such-Filter.
               */
-              _localizedSearchFilters: {
-                type: Array
+              _allSearchFilters: {
+                type: Array,
+                value() {
+                  return [];
+                }
               },
               /*
               * _allFilters sind selektierbare Filter, die über eine REST-Schnittstelle (url: [`allFiltersUrl`](#/elements/animad-keepers-list#property-allFiltersUrl))
@@ -179,6 +188,12 @@
               *   `url` ist die URL zur Backend-Suche
               */
                url: {
+                 type: String,
+                 value: ""
+               },
+               /*
+               */
+               userServiceUrl: {
                  type: String,
                  value: ""
                },
@@ -335,6 +350,12 @@
               _errorToast: {
                   type: Object
               },
+              /*
+               * Das Objekt, das bei Erfolg angezeigt wird.
+               */
+              _successToast: {
+                  type: Object
+              },
               _noWriteAllowed: {
                   type: Boolean,
                   value: false,
@@ -352,6 +373,9 @@
               showIcons: {
                 type: Boolean,
                 value: false
+              },
+              _searchFavoriteName: {
+                type: String
               }
             }
         }
@@ -363,13 +387,36 @@
             '_selectionChanged(_selectedItems.length)',
             '_dataChanged(data.length)',
             '_initLocalizedFilter(_allFilters)',
-            '_initLocalizedSearchFilter(searchFilters)'
+            '_localizeSearchFilters(searchFilters)'
           ]
+        }
+
+        /*
+        * Hat `loadCompleteData` den Wert `true` wird im Backend die Suche aufgerufen.
+        */
+        ready() {
+          super.ready();
+          this._search = this.defaultSearch;
+          if (this.loadCompleteData) {
+            this._loadHalData(this.url, 'GET');
+            var animadListHeaderFilter =this.shadowRoot.querySelector('#animad-list-header-filter');
+            if (animadListHeaderFilter) {
+              animadListHeaderFilter.focus();
+            }
+          }
+          else {
+            this._loadFavoriteSearchFilters();
+            var animadListHeaderSearch =this.shadowRoot.querySelector('#animad-list-header-search');
+            if (animadListHeaderSearch) {
+              animadListHeaderSearch.focus();
+            }
+          }
         }
 
         connectedCallback() {
             super.connectedCallback();
             window.addEventListener(this._entity + 'Reload', this._reloadListener.bind(this));
+            window.addEventListener(this._entity + 'reload-search-favorites', this._reloadSearchFavorites.bind(this));
         }
 
         _reloadListener() {
@@ -519,27 +566,6 @@
         // Callback methods
 
         /*
-        * Hat `loadCompleteData` den Wert `true` wird im Backend die Suche aufgerufen.
-        */
-        ready() {
-          super.ready();
-          this._search = this.defaultSearch;
-          if (this.loadCompleteData) {
-            this._loadHalData(this.url, 'GET');
-            var animadListHeaderFilter =this.shadowRoot.querySelector('#animad-list-header-filter');
-            if (animadListHeaderFilter) {
-              animadListHeaderFilter.focus();
-            }
-          }
-          else {
-            var animadListHeaderSearch =this.shadowRoot.querySelector('#animad-list-header-search');
-            if (animadListHeaderSearch) {
-              animadListHeaderSearch.focus();
-            }
-          }
-        }
-
-        /*
         * Setzt den Platzhalter für das Suche-Feld, sofern kein Suchbegriff vorbelegt wurde.
         */
         _setSearchText(placeholder) {
@@ -607,22 +633,20 @@
         }
 
         /*
-        * Wird aufgerufen, wenn über die Methode [`_loadAllFilters`](#TBD) selektierbare Filter gefunden wurden.
-        * Lokalisiert `id` und `label` der gefundenen Filter.
+        * Wird aufgerufen, um die Suche-Filter (Standardfilter, die als Parameter übergeben werden oder
+        * gespeicherte Suchen) zu lokalisieren.
         */
-        _initLocalizedSearchFilter(filters){
+        _localizeSearchFilters(filters){
           if (filters){
             for (var j in filters) {
               filters[j].label = this.$t(filters[j].label);
               filters[j].search = this.$t(filters[j].search);
             }
-            this._localizedSearchFilters = filters;
           }
-          else {
-            this._localizedSearchFilters=[];
+          for (var filter of this.searchFilters) {
+            this.push('_allSearchFilters', {"id": filter.id, "label": filter.label, "search": filter.search})
           }
         }
-
 
         /*
         * Öffnet den Dialog zur Bestätigung, dass die selektierten Datensätze gelöscht werden sollen.
@@ -807,6 +831,97 @@
           });
         }
 
+        /**
+        * Speichert eine Suche zu einer Entität im User-Service
+        */
+        _onSearchFavorite(event) {
+          console.log("save search favorite")
+          var url = this.userServiceUrl+'/customsearches/replaceOldestSearchForCurrentUser' ;
+
+          this._search = event.target.search.toLowerCase();
+          this._searchFavoriteName = event.target.searchFavoriteName.toLowerCase();
+
+          var payload = { "componentName": this._entity, "searchName": this._searchFavoriteName, "search": this._search }
+
+          // prepare request
+          var init = {
+              method: 'POST',
+              mode: 'cors',
+              credentials: 'include',
+              body: JSON.stringify(payload),
+              headers: new Headers({
+                  'Content-Type': 'application/json'
+              })
+          }
+
+          var request = new Request(url, init);
+          fetch(request)
+          .then(response => {
+            var index = response.url.lastIndexOf('/') + 1;
+            var itemId = response.url.substring(index);
+
+            if (response.ok) {
+              this._success('save_search_favorite_success');
+              // refresh search filter dropdown
+              this.dispatchEvent(new CustomEvent(this._entity + 'reload-search-favorites', {bubbles: true, composed: true}));
+            }
+            else {
+              // notify user about error
+              this._error(response.status, '_onSearchFavorite', 'save_search_favorite', '', this.$t('save_search_favorite_error', {id: itemId, code: response.status}));
+            }
+          }).catch(error => {
+            this._error(500, '_onSearchFavorite', 'save_search_favorite');
+          });
+        }
+
+        _reloadSearchFavorites(event) {
+          this._loadFavoriteSearchFilters();
+        }
+
+        /*
+        * Sucht die für einen Nutzer zu einer Entität gespeicherten Suche-Filter im User-Service
+        */
+        _loadFavoriteSearchFilters() {
+          console.log("load search favorites")
+          var url = this.userServiceUrl+'/customsearches/searchesForCurrentUser?componentName='+this._entity ;
+
+          // prepare request
+          var init = {
+              method: 'GET',
+              mode: 'cors',
+              credentials: 'include',
+              headers: new Headers({
+                  'Content-Type': 'application/json'
+              })
+          }
+
+          var request = new Request(url, init);
+          fetch(request)
+          .then(response => {
+            var index = response.url.lastIndexOf('/') + 1;
+            var itemId = response.url.substring(index);
+
+            if (response.ok) {
+              response.json().then((data) => {
+                console.log('Saved Searches: ', data);
+                this._allSearchFilters = [];
+                for (var filter of data) {
+                  this.push('_allSearchFilters', {"id": filter.oid, "label": filter.searchName  , "search": filter.search})
+                }
+                for (var filter of this.searchFilters) {
+                  this.push('_allSearchFilters', {"id": filter.id, "label": filter.label, "search": filter.search})
+                }
+              });
+            }
+            else {
+              // notify user about error
+              this._error(response.status, '_loadFavoriteSearchFilters', 'load_search_favorite', '', this.$t('load_search_favorite_error', {entity: this._entity, code: response.status}));
+            }
+          }).catch(error => {
+            this._error(500, '_loadFavoriteSearchFilters', 'load_search_favorite');
+          });
+        }
+
         /*
          * Wird vom observer von _noWriteAllowed aufgerufen, um New- und
          * Edit-Button zu verbergen.
@@ -846,5 +961,20 @@
             this._error(0, method, 'list_action_search', '', text);
         }
 
+        /**
+         * Der 'Toast', der bei, erfolgreichen Speichern der Suche angezeigt wird.
+         */
+        _success(key) {
+            const notification = {
+                type: 'success',
+                message: this.$t(key),
+            }
+            const e = new CustomEvent('notify', {
+                detail: notification,
+                bubbles: true,
+                composed: true,
+            })
+            this.dispatchEvent(e)
+        }
     };
 </script>

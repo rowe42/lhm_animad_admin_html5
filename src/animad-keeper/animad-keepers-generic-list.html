@@ -66,14 +66,17 @@
           placeholder-new="[[$t('button_new')]]"
           placeholder-filter="[[$t('filter_placeholder')]]"
           placeholder-selection="[[$t('filter_items_selected')]]"
-          search-filters="[[_localizedSearchFilters]]"
+          placeholder-search-favorite-label="[[$t('search-favorite-label')]]"
+          search-filters="[[_allSearchFilters]]"
           all-filters="[[_localizedFilters]]"
           selected-filters = "{{_selectedFilters}}"
           search="{{_search}}"
+          search-favorite-name="{{_searchFavoriteName}}"
           on-search="_searchData"
           on-filter-selection="_filterSelectionData"
           on-delete="_confirmDeleteSelected"
           on-new="_handleNew"
+          on-search-favorite="_onSearchFavorite"
           disable-delete-button="[[_disableDeleteButton]]"
           hide-header="[[_hideSearchHeader(hideHeader)]]"
           hide-new-button="[[hideNew]]"
@@ -92,7 +95,7 @@
           placeholder-new="[[$t('button_new')]]"
           placeholder-filter="[[$t('filter_placeholder')]]"
           placeholder-selection="[[$t('filter_items_selected')]]"
-          search-filters="[[_localizedSearchFilters]]"
+          search-filters="[[_allSearchFilters]]"
           all-filters="[[_localizedFilters]]"
           selected-filters = "{{_selectedFilters}}"
           search="{{_filterString}}"
@@ -105,6 +108,7 @@
           hide-new-button="[[hideNew]]"
           hide-delete-button="[[hideDelete]]"
           hide-filter-button="[[hideFilter]]"
+          hide-search-favorite="true"
           disable-filter-button="[[disableFilter]]"
           disable-new-button="[[disableNew]]"
           show-results="[[showResults]]"
@@ -127,7 +131,7 @@
           <paper-button dialog-dismiss on-tap="_unsetTemporaryDeleteInfo" autofocus>
               <iron-icon icon="animad-icons:close-circle"></iron-icon>
               [[$t('modal_delete_button_no')]]
-          </paper-button>        
+          </paper-button>
         </div>
       </paper-dialog>
 
