@@ -44,7 +44,8 @@
 				<paper-item id="search-panel">
           <paper-dropdown id="filter-field"
               class="paperdropdown"
-              hidden$="[[_hideFilterButton(searchFilters)]]"
+              hidden="[[hideFilterButton]]"
+              disabled="[[_disableSearchFilter]]"
               on-value-changed="_changeSearch"
               label="[[placeholderFilter]]"
               value="{{selectedSearch}}"
@@ -93,11 +94,11 @@
           <paper-dialog id="dialogSearchFavorite"
             no-overlap
             horizontal-align="auto"
-            vertical-align="top">
+            vertical-align="top"
+            on-iron-overlay-closed="_onSearchFavoriteValidate">
             <h4>[[placeholderSearchFavoriteLabel]]</h4>
             <paper-input id="input-search-favorite"
-              value="{{searchFavoriteName}}"
-              on-keydown="_onSearchFavorite">
+              value="{{searchFavoriteName}}">
             </paper-input>
           </paper-dialog>
 
@@ -266,6 +267,14 @@
 				    				type: Boolean,
 				    				value: false
 				    			},
+                  /*
+                  * Aktiviert/Deaktivert den Suche-Filter-Button, abhängig von
+                  * disableFilterButton und der Anzahl der Filter für die Suche.
+                  */
+                  _disableSearchFilter: {
+                    type: Boolean,
+                    computed: '_disableSearchFilterButton(disableFilterButton, searchFilters.length)'
+                  },
                   /*
                   * Gibt an, ob der Löschen-Button angezeigt werden soll oder nicht.
                   * Ist das Attribut "hide-delete-button" gesetzt, wird der Löschen-Button nicht angezeigt.
@@ -452,14 +461,15 @@
 			      }
 
             _openDialogSearchFavorite(event) {
-              console.log("Search Favorite", event);
-              var favoriteSearchButton =this.shadowRoot.querySelector('#button-search-favorite');
+              var favoriteSearchButton = this.shadowRoot.querySelector('#button-search-favorite');
+              this.searchFavoriteName = "";
               this.$.dialogSearchFavorite.positionTarget = favoriteSearchButton;
               this.$.dialogSearchFavorite.open();
             }
 
-            _onSearchFavorite(event) {
-              if (event.key === "Enter") {
+            _onSearchFavoriteValidate(event) {
+              event.preventDefault();
+              if (this.searchFavoriteName && this.searchFavoriteName.length > 0) {
                 this.dispatchEvent(new CustomEvent('search-favorite', {bubbles: true, composed: true}));
               }
             }
@@ -474,7 +484,13 @@
             * Setzt die Sichtbarkeit des Filter-Buttons
             */
 			      _hideFilterButton(filters) {
-			  			return this.hideFilterButton || !filters || filters.length === 0;
+              return this.hideFilterButton || !filters || filters.length === 0;
+            }
+            /*
+            * Setzt die Aktivierung des Suche-Filter-Buttons
+            */
+            _disableSearchFilterButton(disableFilterButton, searchFilterLength) {
+              return disableFilterButton || searchFilterLength === 0;
 			  		}
             /*
             * Setzt die Aktivierung / Deaktivierung des Filter-Buttons

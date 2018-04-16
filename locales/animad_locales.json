@@ -145,7 +145,8 @@
         "filter_search_dumbo_elephant": "species:elephant name:dumbo",
         "search-favorite-label": "Enter name for your search:",
         "save_search_favorite_error": "Error while saving Search. Error code is '%{code}'",
-        "save_search_favorite_success": "Search was successfully saved."
+        "save_search_favorite_success": "Search was successfully saved.",
+        "load_search_favorite_error": "Error while loading your searches for '%{entity}'. Error code is '%{code}'"
       },
       "enclosure": {
         "relation_name": "Enclosure",
@@ -191,7 +192,8 @@
         "filter_items_selected": "items selected",
         "search-favorite-label": "Enter name for your search:",
         "save_search_favorite_error": "Error while saving Search. Error code is '%{code}'",
-        "save_search_favorite_success": "Search was successfully saved."
+        "save_search_favorite_success": "Search was successfully saved.",
+        "load_search_favorite_error": "Error while loading your searches for '%{entity}'. Error code is '%{code}'"
       },
       "keeper":{
         "firstName": "Firstname",
@@ -260,7 +262,8 @@
          "filter_items_selected": "items selected",
          "search-favorite-label": "Enter name for your search:",
          "save_search_favorite_error": "Error while saving Search. Error code is '%{code}'",
-         "save_search_favorite_success": "Search was successfully saved."
+         "save_search_favorite_success": "Search was successfully saved.",
+         "load_search_favorite_error": "Error while loading your searches for '%{entity}'. Error code is '%{code}'"
       },
       "security": {
        "form_error": "An error occured while loading the permissions. Error code is '%{code}'.",
@@ -415,7 +418,8 @@
         "filter_search_dumbo_elephant": "art:elefant name:dumbo",
         "search-favorite-label": "Name der Suche:",
         "save_search_favorite_error": "Fehler beim Speichern der Suche. Fehlercode ist '%{code}'",
-        "save_search_favorite_success": "Die Suche wurde erfolgreich gespeichert."
+        "save_search_favorite_success": "Die Suche wurde erfolgreich gespeichert.",
+        "load_search_favorite_error": "Fehler beim Laden Ihrer Suchen für '%{entity}'. Fehlercode ist '%{code}'"
       },
       "enclosure": {
         "relation_name": "Gehege",
@@ -463,7 +467,8 @@
         "filter_items_selected": "Einträge selektiert",
         "search-favorite-label": "Name der Suche:",
         "save_search_favorite_error": "Fehler beim Speichern der Suche. Fehlercode ist '%{code}'",
-        "save_search_favorite_success": "Die Suche wurde erfolgreich gespeichert."
+        "save_search_favorite_success": "Die Suche wurde erfolgreich gespeichert.",
+        "load_search_favorite_error": "Fehler beim Laden Ihrer Suchen für '%{entity}'. Fehlercode ist '%{code}'"
       },
       "keeper":{
         "firstName": "Vorname",
@@ -532,7 +537,8 @@
          "filter_items_selected": "Einträge selektiert",
          "search-favorite-label": "Name der Suche:",
          "save_search_favorite_error": "Fehler beim Speichern der Suche. Fehlercode ist '%{code}'",
-         "save_search_favorite_success": "Die Suche wurde erfolgreich gespeichert."
+         "save_search_favorite_success": "Die Suche wurde erfolgreich gespeichert.",
+         "load_search_favorite_error": "Fehler beim Laden Ihrer Suchen für '%{entity}'. Fehlercode ist '%{code}'"
       },
       "security": {
         "auth_error": "Berechtigungsproblem. Bitte ausloggen und erneut einloggen. Fehlercode ist '%{code}'.",
