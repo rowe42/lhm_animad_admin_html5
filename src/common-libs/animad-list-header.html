@@ -44,7 +44,7 @@
 				<paper-item id="search-panel">
           <paper-dropdown id="filter-field"
               class="paperdropdown"
-              hidden="[[hideFilterButton]]"
+              hidden="[[hideSearchFilterButton]]"
               disabled="[[_disableSearchFilter]]"
               on-value-changed="_changeSearch"
               label="[[placeholderFilter]]"
@@ -259,6 +259,14 @@
                   * Ist das Attribut "hide-header" gesetzt, wird der Header nicht angezeigt.
                   */
                   hideHeader: Boolean,
+                  /*
+                  * Gibt an, ob der Suche-Filter-Button angezeigt werden soll oder nicht.
+                  * Ist das Attribut "hide-search-filter-button" gesetzt, wird der Suche-Filter-Button nicht angezeigt.
+                  */
+				    			hideSearchFilterButton: {
+				    				type: Boolean,
+				    				value: false
+				    			},
                   /*
                   * Gibt an, ob der Filter-Button angezeigt werden soll oder nicht.
                   * Ist das Attribut "hide-filter-button" gesetzt, wird der Filter-Button nicht angezeigt.
@@ -490,6 +498,7 @@
             * Setzt die Aktivierung des Suche-Filter-Buttons
             */
             _disableSearchFilterButton(disableFilterButton, searchFilterLength) {
+            	console.log('hideSearchFilterButton', this.hideSearchFilterButton);
               return disableFilterButton || searchFilterLength === 0;
 			  		}
             /*
